@@ -1,0 +1,24 @@
+Test case, test protocol, and test log are three different terms used in software testing.
+Here's a brief explanation of each:
+
+Test Case: A test case is a set of instructions or conditions that are used to test a particular software feature
+or functionality. A test case typically includes a description of the test scenario, preconditions,
+steps to be followed, and expected results.
+
+Test Protocol: A test protocol is a document that outlines the testing process to be followed. It includes
+a description of the testing approach, scope of testing, testing environment, resources required, and testing schedule.
+A test protocol is usually prepared before the testing process begins.
+
+Test Log: A test log is a record of all the tests that have been performed on a software system.
+It includes information such as the date and time of the test, the person who performed the test, the test case used,
+the actual results, and any issues or defects that were encountered during the test.
+
+In summary, a test case is a specific set of instructions used to test a feature or functionality,
+a test protocol is a document that outlines the testing process to be followed, and a test log is a record of
+all the tests performed on a system.
+
+A test protocol is a set of instructions or guidelines for performing a series of related test cases,
+while a test log is a record of the results of one or more test protocols. A test protocol can contain multiple
+test cases because it may be necessary to test a particular system feature or functionality using multiple scenarios
+or inputs. Similarly, a test log can contain multiple test protocols because it may be necessary to test a system
+using different configurations or under different conditions.
