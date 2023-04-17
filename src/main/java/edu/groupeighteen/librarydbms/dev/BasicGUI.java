@@ -10,6 +10,8 @@ package edu.groupeighteen.librarydbms.dev;
  * We plan as much as we can (based on the knowledge available),
  * When we can (based on the time and resources available),
  * But not before.
+ *
+ * Basic GUI that delivers two Strings, a username and a password.
  */
 public class BasicGUI {
 
