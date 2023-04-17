@@ -11,7 +11,7 @@ package edu.groupeighteen.librarydbms.dev;
  * When we can (based on the time and resources available),
  * But not before.
  *
- * Basic login functionality class, receives two Strings, a username and a password
+ * Basic login functionality class, receives two Strings, a username (uname) and a password (pword)
  */
 public class BasicLogin {
 
