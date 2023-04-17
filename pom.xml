@@ -67,8 +67,14 @@
             <version>1.0.2</version>
         </dependency>
 
-    </dependencies>
+        <!-- SELENIUM -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.8.3</version>
+        </dependency>
 
+    </dependencies>
 
     <properties>
         <maven.compiler.source>15</maven.compiler.source>

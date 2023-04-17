@@ -35,3 +35,5 @@
     Should we keep track of how much time is spent per line of code, on both development and testing?
 
     Create a dependency tree. Which classes and components are dependent on others?
+
+//TODO Consider testing environments
