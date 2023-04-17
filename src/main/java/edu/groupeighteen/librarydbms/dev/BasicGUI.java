@@ -14,6 +14,11 @@ package edu.groupeighteen.librarydbms.dev;
  * Basic GUI that delivers two Strings, a username (uname) and a password (pword).
  */
 public class BasicGUI {
+    //TODO JFrame to contain the GUI
+    //TODO JPanel that holds a button
+    //TODO Login button that spawns a pop up window
+    //TODO pop up contains two text fields with labels, and a OK button
+    //TODO when OK is pressed, GUI retrieves contents of text fields and says "logged in" or failed
 
     public BasicGUI() {
 
