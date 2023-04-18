@@ -40,7 +40,7 @@ public class BasicGUI extends JFrame implements ActionListener {
             add(panel1);
 
         JLabel label1 = new JLabel("Username:");
-            add(label1);
+            panel1.add(label1);
 
         button1 = new JButton("Log In");
         button1.addActionListener(this);
