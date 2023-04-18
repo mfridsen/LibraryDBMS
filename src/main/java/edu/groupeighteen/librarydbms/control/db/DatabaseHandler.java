@@ -15,6 +15,10 @@ import java.sql.*;
  * @package edu.groupeighteen.librarydbms.control
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
+ *
+ * This class is responsible for handling a database by performing SQL Queries and SQL Commands on the database.
+ * To make the code more readable it was decided to let this class retrieve and store a Connection from the
+ * DatabaseConnection class.
  */
 public class DatabaseHandler {
 
@@ -44,9 +48,8 @@ public class DatabaseHandler {
     }
 
     /**
-     * Since any other methods, such as the main-method, should only do Database-things through
-     * this Handler-class, we need to add a close-method that calls closeConnection in the
-     * DatabaseConnection class, and also frees up any other resources.
+     * Since any other classes should only do Database-related things through this Handler class,
+     * we need to add a close method that calls closeConnection in the DatabaseConnection class.
      */
     public static void closeDatabase() {
         DatabaseConnection.closeConnection();
@@ -54,7 +57,9 @@ public class DatabaseHandler {
 
     //TODO handle exceptions
     /**
-     * Executes a single SQL command on the connected database.
+     * Executes a single SQL command on the connected database. SQL commands can affect rows and therefore
+     * are used with executeUpdate.
+     *
      * Prints number of rows affected if command was successfully executed.
      * @param command the SQL command to execute
      * @throws SQLException if an error occurs while executing the command
@@ -73,6 +78,8 @@ public class DatabaseHandler {
     //TODO handle exceptions
     /**
      * Executes a single SQL query on the connected database and prints the results to the console if successful.
+     * SQL queries, unlike SQL commands, do not affect rows.
+     *
      * @param query the SQL query to execute
      * @throws SQLException if an error occurs while executing the query
      */
