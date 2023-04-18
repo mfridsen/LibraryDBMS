@@ -25,7 +25,7 @@ import javax.swing.JButton;
 //TODO pop up contains two text fields with labels, and a OK button
 //TODO when OK is pressed, GUI retrieves contents of text fields and says "logged in" or failed
 public class BasicGUI extends JFrame implements ActionListener {
-    private JLabel label;
+
     private JButton button1;
 
 
@@ -36,25 +36,22 @@ public class BasicGUI extends JFrame implements ActionListener {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel panel1 = new JPanel(new FlowLayout());
+        JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
             add(panel1);
 
-        JLabel label1 = new JLabel("Username:");
-            panel1.add(label1);
+
 
         button1 = new JButton("Log In");
         button1.addActionListener(this);
         panel1.add(button1);
 
-        label = new JLabel();
-        panel1.add(label);
+
 
         setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
        if (e.getSource() == button1) {
-            label.setText("Successfully logged in!");
         }
     }
 
