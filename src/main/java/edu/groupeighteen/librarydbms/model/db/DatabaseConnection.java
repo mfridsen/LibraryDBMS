@@ -10,6 +10,8 @@ import java.sql.SQLException;
  * @package edu.groupeighteen.librarydbms.model
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
+ *
+ * This class handles setting up, maintaining and closing of a JDBC Connection.
  */
 public class DatabaseConnection {
     private static Connection connection = null;
@@ -38,6 +40,7 @@ public class DatabaseConnection {
      * @param url the URL of the database to connect to
      * @param user the username to use when connecting to the database
      * @param password the password to use when connecting to the database
+     * @return a Connection if successful
      */
     public static Connection connectToDatabaseServer(String url, String user, String password)
             throws SQLException, ClassNotFoundException {
