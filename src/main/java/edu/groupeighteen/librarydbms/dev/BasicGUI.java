@@ -24,9 +24,11 @@ import javax.swing.JButton;
 //TODO Login button that spawns a pop up window
 //TODO pop up contains two text fields with labels, and a OK button
 //TODO when OK is pressed, GUI retrieves contents of text fields and says "logged in" or failed
-public class BasicGUI extends JFrame implements ActionListener {
+public class BasicGUI extends JFrame{
 
-    private JButton button1;
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JLabel statusLabel;
 
 
     public BasicGUI() {
@@ -36,24 +38,37 @@ public class BasicGUI extends JFrame implements ActionListener {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            add(panel1);
+        JPanel panel1 = new JPanel(new GridLayout(4, 2, 5, 6));
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameField = new JTextField();
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordField = new JPasswordField();
+        JButton loginButton = new JButton("Login");
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            if (username.equals("ADMIN") && password.equals("PASSWORD")) {
+                statusLabel.setText("Logged in successfully!");
+            } else{
+                statusLabel.setText("Login failed!");
+            }
 
+        });
+        statusLabel = new JLabel();
 
-
-        button1 = new JButton("Log In");
-        button1.addActionListener(this);
-        panel1.add(button1);
-
-
+        panel1.add(usernameLabel);
+        panel1.add(usernameField);
+        panel1.add(passwordLabel);
+        panel1.add(passwordField);
+        panel1.add(loginButton);
+        panel1.add(new JLabel());
+        panel1.add(statusLabel);
+        add(panel1);
 
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e) {
-       if (e.getSource() == button1) {
-        }
-    }
+
 
     public static void main(String[] args) {
         new BasicGUI();
