@@ -1,3 +1,5 @@
+package view;
+
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -9,27 +11,27 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Mattias Fridsén
  * @project LibraryDBMS
  * @package PACKAGE_NAME
- * @date 4/17/2023
+ * @date 4/18/2023
  * @contact matfir-1@student.ltu.se
  * <p>
  * We plan as much as we can (based on the knowledge available),
  * When we can (based on the time and resources available),
  * But not before.
  * <p>
- * Unit Test for the Library class.
+ * Unit Test for the LibraryManager class.
  */
 
 //TODO REMOVE THIS WHEN REAL TEST CLASSES HAVE BEEN CREATED
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DummyLibraryTest {
+public class DummyViewTest {
     private static final String testClassTextBlock = """
                ----------------------------
-                Testing DummyLibrary Class \s
+                Testing DummyView Class \s
                ----------------------------\s
             """;
 
-    //TODO put actual valid test data here
+    //TODO put actual valid test data here        
     private static final String[] validTestStrings =
             {"1st valid test string",
                     "2nd valid test string"
@@ -49,22 +51,15 @@ public class DummyLibraryTest {
     }
 
     /**
-     * Dummy method for validating test data.
-     */
-    private boolean isValidTestString(String testString) {
-        return !testString.contains("invalid");
-    }
-
-    /**
-     * Tests all constructors in LibraryDummy.
+     * Tests all constructors in ViewDummy.
      */
     @Test
     @Order(1)
-    public void testCreateDummyLibrary() {
+    public void testCreateDummyView() {
         System.out.println("\n" + testClassTextBlock);
-        System.out.println("1: Testing creating LibraryDummy...");
+        System.out.println("1: Testing creating ViewDummy...");
         System.out.println("No test implemented here yet!");
-        //TODO Write your code here
+        // Write your code here
     }
 
     /**
@@ -76,7 +71,7 @@ public class DummyLibraryTest {
     public void testGettersAndSetters() {
         System.out.println("\n2: Testing getters and setters...");
         System.out.println("No test implemented here yet!");
-        //TODO Write more code here
+        //Write more code here
     }
 
     /**

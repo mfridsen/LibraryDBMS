@@ -28,6 +28,7 @@ public class BasicGUI extends JFrame implements ActionListener {
     private JLabel label;
     private JButton button1;
 
+
     public BasicGUI() {
         setTitle("Lilla Biblioteket");
 
