@@ -35,7 +35,7 @@ public class BasicGUI extends JFrame {
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.setBackground(Color.BLUE);
-        //When button is clicked, the
+        //When button is clicked, the showLoginDialog method will pop up.
         loginButton = new JButton("Login");
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -48,6 +48,8 @@ public class BasicGUI extends JFrame {
         setVisible(true);
     }
 
+    //This method handles the login window. If username and password are correct,
+    //the login window will shut down.
     private void showLoginDialog() {
         JDialog loginDialog = new JDialog(this, "Login", true);
         loginDialog.setSize(300, 200);
@@ -66,10 +68,10 @@ public class BasicGUI extends JFrame {
                 if (username.equals("johanGUD") && password.equals("password")) {
                     JOptionPane.showMessageDialog(BasicGUI.this, "Logged in successfully!");
 
-                    //closes the login window if the login is successfull.
+                    //Closes the login window if the login is successfull.
                     loginDialog.setVisible(false);
                     loginDialog.dispose();
-
+                //If Login Failed, the login window will also be shut down.
                 } else {
                     JOptionPane.showMessageDialog(BasicGUI.this, "Login failed!");
                 }
