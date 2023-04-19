@@ -34,17 +34,22 @@ public class DatabaseHandler {
         // Connect to database
         connection = DatabaseConnection.connectToLocalSQLServer();
         //Delete DB if already exists
-        executeSingleSQLCommand("drop database if exists demo_database;");
+        executeSingleSQLCommand("drop database if exists " + LibraryManager.databaseName + ";");
         //Create DB
-        executeSingleSQLCommand("create database demo_database;");
+        executeSingleSQLCommand("create database " + LibraryManager.databaseName + ";");
         //Show DBs in server
         executeSingleSQLQuery("show databases;");
         //Use DB
-        executeSingleSQLCommand("use demo_database;");
+        executeSingleSQLCommand("use " + LibraryManager.databaseName + ";");
+        executeSingleSQLQuery("show tables;");
         //Create tables
         executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
         //Show tables in DB
         executeSingleSQLQuery("show tables;");
+        //Load test data
+        executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
+        executeSingleSQLQuery("select * from user");
+        executeSingleSQLQuery("select * from item;");
     }
 
     /**

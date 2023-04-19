@@ -15,28 +15,11 @@ import java.sql.SQLException;
  */
 public class LibraryManager {
 
+    public static final String databaseName = "lilla_biblioteket";
+
     public static void main(String[] args) {
         try {
-            //TODO CONNECTION SHOULD PROBABLY ONLY BE OPENED EITHER AT LOGIN, OR AT SEARCH QUERIES, AND CLOSED
-            // AFTER A CERTAIN AMOUNT OF TIME
             DatabaseHandler.setupDatabase();
-
-            // TODO user login handling code
-            /*
-            User user = UserHandler.login(username, password);
-            if (user != null) {
-                if (user.isAdmin()) {
-                    // Show the admin GUI
-                    //TODO CONNECTION SHOULD PROBABLY ONLY BE ESTABLISHED HERE, AND CLOSED WHEN WE LOG OUT
-                } else {
-                    // Show the user GUI
-                    //TODO CONNECTION SHOULD PROBABLY ONLY BE ESTABLISHED HERE, AND CLOSED WHEN WE LOG OUT
-                }
-            } else {
-                // Show an error message
-            }
-            */
-            // TODO end todo
 
             //Always close the connection to the database after use
             DatabaseHandler.closeDatabase();
@@ -50,19 +33,6 @@ public class LibraryManager {
             // Always close the connection to the database after use
             DatabaseHandler.closeDatabase();
         }
-
-        //TODO dump all lines printed by the app into a file, and then compare to an expected file
-        /*
-        String fileName = "output.txt";
-        try {
-            FileOutputStream outputStream = new FileOutputStream(fileName);
-            PrintStream printStream = new PrintStream(outputStream);
-            System.setOut(printStream);
-            System.out.println("Hello, world!");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-         */
     }
 
     /**
