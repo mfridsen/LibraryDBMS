@@ -24,59 +24,69 @@ import javax.swing.JButton;
 //TODO Login button that spawns a pop up window
 //TODO pop up contains two text fields with labels, and a OK button
 //TODO when OK is pressed, GUI retrieves contents of text fields and says "logged in" or failed
-public class BasicGUI extends JFrame{
 
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JLabel statusLabel;
-
+public class BasicGUI extends JFrame {
+    private JButton loginButton;
 
     public BasicGUI() {
-        setTitle("Lilla Biblioteket");
-
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+        super("Login GUI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(500, 400);
 
-        JPanel panel1 = new JPanel(new GridLayout(4, 2, 5, 6));
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameField = new JTextField();
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordField = new JPasswordField();
-        JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(e -> {
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
-            if (username.equals("ADMIN") && password.equals("PASSWORD")) {
-                statusLabel.setText("Logged in successfully!");
-            } else{
-                statusLabel.setText("Login failed!");
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setBackground(Color.BLUE);
+        //When button is clicked, the
+        loginButton = new JButton("Login");
+        loginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showLoginDialog();
             }
-
         });
-        statusLabel = new JLabel();
-
-        panel1.add(usernameLabel);
-        panel1.add(usernameField);
-        panel1.add(passwordLabel);
-        panel1.add(passwordField);
-        panel1.add(loginButton);
-        panel1.add(new JLabel());
-        panel1.add(statusLabel);
-        add(panel1);
+        panel.add(loginButton);
+        add(panel);
 
         setVisible(true);
     }
 
+    private void showLoginDialog() {
+        JDialog loginDialog = new JDialog(this, "Login", true);
+        loginDialog.setSize(300, 200);
+        loginDialog.setLayout(new GridLayout(3, 2));
 
+        JLabel usernameLabel = new JLabel("Username:");
+        JTextField usernameField = new JTextField();
+        JLabel passwordLabel = new JLabel("Password:");
+        JPasswordField passwordField = new JPasswordField();
+        JButton okButton = new JButton("OK");
+
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                if (username.equals("johanGUD") && password.equals("password")) {
+                    JOptionPane.showMessageDialog(BasicGUI.this, "Logged in successfully!");
+
+                    //closes the login window if the login is successfull.
+                    loginDialog.setVisible(false);
+                    loginDialog.dispose();
+
+                } else {
+                    JOptionPane.showMessageDialog(BasicGUI.this, "Login failed!");
+                }
+                loginDialog.dispose();
+            }
+        });
+
+        loginDialog.add(usernameLabel);
+        loginDialog.add(usernameField);
+        loginDialog.add(passwordLabel);
+        loginDialog.add(passwordField);
+        loginDialog.add(okButton);
+
+        loginDialog.setVisible(true);
+    }
 
     public static void main(String[] args) {
         new BasicGUI();
     }
-
-
-
-    /*********************************** Getters and Setters are self-explanatory. ************************************/
-
-
 }
