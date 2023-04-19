@@ -29,7 +29,7 @@ public class BasicGUI extends JFrame {
     private JButton loginButton;
 
     public BasicGUI() {
-        super("Login GUI");
+        super("Lilla Biblioteket");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
 
