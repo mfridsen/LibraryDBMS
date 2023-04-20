@@ -20,8 +20,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
         //Control tests
-        DummyControlTest.class, //TODO REMOVE THIS WHEN REAL TEST CLASSES HAVE BEEN CREATED
-        //TODO CREATE PROPER TEST CLASSES FOR THIS SUITE
+        UserHandlerTest.class,
 })
 
 public class ControlTestSuite {

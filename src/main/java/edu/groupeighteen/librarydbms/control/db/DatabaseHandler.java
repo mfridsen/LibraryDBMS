@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.control.db;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.user.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 
 import java.io.BufferedReader;
@@ -19,6 +20,9 @@ import java.sql.*;
  * This class is responsible for handling a database by performing SQL Queries and SQL Commands on the database.
  * To make the code more readable it was decided to let this class retrieve and store a Connection from the
  * DatabaseConnection class.
+ *
+ * This class is only responsible for general operations. Specific operations are delegated to specific Handler classes,
+ * such as {@link edu.groupeighteen.librarydbms.control.user.UserHandler}, //TODO finish comment
  */
 public class DatabaseHandler {
 
@@ -30,33 +34,33 @@ public class DatabaseHandler {
      * Deletes demo_database and starts over from scratch, initializing all the tables and
      * then filling them with test data.
      */
-    public static void setupDatabase() throws SQLException, ClassNotFoundException {
+    public static void setup() throws SQLException, ClassNotFoundException {
         // Connect to database
         connection = DatabaseConnection.connectToLocalSQLServer();
         //Delete DB if already exists
-        executeSingleSQLCommand("drop database if exists " + LibraryManager.databaseName + ";");
+        executeSingleSQLCommand("drop database if exists " + LibraryManager.databaseName);
         //Create DB
-        executeSingleSQLCommand("create database " + LibraryManager.databaseName + ";");
+        executeSingleSQLCommand("create database " + LibraryManager.databaseName);
         //Show DBs in server
-        executeSingleSQLQuery("show databases;");
+        executeSingleSQLQuery("show databases");
         //Use DB
-        executeSingleSQLCommand("use " + LibraryManager.databaseName + ";");
-        executeSingleSQLQuery("show tables;");
+        executeSingleSQLCommand("use " + LibraryManager.databaseName);
+        executeSingleSQLQuery("show tables");
         //Create tables
         executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
         //Show tables in DB
-        executeSingleSQLQuery("show tables;");
+        executeSingleSQLQuery("show tables");
         //Load test data
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
-        executeSingleSQLQuery("select * from user");
-        executeSingleSQLQuery("select * from item;");
+        executeSingleSQLQuery("SELECT * FROM user ORDER BY user_id ASC");
+        executeSingleSQLQuery("SELECT * FROM item");
     }
 
     /**
      * Since any other classes should only do Database-related things through this Handler class,
      * we need to add a close method that calls closeConnection in the DatabaseConnection class.
      */
-    public static void closeDatabase() {
+    public static void closeDatabaseConnection() {
         DatabaseConnection.closeConnection();
     }
 

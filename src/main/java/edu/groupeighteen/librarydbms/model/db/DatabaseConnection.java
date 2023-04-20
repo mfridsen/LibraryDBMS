@@ -17,8 +17,8 @@ public class DatabaseConnection {
     private static Connection connection = null;
 
     /**
-     * Standard connection-method for a default-configured local MySQL Server. Connects to the server
-     * using the connectToDatabaseServer-method. Connects with the following parameters:
+     * Standard connection method for a default-configured local MySQL Server. Connects to the server
+     * using the connectToDatabaseServer method. Connects with the following parameters:
      * user: root
      * password: password
      * url: jdbc:mysql://localhost:3306

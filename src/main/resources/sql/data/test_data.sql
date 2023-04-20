@@ -1,7 +1,7 @@
 -- (''),
 
 -- //TODO Add user test data here
-INSERT INTO `User` (username, password) VALUES
+INSERT INTO User (username, password) VALUES
 ('user1', 'pass1'),
 ('user2', 'pass2'),
 ('user3', 'pass3'),
@@ -22,6 +22,7 @@ INSERT INTO Item (title) VALUES
 ('Best Served Cold'),
 ('The Heroes'),
 ('Red Country'),
+('Sharp Ends'),
 ('A Little Hatred'),
 ('The Trouble With Peace'),
 ('The Wisdom Of Crowds');
