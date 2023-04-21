@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class InfoGUI {
+public class InfoPage {
     public JFrame firstFrame;
     public JPanel firstPanel;
     public JTextField firstInfoField;

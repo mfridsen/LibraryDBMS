@@ -5,6 +5,6 @@ package edu.groupeighteen.librarydbms.view.GUI;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class HomescreenGUI {
+public class MenuPage {
 
 }
