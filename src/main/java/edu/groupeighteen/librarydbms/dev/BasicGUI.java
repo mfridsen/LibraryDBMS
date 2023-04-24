@@ -25,6 +25,7 @@ import javax.swing.JButton;
 //TODO pop up contains two text fields with labels, and a OK button
 //TODO when OK is pressed, GUI retrieves contents of text fields and says "logged in" or failed
 
+
 public class BasicGUI extends JFrame {
     private JButton loginButton;
 
