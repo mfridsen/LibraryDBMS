@@ -11,7 +11,10 @@ import java.awt.event.ActionListener;
  * @date 2023-04-21
  */
 public class HomeScreen extends JFrame {
+
+
     public HomeScreen() {
+
         setTitle("Library System");
 
         JPanel panel = new JPanel(new BorderLayout());

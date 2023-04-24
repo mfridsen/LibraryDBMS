@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.view.GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -49,7 +50,19 @@ public class LoginPage extends JFrame {
             System.out.println("Username: " + usernameField.getText());
             System.out.println("Password: " + new String(passwordField.getPassword()));
         });
+
+        JButton backButton = new JButton("Tillbaka");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                HomeScreen homeScreen = new HomeScreen();
+                homeScreen.setVisible(true);
+            }
+        });
         buttonPanel.add(loginButton);
+        buttonPanel.add(backButton);
+
         panel.add(formPanel, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
