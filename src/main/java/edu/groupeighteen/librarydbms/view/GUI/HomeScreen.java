@@ -38,7 +38,10 @@ public class HomeScreen extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         dispose();
-                        new InfoPage();
+                        InfoPage infoPage = new InfoPage();
+                        infoPage.showInfoGUI();
+
+
                     }
                 });
                 buttonPanel.add(infoButton);

@@ -41,7 +41,7 @@ public class LoginPage extends JFrame {
             //TODO lägga in någon typ av validation på användarnamn och löesnord.
             //userIsValid lägga in userIsValid i parenteserna. Skapa en metod av den i en annan klass.
             if (usernameField.isValid()) {
-                MenuPage MenuPage = new MenuPage();
+                new MenuPage();
                 //menuPage.setVisible(true);
                 dispose();
             }
@@ -58,6 +58,8 @@ public class LoginPage extends JFrame {
     setLocationRelativeTo(null);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
+
+
 
     }
 }
