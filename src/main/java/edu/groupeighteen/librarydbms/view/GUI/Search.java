@@ -5,5 +5,5 @@ package edu.groupeighteen.librarydbms.view.GUI;
  * @project LibraryDBMS
  * @date 2023-04-24
  */
-public class Sök {
+public class Search {
 }

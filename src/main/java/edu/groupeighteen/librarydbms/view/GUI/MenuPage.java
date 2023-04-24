@@ -44,6 +44,14 @@ public class MenuPage {
                 new HomeScreen();
             }
         });
+        mittKontoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuFrame.dispose();
+                MyAccount.alterPersonalInfo accountInfo = new MyAccount.alterPersonalInfo();
+                accountInfo.changeInfoGUI();
+            }
+        });
         menuFrame.add(menuPanel);
         menuFrame.pack();
         menuFrame.setVisible(true);
