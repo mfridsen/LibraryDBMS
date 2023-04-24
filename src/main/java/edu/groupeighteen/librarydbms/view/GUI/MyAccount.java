@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  */
 public class MyAccount {
 
-    public static class alterPersonalInfo extends JFrame {
+    public static class alterPersonalInfo  {
         private JLabel usernameLabel;
         private JTextField usernameField;
         private JLabel passwordLabel;
@@ -20,6 +20,7 @@ public class MyAccount {
         private JButton changeButton;
         private JPanel accountPanel;
         private JFrame accountFrame;
+        private JButton tillbakaButton;
 
         public void changeInfoGUI() {
 
@@ -29,10 +30,12 @@ public class MyAccount {
             passwordLabel = new JLabel("Password:");
             passwordField = new JPasswordField(10);
             changeButton = new JButton("Change");
+            tillbakaButton = new JButton("Tillbaka");
             accountPanel = new JPanel();
             accountFrame = new JFrame("Mitt Konto");
 
             accountPanel.add(changeButton);
+            accountPanel.add(tillbakaButton);
             accountPanel.add(usernameLabel);
             accountPanel.add(usernameField);
             accountPanel.add(passwordLabel);
@@ -42,6 +45,15 @@ public class MyAccount {
             accountFrame.pack();
             accountFrame.setVisible(true);
             accountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            tillbakaButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                accountFrame.dispose();
+                    MenuPage menuPage = new MenuPage();
+                    menuPage.menuGUI();
+                }
+            });
         }
 
 
