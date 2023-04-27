@@ -17,6 +17,15 @@ public class MenuPage {
     public JFrame menuFrame;
     public JPanel menuPanel;
 
+    public String username;
+
+
+    public MenuPage(String username) {
+        this.username = username;
+    }
+
+
+
     public void menuGUI(){
         menuFrame = new JFrame("Meny");
         menuPanel = new JPanel();
@@ -25,6 +34,8 @@ public class MenuPage {
         LoggaUtButton = new JButton("Logga Ut");
         mittKontoButton = new JButton("Mitt Konto");
 
+        JLabel welcomeLabel = new JLabel("Welcome, " + username + "!");
+        menuPanel.add(welcomeLabel);
         menuPanel.add(tillbakaButton);
         menuPanel.add(LoggaUtButton);
         menuPanel.add(mittKontoButton);
@@ -50,6 +61,15 @@ public class MenuPage {
                 menuFrame.dispose();
                 MyAccount.alterPersonalInfo accountInfo = new MyAccount.alterPersonalInfo();
                 accountInfo.changeInfoGUI();
+            }
+        });
+        sökButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuFrame.dispose();
+               Search search = new Search();
+               search.searchGUI();
+
             }
         });
         menuFrame.add(menuPanel);

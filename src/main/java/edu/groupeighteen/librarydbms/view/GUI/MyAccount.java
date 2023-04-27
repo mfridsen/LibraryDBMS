@@ -50,7 +50,7 @@ public class MyAccount {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                 accountFrame.dispose();
-                    MenuPage menuPage = new MenuPage();
+                    MenuPage menuPage = new MenuPage("Välkommen" + usernameLabel);
                     menuPage.menuGUI();
                 }
             });
