@@ -1,4 +1,4 @@
-package edu.groupeighteen.librarydbms.model.item;
+package edu.groupeighteen.librarydbms.model.entities;
 
 /**
  * @author Mattias Fridsén
@@ -7,9 +7,9 @@ package edu.groupeighteen.librarydbms.model.item;
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
  */
-public class Item {
+public class User {
 
-    public Item() {
+    public User() {
 
     }
 
