@@ -43,6 +43,7 @@ public class UserHandlerTest {
             connection = DatabaseConnection.connectToLocalSQLServer();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            System.exit(1); //Failed to connect, can't perform tests
         }
     }
 

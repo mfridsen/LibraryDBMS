@@ -2,7 +2,6 @@ package edu.groupeighteen.librarydbms;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.user.UserHandler;
-import edu.groupeighteen.librarydbms.model.user.User;
 
 import java.sql.SQLException;
 
