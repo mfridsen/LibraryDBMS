@@ -1,7 +1,6 @@
 package edu.groupeighteen.librarydbms.control.db;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.user.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 
 import java.io.BufferedReader;
