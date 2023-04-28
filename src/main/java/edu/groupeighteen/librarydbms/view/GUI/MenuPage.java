@@ -34,7 +34,7 @@ public class MenuPage {
         LoggaUtButton = new JButton("Logga Ut");
         mittKontoButton = new JButton("Mitt Konto");
 
-        JLabel welcomeLabel = new JLabel("Welcome, " + username + "!");
+        JLabel welcomeLabel = new JLabel("Välkommen, " + username + "!");
         menuPanel.add(welcomeLabel);
         menuPanel.add(tillbakaButton);
         menuPanel.add(LoggaUtButton);

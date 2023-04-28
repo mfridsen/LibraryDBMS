@@ -12,50 +12,62 @@ import java.awt.event.ActionListener;
  */
 public class HomeScreen extends JFrame {
 
+    public JLabel welcomeLabel;
+    public JPanel buttonPanel;
+    public JFrame homeFrame;
+    public JButton loginHereButton;
+    public JButton infoButton;
+    public JButton skapakontoButton;
 
     public HomeScreen() {
+        welcomeLabel = new JLabel("Welcome to the library system");
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        setTitle("Library System");
+        buttonPanel = new JPanel();
+        loginHereButton = new JButton("Log in here");
+        infoButton = new JButton("FAQ");
+        skapakontoButton = new JButton("Skapa Konto");
+
+        buttonPanel.add(loginHereButton);
+        buttonPanel.add(infoButton);
+        buttonPanel.add(skapakontoButton);
 
         JPanel panel = new JPanel(new BorderLayout());
+        panel.add(welcomeLabel, BorderLayout.NORTH);
+        panel.add(buttonPanel, BorderLayout.CENTER);
 
-        JLabel welcomeLabel = new JLabel("Welcome to the library system");
-                welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
-                panel.add(welcomeLabel, BorderLayout.NORTH);
+        homeFrame = new JFrame("Library System");
+        homeFrame.add(panel);
+        homeFrame.setSize(400, 200);
+        homeFrame.setLocationRelativeTo(null);
+        homeFrame.setVisible(true);
+        homeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-                //Create a button for log in function and add it to the panel.
-                JButton loginHereButton = new JButton("Log in here");
-                loginHereButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        dispose(); // Close the current window
-                        new LoginPage(); //Open the Log in page
-                    }
-                });
-                JPanel buttonPanel = new JPanel();
-                buttonPanel.add(loginHereButton);
+        loginHereButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                homeFrame.dispose(); // Close the current window
+                LoginPage loginPage = new LoginPage(); //Open the Log in page
+            }
+        });
 
-                JButton infoButton = new JButton("FAQ");
-                infoButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        dispose();
-                        InfoPage infoPage = new InfoPage();
-                        infoPage.showInfoGUI();
-
-
-                    }
-                });
-                buttonPanel.add(infoButton);
-                panel.add(buttonPanel, BorderLayout.NORTH);
-
-                add(panel);
-
-                setSize(400, 200);
-                setLocationRelativeTo(null);
-                setVisible(true);
-                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        infoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                homeFrame.dispose();
+                InfoPage infoPage = new InfoPage();
+                infoPage.showInfoGUI();
+            }
+        });
+        skapakontoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                homeFrame.dispose();
+                CreateAccount createAccount = new CreateAccount();
+                createAccount.CreateAccountPage();
+            }
+        });
     }
 
     public static void main(String[] args) {
