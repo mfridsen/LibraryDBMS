@@ -47,10 +47,6 @@ public class UserHandlerTest {
         }
     }
 
-    private boolean validateLogin(String username, String password) {
-        return username.equals("user") && password.equals("pass");
-    }
-
     /**
      * Always close the connection to the database after use.
      */
