@@ -112,16 +112,19 @@ Iteration 2:
 Add subcategories for Users (Patron and Staff) and Items (Course Lit., Other Books, etc.).
 Update the database schema, models, controllers, and GUI accordingly.
 Test the new functionality.
+
 Iteration 3:
 
 Implement rental rules (e.g., maximum rented items, rental duration) and enforce them in the RentalController.
 Update the GUI to show relevant information and error messages.
 Test the rental rules functionality.
+
 Iteration 4:
 
 Add search functionality for Items based on various attributes (e.g., title, author/director, ISBN, genre, keywords).
 Implement the search feature in the ItemController and the GUI.
 Test the search functionality.
+
 Iteration 5:
 
 Improve the GUI's look and feel, and add more user-friendly features.
