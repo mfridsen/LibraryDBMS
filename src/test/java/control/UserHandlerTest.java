@@ -40,42 +40,30 @@ public class UserHandlerTest {
 
     private static final String demoDatabaseName = "demo_database";
 
-    private static Connection connection = null;
+    private Connection connection = null;
 
-    /**
-     * Create the connection to the database and set DatabaseHandlers connection.
-     */
     @BeforeAll
-    static void setup() {
+    static void printTextBlock() {
         System.out.println(testClassTextBlock);
-        try { //TODO handle?
-            connection = DatabaseConnection.connectToLocalSQLServer();
-            DatabaseHandler.setConnection(connection); //Need to set connection in DBHandler or pass to it
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
-     * Resets the database before each test. Drops and creates a demo database, uses demo database and fills it with
-     * test data.
+     * Create the connection to the database, set DatabaseHandlers connection, and reset the database before each test.
      */
     @BeforeEach
-    void reset() {
+    void setupAndReset() {
         try {
-            //Connection seems to drop when we get here a second time
-            if (connection.isClosed()) {
-                System.out.println("Connection is closed before drop database command.");
-                connection = DatabaseConnection.connectToLocalSQLServer();
-                DatabaseHandler.setConnection(connection);
-            }
+            connection = DatabaseConnection.connectToLocalSQLServer();
+            DatabaseHandler.setConnection(connection);
 
             DatabaseHandler.executeSingleSQLCommand("drop database if exists " + demoDatabaseName);
             DatabaseHandler.executeSingleSQLCommand("create database " + demoDatabaseName);
             DatabaseHandler.executeSingleSQLCommand("use " + demoDatabaseName);
             DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
             DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
-        } catch (SQLException | ClassNotFoundException e) {
+        }
+
+        catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -86,7 +74,7 @@ public class UserHandlerTest {
     @AfterAll
     static void tearDown() {
         System.out.println(endTestTextBlock);
-        DatabaseConnection.closeConnection();
+        DatabaseHandler.closeDatabaseConnection();
     }
 
     /**
@@ -94,7 +82,7 @@ public class UserHandlerTest {
      */
     @Test
     @Order(1)
-    public void testRetrieveUsernamesFromTable() throws SQLException, ClassNotFoundException {
+    public void testRetrieveUsernamesFromTable() throws SQLException{
         System.out.println("1: Testing to retrieve usernames from table...");
         UserHandler.retrieveUsernamesFromTable(connection);
         assertFalse(UserHandler.getUsernames().isEmpty());

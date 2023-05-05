@@ -20,6 +20,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
         //Control tests
+        DatabaseHandlerTest.class,
         UserHandlerTest.class,
 })
 
