@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.user;
 
-import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
-import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import edu.groupeighteen.librarydbms.model.entities.User;
 
 import java.sql.*;
@@ -15,21 +13,51 @@ import java.util.ArrayList;
  * @date 4/5/2023
  *
  * This class contains database operation methods related to the User class.
- * It contains a list of all usernames
+ * It contains a list of all usernames for quicker validation.
+ *
+ * When working with a database, it's common to retrieve specific data from the database when needed,
+ * perform operations, and then persist any changes back to the database. This way, you avoid keeping a large number
+ * of objects in memory, which could lead to performance issues and increased memory usage.
+ *
+ * Here are some scenarios in which you would retrieve a user from the database and create a new User object:
+ *
+ * Authenticating a user during login: Retrieve the user based on the provided username, check the password,
+ * and then create a session for the authenticated user.
+ *
+ * Updating user information: Retrieve the user based on the username, modify the necessary attributes,
+ * and then persist the changes back to the database.
+ *
+ * Displaying user information: Retrieve the user based on the username and display the relevant information in the UI.
  */
 public class UserHandler {
+    //Needed since usernames must be unique
     private static final ArrayList<String> usernames = new ArrayList<>();
 
-    public static void setup(Connection connection) throws SQLException {
-        retrieveUsernamesFromTable(connection);
+    //Makes the code cleaner if every Handler class stores a reference to the Connection
+    private static Connection connection;
+
+    //TODO-exception handle
+    /**
+     * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
+     * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
+     * after the DatabaseHandlers setup method is called, with the connection as argument.
+     * @param con the Connection to the database.
+     * @throws SQLException
+     */
+    public static void setup(Connection con) throws SQLException {
+        connection = con;
+        retrieveUsernamesFromTable();
     }
 
+    //Username stuff --------------------------------------------------------------------------------------------------
+
     //TODO exception handling
+    //TODO-test
     /**
      * Method that retrieves the usernames of all users in the user table and stores them in the static list.
      * @throws SQLException
      */
-    public static void retrieveUsernamesFromTable(Connection connection) throws SQLException {
+    private static void retrieveUsernamesFromTable() throws SQLException {
         // Execute the query to retrieve all usernames
         Statement statement = connection.createStatement();
 
@@ -63,6 +91,7 @@ public class UserHandler {
     //User stuff ------------------------------------------------------------------------------------------------------
 
     //TODO-future comment
+    //TODO-test
     /**
      *
      * @param username
@@ -75,6 +104,7 @@ public class UserHandler {
             newUser.setUsername(username);
             newUser.setPassword(password);
             newUser.setUserID(saveUser(newUser));
+            usernames.add(newUser.getUsername()); //Need to remember to add to the list
             return newUser;
         } catch (SQLException e) {
             System.err.println("Error creating a new user: " + e.getMessage());
@@ -87,6 +117,7 @@ public class UserHandler {
     }
 
     //TODO-future comment
+    //TODO-test
     /**
      *
      * @param user
@@ -95,14 +126,14 @@ public class UserHandler {
      */
     public static int saveUser(User user) throws SQLException {
         String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        //Try-with-resources, useful!
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getPassword());
             statement.executeUpdate();
 
             // Get the generated userID
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) { //Try-with-resources, useful!
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
                 } else {
@@ -113,6 +144,7 @@ public class UserHandler {
     }
 
     //TODO-exception Handle
+    //TODO-test
     //TODO change to taking a User object as argument instead of Strings
     /**
      * Basic login method. Checks whether username exists in usernames. If it does, check whether password
@@ -129,7 +161,6 @@ public class UserHandler {
             return false;
         }
 
-        Connection connection = DatabaseHandler.getConnection();
         String query = "SELECT password FROM User WHERE username = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, username);

@@ -33,7 +33,7 @@ public class DatabaseHandler {
      * Deletes demo_database and starts over from scratch, initializing all the tables and
      * then filling them with test data.
      */
-    public static void setupDatabase() throws SQLException, ClassNotFoundException {
+    public static void setup() throws SQLException, ClassNotFoundException {
         // Connect to database
         connection = DatabaseConnection.connectToLocalSQLServer();
         //Delete DB if already exists

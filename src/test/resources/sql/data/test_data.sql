@@ -27,4 +27,4 @@ INSERT INTO items (title) VALUES
 ('The Trouble With Peace'),
 ('The Wisdom Of Crowds');
 
--- //TODO add Checkout test data here
+-- //TODO add Rental test data here

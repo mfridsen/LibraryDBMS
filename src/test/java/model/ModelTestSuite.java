@@ -1,6 +1,9 @@
 package model;
 
 import model.db.DatabaseConnectionTest;
+import model.entities.ItemTest;
+import model.entities.RentalTest;
+import model.entities.UserTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -22,6 +25,9 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
         //Model tests
         DatabaseConnectionTest.class,
+        UserTest.class,
+        ItemTest.class,
+        RentalTest.class,
 })
 
 public class ModelTestSuite {
