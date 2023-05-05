@@ -1,6 +1,6 @@
 package control;
 
-import edu.groupeighteen.librarydbms.control.user.UserHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import org.junit.jupiter.api.*;
 
@@ -25,38 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class UserHandlerTest extends BaseHandlerTest {
 
     private static final String testClassTextBlock = """
-               ---------------------------
-                TESTING USERHANDLER CLASS \s
-               ---------------------------\s
+               -------------------------------
+                TESTING DATABASEHANDLER CLASS \s
+               -------------------------------\s
             """;
 
     private static final String endTestTextBlock = """
-               
-               -------------------------
-                END TESTING USERHANDLER \s
-               -------------------------\s
+               -----------------------------------
+                END TESTING DATABASEHANDLER CLASS \s
+               -----------------------------------\s
             """;
-
-    @BeforeAll
-    static void setUp() {
-        new UserHandlerTest().printTestClassTextBlock();
-    }
-
-    @AfterAll
-    static void tearDown() {
-        new UserHandlerTest().printEndTestTextBlock();
-        BaseHandlerTest.tearDown();
-    }
-
-    @Override
-    protected String getTestClassTextBlock() {
-        return testClassTextBlock;
-    }
-
-    @Override
-    protected String getEndTestTextBlock() {
-        return endTestTextBlock;
-    }
 
     /**
      * Tests the setup method in UserHandler.
@@ -64,6 +42,7 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Test
     @Order(1)
     public void testSetup() throws SQLException{
+        System.out.println(testClassTextBlock);
         System.out.println("1: Testing to setup UserHandler...");
         UserHandler.setup(connection);
         assertFalse(UserHandler.getUsernames().isEmpty());

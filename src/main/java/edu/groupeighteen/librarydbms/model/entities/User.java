@@ -9,18 +9,19 @@ package edu.groupeighteen.librarydbms.model.entities;
  */
 public class User {
 
+    //TODO-future add more fields and methods
+    //TODO-comment everything
+
     private int userID; //Primary key
     private String username;
     private String password;
 
-    public User() {
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-
-
     /*********************************** Getters and Setters are self-explanatory. ************************************/
-
-
     public int getUserID() {
         return userID;
     }

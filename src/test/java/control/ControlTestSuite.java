@@ -20,7 +20,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
         //Control tests
-        DatabaseHandlerTest.class,
+        DatabaseHandlerTest.class, //TODO-future text blocks are all printed at the beginning when suite is run
         UserHandlerTest.class,
 })
 

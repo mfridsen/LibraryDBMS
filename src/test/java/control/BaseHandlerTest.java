@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,17 +27,6 @@ public abstract class BaseHandlerTest {
 
     protected Connection connection = null;
     protected static final String demoDatabaseName = "demo_database";
-
-    protected abstract String getTestClassTextBlock();
-    protected abstract String getEndTestTextBlock();
-
-    protected void printTestClassTextBlock() {
-        System.out.println(getTestClassTextBlock());
-    }
-
-    protected void printEndTestTextBlock() {
-        System.out.println(getEndTestTextBlock());
-    }
 
     /**
      * Create the connection to the database, set DatabaseHandlers connection, and reset the database before each test.

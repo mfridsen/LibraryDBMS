@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.control.db;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 
 import java.io.BufferedReader;
@@ -21,7 +22,7 @@ import java.sql.*;
  * DatabaseConnection class.
  *
  * This class is only responsible for general operations. Specific operations are delegated to specific Handler classes,
- * such as {@link edu.groupeighteen.librarydbms.control.user.UserHandler}, //TODO finish comment
+ * such as {@link UserHandler}, //TODO finish comment
  */
 public class DatabaseHandler {
 
@@ -30,7 +31,7 @@ public class DatabaseHandler {
     //TODO handle exceptions
     //TODO Remember that when the program is complete, the DB shouldn't be created from scratch on start-up every time
     /**
-     * Deletes demo_database and starts over from scratch, initializing all the tables and
+     * Deletes database and starts over from scratch, initializing all the tables and
      * then filling them with test data.
      */
     public static void setup() throws SQLException, ClassNotFoundException {

@@ -1,4 +1,4 @@
-package edu.groupeighteen.librarydbms.control.user;
+package edu.groupeighteen.librarydbms.control.entities;
 
 import edu.groupeighteen.librarydbms.model.entities.User;
 
@@ -33,14 +33,14 @@ public class UserHandler {
     //Needed since usernames must be unique
     private static final ArrayList<String> usernames = new ArrayList<>();
 
-    //Makes the code cleaner if every Handler class stores a reference to the Connection
+    //The code is cleaner if every Handler class stores a reference to the Connection
     private static Connection connection;
 
     //TODO-exception handle
     /**
      * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
      * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
-     * after the DatabaseHandlers setup method is called, with the connection as argument.
+     * after the DatabaseHandlers setup method is called with the connection as argument.
      * @param con the Connection to the database.
      * @throws SQLException
      */
@@ -90,34 +90,31 @@ public class UserHandler {
 
     //User stuff ------------------------------------------------------------------------------------------------------
 
-    //TODO-future comment
     //TODO-test
     /**
+     * Creates a new user with the specified username and password and saves it to the database.
+     * If the user creation fails, this method returns null.
      *
-     * @param username
-     * @param password
-     * @return
+     * @param username the username of the new user
+     * @param password the password of the new user
+     * @return the created User object, or null if the user creation fails
      */
     public static User createNewUser(String username, String password) {
         try {
-            User newUser = new User();
-            newUser.setUsername(username);
-            newUser.setPassword(password);
+            User newUser = new User(username, password);
             newUser.setUserID(saveUser(newUser));
             usernames.add(newUser.getUsername()); //Need to remember to add to the list
             return newUser;
         } catch (SQLException e) {
             System.err.println("Error creating a new user: " + e.getMessage());
             e.printStackTrace(); //TODO-exception handle
-            // Return null or throw a custom exception with a user-friendly error message
             return null;
-            // OR
-            // throw new CustomUserCreationException("Failed to create a new user. Please try again.");
         }
     }
 
     //TODO-future comment
     //TODO-test
+    //TODO-exception handle
     /**
      *
      * @param user

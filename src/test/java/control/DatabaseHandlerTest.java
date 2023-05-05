@@ -1,9 +1,10 @@
 package control;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import org.junit.jupiter.api.*;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,83 +18,81 @@ import static org.junit.jupiter.api.Assertions.*;
  * When we can (based on the time and resources available),
  * But not before.
  * <p>
- * Unit Test for the DatabaseHandlerTest class.
+ * Unit Test for the DatabaseHandler class.
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DatabaseHandlerTest {
-    //TODO-future the DummyTestClass templates do not really adhere to DRY, since if I change this one I 
-    // generally have to change those as well, look into that
+public class DatabaseHandlerTest extends BaseHandlerTest {
 
     private static final String testClassTextBlock = """
-               -----------------------
-                Testing DatabaseHandlerTest Class \s
-               -----------------------\s
+               -------------------------------
+                TESTING DATABASEHANDLER CLASS \s
+               -------------------------------\s
             """;
 
-    //TODO put actual valid test data here        
-    private static final String[] validTestStrings =
-            {"1st valid test string",
-                    "2nd valid test string"
-            };
+    private static final String endTestTextBlock = """
+               -----------------------------------
+                END TESTING DATABASEHANDLER CLASS \s
+               -----------------------------------\s
+            """;
 
-    //TODO put actual invalid test data here
-    private static final String[] invalidTestStrings =
-            {"1st invalid test string",
-                    "2nd invalid test string"
-            };
-
-    /**
-     * Dummy method for validating test data.
-     */
-    private boolean isValidTestString(String testString) {
-        return !testString.contains("invalid");
-    }
-
-    /**
-     * Tests all constructors in DatabaseHandlerTest.
-     */
     @Test
     @Order(1)
-    public void testCreateDatabaseHandlerTest() {
-        System.out.println("\n" + testClassTextBlock);
-        System.out.println("1: Testing creating DatabaseHandlerTest...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write your code here
+    public void testExecuteSingleSQLCommand() {
+        System.out.println(testClassTextBlock);
+        System.out.println("1: Testing executeSingleSQLCommand method...");
+        // 1. Create a temporary table in the test database
+        String createTempTable = "CREATE TABLE temp_table (id INT PRIMARY KEY, name VARCHAR(255));";
+        try {
+            DatabaseHandler.executeSingleSQLCommand(createTempTable);
+        } catch (SQLException e) {
+            fail("Failed to create temp_table: " + e.getMessage());
+        }
+
+        // 2. Insert some data into the temporary table
+        String insertData = "INSERT INTO temp_table (id, name) VALUES (1, 'Test User');";
+        try {
+            DatabaseHandler.executeSingleSQLCommand(insertData);
+        } catch (SQLException e) {
+            fail("Failed to insert data into temp_table: " + e.getMessage());
+        }
+
+        // 3. Check if the data was inserted correctly
+        String queryData = "SELECT * FROM temp_table WHERE id = 1;";
+        try {
+            ResultSet resultSet = DatabaseHandler.getConnection().createStatement().executeQuery(queryData);
+            assertTrue(resultSet.next(), "No data found in temp_table");
+            assertEquals(1, resultSet.getInt("id"), "ID value does not match");
+            assertEquals("Test User", resultSet.getString("name"), "Name value does not match");
+        } catch (SQLException e) {
+            fail("Failed to query data from temp_table: " + e.getMessage());
+        }
+
+        // Clean up: Drop the temporary table
+        String dropTempTable = "DROP TABLE IF EXISTS temp_table;";
+        try {
+            DatabaseHandler.executeSingleSQLCommand(dropTempTable);
+        } catch (SQLException e) {
+            fail("Failed to drop temp_table: " + e.getMessage());
+        }
     }
 
-    /**
-     * Tests the getter and setter methods to ensure that they correctly get and set the username
-     * and password fields. Technically we already tested all our getters but whatever.
-     */
     @Test
     @Order(2)
-    public void testGettersAndSetters() {
-        System.out.println("\n2: Testing getters and setters...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write more code here
+    public void testExecuteSingleSQLQuery() {
+        System.out.println("2: Testing executeSingleSQLQuery method...");
+        // Test the executeSingleSQLQuery() method
     }
 
-    /**
-     * Dummy test method for looping through valid and invalid test data.
-     */
     @Test
     @Order(3)
-    public void testIsValidTestString() {
-        System.out.println("THIS IS A DUMMY TEST METHOD TEMPLATE THAT LOOPS THROUGH VALID AND INVALID TEST DATA!");
+    public void testExecuteSQLCommandsFromFile() {
+        // Test the executeSQLCommandsFromFile() method
+    }
 
-        //Test valid test strings
-        System.out.println("Testing valid test strings...");
-        for (String validTestString : validTestStrings) {
-            System.out.println(validTestString + ", should return true: " + isValidTestString(validTestString));
-            assertTrue(isValidTestString(validTestString));
-        }
-
-        //Test invalid test strings
-        System.out.println("Testing invalid test strings...");
-        for (String invalidTestString : invalidTestStrings) {
-            System.out.println(invalidTestString + ", should return false: " + isValidTestString(invalidTestString));
-            assertFalse(isValidTestString(invalidTestString));
-        }
+    @Test
+    @Order(4)
+    public void testCloseDatabaseConnection() {
+        // Test the closeDatabaseConnection() method
     }
 }

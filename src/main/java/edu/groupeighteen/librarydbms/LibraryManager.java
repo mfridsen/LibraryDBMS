@@ -1,7 +1,7 @@
 package edu.groupeighteen.librarydbms;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
-import edu.groupeighteen.librarydbms.control.user.UserHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 
 import java.sql.SQLException;
 
@@ -36,8 +36,10 @@ public class LibraryManager {
         try {
             DatabaseHandler.setup();
             UserHandler.setup(DatabaseHandler.getConnection());
-            //TODO handle exceptions
-        } catch (SQLException e) {
+            //ItemHandler.setup
+            //RentalHandler.setup
+            //EveryOtherHandler.setup
+        } catch (SQLException e) { //TODO-exceptions handle
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
