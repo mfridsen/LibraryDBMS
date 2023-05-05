@@ -1,7 +1,7 @@
 -- (''),
 
 -- //TODO Add user test data here
-INSERT INTO User (username, password) VALUES
+INSERT INTO users (username, password) VALUES
 ('user1', 'pass1'),
 ('user2', 'pass2'),
 ('user3', 'pass3'),
@@ -15,7 +15,7 @@ INSERT INTO User (username, password) VALUES
 
 -- //TODO add Item test data here
 
-INSERT INTO Item (title) VALUES
+INSERT INTO items (title) VALUES
 ('The Blade Itself'),
 ('Before They Are Hanged'),
 ('Last Argument Of Kings'),

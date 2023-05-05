@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -12,6 +14,11 @@ package edu.groupeighteen.librarydbms.model.entities;
  * But not before.
  */
 public class Rental {
+
+    private int rentalID; //Primary key
+    private int userID; //Foreign key referencing User
+    private int itemID; //Foreign key referencing Item
+    private LocalDateTime rentalDate; //Date of creation
 
     public Rental() {
 

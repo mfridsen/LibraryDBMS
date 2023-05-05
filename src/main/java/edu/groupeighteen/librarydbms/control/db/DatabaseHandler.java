@@ -33,7 +33,7 @@ public class DatabaseHandler {
      * Deletes demo_database and starts over from scratch, initializing all the tables and
      * then filling them with test data.
      */
-    public static void setup() throws SQLException, ClassNotFoundException {
+    public static void setupDatabase() throws SQLException, ClassNotFoundException {
         // Connect to database
         connection = DatabaseConnection.connectToLocalSQLServer();
         //Delete DB if already exists
@@ -53,14 +53,6 @@ public class DatabaseHandler {
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         executeSingleSQLQuery("SELECT * FROM user ORDER BY user_id ASC");
         executeSingleSQLQuery("SELECT * FROM item");
-    }
-
-    /**
-     * Since any other classes should only do Database-related things through this Handler class,
-     * we need to add a close method that calls closeConnection in the DatabaseConnection class.
-     */
-    public static void closeDatabaseConnection() {
-        DatabaseConnection.closeConnection();
     }
 
     //TODO handle exceptions
@@ -156,6 +148,14 @@ public class DatabaseHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Since any other classes should only do Database-related things through this Handler class,
+     * we need to add a close method that calls closeConnection in the DatabaseConnection class.
+     */
+    public static void closeDatabaseConnection() {
+        DatabaseConnection.closeConnection();
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/

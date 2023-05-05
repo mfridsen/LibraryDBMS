@@ -1,0 +1,31 @@
+----------------------------FRIDSEN----------------------
+//TODO-fridsen User
+//TODO-fridsen Item
+//TODO-fridsen Rental
+
+//TODO-fridsen rest of entities and their classes
+
+//TODO-fridsen update entity diagram
+
+//TODO-fridsen make class diagram
+
+-----------Testing
+//TODO-fridsen UserTest
+//TODO-fridsen ItemTest
+//TODO-fridsen RentalTest
+
+//TODO-fridsen rest of entity test classes
+
+//TODO-fridsen DatabaseHandlerTest
+//TODO-fridsen UserHandlerTest
+//TODO-fridsen ItemHandlerTest
+//TODO-fridsen RentalHandlerTest
+
+//TODO-fridsen rest of entity-handlers and their tests
+
+----------------JESPER----------------------
+
+
+
+
+-------------------JOHAN-------------------

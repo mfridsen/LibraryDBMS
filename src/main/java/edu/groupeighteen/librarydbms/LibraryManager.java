@@ -34,7 +34,7 @@ public class LibraryManager {
      */
     public static void setup() {
         try {
-            DatabaseHandler.setup();
+            DatabaseHandler.setupDatabase();
             UserHandler.setup(DatabaseHandler.getConnection());
             //TODO handle exceptions
         } catch (SQLException e) {

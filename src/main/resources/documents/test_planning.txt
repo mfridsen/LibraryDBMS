@@ -1,8 +1,4 @@
-----------------------------FRIDSEN----------------------
-
-//TODO Planning tests: these questions need answers:
-
-    1. WHAT to do?
+1. WHAT to do?
     2. WHY do it?
     3. HOW to do it?
     4. WHO does what?
@@ -35,12 +31,3 @@
     Should we keep track of how much time is spent per line of code, on both development and testing?
 
     Create a dependency tree. Which classes and components are dependent on others?
-
-//TODO Consider testing environments
-
-----------------JESPER----------------------
-
-
-
-
--------------------JOHAN-------------------

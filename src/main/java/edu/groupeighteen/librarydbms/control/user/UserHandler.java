@@ -1,6 +1,8 @@
 package edu.groupeighteen.librarydbms.control.user;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
+import edu.groupeighteen.librarydbms.model.entities.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class UserHandler {
         Statement statement = connection.createStatement();
 
         //Needs to be ORDER BY user_id ASC or id 10 will be printed before ids 1, 2, 3 etc
-        ResultSet resultSet = statement.executeQuery("SELECT username FROM user ORDER BY user_id ASC");
+        ResultSet resultSet = statement.executeQuery("SELECT username FROM users ORDER BY userID ASC");
 
         // Add the retrieved usernames to the ArrayList
         while (resultSet.next()) {
@@ -54,7 +56,64 @@ public class UserHandler {
         }
     }
 
-    //TODO exception handling
+    public static ArrayList<String> getUsernames() {
+        return usernames;
+    }
+
+    //User stuff ------------------------------------------------------------------------------------------------------
+
+    //TODO-future comment
+    /**
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    public static User createNewUser(String username, String password) {
+        try {
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setPassword(password);
+            newUser.setUserID(saveUser(newUser));
+            return newUser;
+        } catch (SQLException e) {
+            System.err.println("Error creating a new user: " + e.getMessage());
+            e.printStackTrace(); //TODO-exception handle
+            // Return null or throw a custom exception with a user-friendly error message
+            return null;
+            // OR
+            // throw new CustomUserCreationException("Failed to create a new user. Please try again.");
+        }
+    }
+
+    //TODO-future comment
+    /**
+     *
+     * @param user
+     * @return
+     * @throws SQLException
+     */
+    public static int saveUser(User user) throws SQLException {
+        String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getPassword());
+            statement.executeUpdate();
+
+            // Get the generated userID
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Failed to insert the user, no ID obtained.");
+                }
+            }
+        }
+    }
+
+    //TODO-exception Handle
+    //TODO change to taking a User object as argument instead of Strings
     /**
      * Basic login method. Checks whether username exists in usernames. If it does, check whether password
      * matches that user's password.
@@ -89,10 +148,5 @@ public class UserHandler {
         preparedStatement.close();
 
         return isAuthenticated;
-    }
-
-
-    public static ArrayList<String> getUsernames() {
-        return usernames;
     }
 }

@@ -3,6 +3,7 @@ package control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.user.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
+import edu.groupeighteen.librarydbms.model.entities.User;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
@@ -27,23 +28,55 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserHandlerTest {
     private static final String testClassTextBlock = """
                ---------------------------
-                Testing UserHandler Class \s
+                TESTING USERHANDLER CLASS \s
                ---------------------------\s
             """;
+
+    private static final String endTestTextBlock = """
+               -------------------------
+                END TESTING USERHANDLER \s
+               -------------------------\s
+            """;
+
+    private static final String demoDatabaseName = "demo_database";
 
     private static Connection connection = null;
 
     /**
-     * Create the connection to the database.
+     * Create the connection to the database and set DatabaseHandlers connection.
      */
     @BeforeAll
     static void setup() {
-        System.out.println("BeforeAll:");
+        System.out.println(testClassTextBlock);
         try { //TODO handle?
             connection = DatabaseConnection.connectToLocalSQLServer();
+            DatabaseHandler.setConnection(connection); //Need to set connection in DBHandler or pass to it
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            System.exit(1); //Failed to connect, can't perform tests
+        }
+    }
+
+    /**
+     * Resets the database before each test. Drops and creates a demo database, uses demo database and fills it with
+     * test data.
+     */
+    @BeforeEach
+    void reset() {
+        try {
+            //Connection seems to drop when we get here a second time
+            if (connection.isClosed()) {
+                System.out.println("Connection is closed before drop database command.");
+                connection = DatabaseConnection.connectToLocalSQLServer();
+                DatabaseHandler.setConnection(connection);
+            }
+
+            DatabaseHandler.executeSingleSQLCommand("drop database if exists " + demoDatabaseName);
+            DatabaseHandler.executeSingleSQLCommand("create database " + demoDatabaseName);
+            DatabaseHandler.executeSingleSQLCommand("use " + demoDatabaseName);
+            DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
+            DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -52,33 +85,35 @@ public class UserHandlerTest {
      */
     @AfterAll
     static void tearDown() {
+        System.out.println(endTestTextBlock);
         DatabaseConnection.closeConnection();
     }
 
     /**
-     * Tests all constructors in UserHandler.
+     * Tests retrieving the usernames from the demo database.
      */
     @Test
     @Order(1)
     public void testRetrieveUsernamesFromTable() throws SQLException, ClassNotFoundException {
-        System.out.println("\n" + testClassTextBlock);
         System.out.println("1: Testing to retrieve usernames from table...");
-        DatabaseHandler.setup();
         UserHandler.retrieveUsernamesFromTable(connection);
         assertFalse(UserHandler.getUsernames().isEmpty());
         UserHandler.printUsernames();
     }
 
     /**
-     * Tests the getter and setter methods to ensure that they correctly get and set the username
-     * and password fields. Technically we already tested all our getters but whatever.
+     *
      */
     @Test
     @Order(2)
-    public void testGettersAndSetters() {
-        System.out.println("\n2: Testing getters and setters...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write more code here
+    public void testCreateNewUser() {
+        System.out.println("\n2: Testing to create a new user...");
+        User newUser = UserHandler.createNewUser("example_username", "example_password");
+        if (newUser == null) {
+            // Display an error message to the user or take another action
+        } else {
+            // Continue with the newUser object
+        }
     }
 
     /**

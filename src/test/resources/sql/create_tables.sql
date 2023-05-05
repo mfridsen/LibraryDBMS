@@ -8,27 +8,28 @@
 -- BASE TABLES ---------------------------------------------------------------------------------------------------------
 
 -- User
-CREATE TABLE `User` (
-    user_ID INT AUTO_INCREMENT UNIQUE NOT NULL,
+CREATE TABLE `Users` (
+    userID INT AUTO_INCREMENT UNIQUE NOT NULL,
     username VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(50) NOT NULL,
-    PRIMARY KEY (user_ID)
+    PRIMARY KEY (userID)
 );
 
 --Item
-CREATE TABLE Item (
-    item_ID INT AUTO_INCREMENT UNIQUE NOT NULL,
+CREATE TABLE Items (
+    itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
-    PRIMARY KEY (item_ID)
+    PRIMARY KEY (itemID)
 );
 
 --Checkout
-CREATE TABLE Checkout (
-    checkout_ID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    user_ID INT NOT NULL,
-    item_ID INT NOT NULL,
-    PRIMARY KEY (checkout_ID),
-    FOREIGN KEY (user_ID) REFERENCES user(user_ID),
-    FOREIGN KEY (item_ID) REFERENCES item(item_ID)
+CREATE TABLE Rentals (
+    rentalID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    userID INT NOT NULL,
+    itemID INT NOT NULL,
+    rentalDate DATETIME NOT NULL,
+    PRIMARY KEY (rentalID),
+    FOREIGN KEY (userID) REFERENCES users (userID),
+    FOREIGN KEY (itemID) REFERENCES items (itemID)
 );
 -- JOIN TABLES ---------------------------------------------------------------------------------------------------------

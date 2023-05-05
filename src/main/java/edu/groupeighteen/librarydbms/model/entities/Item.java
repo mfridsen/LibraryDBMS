@@ -9,6 +9,9 @@ package edu.groupeighteen.librarydbms.model.entities;
  */
 public class Item {
 
+    private int itemID; //Primary key
+    private String title;
+
     public Item() {
 
     }
