@@ -23,11 +23,40 @@ public class Rental {
     private int itemID; //Foreign key referencing Item
     private LocalDateTime rentalDate; //Date of creation
 
-    public Rental() {
-
+    public Rental(LocalDateTime rentalDate) {
+        this.rentalDate = rentalDate;
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
+    public int getRentalID() {
+        return rentalID;
+    }
 
+    public void setRentalID(int rentalID) {
+        this.rentalID = rentalID;
+    }
 
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public int getItemID() {
+        return itemID;
+    }
+
+    public void setItemID(int itemID) {
+        this.itemID = itemID;
+    }
+
+    public LocalDateTime getRentalDate() {
+        return rentalDate;
+    }
+
+    public void setRentalDate(LocalDateTime rentalDate) {
+        this.rentalDate = rentalDate;
+    }
 }

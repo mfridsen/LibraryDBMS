@@ -28,23 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DatabaseHandlerTest extends BaseHandlerTest {
-
-    private static final String testClassTextBlock = """
-               -------------------------------
-                TESTING DATABASEHANDLER CLASS \s
-               -------------------------------\s
-            """;
-
-    private static final String endTestTextBlock = """
-               -----------------------------------
-                END TESTING DATABASEHANDLER CLASS \s
-               -----------------------------------\s
-            """;
-
     @Test
     @Order(1)
-    public void testExecuteSingleSQLCommand() {
-        System.out.println(testClassTextBlock);
+    void testExecuteSingleSQLCommand() {
         System.out.println("1: Testing executeSingleSQLCommand method...");
         // 1. Create a temporary table in the test database
         String createTempTable = "CREATE TABLE temp_table (id INT PRIMARY KEY, name VARCHAR(255));";
@@ -133,7 +119,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(3)
-    public void testExecuteSQLCommandsFromFile() {
+    void testExecuteSQLCommandsFromFile() {
         // Set up the path to the test SQL file
         String testSQLFilePath = "src/test/resources/sql/test_sql_file.sql";
 
@@ -197,9 +183,10 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         }
     }
 
+    //TODO-future iterate this method
     @Test
     @Order(4)
-    public void testSetup() {
+    void testSetup() {
         //Test the setup method. This test will have to be added to iteratively  until the tables are finished
         DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
         DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");

@@ -1,9 +1,12 @@
 package model.entities;
 
+import edu.groupeighteen.librarydbms.model.entities.Rental;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,40 +25,36 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalTest {
-
-    private static final String testClassTextBlock = """
-               ----------------------
-                TESTING RENTAL CLASS \s
-               ----------------------\s
-            """;
-
-    private static final String endTestTextBlock = """
-               --------------------------
-                END TESTING RENTAL CLASS \s
-               --------------------------\s
-            """;
-
     /**
-     * Tests all constructors in Rental.
+     * Tests the getter and setter methods to ensure that they correctly get and set the username
+     * and password fields.
      */
     @Test
     @Order(1)
-    public void testCreateRental() {
-        System.out.println("\n" + testClassTextBlock);
-        System.out.println("1: Testing creating Rental...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write your code here
-    }
+    void testRentalGettersAndSetters() {
+        System.out.println("\nTesting Rental class...");
+        // Arrange
+        int expectedRentalID = 1;
+        int expectedUserID = 1;
+        int expectedItemID = 1;
+        LocalDateTime expectedRentalDate = LocalDateTime.now();
+        LocalDateTime secondRentalDate = LocalDateTime.now().minusDays(1);
 
-    /**
-     * Tests the getter and setter methods to ensure that they correctly get and set the username
-     * and password fields. Technically we already tested all our getters but whatever.
-     */
-    @Test
-    @Order(2)
-    public void testGettersAndSetters() {
-        System.out.println("\n2: Testing getters and setters...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write more code here
+        // Act
+        Rental rental = new Rental(expectedRentalDate);
+        rental.setRentalID(expectedRentalID);
+        rental.setUserID(expectedUserID);
+        rental.setItemID(expectedItemID);
+
+        // Assert
+        assertEquals(expectedRentalID, rental.getRentalID(), "RentalID does not match the expected value");
+        assertEquals(expectedUserID, rental.getUserID(), "UserID does not match the expected value");
+        assertEquals(expectedItemID, rental.getItemID(), "ItemID does not match the expected value");
+        assertEquals(expectedRentalDate, rental.getRentalDate(), "RentalDate does not match the expected value");
+
+        rental.setRentalDate(secondRentalDate);
+        assertEquals(secondRentalDate, rental.getRentalDate(), "RentalDate does not match the expected value");
+
+        System.out.println("Test finished!");
     }
 }

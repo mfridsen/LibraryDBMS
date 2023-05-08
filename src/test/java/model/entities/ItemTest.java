@@ -1,5 +1,6 @@
 package model.entities;
 
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -22,40 +23,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ItemTest {
-
-    private static final String testClassTextBlock = """
-               --------------------
-                TESTING ITEM CLASS \s
-               --------------------\s
-            """;
-
-    private static final String endTestTextBlock = """
-               ------------------------
-                END TESTING ITEM CLASS \s
-               ------------------------\s
-            """;
-
     /**
-     * Tests all constructors in Item.
+     * Tests the getter and setter methods to ensure that they correctly get and set the username
+     * and password fields.
      */
     @Test
     @Order(1)
-    public void testCreateItem() {
-        System.out.println("\n" + testClassTextBlock);
-        System.out.println("1: Testing creating Item...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write your code here
-    }
+    void testItemGettersAndSetters() {
+        System.out.println("\nTesting Item class...");
+        // Arrange
+        String expectedTitle = "Test Item Title";
+        String secondExpectedTitle = "Test Item Title 2";
+        int expectedItemID = 1;
 
-    /**
-     * Tests the getter and setter methods to ensure that they correctly get and set the username
-     * and password fields. Technically we already tested all our getters but whatever.
-     */
-    @Test
-    @Order(2)
-    public void testGettersAndSetters() {
-        System.out.println("\n2: Testing getters and setters...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write more code here
+        // Act
+        Item item = new Item(expectedTitle);
+        item.setItemID(expectedItemID);
+
+        // Assert
+        assertEquals(expectedItemID, item.getItemID(), "ItemID does not match the expected value");
+        assertEquals(expectedTitle, item.getTitle(), "Title does not match the expected value");
+
+        item.setTitle(secondExpectedTitle);
+        assertEquals(secondExpectedTitle, item.getTitle(), "Title does not match the expected value");
+
+        System.out.println("Test finished!");
     }
 }

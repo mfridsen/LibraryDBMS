@@ -24,12 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DatabaseConnectionTest {
-    private static final String testClassTextBlock = """
-               -----------------------------
-                Testing Database Connection \s
-               -----------------------------\s
-            """;
-
     /**
      * Create the connection to the database.
      */
@@ -58,8 +52,7 @@ public class DatabaseConnectionTest {
     @Test
     @Order(1)
     public void testConnection() {
-        System.out.println("\n" + testClassTextBlock);
-        System.out.println("1: Testing connection...");
+        System.out.println("\n1: Testing connection...");
         System.out.println("Creating connection to database...");
         Connection connection = DatabaseConnection.getConnection();
         System.out.println("Asserting connection is not null, should be true: " + (connection != null));

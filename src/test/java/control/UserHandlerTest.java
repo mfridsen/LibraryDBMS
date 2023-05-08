@@ -23,26 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserHandlerTest extends BaseHandlerTest {
-
-    private static final String testClassTextBlock = """
-               -------------------------------
-                TESTING DATABASEHANDLER CLASS \s
-               -------------------------------\s
-            """;
-
-    private static final String endTestTextBlock = """
-               -----------------------------------
-                END TESTING DATABASEHANDLER CLASS \s
-               -----------------------------------\s
-            """;
-
     /**
      * Tests the setup method in UserHandler.
      */
     @Test
     @Order(1)
-    public void testSetup() throws SQLException{
-        System.out.println(testClassTextBlock);
+    void testSetup() throws SQLException{
         System.out.println("1: Testing to setup UserHandler...");
         UserHandler.setup(connection);
         assertFalse(UserHandler.getUsernames().isEmpty());
@@ -54,7 +40,7 @@ public class UserHandlerTest extends BaseHandlerTest {
      */
     @Test
     @Order(2)
-    public void testCreateNewUser() {
+    void testCreateNewUser() {
         System.out.println("\n2: Testing to create a new user...");
         User newUser = UserHandler.createNewUser("example_username", "example_password");
         if (newUser == null) {
@@ -69,7 +55,7 @@ public class UserHandlerTest extends BaseHandlerTest {
      */
     @Test
     @Order(3)
-    public void testLogin() {
+    void testLogin() {
         System.out.println("THIS IS A DUMMY TEST METHOD TEMPLATE THAT LOOPS THROUGH VALID AND INVALID TEST DATA!");
 
     }
