@@ -1,5 +1,6 @@
 package control;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import org.junit.jupiter.api.*;
@@ -23,6 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserHandlerTest extends BaseHandlerTest {
+
+    @BeforeEach
+    @Override
+    void setupAndReset() {
+        super.setupAndReset();
+        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
+    }
+
     /**
      * Tests the setup method in UserHandler.
      */
