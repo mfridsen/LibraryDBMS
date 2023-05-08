@@ -14,6 +14,10 @@ private JLabel sökNamnLabel;
 private JTextField sökNamnField;
 private JLabel sökISBNLabel;
 private JTextField sökISBNField;
+private JLabel sökAuthorLabel;
+private JTextField sökAuthorField;
+private JLabel sökGenreLabel;
+private JTextField sökGenreField;
 private JButton sökButton;
 private JButton tillbakaButton;
 private JPanel searchPanel;
@@ -25,6 +29,10 @@ public void searchGUI(){
     sökNamnField = new JTextField(10);
     sökISBNLabel = new JLabel("ISBN-nummer");
     sökISBNField = new JTextField(10);
+    sökAuthorLabel = new JLabel("Sök författare/regi");
+    sökAuthorField = new JTextField(10);
+    sökGenreLabel = new JLabel("Sök genre");
+    sökGenreField = new JTextField(10);
     sökButton = new JButton("Sök");
     tillbakaButton = new JButton("Tillbaka");
     searchPanel = new JPanel();
@@ -36,6 +44,10 @@ public void searchGUI(){
     searchPanel.add(sökNamnField);
     searchPanel.add(sökISBNLabel);
     searchPanel.add(sökISBNField);
+    searchPanel.add(sökAuthorLabel);
+    searchPanel.add(sökAuthorField);
+    searchPanel.add(sökGenreLabel);
+    searchPanel.add(sökGenreField);
 
     searchFrame.add(searchPanel);
     searchFrame.pack();

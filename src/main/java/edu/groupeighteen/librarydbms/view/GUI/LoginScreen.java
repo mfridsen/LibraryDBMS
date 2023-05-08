@@ -1,7 +1,6 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,7 +9,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class LoginPage extends JFrame {
+public class LoginScreen extends JFrame {
     public JLabel usernameLabel;
     public JTextField usernameField;
     public JLabel passwordLabel;
@@ -20,7 +19,11 @@ public class LoginPage extends JFrame {
     public JButton tillbakaButton;
     public JButton proceedButton;
 
-    public LoginPage() {
+    private boolean validateLogin(String username, String password) {
+        return username.equals("user") && password.equals("pass");
+    }
+
+    public void LoginPage() {
         JPanel panel = new JPanel();
         usernameLabel = new JLabel("Username:");
         usernameField = new JTextField(10);
@@ -33,10 +36,11 @@ public class LoginPage extends JFrame {
 
         LoginPanel.add(proceedButton);
         LoginPanel.add(tillbakaButton);
-        LoginPanel.add(usernameField);
         LoginPanel.add(usernameLabel);
-        LoginPanel.add(passwordField);
+        LoginPanel.add(usernameField);
         LoginPanel.add(passwordLabel);
+        LoginPanel.add(passwordField);
+
 
         LoginFrame.add(LoginPanel);
         LoginFrame.pack();
@@ -48,9 +52,16 @@ public class LoginPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 LoginFrame.dispose();
                 String username = usernameField.getText();
-                MenuPage menuPage = new MenuPage(username);
-                menuPage.menuGUI();
+                String password = new String(passwordField.getPassword());
+                if (validateLogin(username, password)) {
+                    MenuPage menuPage = new MenuPage(username);
+                    menuPage.menuGUI();
+                } else {
+                    // show error message or do nothing
+                    LoginError loginError = new LoginError();
+                    loginError.ErrorGUI();
 
+                }
             }
         });
 
@@ -59,10 +70,7 @@ public class LoginPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 LoginFrame.dispose();
                 HomeScreen homeScreen = new HomeScreen();
-
-
             }
         });
-
     }
 }

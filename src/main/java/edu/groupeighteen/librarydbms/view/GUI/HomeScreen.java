@@ -48,7 +48,8 @@ public class HomeScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 homeFrame.dispose(); // Close the current window
-                LoginPage loginPage = new LoginPage(); //Open the Log in page
+                LoginScreen loginPage = new LoginScreen(); //Open the Log in page
+                loginPage.LoginPage();
             }
         });
 

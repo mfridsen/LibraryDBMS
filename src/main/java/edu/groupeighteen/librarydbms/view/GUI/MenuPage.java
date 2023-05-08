@@ -45,7 +45,7 @@ public class MenuPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-                new LoginPage();
+                new LoginScreen();
             }
         });
         LoggaUtButton.addActionListener(new ActionListener() {
