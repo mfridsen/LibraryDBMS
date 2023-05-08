@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
  */
 public class Rental {
 
+    //TODO-future add more fields and methods
+    //TODO-comment everything
+
     private int rentalID; //Primary key
     private int userID; //Foreign key referencing User
     private int itemID; //Foreign key referencing Item

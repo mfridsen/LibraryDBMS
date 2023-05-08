@@ -1,15 +1,12 @@
 package control;
 
-import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
-import edu.groupeighteen.librarydbms.control.user.UserHandler;
-import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import org.junit.jupiter.api.*;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * @author Mattias Fridsén
@@ -25,66 +22,29 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserHandlerTest {
+public class UserHandlerTest extends BaseHandlerTest {
+
     private static final String testClassTextBlock = """
-               ---------------------------
-                TESTING USERHANDLER CLASS \s
-               ---------------------------\s
+               -------------------------------
+                TESTING DATABASEHANDLER CLASS \s
+               -------------------------------\s
             """;
 
     private static final String endTestTextBlock = """
-               -------------------------
-                END TESTING USERHANDLER \s
-               -------------------------\s
+               -----------------------------------
+                END TESTING DATABASEHANDLER CLASS \s
+               -----------------------------------\s
             """;
 
-    private static final String demoDatabaseName = "demo_database";
-
-    private Connection connection = null;
-
-    @BeforeAll
-    static void printTextBlock() {
-        System.out.println(testClassTextBlock);
-    }
-
     /**
-     * Create the connection to the database, set DatabaseHandlers connection, and reset the database before each test.
-     */
-    @BeforeEach
-    void setupAndReset() {
-        try {
-            connection = DatabaseConnection.connectToLocalSQLServer();
-            DatabaseHandler.setConnection(connection);
-
-            DatabaseHandler.executeSingleSQLCommand("drop database if exists " + demoDatabaseName);
-            DatabaseHandler.executeSingleSQLCommand("create database " + demoDatabaseName);
-            DatabaseHandler.executeSingleSQLCommand("use " + demoDatabaseName);
-            DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
-            DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
-        }
-
-        catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Always close the connection to the database after use.
-     */
-    @AfterAll
-    static void tearDown() {
-        System.out.println(endTestTextBlock);
-        DatabaseHandler.closeDatabaseConnection();
-    }
-
-    /**
-     * Tests retrieving the usernames from the demo database.
+     * Tests the setup method in UserHandler.
      */
     @Test
     @Order(1)
-    public void testRetrieveUsernamesFromTable() throws SQLException{
-        System.out.println("1: Testing to retrieve usernames from table...");
-        UserHandler.retrieveUsernamesFromTable(connection);
+    public void testSetup() throws SQLException{
+        System.out.println(testClassTextBlock);
+        System.out.println("1: Testing to setup UserHandler...");
+        UserHandler.setup(connection);
         assertFalse(UserHandler.getUsernames().isEmpty());
         UserHandler.printUsernames();
     }
@@ -105,11 +65,11 @@ public class UserHandlerTest {
     }
 
     /**
-     * Dummy test method for looping through valid and invalid test data.
+     *
      */
     @Test
     @Order(3)
-    public void testIsValidTestString() {
+    public void testLogin() {
         System.out.println("THIS IS A DUMMY TEST METHOD TEMPLATE THAT LOOPS THROUGH VALID AND INVALID TEST DATA!");
 
     }
