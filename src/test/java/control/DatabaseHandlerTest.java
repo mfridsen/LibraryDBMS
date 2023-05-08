@@ -3,6 +3,9 @@ package control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import org.junit.jupiter.api.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -131,12 +134,74 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     @Test
     @Order(3)
     public void testExecuteSQLCommandsFromFile() {
-        // Test the executeSQLCommandsFromFile() method
+        // Set up the path to the test SQL file
+        String testSQLFilePath = "src/test/resources/sql/test_sql_file.sql";
+
+        // Create the test SQL file
+        createTestSQLFile(testSQLFilePath);
+
+        // Call the method to execute the commands in the test SQL file
+        DatabaseHandler.executeSQLCommandsFromFile(testSQLFilePath);
+
+        // Verify that the expected changes have been made to the database
+        // For example, if the SQL file creates a table called "test_table"
+        // and inserts a row with column1='value1' and column2='value2', you can
+        // run a SELECT query to check if the table exists and contains the expected data
+        try {
+            String selectQuery = "SELECT column1, column2 FROM test_table";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+
+            // Check if resultSet has a row
+            assertTrue(resultSet.next());
+
+            // Check if the values in the resultSet match the expected values
+            assertEquals("value1", resultSet.getString("column1"));
+            assertEquals("value2", resultSet.getString("column2"));
+
+            // Clean up - drop the test_table and close resources
+            DatabaseHandler.executeSingleSQLCommand("DROP TABLE test_table");
+            resultSet.close();
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Failed to verify the result of executing SQL commands from file.");
+        }
+    }
+
+    /**
+     * Creates an sql file for testing purposes.
+     * @param filePath the path to the sql file
+     */
+    private void createTestSQLFile(String filePath) {
+        String fileContent = """
+                -- Create test table
+                CREATE TABLE test_table (column1 VARCHAR(255), column2 VARCHAR(255));
+                -- Insert test data
+                INSERT INTO test_table (column1, column2) VALUES ('value1', 'value2');
+                """;
+
+        try {
+            File testSQLFile = new File(filePath);
+            if (!testSQLFile.exists()) {
+                testSQLFile.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(testSQLFile);
+            fileWriter.write(fileContent);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Failed to create test SQL file.");
+        }
     }
 
     @Test
     @Order(4)
     public void testSetup() {
         //Test the setup method. This test will have to be added to iteratively  until the tables are finished
+        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
     }
 }

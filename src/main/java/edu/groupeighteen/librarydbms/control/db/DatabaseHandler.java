@@ -83,13 +83,14 @@ public class DatabaseHandler {
         statement.close(); //Always close Statements after we're done with them
     }
 
-    //TODO handle exceptions
+    //TODO-exception
     /**
      * Executes a single SQL query on the connected database and prints the results to the console if successful.
      * SQL queries, unlike SQL commands, do not affect rows.
      *
      * @param query the SQL query to execute
      * @throws SQLException if an error occurs while executing the query
+     * @return
      */
     public static void executeSingleSQLQuery(String query) throws SQLException {
         //Execute query, retrieve resultset and extract metadata
@@ -116,7 +117,7 @@ public class DatabaseHandler {
         statement.close(); //Always close Statements after we're done with them
     }
 
-    //TODO Exception handling, pass on upwards and also add handling of these specific
+    //TODO-Exception handling, pass on upwards and also add handling of these specific
     // exceptions in the ExceptionHandler
     /**
      * A simple method which reads the contents of a file, and executes any SQL commands found in that file.
