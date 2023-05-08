@@ -25,17 +25,23 @@ import java.sql.*;
  * such as {@link UserHandler}, //TODO finish comment
  */
 public class DatabaseHandler {
-
+    //The code is cleaner if every Handler class stores a reference to the Connection
     private static Connection connection;
+    //Print commands being run, default = not
+    private static boolean verbose = false;
 
     //TODO handle exceptions
+    //TODO-future this doesn't work right now as there are no files to read from,
+    // once testing is finished, copy the test sql data into resources/sql and use it
     //TODO Remember that when the program is complete, the DB shouldn't be created from scratch on start-up every time
     /**
      * Deletes database and starts over from scratch, initializing all the tables and
-     * then filling them with test data.
+     * then filling them with data.
      */
-    public static void setup() throws SQLException, ClassNotFoundException {
-        // Connect to database
+    public static void setup(boolean verbose) throws SQLException, ClassNotFoundException {
+        //Set verbosity
+        DatabaseHandler.verbose = verbose;
+        //Connect to database
         connection = DatabaseConnection.connectToLocalSQLServer();
         //Delete DB if already exists
         executeSingleSQLCommand("drop database if exists " + LibraryManager.databaseName);
@@ -66,11 +72,12 @@ public class DatabaseHandler {
      * @throws SQLException if an error occurs while executing the command
      */
     public static void executeSingleSQLCommand(String command) throws SQLException {
-        //Setup
-        System.out.println("\nExecuting command:");
-        SQLFormatter.printFormattedSQL(command);
+        if (verbose) {
+            System.out.println("\nExecuting command:");
+            SQLFormatter.printFormattedSQL(command);
+        }
+
         Statement statement = connection.createStatement();
-        //Execute
         int rows = statement.executeUpdate(command);
         System.out.println("Command executed; rows affected: " + rows);
         statement.close(); //Always close Statements after we're done with them
@@ -86,7 +93,10 @@ public class DatabaseHandler {
      */
     public static void executeSingleSQLQuery(String query) throws SQLException {
         //Execute query, retrieve resultset and extract metadata
-        System.out.println("\nExecuting query: " + query);
+        if (verbose) {
+            System.out.println("\nExecuting query: " + query);
+        }
+
         Statement statement = connection.createStatement();
         //Execution
         ResultSet resultSet = statement.executeQuery(query);
@@ -127,6 +137,7 @@ public class DatabaseHandler {
                 if (line.startsWith("--")) {
                     continue;
                 }
+
                 // Append the line to the command string, adding a space in between
                 commandBuilder.append(line).append(" ");
 
@@ -166,5 +177,13 @@ public class DatabaseHandler {
 
     public static Connection getConnection() {
         return connection;
+    }
+
+    public static boolean isVerbose() {
+        return verbose;
+    }
+
+    public static void setVerbose(boolean verbose) {
+        DatabaseHandler.verbose = verbose;
     }
 }

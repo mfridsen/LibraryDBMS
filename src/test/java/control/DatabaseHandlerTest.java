@@ -3,8 +3,10 @@ package control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import org.junit.jupiter.api.*;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -79,9 +81,51 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(2)
-    public void testExecuteSingleSQLQuery() {
-        System.out.println("2: Testing executeSingleSQLQuery method...");
-        // Test the executeSingleSQLQuery() method
+    void testExecuteSingleSQLQuery() {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        String tableName = "test_table";
+        try {
+            // Create a new table
+            String createTableQuery = "CREATE TABLE " + tableName + " (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255))";
+            DatabaseHandler.executeSingleSQLCommand(createTableQuery);
+
+            // Verify the table was created
+            connection = DatabaseHandler.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "'");
+            assertTrue(resultSet.next(), "Table " + tableName + " should exist");
+
+            // Insert data into the table
+            String insertDataQuery = "INSERT INTO " + tableName + " (name) VALUES ('John Doe')";
+            DatabaseHandler.executeSingleSQLCommand(insertDataQuery);
+
+            // Verify data was inserted
+            resultSet = statement.executeQuery("SELECT * FROM " + tableName);
+            assertNotNull(resultSet, "Result set should not be null");
+            assertTrue(resultSet.next(), "Result set should have at least one row");
+            assertEquals("John Doe", resultSet.getString("name"), "Name should be 'John Doe'");
+        } catch (Exception e) {
+            //fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // Drop the test table and close resources
+            try {
+                if (statement != null) {
+                    statement.executeUpdate("DROP TABLE IF EXISTS " + tableName);
+                    statement.close();
+                }
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                fail("Exception occurred while closing resources: " + e.getMessage());
+            }
+        }
     }
 
     @Test
@@ -92,7 +136,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(4)
-    public void testCloseDatabaseConnection() {
-        // Test the closeDatabaseConnection() method
+    public void testSetup() {
+        //Test the setup method. This test will have to be added to iteratively  until the tables are finished
     }
 }

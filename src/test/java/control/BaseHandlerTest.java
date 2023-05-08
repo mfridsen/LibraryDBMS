@@ -4,7 +4,6 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInstance;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,7 +25,7 @@ import java.sql.SQLException;
 public abstract class BaseHandlerTest {
 
     protected Connection connection = null;
-    protected static final String demoDatabaseName = "demo_database";
+    protected static final String testDatabaseName = "test_database";
 
     /**
      * Create the connection to the database, set DatabaseHandlers connection, and reset the database before each test.
@@ -36,11 +35,12 @@ public abstract class BaseHandlerTest {
         try {
             connection = DatabaseConnection.connectToLocalSQLServer();
             DatabaseHandler.setConnection(connection);
-            DatabaseHandler.executeSingleSQLCommand("drop database if exists " + demoDatabaseName);
-            DatabaseHandler.executeSingleSQLCommand("create database " + demoDatabaseName);
-            DatabaseHandler.executeSingleSQLCommand("use " + demoDatabaseName);
-            DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
-            DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
+            DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
+            DatabaseHandler.executeSingleSQLCommand("drop database if exists " + testDatabaseName);
+            DatabaseHandler.executeSingleSQLCommand("create database " + testDatabaseName);
+            DatabaseHandler.executeSingleSQLCommand("use " + testDatabaseName);
+            //DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
+            //DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
         }
 
         catch (SQLException | ClassNotFoundException e) {

@@ -16,7 +16,6 @@ import java.sql.*;
  * But not before.
  */
 public class ItemHandler {
-
     //The code is cleaner if every Handler class stores a reference to the Connection
     private static Connection connection;
 
@@ -24,7 +23,7 @@ public class ItemHandler {
     /**
      * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
      * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
-     * after the DatabaseHandlers setup method is called with the connection as argument.
+     * with the connection as argument after the DatabaseHandlers setup method has been called.
      * @param con the Connection to the database.
      * @throws SQLException
      */
