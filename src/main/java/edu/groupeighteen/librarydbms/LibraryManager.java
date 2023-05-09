@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.entities.User;
 
 import java.sql.SQLException;
 
@@ -24,7 +25,9 @@ public class LibraryManager {
 
         //Do actual stuff
         UserHandler.printUsernames();
-        System.out.println(UserHandler.login("uname", "pword"));
+        //System.out.println(UserHandler.login("uname", "pword"));
+        //User newUser = UserHandler.createNewUser("jesper", "pass");
+        UserHandler.printUsernames();
 
         //End program
         exit(0);

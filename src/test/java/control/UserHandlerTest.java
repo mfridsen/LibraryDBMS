@@ -29,8 +29,8 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Override
     void setupAndReset() {
         super.setupAndReset();
-        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
-        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
     }
 
     /**

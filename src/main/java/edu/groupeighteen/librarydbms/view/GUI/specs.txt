@@ -11,7 +11,7 @@ UserSearchGUI: UserHandler.getUserByID(int userID) -> User user, UserHandler.get
 
 UserSearchResultGUI:
 
-In main methods:
+IN MAIN METHODS:
 DatabaseHandler.setup(true);
 UserHandler.setup(DatabaseHandler.getConnection());
 
