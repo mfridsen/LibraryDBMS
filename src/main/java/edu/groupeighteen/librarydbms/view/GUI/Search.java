@@ -52,8 +52,8 @@ public class Search extends JFrame {
                 String searchedBook = sökNamnField.getText();
                 searchFrame.dispose();
                 if (isBookTitleExists(searchedBook)) {
-                    SearchResult searchResult = new SearchResult(searchedBook);
-                    searchResult.searchResultGUI();
+                    //SearchResult searchResult = new SearchResult(searchedBook);
+                    //searchResult.searchResultGUI();
                 }
             }
         });
