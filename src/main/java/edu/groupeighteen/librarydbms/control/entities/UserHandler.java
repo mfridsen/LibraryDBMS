@@ -54,7 +54,7 @@ public class UserHandler {
             return false;
         }
 
-        String query = "SELECT password FROM User WHERE username = ?";
+        String query = "SELECT password FROM users WHERE username = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, username);
 

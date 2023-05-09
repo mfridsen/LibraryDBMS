@@ -2,19 +2,30 @@
 LoginGUI: sends two Strings username and password, and receives a boolean success:DONE
 
 //searches for and displays user data
+User[] users = new User[]{ new User("user1", "pass"), new User("user2", pass), .... }
+users[1].setUserID(1);
+
+UserGUI: receives a User object and displays User info: int userID (user.getUserID), Strings username (user.getUsername)
+
 UserSearchGUI: UserHandler.getUserByID(int userID) -> User user, UserHandler.getUserByUsername(String username) -> User user
-UserSearchResultGUI: receives a User and displays int userID (user.getUserID), Strings username (user.getUsername) and password (user.getPassword)
+
+UserSearchResultGUI:
+
+IN MAIN METHODS:
+DatabaseHandler.setup(true);
+UserHandler.setup(DatabaseHandler.getConnection());
+
 
 //searches for and displays item data
+ItemGUI:
 ItemSearchGUI: ItemHandler.getItemByID(int itemID) -> Item[] items
 ItemSearchResultGUI: receives Item[] items and displays int ItemID (for each item: item.getItemID), String title (for each item: item.getTitle)
 
 //searches for and displays rental data
+RentalGUI:
 RentalSearchGUI: RentalHandler.getRentalByID(int rentalID) -> Rental rental
 RentalSearchResultGUI: receives and displays int RentalID String username, String title and LocalDateTime rentalDate
 RentalSearchResult: class which contains rental search data, all data that will be displayed regarding a rental or a rental search
-
-
 
 The UserGUI class should be able to receive User objects and display their information. When the user interacts with the GUI to modify a User object, the UserGUI should gather the data from the input fields and send it to the UserHandler class. The UserHandler class then takes care of creating, updating, or deleting the User object in the database.
 
@@ -28,3 +39,12 @@ The UserHandler class validates the new data and updates the User object in the 
 The UserHandler class sends a response to the UserGUI, indicating whether the operation was successful or not.
 The UserGUI updates its display accordingly, showing the updated information or an error message.
 By following this pattern, you maintain a clear separation of concerns between the GUI and the business logic, making your code more organized and easier to maintain.
+
+User creation:
+1. Fill in fields
+2. Press button
+3. onButtonPress{
+    User newUser = UserHandler.createNewUser(username, password);
+    UserGUI gui = new UserGUI(newUser);
+    gui.display();
+}

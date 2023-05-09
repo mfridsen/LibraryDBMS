@@ -23,7 +23,7 @@ import java.sql.*;
  * DatabaseConnection class.
  *
  * This class is only responsible for general operations. Specific operations are delegated to specific Handler classes,
- * such as {@link UserHandler}, //TODO finish comment
+ * such as {@link UserHandler}, //TODO-comment finish
  */
 public class DatabaseHandler {
     //The code is cleaner if every Handler class stores a reference to the Connection
@@ -59,8 +59,8 @@ public class DatabaseHandler {
         executeQuery("show tables");
         //Load test data
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
-        executeQuery("SELECT * FROM user ORDER BY user_id ASC");
-        executeQuery("SELECT * FROM item");
+        executeQuery("SELECT * FROM users ORDER BY userID ASC");
+        executeQuery("SELECT * FROM items");
     }
 
     //TODO handle exceptions

@@ -176,7 +176,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     @Order(4)
     void testSetup() {
         //Test the setup method. This test will have to be added to iteratively  until the tables are finished
-        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/create_tables.sql");
-        DatabaseHandler.executeSQLCommandsFromFile("src/test/resources/sql/data/test_data.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
     }
 }
