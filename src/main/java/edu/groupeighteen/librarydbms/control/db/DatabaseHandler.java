@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms.control.db;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
+import edu.groupeighteen.librarydbms.model.db.QueryResult;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -44,22 +45,22 @@ public class DatabaseHandler {
         //Connect to database
         connection = DatabaseConnection.connectToLocalSQLServer();
         //Delete DB if already exists
-        executeSingleSQLCommand("drop database if exists " + LibraryManager.databaseName);
+        executeCommand("drop database if exists " + LibraryManager.databaseName);
         //Create DB
-        executeSingleSQLCommand("create database " + LibraryManager.databaseName);
+        executeCommand("create database " + LibraryManager.databaseName);
         //Show DBs in server
-        executeSingleSQLQuery("show databases");
+        executeQuery("show databases");
         //Use DB
-        executeSingleSQLCommand("use " + LibraryManager.databaseName);
-        executeSingleSQLQuery("show tables");
+        executeCommand("use " + LibraryManager.databaseName);
+        executeQuery("show tables");
         //Create tables
         executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
         //Show tables in DB
-        executeSingleSQLQuery("show tables");
+        executeQuery("show tables");
         //Load test data
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
-        executeSingleSQLQuery("SELECT * FROM user ORDER BY user_id ASC");
-        executeSingleSQLQuery("SELECT * FROM item");
+        executeQuery("SELECT * FROM user ORDER BY user_id ASC");
+        executeQuery("SELECT * FROM item");
     }
 
     //TODO handle exceptions
@@ -71,7 +72,7 @@ public class DatabaseHandler {
      * @param command the SQL command to execute
      * @throws SQLException if an error occurs while executing the command
      */
-    public static void executeSingleSQLCommand(String command) throws SQLException {
+    public static void executeCommand(String command) throws SQLException {
         if (verbose) {
             System.out.println("\nExecuting command:");
             SQLFormatter.printFormattedSQL(command);
@@ -89,32 +90,19 @@ public class DatabaseHandler {
      * SQL queries, unlike SQL commands, do not affect rows.
      *
      * @param query the SQL query to execute
-     * @throws SQLException if an error occurs while executing the query
-     * @return
+     * @return a QueryResult
      */
-    public static void executeSingleSQLQuery(String query) throws SQLException {
-        //Execute query, retrieve resultset and extract metadata
-        if (verbose) {
-            System.out.println("\nExecuting query: " + query);
+    public static QueryResult executeQuery(String query) {
+        ResultSet resultSet = null;
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+        } catch (SQLException e) {
+            System.err.println("Error executing SQL query: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        Statement statement = connection.createStatement();
-        //Execution
-        ResultSet resultSet = statement.executeQuery(query);
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-
-        // Iterate through the resultset and print the metadata
-        while (resultSet.next()) {
-            for (int i = 1; i <= columnCount; i++) {
-                System.out.print(resultSet.getString(i) + " ");
-            }
-            System.out.println();
-        }
-
-        //Close everything
-        resultSet.close(); //Always close ResultSets after we're done with them
-        statement.close(); //Always close Statements after we're done with them
+        return new QueryResult(resultSet, statement);
     }
 
     //TODO-Exception handling, pass on upwards and also add handling of these specific
@@ -145,7 +133,7 @@ public class DatabaseHandler {
                 // Check if the line ends with a semicolon, signifying the end of the command
                 if (line.endsWith(";")) {
                     String command = commandBuilder.toString();
-                    executeSingleSQLCommand(command);
+                    executeCommand(command);
                     // Reset the command builder for the next command
                     commandBuilder = new StringBuilder();
                 }

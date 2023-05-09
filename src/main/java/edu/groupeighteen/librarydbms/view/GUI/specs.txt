@@ -2,16 +2,14 @@
 LoginGUI: sends two Strings username and password, and receives a boolean success
 
 //searches for and displays user data
-UserSearchGUI: takes and sends String username
-UserSearchResultGUI: receives and displays int userID, Strings username and password
-UserSearchResult: class which contains user search data, all data that will be displayed regarding a user or a user search
+UserSearchGUI: UserHandler.getUserByID(int userID) -> User user, UserHandler.getUserByUsername(String username) -> User user
+UserSearchResultGUI: receives a User and displays int userID (user.getUserID), Strings username (user.getUsername) and password (user.getPassword)
 
 //searches for and displays item data
-ItemSearchGUI: takes and sends String title
-ItemSearchResultGUI: receives and displays int ItemID, String title
-ItemSearchResult: class which contains item search data, all data that will be displayed regarding a item or a item search
+ItemSearchGUI: ItemHandler.getItemByID(int itemID) -> Item[] items
+ItemSearchResultGUI: receives Item[] items and displays int ItemID (for each item: item.getItemID), String title (for each item: item.getTitle)
 
 //searches for and displays rental data
-RentalSearchGUI: takes and sends int rentalID
+RentalSearchGUI: RentalHandler.getRentalByID(int rentalID) -> Rental rental
 RentalSearchResultGUI: receives and displays int RentalID String username, String title and LocalDateTime rentalDate
 RentalSearchResult: class which contains rental search data, all data that will be displayed regarding a rental or a rental search

@@ -36,9 +36,9 @@ public abstract class BaseHandlerTest {
             connection = DatabaseConnection.connectToLocalSQLServer();
             DatabaseHandler.setConnection(connection);
             DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
-            DatabaseHandler.executeSingleSQLCommand("drop database if exists " + testDatabaseName);
-            DatabaseHandler.executeSingleSQLCommand("create database " + testDatabaseName);
-            DatabaseHandler.executeSingleSQLCommand("use " + testDatabaseName);
+            DatabaseHandler.executeCommand("drop database if exists " + testDatabaseName);
+            DatabaseHandler.executeCommand("create database " + testDatabaseName);
+            DatabaseHandler.executeCommand("use " + testDatabaseName);
         }
 
         catch (SQLException | ClassNotFoundException e) {

@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
  *
- * This class contains database operation methods related to the User class.
+ * This class contains database CRUD operation methods related to the User entity class.
  * It contains a list of all usernames for quicker validation.
  *
  * When working with a database, it's common to retrieve specific data from the database when needed,
@@ -48,7 +48,45 @@ public class UserHandler {
         retrieveUsernamesFromTable();
     }
 
-    //Username stuff --------------------------------------------------------------------------------------------------
+    //login stuff -----------------------------------------------------------------------------------------------------
+
+    //TODO-exception Handle
+    //TODO-test
+    //TODO change to taking a User object as argument instead of Strings
+    /**
+     * Basic login method. Checks whether username exists in usernames. If it does, check whether password
+     * matches that user's password.
+     * @param username the username attempting to login
+     * @param password the password attempting to login
+     * @return true if successful, otherwise false
+     */
+    public static boolean login(String username, String password) throws SQLException {
+        boolean isAuthenticated = false;
+
+        if (!usernames.contains(username)) {
+            System.out.println(username + ": no such user in database.");
+            return false;
+        }
+
+        String query = "SELECT password FROM User WHERE username = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, username);
+
+        // Execute the query and check if the input password matches the retrieved password
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            String storedPassword = resultSet.getString("password");
+            if (password.equals(storedPassword)) {
+                isAuthenticated = true;
+            }
+        }
+
+        // Close the resources
+        resultSet.close();
+        preparedStatement.close();
+
+        return isAuthenticated;
+    }
 
     //TODO exception handling
     //TODO-test
@@ -87,7 +125,7 @@ public class UserHandler {
         return usernames;
     }
 
-    //User stuff ------------------------------------------------------------------------------------------------------
+    //CRUD stuff ------------------------------------------------------------------------------------------------------
 
     //TODO-test
     /**
@@ -139,41 +177,39 @@ public class UserHandler {
         }
     }
 
-    //TODO-exception Handle
-    //TODO-test
-    //TODO change to taking a User object as argument instead of Strings
-    /**
-     * Basic login method. Checks whether username exists in usernames. If it does, check whether password
-     * matches that user's password.
-     * @param username the username attempting to login
-     * @param password the password attempting to login
-     * @return true if successful, otherwise false
-     */
-    public static boolean login(String username, String password) throws SQLException {
-        boolean isAuthenticated = false;
+    public static User getUserByID(int userID) {
+        //Prepare a SQL query to select a user by userID.
+        //Execute the query and store the result in a ResultSet.
+        //If the ResultSet contains data, create a new User object using the retrieved username and password, and set the user's userID.
+        //Close the resources.
+        //Return the User object, or null if not found.
+        return null;
+    }
 
-        if (!usernames.contains(username)) {
-            System.out.println(username + ": no such user in database.");
-            return false;
-        }
+    public static User getUserByUsername(String username) {
+        //Prepare a SQL query to select a user by username.
+        //Execute the query and store the result in a ResultSet.
+        //If the ResultSet contains data, create a new User object using the retrieved username and password, and set the user's userID.
+        //Close the resources.
+        //Return the User object, or null if not found.
+        return null;
+    }
 
-        String query = "SELECT password FROM User WHERE username = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, username);
+    public static boolean updateUser(User user) {
+        boolean isUpdated = false;
+        //Prepare a SQL query to update a user's username and password by userID.
+        //Set the values for the prepared statement using the User object's data.
+        //Execute the update.
+        //Close the resources.
+        return isUpdated;
+    }
 
-        // Execute the query and check if the input password matches the retrieved password
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            String storedPassword = resultSet.getString("password");
-            if (password.equals(storedPassword)) {
-                isAuthenticated = true;
-            }
-        }
-
-        // Close the resources
-        resultSet.close();
-        preparedStatement.close();
-
-        return isAuthenticated;
+    public static boolean deleteUser(User user) {
+        boolean isDeleted = false;
+        //Prepare a SQL query to delete a user by userID.
+        //Execute the update.
+        //Remove the deleted user's username from the usernames ArrayList.
+        //Close the resources.
+        return isDeleted;
     }
 }

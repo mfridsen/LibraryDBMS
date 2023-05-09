@@ -1,12 +1,12 @@
 package control;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,12 +30,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DatabaseHandlerTest extends BaseHandlerTest {
     @Test
     @Order(1)
-    void testExecuteSingleSQLCommand() {
+    void testExecuteCommand() {
         System.out.println("1: Testing executeSingleSQLCommand method...");
         // 1. Create a temporary table in the test database
         String createTempTable = "CREATE TABLE temp_table (id INT PRIMARY KEY, name VARCHAR(255));";
         try {
-            DatabaseHandler.executeSingleSQLCommand(createTempTable);
+            DatabaseHandler.executeCommand(createTempTable);
         } catch (SQLException e) {
             fail("Failed to create temp_table: " + e.getMessage());
         }
@@ -43,7 +43,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         // 2. Insert some data into the temporary table
         String insertData = "INSERT INTO temp_table (id, name) VALUES (1, 'Test User');";
         try {
-            DatabaseHandler.executeSingleSQLCommand(insertData);
+            DatabaseHandler.executeCommand(insertData);
         } catch (SQLException e) {
             fail("Failed to insert data into temp_table: " + e.getMessage());
         }
@@ -62,7 +62,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         // Clean up: Drop the temporary table
         String dropTempTable = "DROP TABLE IF EXISTS temp_table;";
         try {
-            DatabaseHandler.executeSingleSQLCommand(dropTempTable);
+            DatabaseHandler.executeCommand(dropTempTable);
         } catch (SQLException e) {
             fail("Failed to drop temp_table: " + e.getMessage());
         }
@@ -70,47 +70,35 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(2)
-    void testExecuteSingleSQLQuery() {
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
+    void testExecuteQuery() {
         String tableName = "test_table";
         try {
             // Create a new table
             String createTableQuery = "CREATE TABLE " + tableName + " (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255))";
-            DatabaseHandler.executeSingleSQLCommand(createTableQuery);
+            DatabaseHandler.executeCommand(createTableQuery);
 
             // Verify the table was created
-            connection = DatabaseHandler.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("SHOW TABLES LIKE '" + tableName + "'");
-            assertTrue(resultSet.next(), "Table " + tableName + " should exist");
+            QueryResult tableVerificationResult = DatabaseHandler.executeQuery("SHOW TABLES LIKE '" + tableName + "'");
+            assertTrue(tableVerificationResult.getResultSet().next(), "Table " + tableName + " should exist");
 
             // Insert data into the table
             String insertDataQuery = "INSERT INTO " + tableName + " (name) VALUES ('John Doe')";
-            DatabaseHandler.executeSingleSQLCommand(insertDataQuery);
+            DatabaseHandler.executeCommand(insertDataQuery);
 
             // Verify data was inserted
-            resultSet = statement.executeQuery("SELECT * FROM " + tableName);
+            QueryResult dataVerificationResult = DatabaseHandler.executeQuery("SELECT * FROM " + tableName);
+            ResultSet resultSet = dataVerificationResult.getResultSet();
             assertNotNull(resultSet, "Result set should not be null");
             assertTrue(resultSet.next(), "Result set should have at least one row");
             assertEquals("John Doe", resultSet.getString("name"), "Name should be 'John Doe'");
+            dataVerificationResult.close();
         } catch (Exception e) {
-            //fail("Exception occurred during test: " + e.getMessage());
+            fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
         } finally {
             // Drop the test table and close resources
             try {
-                if (statement != null) {
-                    statement.executeUpdate("DROP TABLE IF EXISTS " + tableName);
-                    statement.close();
-                }
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
+                DatabaseHandler.executeCommand("DROP TABLE IF EXISTS " + tableName);
             } catch (SQLException e) {
                 fail("Exception occurred while closing resources: " + e.getMessage());
             }
@@ -146,7 +134,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             assertEquals("value2", resultSet.getString("column2"));
 
             // Clean up - drop the test_table and close resources
-            DatabaseHandler.executeSingleSQLCommand("DROP TABLE test_table");
+            DatabaseHandler.executeCommand("DROP TABLE test_table");
             resultSet.close();
             statement.close();
 

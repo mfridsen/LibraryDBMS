@@ -1,7 +1,10 @@
 package edu.groupeighteen.librarydbms.control.entities;
 
+import edu.groupeighteen.librarydbms.model.entities.Rental;
+
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 /**
  * @author Mattias Fridsén
@@ -30,4 +33,15 @@ public class RentalHandler {
         connection = con;
     }
 
+    public static Rental getRentalByID(int rentalID) {
+        return new Rental(LocalDateTime.now());
+    }
+
+    public boolean updateRental(Rental rental) {
+        return false;
+    }
+
+    public boolean deleteRental(Rental rental) {
+        return false;
+    }
 }

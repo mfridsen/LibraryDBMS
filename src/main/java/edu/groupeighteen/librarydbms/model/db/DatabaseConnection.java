@@ -45,7 +45,7 @@ public class DatabaseConnection {
     public static Connection connectToDatabaseServer(String url, String user, String password)
             throws SQLException, ClassNotFoundException {
         // Load the JDBC driver
-        System.out.println("Loading JDBC driver...");
+        System.out.println("\nLoading JDBC driver...");
         Class.forName("com.mysql.cj.jdbc.Driver");
         System.out.println("Loaded JDBC driver.");
 

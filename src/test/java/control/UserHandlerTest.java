@@ -66,7 +66,6 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Test
     @Order(3)
     void testLogin() {
-        System.out.println("THIS IS A DUMMY TEST METHOD TEMPLATE THAT LOOPS THROUGH VALID AND INVALID TEST DATA!");
 
     }
 }

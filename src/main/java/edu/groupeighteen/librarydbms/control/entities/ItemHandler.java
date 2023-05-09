@@ -69,4 +69,20 @@ public class ItemHandler {
             }
         }
     }
+
+    public static Item getItemByID(int itemID) {
+        return new Item("");
+    }
+
+    public static Item getItemByTitle(String title) {
+        return new Item("");
+    }
+
+    public boolean updateItem(Item item) {
+        return false;
+    }
+
+    public boolean deleteItem(Item item) {
+        return false;
+    }
 }
