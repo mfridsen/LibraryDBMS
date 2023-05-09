@@ -10,62 +10,65 @@ import java.awt.event.ActionListener;
  * @date 2023-04-24
  */
 public class Search extends JFrame {
-private JLabel sökNamnLabel;
-private JTextField sökNamnField;
-private JLabel sökISBNLabel;
-private JTextField sökISBNField;
-private JLabel sökAuthorLabel;
-private JTextField sökAuthorField;
-private JLabel sökGenreLabel;
-private JTextField sökGenreField;
-private JButton sökButton;
-private JButton tillbakaButton;
-private JPanel searchPanel;
-private JFrame searchFrame;
+    private JLabel sökNamnLabel;
+    private JTextField sökNamnField;
+    private JButton sökButton;
+    private JButton tillbakaButton;
+    private JPanel searchPanel;
+    private JFrame searchFrame;
+    private String[] bookTitles = {"Title 1", "Title 2", "Title 3"}; // Array of book titles
 
-public void searchGUI(){
-    JPanel panel = new JPanel();
-    sökNamnLabel = new JLabel("Sök Namn");
-    sökNamnField = new JTextField(10);
-    sökISBNLabel = new JLabel("ISBN-nummer");
-    sökISBNField = new JTextField(10);
-    sökAuthorLabel = new JLabel("Sök författare/regi");
-    sökAuthorField = new JTextField(10);
-    sökGenreLabel = new JLabel("Sök genre");
-    sökGenreField = new JTextField(10);
-    sökButton = new JButton("Sök");
-    tillbakaButton = new JButton("Tillbaka");
-    searchPanel = new JPanel();
-    searchFrame = new JFrame("Sök Bok/Film");
+    public void searchGUI() {
+        searchPanel = new JPanel();
+        searchFrame = new JFrame("Sök Bok/Film");
 
-    searchPanel.add(sökButton);
-    searchPanel.add(tillbakaButton);
-    searchPanel.add(sökNamnLabel);
-    searchPanel.add(sökNamnField);
-    searchPanel.add(sökISBNLabel);
-    searchPanel.add(sökISBNField);
-    searchPanel.add(sökAuthorLabel);
-    searchPanel.add(sökAuthorField);
-    searchPanel.add(sökGenreLabel);
-    searchPanel.add(sökGenreField);
+        sökNamnLabel = new JLabel("Sök Namn");
+        sökNamnField = new JTextField(10);
+        sökButton = new JButton("Sök");
+        tillbakaButton = new JButton("Tillbaka");
 
-    searchFrame.add(searchPanel);
-    searchFrame.pack();
-    searchFrame.setVisible(true);
-    searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        searchPanel.add(sökButton);
+        searchPanel.add(tillbakaButton);
+        searchPanel.add(sökNamnLabel);
+        searchPanel.add(sökNamnField);
 
-    tillbakaButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            searchFrame.dispose();
-            MenuPage menuPage = new MenuPage("Välkommen");
-            menuPage.menuGUI();
+        searchFrame.add(searchPanel);
+        searchFrame.pack();
+        searchFrame.setVisible(true);
+        searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        tillbakaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchFrame.dispose();
+                MenuPage menuPage = new MenuPage("Välkommen");
+                menuPage.menuGUI();
+            }
+        });
 
+        sökButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchedBook = sökNamnField.getText();
+                searchFrame.dispose();
+                if (isBookTitleExists(searchedBook)) {
+                    SearchResult searchResult = new SearchResult(searchedBook);
+                    searchResult.searchResultGUI();
+                }
+            }
+        });
+    }
+    private boolean isBookTitleExists(String searchedBook) {
+        for (String title : bookTitles) {
+            if (title.equalsIgnoreCase(searchedBook)) {
+                return true;
+            }
         }
-    });
-}
+        return false;
+    }
 
-
-
+    public static void main(String[] args) {
+        Search search = new Search();
+        search.searchGUI();
+    }
 }

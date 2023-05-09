@@ -1,5 +1,5 @@
 //handles logging in, can succeed or not
-LoginGUI: sends two Strings username and password, and receives a boolean success
+LoginGUI: sends two Strings username and password, and receives a boolean success:DONE
 
 //searches for and displays user data
 UserSearchGUI: UserHandler.getUserByID(int userID) -> User user, UserHandler.getUserByUsername(String username) -> User user
