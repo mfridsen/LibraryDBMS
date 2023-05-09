@@ -16,7 +16,7 @@ public class Search extends JFrame {
     private JButton tillbakaButton;
     private JPanel searchPanel;
     private JFrame searchFrame;
-    private String[] bookTitles = {"Title 1", "Title 2", "Title 3"}; // Array of book titles
+    private String[] bookTitles = { "Harry Potter", "The Mist", "Revenge Of The Sith" }; // Example book titles
 
     public void searchGUI() {
         searchPanel = new JPanel();
@@ -52,12 +52,12 @@ public class Search extends JFrame {
                 String searchedBook = sökNamnField.getText();
                 searchFrame.dispose();
                 if (isBookTitleExists(searchedBook)) {
-                    SearchResult searchResult = new SearchResult(searchedBook);
-                    searchResult.searchResultGUI();
+                    SearchResultGUI searchResult = new SearchResultGUI(searchedBook);
                 }
             }
         });
     }
+
     private boolean isBookTitleExists(String searchedBook) {
         for (String title : bookTitles) {
             if (title.equalsIgnoreCase(searchedBook)) {
