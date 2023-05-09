@@ -12,22 +12,8 @@ import java.util.ArrayList;
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
  *
- * This class contains database CRUD operation methods related to the User entity class.
+ * This class contains database CRUD operation methods as well as other methods related to the User entity class.
  * It contains a list of all usernames for quicker validation.
- *
- * When working with a database, it's common to retrieve specific data from the database when needed,
- * perform operations, and then persist any changes back to the database. This way, you avoid keeping a large number
- * of objects in memory, which could lead to performance issues and increased memory usage.
- *
- * Here are some scenarios in which you would retrieve a user from the database and create a new User object:
- *
- * Authenticating a user during login: Retrieve the user based on the provided username, check the password,
- * and then create a session for the authenticated user.
- *
- * Updating user information: Retrieve the user based on the username, modify the necessary attributes,
- * and then persist the changes back to the database.
- *
- * Displaying user information: Retrieve the user based on the username and display the relevant information in the UI.
  */
 public class UserHandler {
     //Needed since usernames must be unique
