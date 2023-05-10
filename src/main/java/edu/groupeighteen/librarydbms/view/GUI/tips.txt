@@ -2,3 +2,5 @@
 2: stoppa in hela main-metoden i den klassen samt all test data
 3: döp alla fönster till det klassen heter (ItemSearchGUI osv)
 4: döp knappar till den klass de leder till
+5: lägg till "se objekt/användare" knapp i SearchResultGUI
+6: SearchresultGUI ska kunna visa flera träffar

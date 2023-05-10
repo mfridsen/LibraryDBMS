@@ -1,4 +1,6 @@
-package edu.groupeighteen.librarydbms.view.GUI;
+package edu.groupeighteen.librarydbms.view.GUI.entities;
+
+import edu.groupeighteen.librarydbms.view.GUI.MenuPage;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -8,20 +10,22 @@ import java.awt.event.ActionListener;
  * @author Jesper Truedsson
  * @project LibraryDBMS
  * @date 2023-04-24
+ *
+ * this class handles searching for items
+ * leads to ItemSearchResultGUI
  */
 
-public class Search extends JFrame {
+public class ItemSearchGUI extends JFrame {
     private JLabel sökNamnLabel;
     private JTextField sökNamnField;
     private JButton sökButton;
     private JButton tillbakaButton;
     private JPanel searchPanel;
     private JFrame searchFrame;
-    private String[] bookTitles = { "Harry Potter", "The Mist", "Revenge Of The Sith" }; // Example book titles
 
     public void searchGUI() {
         searchPanel = new JPanel();
-        searchFrame = new JFrame("Sök Bok/Film");
+        searchFrame = new JFrame("ItemSearchGUI"); //"sök bok/film"
 
         sökNamnLabel = new JLabel("Sök Namn");
         sökNamnField = new JTextField(10);
@@ -52,32 +56,13 @@ public class Search extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String searchedBook = sökNamnField.getText();
                 searchFrame.dispose();
-                if (isBookTitleExists(searchedBook)) {
-                    SearchResultGUI searchResult = new SearchResultGUI(searchedBook);
-                }
+                ItemSearchResultGUI searchResult = new ItemSearchResultGUI(searchedBook);
             }
         });
     }
 
-    private boolean isBookTitleExists(String searchedBook) {
-        for (String title : bookTitles) {
-            if (containsIgnoreCase(searchedBook, title)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean containsIgnoreCase(String search, String source){
-        return source.toLowerCase().contains(search.toLowerCase());
-    }
-
-    public String[] getBookTitles() {
-        return bookTitles;
-    }
-
     public static void main(String[] args) {
-        Search search = new Search();
+        ItemSearchGUI search = new ItemSearchGUI();
         search.searchGUI();
     }
 }

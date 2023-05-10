@@ -1,5 +1,8 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
+import edu.groupeighteen.librarydbms.view.GUI.entities.ItemSearchGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.UserGUI;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +17,7 @@ public class MenuPage {
     public JButton mittKontoButton;
     public JButton LoggaUtButton;
     public JButton tillbakaButton;
+    public JButton userButton;
     public JFrame menuFrame;
     public JPanel menuPanel;
 
@@ -33,6 +37,7 @@ public class MenuPage {
         sökButton = new JButton("Sök");
         LoggaUtButton = new JButton("Logga Ut");
         mittKontoButton = new JButton("Mitt Konto");
+        userButton = new JButton("User");
 
         JLabel welcomeLabel = new JLabel("Välkommen, " + username + "!");
         menuPanel.add(welcomeLabel);
@@ -40,6 +45,7 @@ public class MenuPage {
         menuPanel.add(LoggaUtButton);
         menuPanel.add(mittKontoButton);
         menuPanel.add(sökButton);
+        menuPanel.add(userButton);
 
         tillbakaButton.addActionListener(new ActionListener() {
             @Override
@@ -67,9 +73,18 @@ public class MenuPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-               Search search = new Search();
+               ItemSearchGUI search = new ItemSearchGUI();
                search.searchGUI();
 
+            }
+        });
+
+        userButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuFrame.dispose();
+                UserGUI userGUI = new UserGUI();
+                userGUI.WelcomeUserGUI();
             }
         });
         menuFrame.add(menuPanel);

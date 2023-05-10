@@ -1,28 +1,30 @@
-package edu.groupeighteen.librarydbms.view.GUI;
+package edu.groupeighteen.librarydbms.view.GUI.entities;
 
 /**
  * @author Jesper Truedsson
  * @project LibraryDBMS
  * @date 2023-04-27
+ *
+ * this class displays results for a search performed in the ItemSearchGUI
+ * leads to ItemGUI
  */
-import com.beust.ah.A;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SearchResultGUI extends JFrame {
+public class ItemSearchResultGUI extends JFrame {
     private JPanel searchPanel;
     private JFrame searchFrame;
     private JButton lånaButton;
     private JButton tillbakaButton;
     private String searchedBook;
-    private String[] bookTitles;
+    private String[] bookTitles = { "Harry Potter", "The Mist", "Revenge Of The Sith", "Harry Potter hej", "Harry Potter 3" }; // Example book titles
 
-    public SearchResultGUI(String searchedBook) {
+
+    public ItemSearchResultGUI(String searchedBook) {
         this.searchedBook = searchedBook;
-        Search search = new Search();
-        bookTitles = search.getBookTitles();
+        ItemSearchGUI search = new ItemSearchGUI();
 
         searchPanel = new JPanel();
         searchFrame = new JFrame("Sök Bok/Film");
@@ -48,7 +50,7 @@ public class SearchResultGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchFrame.dispose();
-                Search search = new Search();
+                ItemSearchGUI search = new ItemSearchGUI();
                 search.searchGUI();
             }
         });
@@ -56,14 +58,18 @@ public class SearchResultGUI extends JFrame {
 
     private String getFormattedBookTitle() {
         for (String title : bookTitles) {
-            if (searchedBook.equalsIgnoreCase(title.toLowerCase())) {
+            if (containsIgnoreCase(searchedBook, title)) {
                 return title;
             }
         }
         return searchedBook;
     }
 
+    private boolean containsIgnoreCase(String search, String source){
+        return source.toLowerCase().contains(search.toLowerCase());
+    }
+
     public static void main(String[] args) {
-        SearchResultGUI searchResult = new SearchResultGUI("Book Title");
+        ItemSearchResultGUI searchResult = new ItemSearchResultGUI("Book Title");
     }
 }
