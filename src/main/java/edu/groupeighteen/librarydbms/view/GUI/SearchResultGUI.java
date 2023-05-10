@@ -16,8 +16,14 @@ public class SearchResultGUI extends JFrame {
     private JFrame searchFrame;
     private JButton lånaButton;
     private JButton tillbakaButton;
+    private String searchedBook;
+    private String[] bookTitles;
 
     public SearchResultGUI(String searchedBook) {
+        this.searchedBook = searchedBook;
+        Search search = new Search();
+        bookTitles = search.getBookTitles();
+
         searchPanel = new JPanel();
         searchFrame = new JFrame("Sök Bok/Film");
         lånaButton = new JButton("Låna");
@@ -25,7 +31,7 @@ public class SearchResultGUI extends JFrame {
 
         JLabel resultatLabel;
         if (searchedBook != null) {
-            resultatLabel = new JLabel("Resultat: " + searchedBook);
+            resultatLabel = new JLabel("Resultat: " + getFormattedBookTitle());
         } else {
             resultatLabel = new JLabel("Inget resultat hittades.");
         }
@@ -41,10 +47,20 @@ public class SearchResultGUI extends JFrame {
         tillbakaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                searchFrame.dispose();
                 Search search = new Search();
                 search.searchGUI();
             }
         });
+    }
+
+    private String getFormattedBookTitle() {
+        for (String title : bookTitles) {
+            if (searchedBook.equalsIgnoreCase(title.toLowerCase())) {
+                return title;
+            }
+        }
+        return searchedBook;
     }
 
     public static void main(String[] args) {
