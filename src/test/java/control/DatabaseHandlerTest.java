@@ -107,6 +107,48 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(3)
+    void testExecutePreparedQuery() {
+        String tableName = "test_table";
+
+        try {
+            // Create a new table
+            String createTableQuery = "CREATE TABLE " + tableName + " (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255))";
+            DatabaseHandler.executeCommand(createTableQuery);
+
+            // Insert data into the table using executePreparedQuery
+            String insertDataQuery = "INSERT INTO " + tableName + " (name) VALUES (?)";
+            String[] parameters = {"John Doe"};
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(insertDataQuery, parameters, Statement.RETURN_GENERATED_KEYS);
+
+            // Verify data was inserted
+            int generatedId = -1;
+            ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
+            if (generatedKeys.next()) {
+                generatedId = generatedKeys.getInt(1);
+            }
+            assertTrue(generatedId != -1, "Generated ID should not be -1");
+
+            // Clean up
+            queryResult.close();
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        finally {
+            // Drop the test table and close resources
+            try {
+                DatabaseHandler.executeCommand("DROP TABLE IF EXISTS " + tableName);
+            } catch (SQLException e) {
+                fail("Exception occurred while closing resources: " + e.getMessage());
+            }
+        }
+    }
+
+    @Test
+    @Order(4)
     void testExecuteSQLCommandsFromFile() {
         // Set up the path to the test SQL file
         String testSQLFilePath = "src/test/resources/sql/test_sql_file.sql";
