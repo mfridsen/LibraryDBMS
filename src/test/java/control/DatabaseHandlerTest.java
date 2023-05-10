@@ -112,10 +112,11 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         String testSQLFilePath = "src/test/resources/sql/test_sql_file.sql";
 
         // Create the test SQL file
-        createTestSQLFile(testSQLFilePath);
+        File testFile = createTestSQLFile(testSQLFilePath);
 
         // Call the method to execute the commands in the test SQL file
-        DatabaseHandler.executeSQLCommandsFromFile(testSQLFilePath);
+        assert testFile != null;
+        DatabaseHandler.executeSQLCommandsFromFile(testFile.getPath());
 
         // Verify that the expected changes have been made to the database
         // For example, if the SQL file creates a table called "test_table"
@@ -142,13 +143,15 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
             fail("Failed to verify the result of executing SQL commands from file.");
         }
+
+        testFile.delete();
     }
 
     /**
      * Creates an sql file for testing purposes.
      * @param filePath the path to the sql file
      */
-    private void createTestSQLFile(String filePath) {
+    private File createTestSQLFile(String filePath) {
         String fileContent = """
                 -- Create test table
                 CREATE TABLE test_table (column1 VARCHAR(255), column2 VARCHAR(255));
@@ -165,9 +168,11 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             fileWriter.write(fileContent);
             fileWriter.flush();
             fileWriter.close();
+            return testSQLFile;
         } catch (IOException e) {
             e.printStackTrace();
             fail("Failed to create test SQL file.");
+            return null;
         }
     }
 

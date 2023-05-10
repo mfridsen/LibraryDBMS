@@ -1,0 +1,4 @@
+1: Skapa en testklass för varje GUIklass som du har en main-metod i.
+2: stoppa in hela main-metoden i den klassen samt all test data
+3: döp alla fönster till det klassen heter (ItemSearchGUI osv)
+4: döp knappar till den klass de leder till

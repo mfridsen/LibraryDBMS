@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.control.entities;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
 
 import java.sql.*;
@@ -75,30 +77,26 @@ public class UserHandler {
     }
 
     //TODO exception handling
-    //TODO-test
     /**
-     * Method that retrieves the usernames of all users in the user table and stores them in the static list.
+     * Method that retrieves the usernames in the users table and stores them in the static ArrayList.
+     * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
      * @throws SQLException
      */
     private static void retrieveUsernamesFromTable() throws SQLException {
-        // Execute the query to retrieve all usernames
-        Statement statement = connection.createStatement();
+        //Execute the query to retrieve all usernames
+        QueryResult result = DatabaseHandler.executeQuery("SELECT username FROM users ORDER BY userID ASC");
 
-        //Needs to be ORDER BY user_id ASC or id 10 will be printed before ids 1, 2, 3 etc
-        ResultSet resultSet = statement.executeQuery("SELECT username FROM users ORDER BY userID ASC");
-
-        // Add the retrieved usernames to the ArrayList
-        while (resultSet.next()) {
-            usernames.add(resultSet.getString("username"));
+        //Add the retrieved usernames to the ArrayList
+        while (result.getResultSet().next()) {
+            usernames.add(result.getResultSet().getString("username"));
         }
 
         // Close the resources
-        resultSet.close();
-        statement.close();
+        result.close();
     }
 
     /**
-     * Prints all usernames in usernames.
+     * Prints all usernames in the ArrayList.
      */
     public static void printUsernames() {
         System.out.println("\nUsernames:");
@@ -107,6 +105,10 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Returns the ArrayList of usernames.
+     * @return the ArrayList of usernames
+     */
     public static ArrayList<String> getUsernames() {
         return usernames;
     }
