@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class LoginScreen extends JFrame {
+public class LoginScreenGUI extends JFrame {
     public JLabel usernameLabel;
     public JTextField usernameField;
     public JLabel passwordLabel;
@@ -29,10 +29,10 @@ public class LoginScreen extends JFrame {
         usernameField = new JTextField(10);
         passwordLabel = new JLabel("Password:");
         passwordField = new JPasswordField(10);
-        LoginFrame = new JFrame("Logga In");
+        LoginFrame = new JFrame("LoginScreenGUI");
         LoginPanel = new JPanel();
         tillbakaButton = new JButton("Tillbaka");
-        proceedButton = new JButton("Fortsätt");
+        proceedButton = new JButton("MenuPageGUI");
 
         LoginPanel.add(proceedButton);
         LoginPanel.add(tillbakaButton);
@@ -54,11 +54,11 @@ public class LoginScreen extends JFrame {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 if (validateLogin(username, password)) {
-                    MenuPage menuPage = new MenuPage(username);
+                    MenuPageGUI menuPage = new MenuPageGUI(username);
                     menuPage.menuGUI();
                 } else {
                     // show error message or do nothing
-                    LoginError loginError = new LoginError();
+                    LoginErrorGUI loginError = new LoginErrorGUI();
                     loginError.ErrorGUI();
 
                 }
@@ -69,7 +69,7 @@ public class LoginScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LoginFrame.dispose();
-                HomeScreen homeScreen = new HomeScreen();
+                HomeScreenGUI homeScreen = new HomeScreenGUI();
             }
         });
     }

@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-05-05
  */
-public class LoginError extends JFrame {
+public class LoginErrorGUI extends JFrame {
     private JLabel errorMessageLabel;
     private JButton okButton;
 
@@ -32,7 +32,7 @@ public class LoginError extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-            LoginScreen loginPage = new LoginScreen();
+            LoginScreenGUI loginPage = new LoginScreenGUI();
             loginPage.LoginPage();
 
             }

@@ -18,6 +18,7 @@ public class ItemSearchResultGUI extends JFrame {
     private JFrame searchFrame;
     private JButton lånaButton;
     private JButton tillbakaButton;
+    private JButton visaobjektButton;
     private String searchedBook;
     private String[] bookTitles = { "Harry Potter", "The Mist", "Revenge Of The Sith", "Harry Potter hej", "Harry Potter 3" }; // Example book titles
 
@@ -27,9 +28,10 @@ public class ItemSearchResultGUI extends JFrame {
         ItemSearchGUI search = new ItemSearchGUI();
 
         searchPanel = new JPanel();
-        searchFrame = new JFrame("Sök Bok/Film");
+        searchFrame = new JFrame("ItemSearchResultGUI");
         lånaButton = new JButton("Låna");
         tillbakaButton = new JButton("Tillbaka");
+        visaobjektButton = new JButton("Visa objekt");
 
         JLabel resultatLabel;
         if (searchedBook != null) {
@@ -40,6 +42,7 @@ public class ItemSearchResultGUI extends JFrame {
         searchPanel.add(resultatLabel);
         searchPanel.add(lånaButton);
         searchPanel.add(tillbakaButton);
+        searchPanel.add(visaobjektButton);
 
         searchFrame.add(searchPanel);
         searchFrame.pack();

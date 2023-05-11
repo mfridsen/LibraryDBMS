@@ -1,6 +1,6 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
 
-import edu.groupeighteen.librarydbms.view.GUI.MenuPage;
+import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -23,13 +23,14 @@ public class ItemSearchGUI extends JFrame {
     private JPanel searchPanel;
     private JFrame searchFrame;
 
+
     public void searchGUI() {
         searchPanel = new JPanel();
         searchFrame = new JFrame("ItemSearchGUI"); //"sök bok/film"
 
         sökNamnLabel = new JLabel("Sök Namn");
         sökNamnField = new JTextField(10);
-        sökButton = new JButton("Sök");
+        sökButton = new JButton("ItemSearchResultGUI");
         tillbakaButton = new JButton("Tillbaka");
 
         searchPanel.add(sökButton);
@@ -46,7 +47,7 @@ public class ItemSearchGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchFrame.dispose();
-                MenuPage menuPage = new MenuPage("Välkommen");
+                MenuPageGUI menuPage = new MenuPageGUI("Välkommen");
                 menuPage.menuGUI();
             }
         });

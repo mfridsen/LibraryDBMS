@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class MenuPage {
+public class MenuPageGUI {
     public JButton sökButton;
     public JButton mittKontoButton;
     public JButton LoggaUtButton;
@@ -24,20 +24,20 @@ public class MenuPage {
     public String username;
 
 
-    public MenuPage(String username) {
+    public MenuPageGUI(String username) {
         this.username = username;
     }
 
 
 
     public void menuGUI(){
-        menuFrame = new JFrame("Meny");
+        menuFrame = new JFrame("MenuPageGUI");
         menuPanel = new JPanel();
         tillbakaButton = new JButton("Tillbaka");
-        sökButton = new JButton("Sök");
-        LoggaUtButton = new JButton("Logga Ut");
-        mittKontoButton = new JButton("Mitt Konto");
-        userButton = new JButton("User");
+        sökButton = new JButton("ItemSearchGUI");
+        LoggaUtButton = new JButton("HomeScreenGUI");
+        mittKontoButton = new JButton("MyAccountGUI");
+        userButton = new JButton("UserGUI");
 
         JLabel welcomeLabel = new JLabel("Välkommen, " + username + "!");
         menuPanel.add(welcomeLabel);
@@ -51,21 +51,21 @@ public class MenuPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-                new LoginScreen();
+                new LoginScreenGUI();
             }
         });
         LoggaUtButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-                new HomeScreen();
+                new HomeScreenGUI();
             }
         });
         mittKontoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-                MyAccount.alterPersonalInfo accountInfo = new MyAccount.alterPersonalInfo();
+                MyAccountGUI.alterPersonalInfo accountInfo = new MyAccountGUI.alterPersonalInfo();
                 accountInfo.changeInfoGUI();
             }
         });

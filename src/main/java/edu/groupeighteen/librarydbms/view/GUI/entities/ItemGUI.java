@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
 
-import edu.groupeighteen.librarydbms.model.entities.Item;
-
 /**
  * @author Jesper Truedsson
  * @project LibraryDBMS
@@ -10,9 +8,6 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
  * this class displays all information about a single item object
  */
 public class ItemGUI {
-    private Item item;
-
-    public ItemGUI(Item item) {
-        this.item = item;
+    public ItemGUI() {
     }
 }

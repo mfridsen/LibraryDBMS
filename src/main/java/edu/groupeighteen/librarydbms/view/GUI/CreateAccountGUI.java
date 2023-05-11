@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-27
  */
-public class CreateAccount {
+public class CreateAccountGUI {
     public JLabel usernameLabel;
     public JTextField usernameField;
     public JLabel passwordLabel;
@@ -52,7 +52,7 @@ public class CreateAccount {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CreateAccountFrame.dispose();
-                HomeScreen homeScreen = new HomeScreen();
+                HomeScreenGUI homeScreen = new HomeScreenGUI();
 
             }
         });

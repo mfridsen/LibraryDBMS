@@ -1,5 +1,5 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
-import edu.groupeighteen.librarydbms.view.GUI.MenuPage;
+import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,13 +20,15 @@ public class UserSearchGUI {
     private JPanel searchPanel;
     private JFrame searchFrame;
 
+    private String[] userArray = { "Kalle Karlsson", "Johan Lund", "Max Zorin", "James Bond", "Axl Rose" };
+
     public void SearchGUI() {
         JLabel searchLabel = new JLabel("Sök användare");
         usernameField = new JTextField(10);
-        searchButton = new JButton("Sök");
+        searchButton = new JButton("UserSearchResultGUI");
         tillbakaButton = new JButton("Tillbaka");
         searchPanel = new JPanel();
-        searchFrame = new JFrame("Sök");
+        searchFrame = new JFrame("UserSearchGUI");
 
         searchPanel.add(searchLabel);
         searchPanel.add(usernameField);
@@ -42,8 +44,8 @@ public class UserSearchGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchFrame.dispose();
-                MenuPage menuPage = new MenuPage("Välkommen");
-                menuPage.menuGUI();
+                UserGUI userGUI = new UserGUI();
+                userGUI.WelcomeUserGUI();
             }
         });
 
@@ -52,7 +54,8 @@ public class UserSearchGUI {
             public void actionPerformed(ActionEvent e) {
                 String searchedUsername = usernameField.getText();
                 searchFrame.dispose();
-                // Perform the desired action when the search button is clicked
+                UserSearchResultGUI userSearchResultGUI = new UserSearchResultGUI(searchedUsername, userArray);
+                userSearchResultGUI.userResults();
             }
         });
     }

@@ -1,5 +1,5 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
-import edu.groupeighteen.librarydbms.view.GUI.MenuPage;
+import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,11 +20,11 @@ public class UserGUI {
     private JFrame welcomeFrame;
 
     public void WelcomeUserGUI() {
-        welcomeLabel = new JLabel("Välkommen");
-        searchButton = new JButton("Sök");
+        welcomeLabel = new JLabel("Sök");
+        searchButton = new JButton("UserSearchGUI");
         tillbakaButton = new JButton("Tillbaka");
         welcomePanel = new JPanel();
-        welcomeFrame = new JFrame("Välkommen");
+        welcomeFrame = new JFrame("UserGUI");
 
         welcomePanel.add(welcomeLabel);
         welcomePanel.add(searchButton);
@@ -39,7 +39,7 @@ public class UserGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 welcomeFrame.dispose();
-                MenuPage menuPage = new MenuPage("hej");
+                MenuPageGUI menuPage = new MenuPageGUI("hej");
                 menuPage.menuGUI();
             }
         });

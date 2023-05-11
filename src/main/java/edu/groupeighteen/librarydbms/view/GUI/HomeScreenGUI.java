@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class HomeScreen extends JFrame {
+public class HomeScreenGUI extends JFrame {
 
     public JLabel welcomeLabel;
     public JPanel buttonPanel;
@@ -19,15 +19,15 @@ public class HomeScreen extends JFrame {
     public JButton infoButton;
     public JButton skapakontoButton;
 
-    public HomeScreen() {
+    public HomeScreenGUI() {
         welcomeLabel = new JLabel("Welcome to the library system");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
 
         buttonPanel = new JPanel();
-        loginHereButton = new JButton("Log in here");
-        infoButton = new JButton("FAQ");
-        skapakontoButton = new JButton("Skapa Konto");
+        loginHereButton = new JButton("LoginScreenGUI");
+        infoButton = new JButton("InfoPageGUI");
+        skapakontoButton = new JButton("CreateAccountGUI");
 
         buttonPanel.add(loginHereButton);
         buttonPanel.add(infoButton);
@@ -37,7 +37,7 @@ public class HomeScreen extends JFrame {
         panel.add(welcomeLabel, BorderLayout.NORTH);
         panel.add(buttonPanel, BorderLayout.CENTER);
 
-        homeFrame = new JFrame("Library System");
+        homeFrame = new JFrame("HomeScreenGUI");
         homeFrame.add(panel);
         homeFrame.setSize(400, 200);
         homeFrame.setLocationRelativeTo(null);
@@ -48,7 +48,7 @@ public class HomeScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 homeFrame.dispose(); // Close the current window
-                LoginScreen loginPage = new LoginScreen(); //Open the Log in page
+                LoginScreenGUI loginPage = new LoginScreenGUI(); //Open the Log in page
                 loginPage.LoginPage();
             }
         });
@@ -57,7 +57,7 @@ public class HomeScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 homeFrame.dispose();
-                InfoPage infoPage = new InfoPage();
+                InfoPageGUI infoPage = new InfoPageGUI();
                 infoPage.showInfoGUI();
             }
         });
@@ -65,13 +65,13 @@ public class HomeScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 homeFrame.dispose();
-                CreateAccount createAccount = new CreateAccount();
+                CreateAccountGUI createAccount = new CreateAccountGUI();
                 createAccount.CreateAccountPage();
             }
         });
     }
 
     public static void main(String[] args) {
-        HomeScreen homeScreen = new HomeScreen();
+        HomeScreenGUI homeScreen = new HomeScreenGUI();
     }
 }

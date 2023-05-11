@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class InfoPage {
+public class InfoPageGUI {
     public JFrame firstFrame;
     public JPanel firstPanel;
     public JButton tillbakaButton;
@@ -36,7 +36,7 @@ public class InfoPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 firstFrame.dispose();
-                new HomeScreen();
+                new HomeScreenGUI();
 
             }
         });

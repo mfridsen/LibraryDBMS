@@ -1,7 +1,6 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,7 +9,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-24
  */
-public class MyAccount {
+public class MyAccountGUI {
 
     public static class alterPersonalInfo  {
         private JLabel usernameLabel;
@@ -50,7 +49,7 @@ public class MyAccount {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                 accountFrame.dispose();
-                    MenuPage menuPage = new MenuPage("Välkommen" + usernameLabel);
+                    MenuPageGUI menuPage = new MenuPageGUI("Välkommen" + usernameLabel);
                     menuPage.menuGUI();
                 }
             });
