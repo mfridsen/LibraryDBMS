@@ -148,20 +148,18 @@ public class UserHandler {
      */
     public static int saveUser(User user) throws SQLException {
         String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-        //Try-with-resources, useful!
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPassword());
-            statement.executeUpdate();
+        String[] params = {user.getUsername(), user.getPassword()};
+        QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, Statement.RETURN_GENERATED_KEYS);
 
-            // Get the generated userID
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) { //Try-with-resources, useful!
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                } else {
-                    throw new SQLException("Failed to insert the user, no ID obtained.");
-                }
-            }
+        // Get the generated userID
+        ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
+        if (generatedKeys.next()) {
+            int id = generatedKeys.getInt(1);
+            queryResult.close();
+            return id;
+        } else {
+            queryResult.close();
+            throw new SQLException("Failed to insert the user, no ID obtained.");
         }
     }
 

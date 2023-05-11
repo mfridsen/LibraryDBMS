@@ -66,9 +66,8 @@ public class DatabaseHandler {
     //TODO handle exceptions
     /**
      * Executes a single SQL command on the connected database. SQL commands can affect rows and therefore
-     * are used with executeUpdate.
+     * are used with executeUpdate. Prints number of rows affected if command was successfully executed.
      *
-     * Prints number of rows affected if command was successfully executed.
      * @param command the SQL command to execute
      * @throws SQLException if an error occurs while executing the command
      */
@@ -85,9 +84,10 @@ public class DatabaseHandler {
     }
 
     //TODO-exception
+    //TODO verbose
     /**
-     * Executes a single SQL query on the connected database and prints the results to the console if successful.
-     * SQL queries, unlike SQL commands, do not affect rows.
+     * Executes a single SQL query on the connected database. SQL queries, unlike SQL commands, do not affect rows,
+     * but do instead produce ResultSets which are sent up the call stack in a QueryResult.
      *
      * @param query the SQL query to execute
      * @return a QueryResult
@@ -103,6 +103,42 @@ public class DatabaseHandler {
             e.printStackTrace();
         }
         return new QueryResult(resultSet, statement);
+    }
+
+    //TODO-comment
+    //TODO-exception
+    //TODO-test
+    /**
+     *
+     * @param query
+     * @param params
+     * @return
+     */
+    public static QueryResult executePreparedQuery(String query, String[] params, int... settings) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            //Prepare the statement with the given settings
+            preparedStatement = connection.prepareStatement(query, settings);
+
+            //Set the parameters
+            for (int i = 0; i < params.length; i++) {
+                preparedStatement.setString(i + 1, params[i]);
+            }
+
+            //Execute the query
+            preparedStatement.executeUpdate();
+
+            //Get the result set, if available
+            resultSet = preparedStatement.getResultSet();
+        }
+
+        catch (SQLException e) {
+            System.err.println("Error executing prepared SQL query: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return new QueryResult(resultSet, preparedStatement);
     }
 
     //TODO-Exception handling, pass on upwards and also add handling of these specific
