@@ -1,1 +1,0 @@
-This package (dev) is intended for demo code.

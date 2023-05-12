@@ -43,7 +43,7 @@ public class ItemHandler {
      */
     public static Item createNewItem(String title) throws SQLException {
         //No point creating invalid items
-        if (title == null || title.equals("")) {
+        if (title == null || title.isEmpty()) {
             System.err.println("Error creating a new item: empty title."); //TODO-log
             return null;
         }
@@ -53,7 +53,6 @@ public class ItemHandler {
         return newItem;
     }
 
-    //TODO-test
     /**
      * Saves an Item object to the database.
      *
@@ -67,9 +66,13 @@ public class ItemHandler {
      *      generate a new unique ID for the inserted item.
      */
     public static int saveItem(Item item) throws SQLException {
-        //No point saving null items
+        //No point saving null or invalid items
         if (item == null) {
             System.err.println("Error inserting item, no ID obtained: item null."); //TODO-log
+            return 0;
+        }
+        if (item.getTitle() == null || item.getTitle().isEmpty()) {
+            System.err.println("Error inserting item, no ID obtained: title null or empty."); //TODO-log
             return 0;
         }
 
@@ -155,7 +158,7 @@ public class ItemHandler {
      */
     public static Item getItemByTitle(String title) throws SQLException {
         //No point getting invalid items
-        if (title == null || title.equals("")) {
+        if (title == null || title.isEmpty()) {
             System.err.println("Error retrieving item by title: empty title."); //TODO-log
             return null;
         }

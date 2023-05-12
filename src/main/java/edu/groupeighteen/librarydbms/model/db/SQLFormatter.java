@@ -1,4 +1,4 @@
-package edu.groupeighteen.librarydbms.control.db;
+package edu.groupeighteen.librarydbms.model.db;
 
 /**
  * @author Mattias Fridsén

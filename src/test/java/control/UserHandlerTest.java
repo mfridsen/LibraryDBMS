@@ -70,41 +70,74 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Test
     @Order(2)
     void testSaveUser() {
-        System.out.println("\n2: Testing to save a user to database...");
-        // Create a User object
-        User user = new User("test_username", "test_password");
+        System.out.println("\n1: Testing saveUser method...");
 
+        // Test data
+        String username = "Test User";
+        String password = "Test Password";
+        User testUser = new User(username, password);
+
+        // Test: Saving a null user should return 0
         try {
-            // Save the user to the database
-            int generatedId = UserHandler.saveUser(user);
-
-            // Verify the generated ID is valid
-            assertTrue(generatedId > 0, "Generated ID should be greater than 0");
-
-            // Retrieve the saved user from the database
-            String sql = "SELECT * FROM users WHERE userID = ?";
-            String[] params = {String.valueOf(generatedId)};
-            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
-
-            // Verify the retrieved user data
-            ResultSet resultSet = queryResult.getResultSet();
-            assertTrue(resultSet.next(), "Result set should have at least one row");
-            assertEquals(user.getUsername(), resultSet.getString("username"), "Username should match");
-            assertEquals(user.getPassword(), resultSet.getString("password"), "Password should match");
-
-            DatabaseHandler.executeQuery("SELECT * FROM users");
-
-            //Verify that we don't attempt to save null users
-            assertEquals(0, UserHandler.saveUser(null));
-
-            // Close resources
-            queryResult.close();
+            int userId = UserHandler.saveUser(null);
+            assertEquals(0, userId, "Saving a null user should return 0.");
+        } catch (SQLException e) {
+            fail("Saving a null user should not throw an exception.");
         }
 
-        catch (SQLException e) {
-            e.printStackTrace();
-            fail("Exception occurred during test: " + e.getMessage());
+        // Test: Saving a user with a null username should return 0
+        try {
+            testUser.setUsername(null);
+            int userId = UserHandler.saveUser(testUser);
+            assertEquals(0, userId, "Saving a user with a null username should return 0.");
+        } catch (SQLException e) {
+            fail("Saving a user with a null username should not throw an exception.");
         }
+
+        // Test: Saving a user with an empty username should return 0
+        try {
+            testUser.setUsername("");
+            int userId = UserHandler.saveUser(testUser);
+            assertEquals(0, userId, "Saving a user with an empty username should return 0.");
+        } catch (SQLException e) {
+            fail("Saving a user with an empty username should not throw an exception.");
+        }
+
+        // Test: Saving a user with a null password should return 0
+        try {
+            testUser.setUsername(username); // Reset the username
+            testUser.setPassword(null);
+            int userId = UserHandler.saveUser(testUser);
+            assertEquals(0, userId, "Saving a user with a null password should return 0.");
+        } catch (SQLException e) {
+            fail("Saving a user with a null password should not throw an exception.");
+        }
+
+        // Test: Saving a user with an empty password should return 0
+        try {
+            testUser.setPassword("");
+            int userId = UserHandler.saveUser(testUser);
+            assertEquals(0, userId, "Saving a user with an empty password should return 0.");
+        } catch (SQLException e) {
+            fail("Saving a user with an empty password should not throw an exception.");
+        }
+
+        // Test: Saving a valid user should return a valid user ID
+        try {
+            testUser.setUsername(username); // Reset the username
+            testUser.setPassword(password); // Reset the password
+            int userId = UserHandler.saveUser(testUser);
+            assertTrue(userId > 0, "Saving a valid user should return a valid user ID.");
+
+            // Now, retrieve the saved user to verify that it was saved correctly.
+            User savedUser = UserHandler.getUserByID(userId);
+            assertNotNull(savedUser, "The saved user should not be null.");
+            assertEquals(username, savedUser.getUsername(), "The saved user's username should match the original username.");
+            assertEquals(password, savedUser.getPassword(), "The saved user's password should match the original password.");
+        } catch (SQLException e) {
+            fail("Saving a valid user should not throw an exception. Error: " + e.getMessage());
+        }
+
         System.out.println("Test finished.");
     }
 

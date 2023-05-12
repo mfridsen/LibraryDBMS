@@ -51,7 +51,7 @@ public class UserHandler {
      */
     public static boolean login(String username, String password) throws SQLException {
         //No point verifying empty strings
-        if (username == null ||username.equals("") || password == null || password.equals("")) {
+        if (username == null ||username.isEmpty() || password == null || password.isEmpty()) {
             System.err.println("Login failed: Empty username or password."); //TODO-log
             return false;
         }
@@ -136,7 +136,7 @@ public class UserHandler {
     public static User createNewUser(String username, String password) throws SQLException {
         //Update these two when more fields are added, as well as javadoc
         //No point creating invalid users
-        if (username == null ||username.equals("") || password == null || password.equals("")) {
+        if (username == null ||username.isEmpty() || password == null || password.isEmpty()) {
             System.err.println("Error creating a new user: empty username or password."); //TODO-log
             return null;
         }
@@ -147,6 +147,7 @@ public class UserHandler {
         return newUser;
     }
 
+    //TODO-test
     /**
      * Saves a User object to the database.
      *
@@ -160,9 +161,17 @@ public class UserHandler {
      *         generate a new unique ID for the inserted user.
      */
     public static int saveUser(User user) throws SQLException {
-        //No point inserting null users
+        //No point inserting null or invalid users
         if (user == null) {
             System.err.println("Error inserting user, no ID obtained: user null."); //TODO-log
+            return 0;
+        }
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
+            System.err.println("Error inserting user, no ID obtained: username null or empty."); //TODO-log
+            return 0;
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            System.err.println("Error inserting user, no ID obtained: password null or empty."); //TODO-log
             return 0;
         }
 
@@ -247,7 +256,7 @@ public class UserHandler {
      */
     public static User getUserByUsername(String username) throws SQLException {
         //No point getting invalid users
-        if (username == null || username.equals("")) {
+        if (username == null || username.isEmpty()) {
             System.err.println("Error retrieving user by username: empty username."); //TODO-log
             return null;
         }

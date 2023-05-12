@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DatabaseHandlerTest extends BaseHandlerTest {
 
     //TODO-future make all tests more verbose
+    //TODO-future javadoc tests properly
 
     @Test
     @Order(1)

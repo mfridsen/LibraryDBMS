@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
+import edu.groupeighteen.librarydbms.model.db.SQLFormatter;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
