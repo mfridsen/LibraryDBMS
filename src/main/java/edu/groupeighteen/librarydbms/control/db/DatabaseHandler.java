@@ -178,6 +178,34 @@ public class DatabaseHandler {
         return new QueryResult(resultSet, preparedStatement);
     }
 
+    //TODO-exception handle
+    /**
+     * Executes a SQL update operation (such as UPDATE, INSERT, or DELETE) on the database, using a prepared statement with the given SQL command and parameters.
+     *
+     * @param sql The SQL command to be executed. This command should be a SQL UPDATE, INSERT, or DELETE command, and can include placeholders (?) for parameters.
+     * @param params The parameters to be used in the SQL command. The parameters will be inserted into the command in the order they appear in the array.
+     * @return The number of rows affected by the update.
+     * @throws SQLException If an SQL error occurs while executing the command.
+     */
+    public static int executeUpdate(String sql, String[] params) throws SQLException {
+        int rowsAffected = 0;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                preparedStatement.setString(i + 1, params[i]);
+            }
+
+            // The method executeUpdate() returns the number of affected rows.
+            rowsAffected = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error executing SQL update: " + e.getMessage());
+            throw e;
+        }
+
+        return rowsAffected;
+    }
+
+
     //TODO-Exception handling, pass on upwards and also add handling of these specific
     // exceptions in the ExceptionHandler
     /**
@@ -220,7 +248,7 @@ public class DatabaseHandler {
             e.printStackTrace();
             LibraryManager.exit(1);
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //TODO-exception
         }
     }
 

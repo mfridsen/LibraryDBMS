@@ -44,6 +44,13 @@ public abstract class BaseHandlerTest {
         }
     }
 
+    void setupTestTablesAndData() {
+        DatabaseHandler.setVerbose(false);
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
+        DatabaseHandler.setVerbose(true);
+    }
+
     /**
      * Always close the connection to the database after use.
      */

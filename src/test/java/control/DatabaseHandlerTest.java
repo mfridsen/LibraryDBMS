@@ -2,7 +2,9 @@ package control;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
+import edu.groupeighteen.librarydbms.model.entities.User;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -29,6 +31,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DatabaseHandlerTest extends BaseHandlerTest {
+
+    //TODO-future make all tests more verbose
+
     @Test
     @Order(1)
     void testExecuteCommand() {
@@ -222,8 +227,6 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         }
     }
 
-    //TODO-future iterate this method
-    //TODO this method still causes exceptions due to the loading of tables and test data in createDatabase
     @Test
     @Order(5)
     void testDatabaseExistsAndCreateDatabase() {
@@ -239,6 +242,41 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
             fail("Failed to execute SQL command.");
         }
+        System.out.println("Test finished.");
+    }
+
+    @Test
+    @Order(6)
+    void testExecuteUpdate() {
+        System.out.println("\n6: Testing executeUpdate...");
+        setupTestTablesAndData();
+
+        //Let's assume that there is a user with ID 1 in the database.
+        int userIdToUpdate = 1;
+        String newUsername = "updated_username";
+        String newPassword = "updated_password";
+
+        //Prepare the SQL command and the parameters.
+        String sql = "UPDATE users SET username = ?, password = ? WHERE userID = ?";
+        String[] params = {newUsername, newPassword, String.valueOf(userIdToUpdate)};
+
+        //Execute the update.
+        int rowsAffected = 0;
+        try {
+            rowsAffected = DatabaseHandler.executeUpdate(sql, params);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Failed to execute update: " + e.getMessage());
+        }
+
+        //Verify that the update was successful.
+        assertTrue(rowsAffected > 0);
+
+        //Now, retrieve the updated user to verify that the username and password were updated.
+        User updatedUser = UserHandler.getUserByID(userIdToUpdate);
+        assertNotNull(updatedUser);
+        assertEquals(newUsername, updatedUser.getUsername());
+        assertEquals(newPassword, updatedUser.getPassword());
         System.out.println("Test finished.");
     }
 }
