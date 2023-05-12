@@ -41,32 +41,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
         String itemTitle = "Test Item";
         Item testItem = new Item(itemTitle);
 
-        // Test: Saving a null item should return 0
-        try {
-            int itemId = ItemHandler.saveItem(null);
-            assertEquals(0, itemId, "Saving a null item should return 0.");
-        } catch (SQLException e) {
-            fail("Saving a null item should not throw an exception.");
-        }
-
-        // Test: Saving an item with a null title should return 0
-        try {
-            testItem.setTitle(null);
-            int itemId = ItemHandler.saveItem(testItem);
-            assertEquals(0, itemId, "Saving an item with a null title should return 0.");
-        } catch (SQLException e) {
-            fail("Saving an item with a null title should not throw an exception.");
-        }
-
-        // Test: Saving an item with an empty title should return 0
-        try {
-            testItem.setTitle("");
-            int itemId = ItemHandler.saveItem(testItem);
-            assertEquals(0, itemId, "Saving an item with an empty title should return 0.");
-        } catch (SQLException e) {
-            fail("Saving an item with an empty title should not throw an exception.");
-        }
-
         // Test: Saving a valid item should return a valid item ID
         try {
             testItem.setTitle(itemTitle);
@@ -92,22 +66,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
     @Order(2)
     void testCreateNewItem() {
         System.out.println("\n2: Testing createNewItem method...");
-
-        // Test: Creating an item with a null title should return null
-        try {
-            Item nullItem = ItemHandler.createNewItem(null);
-            assertNull(nullItem, "Creating an item with a null title should return null.");
-        } catch (SQLException e) {
-            fail("Creating an item with a null title should not throw an exception.");
-        }
-
-        // Test: Creating an item with an empty title should return null
-        try {
-            Item emptyItem = ItemHandler.createNewItem("");
-            assertNull(emptyItem, "Creating an item with an empty title should return null.");
-        } catch (SQLException e) {
-            fail("Creating an item with an empty title should not throw an exception.");
-        }
 
         // Test: Creating a valid item should return a valid item object
         try {
@@ -227,24 +185,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testUpdateItem() {
         System.out.println("\n5: Testing UpdateItem method...");
 
-        // Test: Updating a null item should return false
-        try {
-            boolean updated = ItemHandler.updateItem(null);
-            assertFalse(updated, "Updating a null item should return false.");
-        } catch (SQLException e) {
-            fail("Updating a null item should not throw an exception.");
-        }
-
-        // Test: Updating an item with invalid ID should return false
-        try {
-            Item invalidItem = new Item("Invalid Item");
-            invalidItem.setItemID(-1);
-            boolean updated = ItemHandler.updateItem(invalidItem);
-            assertFalse(updated, "Updating an item with invalid ID should return false.");
-        } catch (SQLException e) {
-            fail("Updating an item with invalid ID should not throw an exception.");
-        }
-
         // Test: Updating a non-existent item should throw an exception
         try {
             Item nonExistentItem = new Item("Non-existent Item");
@@ -288,24 +228,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
     @Order(6)
     void testDeleteItem() {
         System.out.println("\n6: Testing DeleteItem method...");
-
-        // Test: Deleting a null item should return false
-        try {
-            boolean deleted = ItemHandler.deleteItem(null);
-            assertFalse(deleted, "Deleting a null item should return false.");
-        } catch (SQLException e) {
-            fail("Deleting a null item should not throw an exception.");
-        }
-
-        // Test: Deleting an item with invalid ID should return false
-        try {
-            Item invalidItem = new Item("Invalid Item");
-            invalidItem.setItemID(-1);
-            boolean deleted = ItemHandler.deleteItem(invalidItem);
-            assertFalse(deleted, "Deleting an item with invalid ID should return false.");
-        } catch (SQLException e) {
-            fail("Deleting an item with invalid ID should not throw an exception.");
-        }
 
         // Test: Deleting a non-existent item should return false
         try {

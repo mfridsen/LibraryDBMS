@@ -111,16 +111,6 @@ public class ItemHandler {
      *      generate a new unique ID for the inserted item.
      */
     public static int saveItem(Item item) throws SQLException {
-        //No point saving null or invalid items
-        if (item == null) {
-            System.err.println("Error inserting item, no ID obtained: item null."); //TODO-log
-            return 0;
-        }
-        if (item.getTitle() == null || item.getTitle().isEmpty()) {
-            System.err.println("Error inserting item, no ID obtained: title null or empty."); //TODO-log
-            return 0;
-        }
-
         //Prepare query
         String query = "INSERT INTO items (title) VALUES (?)"; //Update these two when more fields are added, as well as javadoc
         String[] params = {item.getTitle()}; //Update these two when more fields are added, as well as javadoc
@@ -244,16 +234,6 @@ public class ItemHandler {
      * @throws SQLException If an error occurs while interacting with the database
      */
     public static boolean updateItem(Item item) throws SQLException {
-        //No point updating null items
-        if (item == null) {
-            System.err.println("Error updating item: item null."); //TODO-log
-            return false;
-        }
-        if (item.getItemID() <= 0) {
-            System.err.println("Error updating item: invalid itemID " + item.getItemID()); //TODO-log
-            return false;
-        }
-
         //Prepare a SQL command to update a item's title by itemID.
         String sql = "UPDATE items SET title = ? WHERE itemID = ?";
         String[] params = {item.getTitle(), String.valueOf(item.getItemID())};
@@ -280,16 +260,6 @@ public class ItemHandler {
      */
     public static boolean deleteItem(Item item) throws SQLException {
         boolean isDeleted = false;
-        //No point deleting null items
-        if (item == null) {
-            System.err.println("Error deleting item: item null."); //TODO-log
-            return false;
-        }
-        if (item.getItemID() <= 0) {
-            System.err.println("Error deleting item: invalid itemID " + item.getItemID()); //TODO-log
-            return false;
-        }
-
         //Prepare a SQL command to delete a item by itemID.
         String sql = "DELETE FROM items WHERE itemID = ?";
         String[] params = {String.valueOf(item.getItemID())};
