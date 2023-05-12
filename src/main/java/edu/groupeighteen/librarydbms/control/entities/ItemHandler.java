@@ -18,21 +18,15 @@ import java.sql.*;
  * But not before.
  */
 public class ItemHandler {
-    //The code is cleaner if every Handler class stores a reference to the Connection
-    private static Connection connection;
-
+    //TODO-comment update this comment
     /**
      * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
      * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
      * with the connection as argument after the DatabaseHandlers setup method has been called.
-     * @param con the Connection to the database.
-     * @throws SQLException If an error occurs while interacting with the database
      */
-    public static void setup(Connection con) throws SQLException {
-        connection = con;
+    public static void setup() {
     }
 
-    //TODO-test
     /**
      * Creates a new Item with the specified title and saves it to the database.
      * If the Item creation fails, this method returns null.
@@ -97,7 +91,6 @@ public class ItemHandler {
 
     //TODO-exception might want to throw a custom exception (like ItemNotFoundException) instead of returning null,
     // to make error handling more consistent
-    //TODO-test
     /**
      * Retrieves a Item object from the database based on the provided item ID.
      *
@@ -144,7 +137,6 @@ public class ItemHandler {
 
     //TODO-exception might want to throw a custom exception (like ItemNotFoundException) instead of returning null,
     // to make error handling more consistent
-    //TODO-test
     /**
      * Retrieves a Item object from the database based on the provided title.
      *
@@ -188,7 +180,6 @@ public class ItemHandler {
         return null;
     }
 
-    //TODO-test
     /**
      * Updates the corresponding item's record in the database with the details of the provided Item object.
      *
@@ -201,7 +192,7 @@ public class ItemHandler {
      * @return true if the item's record was successfully updated, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database
      */
-    public boolean updateItem(Item item) throws SQLException {
+    public static boolean updateItem(Item item) throws SQLException {
         //No point updating null items
         if (item == null) {
             System.err.println("Error updating item: item null."); //TODO-log
@@ -228,7 +219,6 @@ public class ItemHandler {
         }
     }
 
-    //TODO-test
     /**
      * Deletes a item from the database.
      *
@@ -236,7 +226,7 @@ public class ItemHandler {
      * @return true if the item was successfully deleted, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database
      */
-    public boolean deleteItem(Item item) throws SQLException {
+    public static boolean deleteItem(Item item) throws SQLException {
         boolean isDeleted = false;
         //No point deleting null items
         if (item == null) {

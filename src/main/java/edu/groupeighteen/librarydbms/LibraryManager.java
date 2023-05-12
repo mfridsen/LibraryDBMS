@@ -35,9 +35,9 @@ public class LibraryManager {
         try {
             DatabaseHandler.setup(false);
             UserHandler.setup();
-            ItemHandler.setup(DatabaseHandler.getConnection());
-            //RentalHandler.setup
-            //EveryOtherHandler.setup
+            ItemHandler.setup();
+            //RentalHandler.setup()
+            //EveryOtherHandler.setup()
         } catch (SQLException | ClassNotFoundException e) { //TODO-exceptions handle
             e.printStackTrace();
         }
