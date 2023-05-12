@@ -8,10 +8,15 @@ import java.time.LocalDateTime;
  * @package edu.groupeighteen.librarydbms.model.entities
  * @contact matfir-1@student.ltu.se
  * @date 4/27/2023
- * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
+ *
+ * This class represents the union of a User an an Item in a Rental.
+ *
+ * Invariants, enforced by setters:
+ *      RentalIDs have to be positive integers.
+ *      UserIDs have to be positive integers.
+ *      ItemIDs have to be positive integers.
+ *      Usernames cannot be null or empty. //TODO-future add min and max length
+ *      Titles cannot be null or empty. //TODO-future add min and max length
  */
 public class Rental {
 
@@ -38,6 +43,9 @@ public class Rental {
     }
 
     public void setRentalID(int rentalID) {
+        if (rentalID <= 0) {
+            throw new IllegalArgumentException("RentalID must be greater than zero.");
+        }
         this.rentalID = rentalID;
     }
 
@@ -46,6 +54,9 @@ public class Rental {
     }
 
     public void setUserID(int userID) {
+        if (userID <= 0) {
+            throw new IllegalArgumentException("UserID must be greater than zero.");
+        }
         this.userID = userID;
     }
 
@@ -54,6 +65,9 @@ public class Rental {
     }
 
     public void setItemID(int itemID) {
+        if (itemID <= 0) {
+            throw new IllegalArgumentException("ItemID must be greater than zero.");
+        }
         this.itemID = itemID;
     }
 
@@ -63,5 +77,27 @@ public class Rental {
 
     public void setRentalDate(LocalDateTime rentalDate) {
         this.rentalDate = rentalDate;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty.");
+        }
+        this.username = username;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        if (title == null || title.isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty.");
+        }
+        this.title = title;
     }
 }
