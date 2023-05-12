@@ -264,19 +264,18 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         int rowsAffected = 0;
         try {
             rowsAffected = DatabaseHandler.executeUpdate(sql, params);
+            //Verify that the update was successful.
+            assertTrue(rowsAffected > 0);
+
+            //Now, retrieve the updated user to verify that the username and password were updated.
+            User updatedUser = UserHandler.getUserByID(userIdToUpdate);
+            assertNotNull(updatedUser);
+            assertEquals(newUsername, updatedUser.getUsername());
+            assertEquals(newPassword, updatedUser.getPassword());
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Failed to execute update: " + e.getMessage());
         }
-
-        //Verify that the update was successful.
-        assertTrue(rowsAffected > 0);
-
-        //Now, retrieve the updated user to verify that the username and password were updated.
-        User updatedUser = UserHandler.getUserByID(userIdToUpdate);
-        assertNotNull(updatedUser);
-        assertEquals(newUsername, updatedUser.getUsername());
-        assertEquals(newPassword, updatedUser.getPassword());
         System.out.println("Test finished.");
     }
 }

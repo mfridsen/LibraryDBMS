@@ -21,42 +21,36 @@ public class ItemHandler {
     //The code is cleaner if every Handler class stores a reference to the Connection
     private static Connection connection;
 
-    //TODO-exception comment
     /**
      * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
      * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
      * with the connection as argument after the DatabaseHandlers setup method has been called.
      * @param con the Connection to the database.
-     * @throws SQLException
+     * @throws SQLException If an error occurs while interacting with the database
      */
     public static void setup(Connection con) throws SQLException {
         connection = con;
     }
 
-    //TODO-exception throw
+    //TODO-test
     /**
      * Creates a new Item with the specified title and saves it to the database.
      * If the Item creation fails, this method returns null.
      *
      * @param title the title of the new Item object.
      * @return the created Item object on success, null on failure.
+     * @throws SQLException If an error occurs while interacting with the database
      */
-    public static Item createNewItem(String title) {
+    public static Item createNewItem(String title) throws SQLException {
         //No point creating invalid items
         if (title == null || title.equals("")) {
             System.err.println("Error creating a new item: empty title."); //TODO-log
             return null;
         }
 
-        try {
-            Item newItem = new Item(title);
-            newItem.setItemID(saveItem(newItem));
-            return newItem;
-        } catch (Exception e) {
-            System.err.println("Error creating a new item: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+        Item newItem = new Item(title);
+        newItem.setItemID(saveItem(newItem));
+        return newItem;
     }
 
     //TODO-test
@@ -99,7 +93,6 @@ public class ItemHandler {
     }
 
     //TODO-test
-    //TODO-exception throw
     /**
      * Retrieves a Item object from the database based on the provided item ID.
      *
@@ -109,8 +102,9 @@ public class ItemHandler {
      *
      * @param itemID The unique ID of the item to be retrieved.
      * @return The Item object corresponding to the provided ID, or null if no such item is found.
+     * @throws SQLException If an error occurs while interacting with the database
      */
-    public static Item getItemByID(int itemID) {
+    public static Item getItemByID(int itemID) throws SQLException {
         //No point getting impossible items
         if (itemID <= 0) {
             System.err.println("Error retrieving item by itemID: invalid itemID " + itemID); //TODO-log
@@ -134,9 +128,6 @@ public class ItemHandler {
                 item.setItemID(itemID);
                 return item;
             }
-        } catch (SQLException e) {
-            System.err.println("Error retrieving item by itemID: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             //Close the resources.
             queryResult.close();
@@ -146,7 +137,6 @@ public class ItemHandler {
         return null;
     }
 
-    //TODO-exception throw
     //TODO-test
     /**
      * Retrieves a Item object from the database based on the provided title.
@@ -157,8 +147,9 @@ public class ItemHandler {
      *
      * @param title The title of the item to be retrieved.
      * @return The Item object corresponding to the provided title, or null if no such item is found.
+     * @throws SQLException If an error occurs while interacting with the database
      */
-    public static Item getItemByTitle(String title) {
+    public static Item getItemByTitle(String title) throws SQLException {
         //No point getting invalid items
         if (title == null || title.equals("")) {
             System.err.println("Error retrieving item by title: empty title."); //TODO-log
@@ -181,9 +172,6 @@ public class ItemHandler {
                 item.setItemID(resultSet.getInt("itemID"));
                 return item;
             }
-        } catch (SQLException e) {
-            System.err.println("Error retrieving item by title: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             //Close the resources.
             queryResult.close();
@@ -204,15 +192,15 @@ public class ItemHandler {
      * @param item The Item object containing the updated details of the item.
      *             The item's itemID should correspond to an existing item in the database.
      * @return true if the item's record was successfully updated, false otherwise.
+     * @throws SQLException If an error occurs while interacting with the database
      */
     public boolean updateItem(Item item) throws SQLException {
+        boolean isUpdated = false;
         //No point updating null items
         if (item == null) {
             System.err.println("Error updating item: item null."); //TODO-log
-            return false;
+            return isUpdated;
         }
-
-        boolean isUpdated = false;
 
         //Prepare a SQL command to update a item's title by itemID.
         String sql = "UPDATE items SET title = ? WHERE itemID = ?";
@@ -238,14 +226,15 @@ public class ItemHandler {
      *
      * @param item The item to delete.
      * @return true if the item was successfully deleted, false otherwise.
+     * @throws SQLException If an error occurs while interacting with the database
      */
     public boolean deleteItem(Item item) throws SQLException {
+        boolean isDeleted = false;
+        //No point deleting null items
         if (item == null) {
             System.err.println("Error deleting item: item null."); //TODO-log
-            return false;
+            return isDeleted;
         }
-
-        boolean isDeleted = false;
 
         //Prepare a SQL command to delete a item by itemID.
         String sql = "DELETE FROM items WHERE itemID = ?";

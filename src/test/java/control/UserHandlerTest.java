@@ -47,6 +47,7 @@ public class UserHandlerTest extends BaseHandlerTest {
     }
 
     //TODO-future make all tests more verbose
+    //TODO-future javadoc all tests properly
 
     /**
      * Tests the setup method in UserHandler.
@@ -93,6 +94,9 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             DatabaseHandler.executeQuery("SELECT * FROM users");
 
+            //Verify that we don't attempt to save null users
+            assertEquals(0, UserHandler.saveUser(null));
+
             // Close resources
             queryResult.close();
         }
@@ -113,13 +117,13 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n3: Testing to create a new user...");
         String username = "example_username";
         String[] params = {username};
-        User newUser = UserHandler.createNewUser(username, "example_password");
-        assertNotNull(newUser);
-        assertTrue(UserHandler.getStoredUsernames().contains(newUser.getUsername()));
-
-        String query = "SELECT username FROM users WHERE username = ?";
-        QueryResult result = DatabaseHandler.executePreparedQuery(query, params);
         try {
+            User newUser = UserHandler.createNewUser(username, "example_password");
+            assertNotNull(newUser);
+            assertTrue(UserHandler.getStoredUsernames().contains(newUser.getUsername()));
+
+            String query = "SELECT username FROM users WHERE username = ?";
+            QueryResult result = DatabaseHandler.executePreparedQuery(query, params);
             if (result.getResultSet().next()) { // call next() to move cursor to the first row
                 String storedUsername = result.getResultSet().getString("username");
                 assertEquals(storedUsername, username);
@@ -127,6 +131,20 @@ public class UserHandlerTest extends BaseHandlerTest {
                 fail("No user found with username: " + username);
             }
             result.close();
+
+            //Verify that we don't create null users
+            // Test create with null username
+            assertNull(UserHandler.createNewUser(null, "password"), "Login with null username should return false");
+
+            // Test create with null password
+            assertNull(UserHandler.createNewUser("username", null), "Login with null password should return false");
+
+            // Test create with empty username
+            assertNull(UserHandler.createNewUser("", "password"), "Login with empty username should return false");
+
+            // Test create with empty password
+            assertNull(UserHandler.createNewUser("username", ""), "Login with empty password should return false");
+
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
@@ -146,32 +164,37 @@ public class UserHandlerTest extends BaseHandlerTest {
         String username = "test_user";
         String password = "test_password";
 
-        // Create a new user
-        User testUser = UserHandler.createNewUser(username, password);
+        try {
+            // Create a new user
+            User testUser = UserHandler.createNewUser(username, password);
 
-        // Ensure the user was created
-        assertNotNull(testUser);
+            // Ensure the user was created
+            assertNotNull(testUser);
 
-        // Test login with correct credentials
-        assertTrue(UserHandler.login(username, password), "Login with correct credentials should return true");
+            // Test login with correct credentials
+            assertTrue(UserHandler.login(username, password), "Login with correct credentials should return true");
 
-        // Test login with incorrect password
-        assertFalse(UserHandler.login(username, "wrong_password"), "Login with incorrect password should return false");
+            // Test login with incorrect password
+            assertFalse(UserHandler.login(username, "wrong_password"), "Login with incorrect password should return false");
 
-        // Test login with non-existing user
-        assertFalse(UserHandler.login("non_existing_user", password), "Login with non-existing user should return false");
+            // Test login with non-existing user
+            assertFalse(UserHandler.login("non_existing_user", password), "Login with non-existing user should return false");
 
-        // Test login with null username
-        assertFalse(UserHandler.login(null, "password"), "Login with null username should return false");
+            // Test login with null username
+            assertFalse(UserHandler.login(null, "password"), "Login with null username should return false");
 
-        // Test login with null password
-        assertFalse(UserHandler.login("username", null), "Login with null password should return false");
+            // Test login with null password
+            assertFalse(UserHandler.login("username", null), "Login with null password should return false");
 
-        // Test login with empty username
-        assertFalse(UserHandler.login("", "password"), "Login with empty username should return false");
+            // Test login with empty username
+            assertFalse(UserHandler.login("", "password"), "Login with empty username should return false");
 
-        // Test login with empty password
-        assertFalse(UserHandler.login("username", ""), "Login with empty password should return false");
+            // Test login with empty password
+            assertFalse(UserHandler.login("username", ""), "Login with empty password should return false");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
 
         System.out.println("Test finished.");
     }
@@ -188,18 +211,27 @@ public class UserHandlerTest extends BaseHandlerTest {
     void testGetUserByID() {
         System.out.println("\n5: Testing to get a user by userID...");
 
-        // Create a new user to test with
-        User testUser = UserHandler.createNewUser("test_username", "test_password");
-        assertNotNull(testUser, "Test user should not be null");
+        try {
+            // Create a new user to test with
+            User testUser = UserHandler.createNewUser("test_username", "test_password");
+            assertNotNull(testUser, "Test user should not be null");
 
-        // Fetch the user from the database using the method to test
-        User fetchedUser = UserHandler.getUserByID(testUser.getUserID());
-        assertNotNull(fetchedUser, "Fetched user should not be null");
+            // Fetch the user from the database using the method to test
+            User fetchedUser = UserHandler.getUserByID(testUser.getUserID());
+            assertNotNull(fetchedUser, "Fetched user should not be null");
 
-        // Check that the fetched user is the same as the test user
-        assertEquals(testUser.getUserID(), fetchedUser.getUserID(), "User IDs should match");
-        assertEquals(testUser.getUsername(), fetchedUser.getUsername(), "Usernames should match");
-        assertEquals(testUser.getPassword(), fetchedUser.getPassword(), "Passwords should match");
+            // Check that the fetched user is the same as the test user
+            assertEquals(testUser.getUserID(), fetchedUser.getUserID(), "User IDs should match");
+            assertEquals(testUser.getUsername(), fetchedUser.getUsername(), "Usernames should match");
+            assertEquals(testUser.getPassword(), fetchedUser.getPassword(), "Passwords should match");
+
+            //Verify that invalid userIDs return null
+            assertNull(UserHandler.getUserByID(0));
+            assertNull(UserHandler.getUserByID(-1));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
         System.out.println("Test finished.");
     }
 
@@ -216,20 +248,29 @@ public class UserHandlerTest extends BaseHandlerTest {
         // Create a new user for testing
         String username = "test_username";
         String password = "test_password";
-        User newUser = UserHandler.createNewUser(username, password);
-        assertNotNull(newUser, "New user should not be null");
+        try {
+            User newUser = UserHandler.createNewUser(username, password);
+            assertNotNull(newUser, "New user should not be null");
 
-        // Test getUserByUsername
-        User retrievedUser = UserHandler.getUserByUsername(username);
-        assertNotNull(retrievedUser, "Retrieved user should not be null");
-        assertEquals(newUser.getUsername(), retrievedUser.getUsername(), "Usernames should match");
-        assertEquals(newUser.getPassword(), retrievedUser.getPassword(), "Passwords should match");
-        assertEquals(newUser.getUserID(), retrievedUser.getUserID(), "User IDs should match");
+            // Test getUserByUsername
+            User retrievedUser = UserHandler.getUserByUsername(username);
+            assertNotNull(retrievedUser, "Retrieved user should not be null");
+            assertEquals(newUser.getUsername(), retrievedUser.getUsername(), "Usernames should match");
+            assertEquals(newUser.getPassword(), retrievedUser.getPassword(), "Passwords should match");
+            assertEquals(newUser.getUserID(), retrievedUser.getUserID(), "User IDs should match");
 
-        // Clean up
-        String sql = "DELETE FROM users WHERE userID = ?";
-        String[] params = {String.valueOf(newUser.getUserID())};
-        DatabaseHandler.executePreparedQuery(sql, params, Statement.NO_GENERATED_KEYS);
+            // Clean up
+            String sql = "DELETE FROM users WHERE userID = ?";
+            String[] params = {String.valueOf(newUser.getUserID())};
+            DatabaseHandler.executePreparedQuery(sql, params, Statement.NO_GENERATED_KEYS);
+
+            //Verify that empty usernames return false
+            assertNull(UserHandler.getUserByUsername(null));
+            assertNull(UserHandler.getUserByUsername(""));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
         System.out.println("Test finished.");
     }
 
@@ -249,15 +290,14 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Order(7)
     void testUpdateUser() {
         System.out.println("\n7: Testing to update a user...");
-        // Create a new user and save it in the database
-        User user = UserHandler.createNewUser("original_username", "original_password");
-        assertNotNull(user);
-
-        // Update the details of the user object
-        user.setUsername("updated_username");
-        user.setPassword("updated_password");
-
         try {
+            // Create a new user and save it in the database
+            User user = UserHandler.createNewUser("original_username", "original_password");
+            assertNotNull(user);
+
+            // Update the details of the user object
+            user.setUsername("updated_username");
+            user.setPassword("updated_password");
             // Call the updateUser method
             boolean isUpdated = UserHandler.updateUser(user);
             assertTrue(isUpdated, "User should be successfully updated.");
@@ -269,6 +309,9 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertNotNull(retrievedUser, "Retrieved user should not be null.");
             assertEquals(user.getUsername(), retrievedUser.getUsername(), "Usernames should match.");
             assertEquals(user.getPassword(), retrievedUser.getPassword(), "Passwords should match.");
+
+            //Check that null users aren't updated
+            assertFalse(UserHandler.updateUser(null));
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
@@ -292,13 +335,14 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Order(8)
     void testDeleteUser() {
         System.out.println("\n8: Testing to get a user by ID...");
-        User userToDelete = UserHandler.createNewUser("test_username", "test_password");
-        assertNotNull(userToDelete);
-        assertTrue(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
         try {
+            User userToDelete = UserHandler.createNewUser("test_username", "test_password");
+            assertNotNull(userToDelete);
+            assertTrue(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
             assertTrue(UserHandler.deleteUser(userToDelete));
             assertFalse(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
             assertNull(UserHandler.getUserByUsername(userToDelete.getUsername()));
+            assertFalse(UserHandler.deleteUser(null));
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
