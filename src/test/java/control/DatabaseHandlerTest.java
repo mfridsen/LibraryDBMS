@@ -21,11 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @project LibraryDBMS
  * @date 5/5/2023
  * @contact matfir-1@student.ltu.se
- * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
+ *
  * Unit Test for the DatabaseHandler class.
  */
 

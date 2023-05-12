@@ -23,30 +23,56 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ItemTest {
-    /**
-     * Tests the getter and setter methods to ensure that they correctly get and set the username
-     * and password fields.
-     */
+
     @Test
     @Order(1)
-    void testItemGettersAndSetters() {
-        System.out.println("\nTesting Item class...");
-        // Arrange
-        String expectedTitle = "Test Item Title";
-        String secondExpectedTitle = "Test Item Title 2";
-        int expectedItemID = 1;
+    void testConstructor() {
+        System.out.println("\n1: Testing Item Constructor...");
 
-        // Act
-        Item item = new Item(expectedTitle);
-        item.setItemID(expectedItemID);
+        //Test valid constructor
+        Item validItem = new Item("Harry Potter");
+        assertEquals("Harry Potter", validItem.getTitle());
 
-        // Assert
-        assertEquals(expectedItemID, item.getItemID(), "ItemID does not match the expected value");
-        assertEquals(expectedTitle, item.getTitle(), "Title does not match the expected value");
+        //Test invalid constructor
+        assertThrows(IllegalArgumentException.class, () -> new Item(null));
+        assertThrows(IllegalArgumentException.class, () -> new Item(""));
 
-        item.setTitle(secondExpectedTitle);
-        assertEquals(secondExpectedTitle, item.getTitle(), "Title does not match the expected value");
+        System.out.println("Test finished.");
+    }
 
-        System.out.println("Test finished!");
+    @Test
+    @Order(2)
+    void testSetItemID() {
+        System.out.println("\n2: Testing setItemID method...");
+
+        Item validItem = new Item("Harry Potter");
+
+        //Test valid setItemID
+        validItem.setItemID(1);
+        assertEquals(1, validItem.getItemID());
+
+        //Test invalid setItemID
+        assertThrows(IllegalArgumentException.class, () -> validItem.setItemID(0));
+        assertThrows(IllegalArgumentException.class, () -> validItem.setItemID(-1));
+
+        System.out.println("Test finished.");
+    }
+
+    @Test
+    @Order(3)
+    void testSetTitle() {
+        System.out.println("\n3: Testing setTitle method...");
+
+        Item validItem = new Item("Harry Potter");
+
+        //Test valid setTitle
+        validItem.setTitle("Harry Potter 2");
+        assertEquals("Harry Potter 2", validItem.getTitle());
+
+        //Test invalid setTitle
+        assertThrows(IllegalArgumentException.class, () -> validItem.setTitle(null));
+        assertThrows(IllegalArgumentException.class, () -> validItem.setTitle(""));
+
+        System.out.println("Test finished.");
     }
 }

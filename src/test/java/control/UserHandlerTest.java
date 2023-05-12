@@ -16,11 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @project LibraryDBMS
  * @date 4/19/2023
  * @contact matfir-1@student.ltu.se
- * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
+ *
  * Unit Test for the UserHandler class.
  */
 
@@ -76,51 +72,6 @@ public class UserHandlerTest extends BaseHandlerTest {
         String password = "Test Password";
         User testUser = new User(username, password);
 
-        // Test: Saving a null user should return 0
-        try {
-            int userId = UserHandler.saveUser(null);
-            assertEquals(0, userId, "Saving a null user should return 0.");
-        } catch (SQLException e) {
-            fail("Saving a null user should not throw an exception.");
-        }
-
-        // Test: Saving a user with a null username should return 0
-        try {
-            testUser.setUsername(null);
-            int userId = UserHandler.saveUser(testUser);
-            assertEquals(0, userId, "Saving a user with a null username should return 0.");
-        } catch (SQLException e) {
-            fail("Saving a user with a null username should not throw an exception.");
-        }
-
-        // Test: Saving a user with an empty username should return 0
-        try {
-            testUser.setUsername("");
-            int userId = UserHandler.saveUser(testUser);
-            assertEquals(0, userId, "Saving a user with an empty username should return 0.");
-        } catch (SQLException e) {
-            fail("Saving a user with an empty username should not throw an exception.");
-        }
-
-        // Test: Saving a user with a null password should return 0
-        try {
-            testUser.setUsername(username); // Reset the username
-            testUser.setPassword(null);
-            int userId = UserHandler.saveUser(testUser);
-            assertEquals(0, userId, "Saving a user with a null password should return 0.");
-        } catch (SQLException e) {
-            fail("Saving a user with a null password should not throw an exception.");
-        }
-
-        // Test: Saving a user with an empty password should return 0
-        try {
-            testUser.setPassword("");
-            int userId = UserHandler.saveUser(testUser);
-            assertEquals(0, userId, "Saving a user with an empty password should return 0.");
-        } catch (SQLException e) {
-            fail("Saving a user with an empty password should not throw an exception.");
-        }
-
         // Test: Saving a valid user should return a valid user ID
         try {
             testUser.setUsername(username); // Reset the username
@@ -163,20 +114,6 @@ public class UserHandlerTest extends BaseHandlerTest {
                 fail("No user found with username: " + username);
             }
             result.close();
-
-            //Verify that we don't create null users
-            // Test create with null username
-            assertNull(UserHandler.createNewUser(null, "password"), "Login with null username should return false");
-
-            // Test create with null password
-            assertNull(UserHandler.createNewUser("username", null), "Login with null password should return false");
-
-            // Test create with empty username
-            assertNull(UserHandler.createNewUser("", "password"), "Login with empty username should return false");
-
-            // Test create with empty password
-            assertNull(UserHandler.createNewUser("username", ""), "Login with empty password should return false");
-
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
@@ -341,16 +278,6 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertNotNull(retrievedUser, "Retrieved user should not be null.");
             assertEquals(user.getUsername(), retrievedUser.getUsername(), "Usernames should match.");
             assertEquals(user.getPassword(), retrievedUser.getPassword(), "Passwords should match.");
-
-            //Check that null users aren't updated
-            assertFalse(UserHandler.updateUser(null));
-
-            //Check that users with invalid userID can't be deleted
-            user = new User("asd", "asd");
-            user.setUserID(0);
-            assertFalse(UserHandler.updateUser(user));
-            user.setUserID(-1);
-            assertFalse(UserHandler.updateUser(user));
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
@@ -381,12 +308,6 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertTrue(UserHandler.deleteUser(userToDelete));
             assertFalse(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
             assertNull(UserHandler.getUserByUsername(userToDelete.getUsername()));
-            assertFalse(UserHandler.deleteUser(null));
-            userToDelete = new User("asd", "asd");
-            userToDelete.setUserID(0);
-            assertFalse(UserHandler.deleteUser(userToDelete));
-            userToDelete.setUserID(-1);
-            assertFalse(UserHandler.deleteUser(userToDelete));
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());

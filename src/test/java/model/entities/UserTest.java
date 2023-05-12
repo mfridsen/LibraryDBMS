@@ -24,28 +24,89 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTest {
-    /**
-     * Tests the getter and setter methods to ensure that they correctly get and set the username
-     * and password fields.
-     */
+
     @Test
     @Order(1)
-    void testUserGettersAndSetters() {
-        System.out.println("\nTesting User class...");
-        // Arrange
-        String expectedUsername = "testUsername";
-        String expectedPassword = "testPassword";
-        int expectedUserID = 1;
+    void testConstructor() {
+        System.out.println("\n1: Testing User Constructor...");
 
-        // Act
-        User user = new User(expectedUsername, expectedPassword);
-        user.setUserID(expectedUserID);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new User(null, "password");
+        });
 
-        // Assert
-        assertEquals(expectedUserID, user.getUserID(), "UserID does not match the expected value");
-        assertEquals(expectedUsername, user.getUsername(), "Username does not match the expected value");
-        assertEquals(expectedPassword, user.getPassword(), "Password does not match the expected value");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new User("", "password");
+        });
 
-        System.out.println("Test finished!");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new User("username", null);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new User("username", "");
+        });
+
+        User user = new User("username", "password");
+        assertEquals("username", user.getUsername());
+        assertEquals("password", user.getPassword());
+
+        System.out.println("Test finished.");
+    }
+
+    @Test
+    @Order(2)
+    void testSetUserID() {
+        System.out.println("\n2: Testing setUserID method...");
+
+        User user = new User("username", "password");
+        assertThrows(IllegalArgumentException.class, () -> {
+            user.setUserID(0);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            user.setUserID(-1);
+        });
+
+        user.setUserID(1);
+        assertEquals(1, user.getUserID());
+
+        System.out.println("Test finished.");
+    }
+
+    @Test
+    @Order(3)
+    void testSetUsername() {
+        System.out.println("\n3: Testing setUsername method...");
+
+        User user = new User("username", "password");
+        assertThrows(IllegalArgumentException.class, () -> {
+            user.setUsername(null);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            user.setUsername("");
+        });
+
+        user.setUsername("new_username");
+        assertEquals("new_username", user.getUsername());
+
+        System.out.println("Test finished.");
+    }
+
+    @Test
+    @Order(4)
+    void testSetPassword() {
+        System.out.println("\n4: Testing setPassword method...");
+
+        User user = new User("username", "password");
+        assertThrows(IllegalArgumentException.class, () -> {
+            user.setPassword(null);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            user.setPassword("");
+        });
+
+        user.setPassword("new_password");
+        assertEquals("new_password", user.getPassword());
+
+        System.out.println("Test finished.");
     }
 }

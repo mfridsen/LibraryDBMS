@@ -6,6 +6,13 @@ package edu.groupeighteen.librarydbms.model.entities;
  * @package edu.groupeighteen.librarydbms.model
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
+ *
+ * This class represents a User of the application.
+ *
+ * Invariants, enforced by setters:
+ *      UserIDs have to be positive integers.
+ *      Usernames cannot be null or empty. //TODO-future add min and max length
+ *      Passwords cannot be null or empty. //TODO-future add min and max length
  */
 public class User {
 
@@ -17,8 +24,8 @@ public class User {
     private String password;
 
     public User(String username, String password) {
-        this.username = username;
-        this.password = password;
+        setUsername(username);
+        setPassword(password);
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
@@ -27,6 +34,9 @@ public class User {
     }
 
     public void setUserID(int userID) {
+        if (userID <= 0) {
+            throw new IllegalArgumentException("UserID must be greater than zero.");
+        }
         this.userID = userID;
     }
 
@@ -35,6 +45,9 @@ public class User {
     }
 
     public void setUsername(String username) {
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty.");
+        }
         this.username = username;
     }
 
@@ -43,6 +56,9 @@ public class User {
     }
 
     public void setPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty.");
+        }
         this.password = password;
     }
 }

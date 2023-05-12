@@ -165,20 +165,6 @@ public class UserHandler {
      *         generate a new unique ID for the inserted user.
      */
     public static int saveUser(User user) throws SQLException {
-        //No point inserting null or invalid users
-        if (user == null) {
-            System.err.println("Error inserting user, no ID obtained: user null."); //TODO-log
-            return 0;
-        }
-        if (user.getUsername() == null || user.getUsername().isEmpty()) {
-            System.err.println("Error inserting user, no ID obtained: username null or empty."); //TODO-log
-            return 0;
-        }
-        if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            System.err.println("Error inserting user, no ID obtained: password null or empty."); //TODO-log
-            return 0;
-        }
-
         //Prepare query
         String query = "INSERT INTO users (username, password) VALUES (?, ?)"; //Update these two when more fields are added, as well as javadoc
         String[] params = {user.getUsername(), user.getPassword()}; //Update these two when more fields are added, as well as javadoc
@@ -303,16 +289,6 @@ public class UserHandler {
      * @return true if the user's record was successfully updated, false otherwise.
      */
     public static boolean updateUser(User user) throws SQLException {
-        //No point updating null users
-        if (user == null) {
-            System.err.println("Error updating user: user null."); //TODO-log
-            return false;
-        }
-        if (user.getUserID() <= 0) {
-            System.err.println("Error updating user: invalid userID " + user.getUserID()); //TODO-log
-            return false;
-        }
-
         //Prepare a SQL command to update a user's username and password by userID.
         String sql = "UPDATE users SET username = ?, password = ? WHERE userID = ?";
         String[] params = {user.getUsername(), user.getPassword(), String.valueOf(user.getUserID())};
@@ -337,16 +313,6 @@ public class UserHandler {
      */
     public static boolean deleteUser(User user) throws SQLException {
         boolean isDeleted = false;
-        //No point deleting null users
-        if (user == null) {
-            System.err.println("Error deleting user: user null."); //TODO-log
-            return false;
-        }
-        if (user.getUserID() <= 0) {
-            System.err.println("Error deleting user: invalid userID " + user.getUserID()); //TODO-log
-            return false;
-        }
-
         //Prepare a SQL command to delete a user by userID.
         String sql = "DELETE FROM users WHERE userID = ?";
         String[] params = {String.valueOf(user.getUserID())};

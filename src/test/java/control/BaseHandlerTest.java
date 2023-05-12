@@ -14,10 +14,6 @@ import java.sql.SQLException;
  * @package control
  * @contact matfir-1@student.ltu.se
  * @date 5/5/2023
- * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
  *
  * This class contains the methods and fields that are shared among all HandlerTest classes, in order to better adhere
  * to the DRY principle.

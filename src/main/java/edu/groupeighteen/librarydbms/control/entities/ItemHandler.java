@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @author Mattias Fridsén
@@ -269,6 +270,7 @@ public class ItemHandler {
         }
     }
 
+    //TODO-test re-test and expand comment
     /**
      * Deletes a item from the database.
      *
@@ -298,7 +300,20 @@ public class ItemHandler {
         //Check if the delete was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
             isDeleted = true;
-            storedTitles.remove(item.getTitle()); //TODO-fix this, we might still have more items in store with that title
+
+            //Check if there are still other items with the same title
+            sql = "SELECT COUNT(*) FROM items WHERE title = ?";
+            params[0] = item.getTitle();
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+            ResultSet resultSet = queryResult.getResultSet();
+            resultSet.next(); //Move to the first row
+
+            //If no other items with the same title exist, remove the title from storedTitles
+            if (resultSet.getInt(1) == 0) {
+                storedTitles.remove(item.getTitle());
+            }
+
+            queryResult.close();
         }
 
         //Return whether the item was deleted successfully.

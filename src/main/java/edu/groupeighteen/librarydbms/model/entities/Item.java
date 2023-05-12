@@ -6,6 +6,12 @@ package edu.groupeighteen.librarydbms.model.entities;
  * @package edu.groupeighteen.librarydbms.model
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
+ *
+ * This class represents an Item in the library.
+ *
+ * Invariants, enforced by setters:
+ *      ItemIDs have to be positive integers.
+ *      Titles cannot be null or empty. //TODO-future add min and max length
  */
 public class Item {
 
@@ -16,7 +22,7 @@ public class Item {
     private String title;
 
     public Item(String title) {
-        this.title = title;
+        setTitle(title);
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
@@ -25,6 +31,9 @@ public class Item {
     }
 
     public void setItemID(int itemID) {
+        if (itemID <= 0) {
+            throw new IllegalArgumentException("ItemID must be greater than zero.");
+        }
         this.itemID = itemID;
     }
 
@@ -33,6 +42,9 @@ public class Item {
     }
 
     public void setTitle(String title) {
+        if (title == null || title.isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty.");
+        }
         this.title = title;
     }
 }
