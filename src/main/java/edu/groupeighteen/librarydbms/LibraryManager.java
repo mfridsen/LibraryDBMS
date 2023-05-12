@@ -34,7 +34,7 @@ public class LibraryManager {
     public static void setup() {
         try {
             DatabaseHandler.setup(false);
-            UserHandler.setup(DatabaseHandler.getConnection());
+            UserHandler.setup();
             ItemHandler.setup(DatabaseHandler.getConnection());
             //RentalHandler.setup
             //EveryOtherHandler.setup

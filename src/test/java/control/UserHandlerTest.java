@@ -56,7 +56,7 @@ public class UserHandlerTest extends BaseHandlerTest {
     void testSetup() {
         System.out.println("\n1: Testing to setup UserHandler...");
         try {
-            UserHandler.setup(connection);
+            UserHandler.setup();
             assertFalse(UserHandler.getStoredUsernames().isEmpty());
             UserHandler.printUsernames();
         } catch (SQLException e) {

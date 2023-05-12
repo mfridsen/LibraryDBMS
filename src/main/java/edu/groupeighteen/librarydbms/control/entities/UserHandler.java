@@ -21,18 +21,15 @@ public class UserHandler {
     //Needed since usernames must be unique
     private static ArrayList<String> storedUsernames = new ArrayList<>();
     //The code is cleaner if every Handler class stores a reference to the Connection
-    private static Connection connection;
 
     //TODO-exception handle
     /**
      * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
      * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
      * with the connection as argument after the DatabaseHandlers setup method has been called.
-     * @param con the Connection to the database.
      * @throws SQLException
      */
-    public static void setup(Connection con) throws SQLException {
-        connection = con;
+    public static void setup() throws SQLException {
         syncUsernames();
     }
 
