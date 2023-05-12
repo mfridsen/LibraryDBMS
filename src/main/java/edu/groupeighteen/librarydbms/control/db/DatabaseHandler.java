@@ -48,24 +48,6 @@ public class DatabaseHandler {
         if (!databaseExists(LibraryManager.databaseName)) {
             createDatabase(LibraryManager.databaseName);
         }
-
-        //Delete DB if already exists
-        executeCommand("drop database if exists " + LibraryManager.databaseName);
-        //Create DB
-        executeCommand("create database " + LibraryManager.databaseName);
-        //Show DBs in server
-        executeQuery("show databases");
-        //Use DB
-        executeCommand("use " + LibraryManager.databaseName);
-        executeQuery("show tables");
-        //Create tables
-        executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
-        //Show tables in DB
-        executeQuery("show tables");
-        //Load test data
-        executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
-        executeQuery("SELECT * FROM users ORDER BY userID ASC");
-        executeQuery("SELECT * FROM items");
     }
 
     /**
@@ -90,7 +72,11 @@ public class DatabaseHandler {
     }
 
     public static void createDatabase(String databaseName) throws SQLException {
+        //Create DB
         executeCommand("create database " + databaseName);
+        //Use DB
+        executeCommand("use " + LibraryManager.databaseName);
+        //Fill DB with tables and datak
         executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
     }

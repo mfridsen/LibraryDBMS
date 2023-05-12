@@ -53,11 +53,16 @@ public class UserHandlerTest extends BaseHandlerTest {
      */
     @Test
     @Order(1)
-    void testSetup() throws SQLException{
+    void testSetup() {
         System.out.println("\n1: Testing to setup UserHandler...");
-        UserHandler.setup(connection);
-        assertFalse(UserHandler.getStoredUsernames().isEmpty());
-        UserHandler.printUsernames();
+        try {
+            UserHandler.setup(connection);
+            assertFalse(UserHandler.getStoredUsernames().isEmpty());
+            UserHandler.printUsernames();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
         System.out.println("Test finished.");
     }
 
@@ -181,7 +186,7 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Test
     @Order(5)
     void testGetUserByID() {
-        System.out.println("\n5: Testing to get a user by ID...");
+        System.out.println("\n5: Testing to get a user by userID...");
 
         // Create a new user to test with
         User testUser = UserHandler.createNewUser("test_username", "test_password");
@@ -207,14 +212,15 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Test
     @Order(6)
     void testGetUserByUsername() {
+        System.out.println("\n6: Testing to get a user by username...");
         // Create a new user for testing
         String username = "test_username";
         String password = "test_password";
         User newUser = UserHandler.createNewUser(username, password);
+        assertNotNull(newUser, "New user should not be null");
 
         // Test getUserByUsername
         User retrievedUser = UserHandler.getUserByUsername(username);
-
         assertNotNull(retrievedUser, "Retrieved user should not be null");
         assertEquals(newUser.getUsername(), retrievedUser.getUsername(), "Usernames should match");
         assertEquals(newUser.getPassword(), retrievedUser.getPassword(), "Passwords should match");
@@ -242,6 +248,7 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Test
     @Order(7)
     void testUpdateUser() {
+        System.out.println("\n7: Testing to update a user...");
         // Create a new user and save it in the database
         User user = UserHandler.createNewUser("original_username", "original_password");
         assertNotNull(user);
@@ -250,17 +257,23 @@ public class UserHandlerTest extends BaseHandlerTest {
         user.setUsername("updated_username");
         user.setPassword("updated_password");
 
-        // Call the updateUser method
-        boolean isUpdated = UserHandler.updateUser(user);
-        assertTrue(isUpdated, "User should be successfully updated.");
+        try {
+            // Call the updateUser method
+            boolean isUpdated = UserHandler.updateUser(user);
+            assertTrue(isUpdated, "User should be successfully updated.");
 
-        // Retrieve the updated user from the database
-        User retrievedUser = UserHandler.getUserByID(user.getUserID());
+            // Retrieve the updated user from the database
+            User retrievedUser = UserHandler.getUserByID(user.getUserID());
 
-        // Check if the details match the updated user object
-        assertNotNull(retrievedUser, "Retrieved user should not be null.");
-        assertEquals(user.getUsername(), retrievedUser.getUsername(), "Usernames should match.");
-        assertEquals(user.getPassword(), retrievedUser.getPassword(), "Passwords should match.");
+            // Check if the details match the updated user object
+            assertNotNull(retrievedUser, "Retrieved user should not be null.");
+            assertEquals(user.getUsername(), retrievedUser.getUsername(), "Usernames should match.");
+            assertEquals(user.getPassword(), retrievedUser.getPassword(), "Passwords should match.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+        System.out.println("Test finished.");
     }
 
     /**
@@ -274,17 +287,22 @@ public class UserHandlerTest extends BaseHandlerTest {
      * <p>
      * The test will pass if the deleteUser method successfully deletes the user from the database and the storedUsernames list,
      * and the retrieved user is null.
-     *
-     * @throws SQLException if any SQL error occurs during the test.
      */
     @Test
-    @Order(7)
-    void testDeleteUser() throws SQLException {
+    @Order(8)
+    void testDeleteUser() {
+        System.out.println("\n8: Testing to get a user by ID...");
         User userToDelete = UserHandler.createNewUser("test_username", "test_password");
         assertNotNull(userToDelete);
         assertTrue(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
-        assertTrue(UserHandler.deleteUser(userToDelete));
-        assertFalse(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
-        assertNull(UserHandler.getUserByUsername(userToDelete.getUsername()));
+        try {
+            assertTrue(UserHandler.deleteUser(userToDelete));
+            assertFalse(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
+            assertNull(UserHandler.getUserByUsername(userToDelete.getUsername()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+        System.out.println("Test finished.");
     }
 }

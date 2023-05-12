@@ -56,6 +56,7 @@ public class UserHandler {
     public static boolean login(String username, String password) {
         //No point verifying empty strings
         if (username == null ||username.equals("") || password == null || password.equals("")) {
+            System.err.println("Login failed: Empty username or password."); //TODO-log
             return false;
         }
 
@@ -131,28 +132,37 @@ public class UserHandler {
 
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
+    //TODO-test
     //TODO-exception handle
     /**
-     * Creates a new user with the specified username and password and saves it to the database.
-     * If the user creation fails, this method returns null.
+     * Creates a new User with the specified username and password and saves it to the database.
+     * If the User creation fails, this method returns null.
      *
-     * @param username the username of the new user
-     * @param password the password of the new user
-     * @return the created User object, or null if the user creation fails
+     * @param username the username of the new User.
+     * @param password the password of the new User.
+     * @return the created User object on success, null on failure.
      */
     public static User createNewUser(String username, String password) {
+        //Update these two when more fields are added, as well as javadoc
+        //No point creating invalid users
+        if (username == null ||username.equals("") || password == null || password.equals("")) {
+            System.err.println("Error creating a new user: empty username or password."); //TODO-log
+            return null;
+        }
+
         try {
             User newUser = new User(username, password);
             newUser.setUserID(saveUser(newUser));
             storedUsernames.add(newUser.getUsername()); //Need to remember to add to the list
             return newUser;
         } catch (SQLException e) {
-            System.err.println("Error creating a new user: " + e.getMessage());
+            System.err.println("Error creating a new user: " + e.getMessage()); //TODO-log
             e.printStackTrace();
             return null;
         }
     }
 
+    //TODO-test
     //TODO-exception handle
     /**
      * Saves a User object to the database.
@@ -166,13 +176,21 @@ public class UserHandler {
      * @throws SQLException If an error occurs while interacting with the database, or if the database does not
      *         generate a new unique ID for the inserted user.
      */
-
     public static int saveUser(User user) throws SQLException {
-        String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-        String[] params = {user.getUsername(), user.getPassword()};
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, Statement.RETURN_GENERATED_KEYS);
+        //No point inserting null users
+        if (user == null) {
+            System.err.println("Error inserting user, no ID obtained: user null."); //TODO-log
+            return 0;
+        }
 
-        // Get the generated userID
+        //Prepare query
+        String query = "INSERT INTO users (username, password) VALUES (?, ?)"; //Update these two when more fields are added, as well as javadoc
+        String[] params = {user.getUsername(), user.getPassword()}; //Update these two when more fields are added, as well as javadoc
+
+        //Execute query
+        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS);
+
+        //Get the generated userID
         ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
         if (generatedKeys.next()) {
             int id = generatedKeys.getInt(1);
@@ -180,10 +198,11 @@ public class UserHandler {
             return id;
         } else {
             queryResult.close();
-            throw new SQLException("Failed to insert the user, no ID obtained.");
+            throw new SQLException("Failed to insert the user, no ID obtained."); //TODO-exception Should probably crash program
         }
     }
 
+    //TODO-test
     //TODO-exception handle
     /**
      * Retrieves a User object from the database based on the provided user ID.
@@ -196,6 +215,12 @@ public class UserHandler {
      * @return The User object corresponding to the provided ID, or null if no such user is found.
      */
     public static User getUserByID(int userID) {
+        //No point getting impossible users
+        if (userID <= 0) {
+            System.err.println("Error retrieving user by userID: invalid userID: " + userID); //TODO-log
+            return null;
+        }
+
         //Prepare a SQL query to select a user by userID.
         String query = "SELECT username, password FROM users WHERE userID = ?";
         String[] params = {String.valueOf(userID)};
@@ -226,6 +251,7 @@ public class UserHandler {
         return null;
     }
 
+    //TODO-test
     //TODO-exception handle
     /**
      * Retrieves a User object from the database based on the provided username.
@@ -238,6 +264,12 @@ public class UserHandler {
      * @return The User object corresponding to the provided username, or null if no such user is found.
      */
     public static User getUserByUsername(String username) {
+        //No point getting invalid users
+        if (username == null || username.equals("")) {
+            System.err.println("Error retrieving user by username: invalid username."); //TODO-log
+            return null;
+        }
+
         // Prepare a SQL query to select a user by username.
         String query = "SELECT userID, password FROM users WHERE username = ?";
         String[] params = {username};
@@ -266,6 +298,7 @@ public class UserHandler {
         return null;
     }
 
+    //TODO-test
     //TODO-exception handle
     /**
      * Updates the corresponding user's record in the database with the details of the provided User object.
@@ -278,31 +311,35 @@ public class UserHandler {
      *             The user's userID should correspond to an existing user in the database.
      * @return true if the user's record was successfully updated, false otherwise.
      */
-    public static boolean updateUser(User user) {
+    public static boolean updateUser(User user) throws SQLException {
+        //No point inserting null users
+        if (user == null) {
+            System.err.println("Error updating user: user null."); //TODO-log
+            return false;
+        }
+
         boolean isUpdated = false;
 
         // Prepare a SQL command to update a user's username and password by userID.
         String sql = "UPDATE users SET username = ?, password = ? WHERE userID = ?";
         String[] params = {user.getUsername(), user.getPassword(), String.valueOf(user.getUserID())};
 
-        try {
-            // Execute the update.
-            int rowsAffected = DatabaseHandler.executeUpdate(sql, params);
+        // Execute the update.
+        int rowsAffected = DatabaseHandler.executeUpdate(sql, params);
 
-            // Check if the update was successful (i.e., if any rows were affected)
-            if (rowsAffected > 0) {
-                isUpdated = true;
-                storedUsernames.remove(user.getUsername());
-            }
-        } catch (SQLException e) {
-            System.err.println("Error updating user: " + e.getMessage());
-            e.printStackTrace();
+        // Check if the update was successful (i.e., if any rows were affected)
+        if (rowsAffected > 0) {
+            isUpdated = true;
+            storedUsernames.remove(user.getUsername());
+        } else {
+            throw new SQLException("Error updating user:");
         }
 
         // Return whether the user was updated successfully.
         return isUpdated;
     }
 
+    //TODO-test
     //TODO-exception handle
     /**
      * Deletes a user from the database.
@@ -311,7 +348,13 @@ public class UserHandler {
      * @return true if the user was successfully deleted, false otherwise.
      */
     public static boolean deleteUser(User user) throws SQLException {
+        if (user == null) {
+            System.err.println("Error deleting user: user null."); //TODO-log
+            return false;
+        }
+
         boolean isDeleted = false;
+
         //Prepare a SQL command to delete a user by userID.
         String sql = "DELETE FROM users WHERE userID = ?";
         String[] params = {String.valueOf(user.getUserID())};
@@ -327,5 +370,4 @@ public class UserHandler {
 
         return isDeleted;
     }
-
 }
