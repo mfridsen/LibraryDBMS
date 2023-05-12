@@ -22,6 +22,8 @@ import org.junit.platform.suite.api.Suite;
         //Control tests
         DatabaseHandlerTest.class, //TODO-future text blocks are all printed at the beginning when suite is run
         UserHandlerTest.class,
+        ItemHandlerTest.class,
+        RentalHandlerTest.class,
 })
 
 public class ControlTestSuite {

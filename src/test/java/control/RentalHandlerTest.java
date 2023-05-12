@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * When we can (based on the time and resources available),
  * But not before.
  * <p>
- * Unit Test for the ItemHandler class.
+ * Unit Test for the RentalHandler class.
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ItemHandlerTest extends BaseHandlerTest {
+public class RentalHandlerTest extends BaseHandlerTest {
 
     @BeforeEach
     @Override
@@ -28,12 +28,12 @@ public class ItemHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Tests all constructors in ItemHandler.
+     * Tests all constructors in RentalHandler.
      */
     @Test
     @Order(1)
-    public void testSaveItem() {
-        System.out.println("\n1: Testing saveItem method...");
+    public void testCreateRentalHandler() {
+        System.out.println("\n1: Testing creating RentalHandler...");
         System.out.println("No test implemented here yet!");
         //TODO Write your code here
         System.out.println("Test finished.");
