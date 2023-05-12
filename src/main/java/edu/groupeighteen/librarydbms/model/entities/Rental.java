@@ -23,6 +23,11 @@ public class Rental {
     private int itemID; //Foreign key referencing Item
     private LocalDateTime rentalDate; //Date of creation
 
+    //TODO-prio look into this
+    //The Rental objects probably need to store username and title name
+    private String username;
+    private String title;
+
     public Rental(LocalDateTime rentalDate) {
         this.rentalDate = rentalDate;
     }
