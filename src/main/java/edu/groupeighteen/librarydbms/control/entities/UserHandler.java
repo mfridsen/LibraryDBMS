@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class UserHandler {
     //Needed since usernames must be unique
-    private static final ArrayList<String> usernames = new ArrayList<>();
+    private static ArrayList<String> storedUsernames = new ArrayList<>();
     //The code is cleaner if every Handler class stores a reference to the Connection
     private static Connection connection;
 
@@ -33,14 +33,21 @@ public class UserHandler {
      */
     public static void setup(Connection con) throws SQLException {
         connection = con;
-        retrieveUsernamesFromTable();
+        syncUsernames();
+    }
+
+    //TODO-future
+    public static void syncUsernames() throws SQLException {
+        if (!storedUsernames.isEmpty())
+            storedUsernames.clear();
+        storedUsernames = retrieveUsernamesFromTable();
     }
 
     //login stuff -----------------------------------------------------------------------------------------------------
 
     //TODO-exception Handle
     //TODO-test
-    //TODO change to taking a User object as argument instead of Strings
+    //TODO change to taking a User object as argument instead of Strings (or should it? don't think so)
     /**
      * Basic login method. Checks whether username exists in usernames. If it does, check whether password
      * matches that user's password.
@@ -48,30 +55,39 @@ public class UserHandler {
      * @param password the password attempting to login
      * @return true if successful, otherwise false
      */
-    public static boolean login(String username, String password) throws SQLException {
-        boolean isAuthenticated = false;
-
-        if (!usernames.contains(username)) {
-            System.out.println(username + ": no such user in database.");
+    public static boolean login(String username, String password) {
+        //No point verifying empty strings
+        if (username == null ||username.equals("") || password == null || password.equals("")) {
             return false;
         }
 
-        String query = "SELECT password FROM users WHERE username = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, username);
+        boolean isAuthenticated = false;
 
-        // Execute the query and check if the input password matches the retrieved password
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            String storedPassword = resultSet.getString("password");
-            if (password.equals(storedPassword)) {
-                isAuthenticated = true;
-            }
+        if (!storedUsernames.contains(username)) {
+            //TODO-future log or otherwise present the problem to the user
+            //TODO-future this should apply to staff logins, doesn't need to apply to patrons
+            System.err.println(username + ": no such user in list of usernames.");
         }
 
-        // Close the resources
-        resultSet.close();
-        preparedStatement.close();
+        String query = "SELECT password FROM users WHERE username = ?";
+        String[] params = {username};
+
+        // Execute the query and check if the input password matches the retrieved password
+        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
+        try {
+            ResultSet resultSet = queryResult.getResultSet();
+            if (resultSet.next()) {
+                String storedPassword = resultSet.getString("password");
+                if (password.equals(storedPassword)) {
+                    isAuthenticated = true;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while logging in: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            queryResult.close();
+        }
 
         return isAuthenticated;
     }
@@ -82,9 +98,10 @@ public class UserHandler {
      * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
      * @throws SQLException
      */
-    private static void retrieveUsernamesFromTable() throws SQLException {
+    private static ArrayList<String> retrieveUsernamesFromTable() throws SQLException {
         //Execute the query to retrieve all usernames
         QueryResult result = DatabaseHandler.executeQuery("SELECT username FROM users ORDER BY userID ASC");
+        ArrayList<String> usernames = new ArrayList<>();
 
         //Add the retrieved usernames to the ArrayList
         while (result.getResultSet().next()) {
@@ -93,6 +110,7 @@ public class UserHandler {
 
         // Close the resources
         result.close();
+        return usernames;
     }
 
     /**
@@ -100,7 +118,7 @@ public class UserHandler {
      */
     public static void printUsernames() {
         System.out.println("\nUsernames:");
-        for (String username : usernames) {
+        for (String username : storedUsernames) {
             System.out.println(username);
         }
     }
@@ -109,8 +127,8 @@ public class UserHandler {
      * Returns the ArrayList of usernames.
      * @return the ArrayList of usernames
      */
-    public static ArrayList<String> getUsernames() {
-        return usernames;
+    public static ArrayList<String> getStoredUsernames() {
+        return storedUsernames;
     }
 
     //CRUD stuff ------------------------------------------------------------------------------------------------------
@@ -128,7 +146,7 @@ public class UserHandler {
         try {
             User newUser = new User(username, password);
             newUser.setUserID(saveUser(newUser));
-            usernames.add(newUser.getUsername()); //Need to remember to add to the list
+            storedUsernames.add(newUser.getUsername()); //Need to remember to add to the list
             return newUser;
         } catch (SQLException e) {
             System.err.println("Error creating a new user: " + e.getMessage());

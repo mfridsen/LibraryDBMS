@@ -1,5 +1,6 @@
 package control;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import org.junit.jupiter.api.*;
@@ -66,11 +67,13 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         } catch (SQLException e) {
             fail("Failed to drop temp_table: " + e.getMessage());
         }
+        System.out.println("Test finished.");
     }
 
     @Test
     @Order(2)
     void testExecuteQuery() {
+        System.out.println("2: Testing executeQuery method...");
         String tableName = "test_table";
         try {
             // Create a new table
@@ -103,13 +106,14 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
                 fail("Exception occurred while closing resources: " + e.getMessage());
             }
         }
+        System.out.println("Test finished.");
     }
 
     @Test
     @Order(3)
     void testExecutePreparedQuery() {
+        System.out.println("3: Testing executePreparedQuery method...");
         String tableName = "test_table";
-
         try {
             // Create a new table
             String createTableQuery = "CREATE TABLE " + tableName + " (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255))";
@@ -145,11 +149,13 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
                 fail("Exception occurred while closing resources: " + e.getMessage());
             }
         }
+        System.out.println("Test finished.");
     }
 
     @Test
     @Order(4)
     void testExecuteSQLCommandsFromFile() {
+        System.out.println("4: Testing executeSQLCommandsFromFile method...");
         // Set up the path to the test SQL file
         String testSQLFilePath = "src/test/resources/sql/test_sql_file.sql";
 
@@ -168,25 +174,24 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             String selectQuery = "SELECT column1, column2 FROM test_table";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(selectQuery);
-
             // Check if resultSet has a row
             assertTrue(resultSet.next());
-
             // Check if the values in the resultSet match the expected values
             assertEquals("value1", resultSet.getString("column1"));
             assertEquals("value2", resultSet.getString("column2"));
-
             // Clean up - drop the test_table and close resources
             DatabaseHandler.executeCommand("DROP TABLE test_table");
             resultSet.close();
             statement.close();
+        }
 
-        } catch (SQLException e) {
+        catch (SQLException e) {
             e.printStackTrace();
             fail("Failed to verify the result of executing SQL commands from file.");
         }
 
         testFile.delete();
+        System.out.println("Test finished.");
     }
 
     /**
@@ -200,7 +205,6 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
                 -- Insert test data
                 INSERT INTO test_table (column1, column2) VALUES ('value1', 'value2');
                 """;
-
         try {
             File testSQLFile = new File(filePath);
             if (!testSQLFile.exists()) {
@@ -219,11 +223,22 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     }
 
     //TODO-future iterate this method
+    //TODO this method still causes exceptions due to the loading of tables and test data in createDatabase
     @Test
-    @Order(4)
-    void testSetup() {
-        //Test the setup method. This test will have to be added to iteratively  until the tables are finished
-        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
-        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
+    @Order(5)
+    void testDatabaseExistsAndCreateDatabase() {
+        System.out.println("5: Testing databaseExists and createDatabase methods...");
+        try {
+            DatabaseHandler.executeCommand("drop database if exists " + LibraryManager.databaseName);
+            assertFalse(DatabaseHandler.databaseExists(LibraryManager.databaseName));
+            DatabaseHandler.setVerbose(false);
+            DatabaseHandler.createDatabase(LibraryManager.databaseName);
+            DatabaseHandler.setVerbose(true);
+            assertTrue(DatabaseHandler.databaseExists(LibraryManager.databaseName));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Failed to execute SQL command.");
+        }
+        System.out.println("Test finished.");
     }
 }

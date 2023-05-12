@@ -44,6 +44,11 @@ public class DatabaseHandler {
         DatabaseHandler.verbose = verbose;
         //Connect to database
         connection = DatabaseConnection.connectToLocalSQLServer();
+
+        if (!databaseExists(LibraryManager.databaseName)) {
+            createDatabase(LibraryManager.databaseName);
+        }
+
         //Delete DB if already exists
         executeCommand("drop database if exists " + LibraryManager.databaseName);
         //Create DB
@@ -61,6 +66,33 @@ public class DatabaseHandler {
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         executeQuery("SELECT * FROM users ORDER BY userID ASC");
         executeQuery("SELECT * FROM items");
+    }
+
+    /**
+     * Checks whether the a given database already exists on the server.
+     * @param databaseName the name of the database in question.
+     * @return true if the database exists, otherwise false.
+     */
+    public static boolean databaseExists(String databaseName) {
+        String query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?";
+        String[] params = {databaseName.toLowerCase()};
+
+        try {
+            QueryResult queryResult = executePreparedQuery(query, params);
+            ResultSet resultSet = queryResult.getResultSet();
+            boolean exists = resultSet.next();
+            queryResult.close();
+            return exists;
+        } catch (SQLException e) {
+            System.err.println("Error checking if database exists: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static void createDatabase(String databaseName) throws SQLException {
+        executeCommand("create database " + databaseName);
+        executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
+        executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
     }
 
     //TODO handle exceptions
@@ -93,6 +125,11 @@ public class DatabaseHandler {
      * @return a QueryResult
      */
     public static QueryResult executeQuery(String query) {
+        if (verbose) {
+            System.out.println("\nExecuting query:");
+            SQLFormatter.printFormattedSQL(query);
+        }
+
         ResultSet resultSet = null;
         Statement statement = null;
         try {
@@ -115,26 +152,26 @@ public class DatabaseHandler {
      * @return
      */
     public static QueryResult executePreparedQuery(String query, String[] params, int... settings) {
+        if (verbose) {
+            System.out.println("\nExecuting prepared query:");
+            SQLFormatter.printFormattedSQL(query);
+        }
+
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
             //Prepare the statement with the given settings
             preparedStatement = connection.prepareStatement(query, settings);
-
             //Set the parameters
             for (int i = 0; i < params.length; i++) {
                 preparedStatement.setString(i + 1, params[i]);
             }
-
             //Execute the query
-            preparedStatement.executeUpdate();
-
+            preparedStatement.execute();
             //Get the result set, if available
             resultSet = preparedStatement.getResultSet();
-        }
-
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println("Error executing prepared SQL query: " + e.getMessage());
             e.printStackTrace();
         }
