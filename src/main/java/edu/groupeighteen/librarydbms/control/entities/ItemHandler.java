@@ -92,6 +92,8 @@ public class ItemHandler {
         }
     }
 
+    //TODO-exception might want to throw a custom exception (like ItemNotFoundException) instead of returning null,
+    // to make error handling more consistent
     //TODO-test
     /**
      * Retrieves a Item object from the database based on the provided item ID.
@@ -137,6 +139,8 @@ public class ItemHandler {
         return null;
     }
 
+    //TODO-exception might want to throw a custom exception (like ItemNotFoundException) instead of returning null,
+    // to make error handling more consistent
     //TODO-test
     /**
      * Retrieves a Item object from the database based on the provided title.
@@ -195,11 +199,14 @@ public class ItemHandler {
      * @throws SQLException If an error occurs while interacting with the database
      */
     public boolean updateItem(Item item) throws SQLException {
-        boolean isUpdated = false;
         //No point updating null items
         if (item == null) {
             System.err.println("Error updating item: item null."); //TODO-log
-            return isUpdated;
+            return false;
+        }
+        if (item.getItemID() <= 0) {
+            System.err.println("Error updating item: invalid itemID " + item.getItemID()); //TODO-log
+            return false;
         }
 
         //Prepare a SQL command to update a item's title by itemID.
@@ -211,13 +218,11 @@ public class ItemHandler {
 
         //Check if the update was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
-            isUpdated = true;
+            //Return whether the item was updated successfully.
+            return true;
         } else {
             throw new SQLException("Error updating item:");
         }
-
-        //Return whether the item was updated successfully.
-        return isUpdated;
     }
 
     //TODO-test
@@ -233,7 +238,11 @@ public class ItemHandler {
         //No point deleting null items
         if (item == null) {
             System.err.println("Error deleting item: item null."); //TODO-log
-            return isDeleted;
+            return false;
+        }
+        if (item.getItemID() <= 0) {
+            System.err.println("Error deleting item: invalid itemID " + item.getItemID()); //TODO-log
+            return false;
         }
 
         //Prepare a SQL command to delete a item by itemID.
@@ -246,7 +255,6 @@ public class ItemHandler {
         //Check if the delete was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
             isDeleted = true;
-
         }
 
         //Return whether the item was deleted successfully.

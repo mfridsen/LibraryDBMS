@@ -312,6 +312,13 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             //Check that null users aren't updated
             assertFalse(UserHandler.updateUser(null));
+
+            //Check that users with invalid userID can't be deleted
+            user = new User("asd", "asd");
+            user.setUserID(0);
+            assertFalse(UserHandler.updateUser(user));
+            user.setUserID(-1);
+            assertFalse(UserHandler.updateUser(user));
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
@@ -343,6 +350,11 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertFalse(UserHandler.getStoredUsernames().contains(userToDelete.getUsername()));
             assertNull(UserHandler.getUserByUsername(userToDelete.getUsername()));
             assertFalse(UserHandler.deleteUser(null));
+            userToDelete = new User("asd", "asd");
+            userToDelete.setUserID(0);
+            assertFalse(UserHandler.deleteUser(userToDelete));
+            userToDelete.setUserID(-1);
+            assertFalse(UserHandler.deleteUser(userToDelete));
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());

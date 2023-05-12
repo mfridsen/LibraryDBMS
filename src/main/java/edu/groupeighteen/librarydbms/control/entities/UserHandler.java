@@ -185,6 +185,8 @@ public class UserHandler {
         }
     }
 
+    //TODO-exception might want to throw a custom exception (like UserNotFoundException) instead of returning null,
+    // to make error handling more consistent
     /**
      * Retrieves a User object from the database based on the provided user ID.
      *
@@ -230,6 +232,8 @@ public class UserHandler {
         return null;
     }
 
+    //TODO-exception might want to throw a custom exception (like UserNotFoundException) instead of returning null,
+    // to make error handling more consistent
     /**
      * Retrieves a User object from the database based on the provided username.
      *
@@ -285,11 +289,14 @@ public class UserHandler {
      * @return true if the user's record was successfully updated, false otherwise.
      */
     public static boolean updateUser(User user) throws SQLException {
-        boolean isUpdated = false;
         //No point updating null users
         if (user == null) {
             System.err.println("Error updating user: user null."); //TODO-log
-            return isUpdated;
+            return false;
+        }
+        if (user.getUserID() <= 0) {
+            System.err.println("Error updating user: invalid userID " + user.getUserID()); //TODO-log
+            return false;
         }
 
         //Prepare a SQL command to update a user's username and password by userID.
@@ -301,14 +308,12 @@ public class UserHandler {
 
         //Check if the update was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
-            isUpdated = true;
+            //Return whether the user was updated successfully.
             storedUsernames.remove(user.getUsername());
+            return true;
         } else {
             throw new SQLException("Error updating user:");
         }
-
-        //Return whether the user was updated successfully.
-        return isUpdated;
     }
 
     /**
@@ -322,7 +327,11 @@ public class UserHandler {
         //No point deleting null users
         if (user == null) {
             System.err.println("Error deleting user: user null."); //TODO-log
-            return isDeleted;
+            return false;
+        }
+        if (user.getUserID() <= 0) {
+            System.err.println("Error deleting user: invalid userID " + user.getUserID()); //TODO-log
+            return false;
         }
 
         //Prepare a SQL command to delete a user by userID.
