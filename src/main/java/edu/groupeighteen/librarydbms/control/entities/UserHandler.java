@@ -19,7 +19,6 @@ import java.util.ArrayList;
  */
 public class UserHandler {
     //Needed since usernames must be unique
-    //TODO maybe change to Set?
     private static ArrayList<String> storedUsernames = new ArrayList<>();
 
     //TODO-comment update this comment

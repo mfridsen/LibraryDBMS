@@ -1,6 +1,5 @@
 package model.entities;
 
-import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -33,9 +32,11 @@ public class RentalTest {
         System.out.println("\n1: Testing Rental Constructor...");
 
         LocalDateTime now = LocalDateTime.now();
-        Rental rental = new Rental(now);
+        Rental rental = new Rental(1, 1, now);
 
         assertNotNull(rental);
+        assertEquals(1, rental.getUserID());
+        assertEquals(1, rental.getItemID());
         assertEquals(now, rental.getRentalDate());
 
         System.out.println("Test finished.");
@@ -46,7 +47,7 @@ public class RentalTest {
     void testSetRentalID() {
         System.out.println("\n2: Testing setRentalID method...");
 
-        Rental rental = new Rental(LocalDateTime.now());
+        Rental rental = new Rental(1, 1, LocalDateTime.now());
 
         assertThrows(IllegalArgumentException.class, () -> rental.setRentalID(0));
         assertThrows(IllegalArgumentException.class, () -> rental.setRentalID(-1));
@@ -62,13 +63,13 @@ public class RentalTest {
     void testSetUserID() {
         System.out.println("\n3: Testing setUserID method...");
 
-        Rental rental = new Rental(LocalDateTime.now());
+        Rental rental = new Rental(1, 1, LocalDateTime.now());
 
         assertThrows(IllegalArgumentException.class, () -> rental.setUserID(0));
         assertThrows(IllegalArgumentException.class, () -> rental.setUserID(-1));
 
-        rental.setUserID(1);
-        assertEquals(1, rental.getUserID());
+        rental.setUserID(2);
+        assertEquals(2, rental.getUserID());
 
         System.out.println("Test finished.");
     }
@@ -78,13 +79,13 @@ public class RentalTest {
     void testSetItemID() {
         System.out.println("\n4: Testing setItemID method...");
 
-        Rental rental = new Rental(LocalDateTime.now());
+        Rental rental = new Rental(1, 1, LocalDateTime.now());
 
         assertThrows(IllegalArgumentException.class, () -> rental.setItemID(0));
         assertThrows(IllegalArgumentException.class, () -> rental.setItemID(-1));
 
-        rental.setItemID(1);
-        assertEquals(1, rental.getItemID());
+        rental.setItemID(2);
+        assertEquals(2, rental.getItemID());
 
         System.out.println("Test finished.");
     }
@@ -94,7 +95,8 @@ public class RentalTest {
     void testSetUsername() {
         System.out.println("\n5: Testing setUsername method...");
 
-        Rental rental = new Rental(LocalDateTime.now());
+        Rental rental = new Rental(1, 1, LocalDateTime.now());
+
         assertThrows(IllegalArgumentException.class, () -> {
             rental.setUsername(null);
         });
@@ -113,7 +115,7 @@ public class RentalTest {
     void testSetTitle() {
         System.out.println("\n6: Testing setTitle method...");
 
-        Rental rental = new Rental(LocalDateTime.now());
+        Rental rental = new Rental(1, 1, LocalDateTime.now());
 
         //Test valid setTitle
         rental.setTitle("Harry Potter 2");

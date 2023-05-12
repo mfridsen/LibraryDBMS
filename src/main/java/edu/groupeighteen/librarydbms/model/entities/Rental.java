@@ -27,14 +27,16 @@ public class Rental {
     private int userID; //Foreign key referencing User
     private int itemID; //Foreign key referencing Item
     private LocalDateTime rentalDate; //Date of creation
+    private String username; //Set upon creation or retrieval
+    private String title; //Set upon creation or retrieval
 
-    //TODO-prio look into this
-    //The Rental objects probably need to store username and title name
-    private String username;
-    private String title;
-
-    public Rental(LocalDateTime rentalDate) {
+    public Rental(int userID, int itemID, LocalDateTime rentalDate) {
+        this.rentalID = 0;
+        setUserID(userID);
+        setItemID(itemID);
         this.rentalDate = rentalDate;
+        this.username = null;
+        this.title = null;
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/

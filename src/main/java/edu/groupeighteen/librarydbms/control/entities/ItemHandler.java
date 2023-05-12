@@ -6,7 +6,6 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * @author Mattias Fridsén
@@ -21,7 +20,6 @@ import java.util.Set;
  */
 public class ItemHandler {
     //Used to speed up searching
-    //TODO maybe change to Set?
     private static ArrayList<String> storedTitles = new ArrayList<>();
 
     //TODO-comment update this comment
