@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * @author Mattias Fridsén
@@ -18,13 +19,60 @@ import java.sql.*;
  * But not before.
  */
 public class ItemHandler {
+    //Used to speed up searching
+    //TODO maybe change to Set?
+    private static ArrayList<String> storedTitles = new ArrayList<>();
+
     //TODO-comment update this comment
     /**
      * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
      * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
      * with the connection as argument after the DatabaseHandlers setup method has been called.
      */
-    public static void setup() {
+    public static void setup() throws SQLException {
+        syncTitles();
+    }
+
+    //TODO-comment
+    //TODO-test
+    public static void syncTitles() throws SQLException {
+        if (!storedTitles.isEmpty()) {
+            storedTitles.clear();
+        }
+        storedTitles = retrieveTitlesFromTable();
+    }
+
+    //TODO-comment
+    //TODO-test
+    private static ArrayList<String> retrieveTitlesFromTable() throws SQLException {
+        //Execute the query to retrieve all titles
+        QueryResult result = DatabaseHandler.executeQuery("SELECT title FROM items ORDER BY itemID ASC");
+        ArrayList<String> titles = new ArrayList<>();
+
+        //Add the retrieved titles to the ArrayList
+        while (result.getResultSet().next()) {
+            titles.add(result.getResultSet().getString("title"));
+        }
+
+        //Close the resources
+        result.close();
+        return titles;
+    }
+
+    //TODO-comment
+    //TODO-test
+    public static void printTitles() {
+        System.out.println("\nTitles:");
+        int num = 1;
+        for (String title : storedTitles) {
+            System.out.println(num + ": " + title);
+            num++;
+        }
+    }
+
+    //TODO-comment
+    public static ArrayList<String> getStoredTitles() {
+        return storedTitles;
     }
 
     /**
@@ -44,6 +92,8 @@ public class ItemHandler {
 
         Item newItem = new Item(title);
         newItem.setItemID(saveItem(newItem));
+        if (!storedTitles.contains(newItem.getTitle())) //We don't need duplicates
+            storedTitles.add(newItem.getTitle());
         return newItem;
     }
 
@@ -248,6 +298,7 @@ public class ItemHandler {
         //Check if the delete was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
             isDeleted = true;
+            storedTitles.remove(item.getTitle()); //TODO-fix this, we might still have more items in store with that title
         }
 
         //Return whether the item was deleted successfully.

@@ -19,6 +19,7 @@ import java.util.ArrayList;
  */
 public class UserHandler {
     //Needed since usernames must be unique
+    //TODO maybe change to Set?
     private static ArrayList<String> storedUsernames = new ArrayList<>();
 
     //TODO-comment update this comment
@@ -32,14 +33,52 @@ public class UserHandler {
         syncUsernames();
     }
 
-    //TODO-future
+    //TODO-comment
     public static void syncUsernames() throws SQLException {
         if (!storedUsernames.isEmpty())
             storedUsernames.clear();
         storedUsernames = retrieveUsernamesFromTable();
     }
 
-    //login stuff -----------------------------------------------------------------------------------------------------
+    /**
+     * Method that retrieves the usernames in the users table and stores them in the static ArrayList.
+     * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
+     * @throws SQLException If an error occurs while interacting with the database
+     */
+    private static ArrayList<String> retrieveUsernamesFromTable() throws SQLException {
+        //Execute the query to retrieve all usernames
+        QueryResult result = DatabaseHandler.executeQuery("SELECT username FROM users ORDER BY userID ASC");
+        ArrayList<String> usernames = new ArrayList<>();
+
+        //Add the retrieved usernames to the ArrayList
+        while (result.getResultSet().next()) {
+            usernames.add(result.getResultSet().getString("username"));
+        }
+
+        //Close the resources
+        result.close();
+        return usernames;
+    }
+
+    /**
+     * Prints all usernames in the ArrayList.
+     */
+    public static void printUsernames() {
+        System.out.println("\nUsernames:");
+        int num = 1;
+        for (String username : storedUsernames) {
+            System.out.println(num + ": " + username);
+            num++;
+        }
+    }
+
+    /**
+     * Returns the ArrayList of usernames.
+     * @return the ArrayList of usernames
+     */
+    public static ArrayList<String> getStoredUsernames() {
+        return storedUsernames;
+    }
 
     /**
      * Basic login method. Checks whether username exists in usernames. If it does, check whether password
@@ -84,44 +123,6 @@ public class UserHandler {
         return isAuthenticated;
     }
 
-    /**
-     * Method that retrieves the usernames in the users table and stores them in the static ArrayList.
-     * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
-     * @throws SQLException If an error occurs while interacting with the database
-     */
-    private static ArrayList<String> retrieveUsernamesFromTable() throws SQLException {
-        //Execute the query to retrieve all usernames
-        QueryResult result = DatabaseHandler.executeQuery("SELECT username FROM users ORDER BY userID ASC");
-        ArrayList<String> usernames = new ArrayList<>();
-
-        //Add the retrieved usernames to the ArrayList
-        while (result.getResultSet().next()) {
-            usernames.add(result.getResultSet().getString("username"));
-        }
-
-        //Close the resources
-        result.close();
-        return usernames;
-    }
-
-    /**
-     * Prints all usernames in the ArrayList.
-     */
-    public static void printUsernames() {
-        System.out.println("\nUsernames:");
-        for (String username : storedUsernames) {
-            System.out.println(username);
-        }
-    }
-
-    /**
-     * Returns the ArrayList of usernames.
-     * @return the ArrayList of usernames
-     */
-    public static ArrayList<String> getStoredUsernames() {
-        return storedUsernames;
-    }
-
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
     /**
@@ -140,6 +141,10 @@ public class UserHandler {
             System.err.println("Error creating a new user: empty username or password."); //TODO-log
             return null;
         }
+        if (storedUsernames.contains(username)) { //TODO-test
+            System.err.println("Error creating a new user: username taken."); //TODO-log
+            return null;
+        }
 
         User newUser = new User(username, password);
         newUser.setUserID(saveUser(newUser));
@@ -147,7 +152,6 @@ public class UserHandler {
         return newUser;
     }
 
-    //TODO-test
     /**
      * Saves a User object to the database.
      *
@@ -286,6 +290,7 @@ public class UserHandler {
         return null;
     }
 
+    //TODO-future changing a username is not handled properly
     /**
      * Updates the corresponding user's record in the database with the details of the provided User object.
      *
@@ -318,7 +323,6 @@ public class UserHandler {
         //Check if the update was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
             //Return whether the user was updated successfully.
-            storedUsernames.remove(user.getUsername());
             return true;
         } else {
             throw new SQLException("Error updating user:");
