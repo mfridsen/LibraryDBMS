@@ -1,5 +1,10 @@
 package edu.groupeighteen.librarydbms.model.db;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,8 +32,19 @@ public class DatabaseConnection {
      */
     public static Connection connectToLocalSQLServer() throws SQLException, ClassNotFoundException {
         String url = "jdbc:mysql://localhost:3306";
-        String user = "root";
-        String password = "password";
+        String user = null;
+        String password = null;
+
+        try {
+            // Read the user and password from config.json
+            Gson gson = new Gson();
+            JsonElement config = gson.fromJson(new FileReader("src/main/resources/documents/config.json"), JsonElement.class);
+            user = config.getAsJsonObject().get("user").getAsString();
+            password = config.getAsJsonObject().get("password").getAsString();
+        } catch (IOException e) {
+            // Handle any exceptions that might occur while reading the file
+        }
+
         return connectToDatabaseServer(url, user, password);
     }
 

@@ -76,7 +76,7 @@ public class DatabaseHandler {
         executeCommand("create database " + databaseName);
         //Use DB
         executeCommand("use " + LibraryManager.databaseName);
-        //Fill DB with tables and datak
+        //Fill DB with tables and data
         executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
     }
