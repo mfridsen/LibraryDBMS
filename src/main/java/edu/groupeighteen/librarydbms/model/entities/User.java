@@ -11,8 +11,8 @@ package edu.groupeighteen.librarydbms.model.entities;
  *
  * Invariants, enforced by setters:
  *      UserIDs have to be positive integers.
- *      Usernames cannot be null or empty. //TODO-future add min and max length
- *      Passwords cannot be null or empty. //TODO-future add min and max length
+ *      Usernames cannot be null or empty. //TODO-future add min and max length 3-20
+ *      Passwords cannot be null or empty. //TODO-future add min and max length 8-50
  */
 public class User {
 

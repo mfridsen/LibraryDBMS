@@ -89,6 +89,7 @@ public class ItemHandler {
             return null;
         }
 
+        //Create and save the new item, retrieving the ID
         Item newItem = new Item(title);
         newItem.setItemID(saveItem(newItem));
         if (!storedTitles.contains(newItem.getTitle())) //We don't need duplicates

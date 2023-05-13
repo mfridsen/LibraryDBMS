@@ -124,6 +124,7 @@ public class UserHandler {
 
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
+    //TODO-prio change validation to throw IllegalArgumentExceptions
     /**
      * Creates a new User with the specified username and password and saves it to the database.
      * If the User creation fails, this method returns null.
@@ -145,12 +146,14 @@ public class UserHandler {
             return null;
         }
 
+        //Create and save the new user, retrieving the ID
         User newUser = new User(username, password);
         newUser.setUserID(saveUser(newUser));
         storedUsernames.add(newUser.getUsername()); //Need to remember to add to the list
         return newUser;
     }
 
+    //TODO-prio change to try-with-resources
     /**
      * Saves a User object to the database.
      *

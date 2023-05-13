@@ -14,8 +14,10 @@ import java.sql.Statement;
  * A utility class representing the result of a SQL query execution. This class is designed to encapsulate
  * both the ResultSet and the Statement, allowing for easier management of resources, especially when closing
  * the ResultSet and the Statement.
+ *
+ * Implements {@link AutoCloseable} in order to be used with try-with-resources.
  */
-public class QueryResult {
+public class QueryResult implements AutoCloseable {
     private final ResultSet resultSet;
     private final Statement statement;
 

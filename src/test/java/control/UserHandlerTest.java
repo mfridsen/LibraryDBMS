@@ -43,6 +43,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
     //TODO-future make all tests more verbose
     //TODO-future javadoc all tests properly
+    //TODO-prio change order of tests to match order of methods
 
     /**
      * Tests the {@link UserHandler#setup()} method in UserHandler.
@@ -87,7 +88,8 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertEquals(username, savedUser.getUsername(), "The saved user's username should match the original username.");
             assertEquals(password, savedUser.getPassword(), "The saved user's password should match the original password.");
         } catch (SQLException e) {
-            fail("Saving a valid user should not throw an exception. Error: " + e.getMessage());
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
         }
 
         System.out.println("Test finished.");

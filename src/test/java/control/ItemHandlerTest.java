@@ -22,6 +22,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     //TODO-future make all tests more verbose
     //TODO-future javadoc tests properly
+    //TODO-prio change order of tests to match order of methods
 
     @BeforeEach
     @Override
