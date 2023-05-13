@@ -36,7 +36,7 @@ public class LibraryManager {
             DatabaseHandler.setup(false);
             UserHandler.setup();
             ItemHandler.setup();
-            //RentalHandler.setup()
+            //RentalHandler.setup() //Might not be needed
             //EveryOtherHandler.setup()
         } catch (SQLException | ClassNotFoundException e) { //TODO-exceptions handle
             e.printStackTrace();

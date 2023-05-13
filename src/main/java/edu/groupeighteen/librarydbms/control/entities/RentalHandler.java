@@ -19,17 +19,6 @@ import java.util.List;
  */
 public class RentalHandler {
 
-    //TODO-comment update comment
-    /**
-     * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
-     * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
-     * with the connection as argument after the DatabaseHandlers setup method has been called.
-     * @throws SQLException
-     */
-    public static void setup() throws SQLException {
-
-    }
-
     public static Rental createNewRental() {
         return null;
     }
