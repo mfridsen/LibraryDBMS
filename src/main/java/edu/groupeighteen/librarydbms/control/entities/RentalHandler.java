@@ -304,14 +304,89 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     // to make error handling more consistent
+    /**
+     * This method retrieves all rentals that are associated with a specific user, creates a Rental object for each one,
+     * and adds it to a list. The list of rentals is then returned. If no rentals are found for the specified user,
+     * an empty list is returned.
+     *
+     * @param userID the ID of the user whose rentals are to be retrieved.
+     * @return The list of rentals if found, otherwise an empty list.
+     * @throws SQLException If an error occurs while interacting with the database.
+     */
     public static List<Rental> getRentalsByUserID(int userID) throws SQLException {
-        return null;
+        // Validate the input
+        if (userID <= 0)
+            throw new IllegalArgumentException("Invalid userID: " + userID + ". userID must be greater than 0.");
+
+        // Prepare a SQL query to select rentals by userID
+        String query = "SELECT * FROM rentals WHERE userID = ?";
+        String[] params = {String.valueOf(userID)};
+
+        // Create an empty list to store the rentals
+        List<Rental> rentals = new ArrayList<>();
+
+        // Execute the query and store the result in a ResultSet
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+
+            // Loop through the ResultSet
+            while (resultSet.next()) {
+                // For each row in the ResultSet, create a new Rental object and add it to the list
+                int rentalID = resultSet.getInt("rentalID");
+                int itemID = resultSet.getInt("itemID");
+                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
+
+                Rental rental = new Rental(userID, itemID, rentalDate);
+                rental.setRentalID(rentalID);
+                rentals.add(rental);
+            }
+        }
+        // Return the list of rentals
+        return rentals;
     }
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     // to make error handling more consistent
+    /**
+     * This method retrieves all rentals that have the specified item ID, creates a Rental object for each one,
+     * and adds it to a list. The list of rentals is then returned. If no rentals with the specified item ID are found,
+     * an empty list is returned.
+     *
+     * @param itemID the ID of the item.
+     * @return The list of rentals if found, otherwise an empty list.
+     * @throws SQLException If an error occurs while interacting with the database.
+     * @throws IllegalArgumentException If the itemID is less than or equal to 0.
+     */
     public static List<Rental> getRentalsByItemID(int itemID) throws SQLException {
-        return null;
+        // Validate the input
+        if (itemID <= 0)
+            throw new IllegalArgumentException("Invalid itemID: " + itemID + ". itemID must be greater than 0.");
+
+        // Prepare a SQL query to select rentals by itemID
+        String query = "SELECT * FROM rentals WHERE itemID = ?";
+        String[] params = {Integer.toString(itemID)};
+
+        // Create an empty list to store the rentals
+        List<Rental> rentals = new ArrayList<>();
+
+        // Execute the query and store the result in a ResultSet
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+
+            // Loop through the ResultSet
+            while (resultSet.next()) {
+                // For each row in the ResultSet, create a new Rental object and add it to the list
+                int rentalID = resultSet.getInt("rentalID");
+                int userID = resultSet.getInt("userID");
+                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
+
+                Rental rental = new Rental(userID, itemID, rentalDate);
+                rental.setRentalID(rentalID);
+                rentals.add(rental);
+            }
+        }
+        // Return the list of rentals
+        return rentals;
     }
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,

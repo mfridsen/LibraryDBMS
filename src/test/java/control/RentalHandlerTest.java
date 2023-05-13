@@ -296,19 +296,93 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("Test finished.");
     }
 
+    /**
+     * This test first creates three rentals with the same user ID. It then verifies that getRentalsByUserID can
+     * correctly retrieve all three rentals. It also tests the method's behavior when passed a user ID with no rentals
+     * and verifies that it correctly returns an empty list.
+     * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
+     */
     @Test
     @Order(8)
     void testGetRentalsByUserID() {
         System.out.println("\n8: Testing getRentalsByUserID method...");
-        //Test the retrieval of Rentals by their userID
+
+        //Create new rentals to test with
+        try {
+            // Create three rentals with the same userID
+            Rental rental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(3));
+            Rental rental2 = RentalHandler.createNewRental(1, 2, LocalDateTime.now().minusDays(2));
+            Rental rental3 = RentalHandler.createNewRental(1, 3, LocalDateTime.now().minusDays(1));
+
+            //Test valid getRentalsByUserID
+            List<Rental> rentals = RentalHandler.getRentalsByUserID(1);
+            assertNotNull(rentals);
+            assertEquals(3, rentals.size()); // There should be three rentals for userID 1
+
+            // Check that the correct rentals were retrieved
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            // Test with a userID that has no rentals
+            rentals = RentalHandler.getRentalsByUserID(2);
+            assertNotNull(rentals);
+            assertTrue(rentals.isEmpty());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        // Test invalid getRentalsByUserID
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByUserID(0));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByUserID(-1));
+
         System.out.println("Test finished.");
     }
 
+    /**
+     * This test first creates three rentals with the same item ID. It then verifies that getRentalsByItemID can
+     * correctly retrieve all three rentals. It also tests the method's behavior when passed a item ID with no rentals
+     * and verifies that it correctly returns an empty list.
+     * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
+     */
     @Test
     @Order(9)
     void testGetRentalsByItemID() {
         System.out.println("\n9: Testing getRentalsByItemID method...");
-        //Test the retrieval of Rentals by their itemID
+
+        //Create new rentals to test with
+        try {
+            // Create three rentals with the same itemID
+            Rental rental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(3));
+            Rental rental2 = RentalHandler.createNewRental(2, 1, LocalDateTime.now().minusDays(2));
+            Rental rental3 = RentalHandler.createNewRental(3, 1, LocalDateTime.now().minusDays(1));
+
+            //Test valid getRentalsByItemID
+            List<Rental> rentals = RentalHandler.getRentalsByItemID(1);
+            assertNotNull(rentals);
+            assertEquals(3, rentals.size()); // There should be three rentals for itemID 1
+
+            // Check that the correct rentals were retrieved
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            // Test with a itemID that has no rentals
+            rentals = RentalHandler.getRentalsByItemID(2);
+            assertNotNull(rentals);
+            assertTrue(rentals.isEmpty());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        // Test invalid getRentalsByItemID
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByItemID(0));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByItemID(-1));
+        
         System.out.println("Test finished.");
     }
 
