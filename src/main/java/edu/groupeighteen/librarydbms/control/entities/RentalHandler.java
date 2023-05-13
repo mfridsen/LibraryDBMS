@@ -20,6 +20,17 @@ import java.util.List;
 public class RentalHandler {
 
     public static Rental createNewRental(int userID, int itemID, LocalDateTime rentalDate) throws SQLException {
+        //No need to proceed with invalid data
+        if (userID <= 0 || itemID <= 0) {
+            System.err.println("Error creating a new rental: invalid userID or itemID.");
+            return null;
+        }
+
+        if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0) {
+            System.err.println("Error creating a new rental: invalid rentalDate.");
+            return null;
+        }
+
         return null;
     }
 

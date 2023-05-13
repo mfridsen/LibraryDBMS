@@ -18,21 +18,21 @@ import java.util.ArrayList;
  * It contains a list of all usernames for quicker validation.
  */
 public class UserHandler {
-    //Needed since usernames must be unique
+    //Not needed, but very practical, since usernames must be unique
     private static ArrayList<String> storedUsernames = new ArrayList<>();
 
-    //TODO-comment update this comment
     /**
-     * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
-     * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
-     * with the connection as argument after the DatabaseHandlers setup method has been called.
-     * @throws SQLException If an error occurs while interacting with the database
+     * Performs setup tasks. In this case, syncing storedUsernames against the database.
+     * @throws SQLException If an error occurs while interacting with the database.
      */
     public static void setup() throws SQLException {
         syncUsernames();
     }
 
-    //TODO-comment
+    /**
+     * Syncs the storedUsernames list against the usernames in the users table.
+     * @throws SQLException If an error occurs while interacting with the database.
+     */
     public static void syncUsernames() throws SQLException {
         if (!storedUsernames.isEmpty())
             storedUsernames.clear();
@@ -42,7 +42,7 @@ public class UserHandler {
     /**
      * Method that retrieves the usernames in the users table and stores them in the static ArrayList.
      * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
-     * @throws SQLException If an error occurs while interacting with the database
+     * @throws SQLException If an error occurs while interacting with the database.
      */
     public static ArrayList<String> retrieveUsernamesFromTable() throws SQLException {
         //Execute the query to retrieve all usernames
@@ -80,7 +80,7 @@ public class UserHandler {
     }
 
     /**
-     * Basic login method. Checks whether username exists in usernames. If it does, check whether password
+     * Basic login method. Checks whether username exists in storedUsernames. If it does, check whether password
      * matches that user's password.
      * @param username the username attempting to login
      * @param password the password attempting to login
@@ -98,7 +98,7 @@ public class UserHandler {
 
         if (!storedUsernames.contains(username)) {
             //TODO-future log or otherwise present the problem to the user
-            //TODO-future this should apply to staff logins, doesn't need to apply to patrons
+            //TODO-future if user is staff, will still check against database just in case
             System.err.println(username + ": no such user in list of usernames.");
         }
 

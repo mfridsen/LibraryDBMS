@@ -67,21 +67,21 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Test
     @Order(2)
     void testSaveUser() {
-        System.out.println("\n1: Testing saveUser method...");
+        System.out.println("\n2: Testing saveUser method...");
 
-        // Test data
+        //Test data
         String username = "Test User";
         String password = "Test Password";
         User testUser = new User(username, password);
 
-        // Test: Saving a valid user should return a valid user ID
+        //Test: Saving a valid user should return a valid user ID
         try {
             testUser.setUsername(username); // Reset the username
             testUser.setPassword(password); // Reset the password
             int userId = UserHandler.saveUser(testUser);
             assertTrue(userId > 0, "Saving a valid user should return a valid user ID.");
 
-            // Now, retrieve the saved user to verify that it was saved correctly.
+            //Now, retrieve the saved user to verify that it was saved correctly.
             User savedUser = UserHandler.getUserByID(userId);
             assertNotNull(savedUser, "The saved user should not be null.");
             assertEquals(username, savedUser.getUsername(), "The saved user's username should match the original username.");

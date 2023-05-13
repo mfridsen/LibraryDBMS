@@ -29,7 +29,7 @@ public abstract class BaseHandlerTest {
     @BeforeEach
     void setupAndReset() {
         try {
-            connection = DatabaseConnection.connectToLocalSQLServer();
+            connection = DatabaseConnection.setup();
             DatabaseHandler.setConnection(connection);
             DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
             DatabaseHandler.executeCommand("drop database if exists " + testDatabaseName);

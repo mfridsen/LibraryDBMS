@@ -32,7 +32,7 @@ public class DatabaseConnectionTest {
         System.out.println("BeforeAll:");
         try { //TODO handle?
             DatabaseConnection.setVerbose(true);
-            DatabaseConnection.connectToLocalSQLServer();
+            DatabaseConnection.setup();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

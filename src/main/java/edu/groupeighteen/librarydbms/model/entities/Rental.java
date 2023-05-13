@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
  *      RentalIDs have to be positive integers.
  *      UserIDs have to be positive integers.
  *      ItemIDs have to be positive integers.
+ *      RentalDates cannot be null, and must be equal or less than LocalDateTime.now().
  *      Usernames cannot be null or empty. //TODO-future add min and max length
  *      Titles cannot be null or empty. //TODO-future add min and max length
  */
@@ -34,7 +35,7 @@ public class Rental {
         this.rentalID = 0;
         setUserID(userID);
         setItemID(itemID);
-        this.rentalDate = rentalDate;
+        setRentalDate(rentalDate);
         this.username = null;
         this.title = null;
     }
@@ -45,9 +46,8 @@ public class Rental {
     }
 
     public void setRentalID(int rentalID) {
-        if (rentalID <= 0) {
+        if (rentalID <= 0)
             throw new IllegalArgumentException("RentalID must be greater than zero.");
-        }
         this.rentalID = rentalID;
     }
 
@@ -56,9 +56,8 @@ public class Rental {
     }
 
     public void setUserID(int userID) {
-        if (userID <= 0) {
+        if (userID <= 0)
             throw new IllegalArgumentException("UserID must be greater than zero.");
-        }
         this.userID = userID;
     }
 
@@ -67,9 +66,8 @@ public class Rental {
     }
 
     public void setItemID(int itemID) {
-        if (itemID <= 0) {
+        if (itemID <= 0)
             throw new IllegalArgumentException("ItemID must be greater than zero.");
-        }
         this.itemID = itemID;
     }
 
@@ -78,6 +76,8 @@ public class Rental {
     }
 
     public void setRentalDate(LocalDateTime rentalDate) {
+        if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
+            throw new IllegalArgumentException("RentalDate cannot be null or in the future.");
         this.rentalDate = rentalDate;
     }
 
@@ -97,9 +97,8 @@ public class Rental {
     }
 
     public void setTitle(String title) {
-        if (title == null || title.isEmpty()) {
+        if (title == null || title.isEmpty())
             throw new IllegalArgumentException("Title cannot be null or empty.");
-        }
         this.title = title;
     }
 }

@@ -24,27 +24,23 @@ import java.sql.*;
  * DatabaseConnection class.
  *
  * This class is only responsible for general operations. Specific operations are delegated to specific Handler classes,
- * such as {@link UserHandler}, //TODO-comment finish
+ * such as {@link UserHandler}.   //TODO-comment finish
  */
 public class DatabaseHandler {
-    //The code is cleaner if every Handler class stores a reference to the Connection
+    //The DatabaseHandler needs a connection to perform commands and queries.
     private static Connection connection;
     //Print commands being run, default = not
     private static boolean verbose = false;
 
-    //TODO handle exceptions
-    //TODO-future this doesn't work right now as there are no files to read from,
-    // once testing is finished, copy the test sql data into resources/sql and use it
-    //TODO Remember that when the program is complete, the DB shouldn't be created from scratch on start-up every time
     /**
-     * Deletes database and starts over from scratch, initializing all the tables and
-     * then filling them with data.
+     * Sets up the DatabaseConnection, then checks if the database exists. If not, calls createDatabase to
+     * create it.
      */
     public static void setup(boolean verbose) throws SQLException, ClassNotFoundException {
         //Set verbosity
         DatabaseHandler.verbose = verbose;
         //Connect to database
-        connection = DatabaseConnection.connectToLocalSQLServer();
+        connection = DatabaseConnection.setup();
 
         if (!databaseExists(LibraryManager.databaseName)) {
             createDatabase(LibraryManager.databaseName);
@@ -52,7 +48,7 @@ public class DatabaseHandler {
     }
 
     /**
-     * Checks whether the a given database already exists on the server.
+     * Checks whether a given database already exists on the server.
      * @param databaseName the name of the database in question.
      * @return true if the database exists, otherwise false.
      */
@@ -72,6 +68,11 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Creates a new database with a given name and fills it with tables and data.
+     * @param databaseName the name of the database.
+     * @throws SQLException if an error occurs while executing the commands.
+     */
     public static void createDatabase(String databaseName) throws SQLException {
         //Create DB
         executeCommand("create database " + databaseName);
@@ -87,8 +88,8 @@ public class DatabaseHandler {
      * Executes a single SQL command on the connected database. SQL commands can affect rows and therefore
      * are used with executeUpdate. Prints number of rows affected if command was successfully executed.
      *
-     * @param command the SQL command to execute
-     * @throws SQLException if an error occurs while executing the command
+     * @param command the SQL command to execute.
+     * @throws SQLException if an error occurs while executing the command.
      */
     public static void executeCommand(String command) throws SQLException {
         if (verbose) {
@@ -103,13 +104,12 @@ public class DatabaseHandler {
     }
 
     //TODO-exception
-    //TODO verbose
     /**
      * Executes a single SQL query on the connected database. SQL queries, unlike SQL commands, do not affect rows,
      * but do instead produce ResultSets which are sent up the call stack in a QueryResult.
      *
-     * @param query the SQL query to execute
-     * @return a QueryResult
+     * @param query the SQL query to execute.
+     * @return a QueryResult.
      */
     public static QueryResult executeQuery(String query) {
         if (verbose) {

@@ -32,7 +32,7 @@ public class DatabaseConnection {
      * server: localhost
      * port: 3306
      */
-    public static Connection connectToLocalSQLServer() throws SQLException, ClassNotFoundException {
+    public static Connection setup() throws SQLException, ClassNotFoundException {
         String url = "jdbc:mysql://localhost:3306";
         String user = null;
         String password = null;
