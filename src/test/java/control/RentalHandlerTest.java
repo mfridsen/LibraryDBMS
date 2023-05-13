@@ -160,23 +160,23 @@ public class RentalHandlerTest extends BaseHandlerTest {
         LocalDateTime testDate3 = LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS);
         LocalDateTime testDate4 = LocalDateTime.now().minusDays(2).truncatedTo(ChronoUnit.SECONDS);
 
-        // Create new rentals to test with
+        //Create new rentals to test with
         try {
             Rental rental1 = RentalHandler.createNewRental(1, 1, testDate1);
             Rental rental2 = RentalHandler.createNewRental(2, 2, testDate1);
-            Rental rental3 = RentalHandler.createNewRental(3, 3, testDate3); // This rental has a different date
+            Rental rental3 = RentalHandler.createNewRental(3, 3, testDate3); //This rental has a different date
 
-            // Test valid getRentalsByRentalDate
+            //Test valid getRentalsByRentalDate
             List<Rental> rentals = RentalHandler.getRentalsByRentalDate(rental1.getRentalDate());
             assertNotNull(rentals);
-            assertEquals(2, rentals.size()); // There should be two rentals with the same date
+            assertEquals(2, rentals.size()); //There should be two rentals with the same date
 
-            // Check that the correct rentals were retrieved
+            //Check that the correct rentals were retrieved
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
             assertFalse(rentals.contains(rental3));
 
-            // Test with a rentalDate that no rentals have
+            //Test with a rentalDate that no rentals have
             rentals = RentalHandler.getRentalsByRentalDate(testDate4);
             assertNotNull(rentals);
             assertTrue(rentals.isEmpty());
@@ -186,7 +186,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        // Test invalid getRentalsByRentalDate
+        //Test invalid getRentalsByRentalDate
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDate(testDate2));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDate(null));
 
@@ -209,24 +209,24 @@ public class RentalHandlerTest extends BaseHandlerTest {
         LocalDateTime testDay3 = LocalDateTime.now().minusDays(1);
         LocalDateTime testDay4 = LocalDateTime.now().minusDays(2);
 
-        // Create new rentals to test with
+        //Create new rentals to test with
         try {
-            // Three rentals on the same day, but different times
+            //Three rentals on the same day, but different times
             Rental rental1 = RentalHandler.createNewRental(1, 1, testDay1.plusHours(2));
             Rental rental2 = RentalHandler.createNewRental(2, 2, testDay1.plusHours(4));
             Rental rental3 = RentalHandler.createNewRental(3, 3, testDay1.plusHours(6));
 
-            // Test valid getRentalsByRentalDay
+            //Test valid getRentalsByRentalDay
             List<Rental> rentals = RentalHandler.getRentalsByRentalDay(rental1.getRentalDate());
             assertNotNull(rentals);
-            assertEquals(3, rentals.size()); // There should be three rentals on the same day
+            assertEquals(3, rentals.size()); //There should be three rentals on the same day
 
-            // Check that the correct rentals were retrieved
+            //Check that the correct rentals were retrieved
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
 
-            // Test with a rentalDay that no rentals have
+            //Test with a rentalDay that no rentals have
             rentals = RentalHandler.getRentalsByRentalDay(testDay4);
             assertNotNull(rentals);
             assertTrue(rentals.isEmpty());
@@ -236,7 +236,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        // Test invalid getRentalsByRentalDay
+        //Test invalid getRentalsByRentalDay
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDay(testDay2));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDay(null));
 
@@ -247,7 +247,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Order(7)
     void testGetRentalsByTimePeriod() {
         System.out.println("\n7: Testing getRentalsByTimePeriod method...");
-        // Test the retrieval of Rentals by their rentalDate
+        //Test the retrieval of Rentals by their rentalDate
         System.out.println("Test finished.");
     }
 
@@ -255,7 +255,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Order(8)
     void testGetRentalsByUserID() {
         System.out.println("\n8: Testing getRentalsByUserID method...");
-        // Test the retrieval of Rentals by their userID
+        //Test the retrieval of Rentals by their userID
         System.out.println("Test finished.");
     }
 
@@ -263,7 +263,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Order(9)
     void testGetRentalsByItemID() {
         System.out.println("\n9: Testing getRentalsByItemID method...");
-        // Test the retrieval of Rentals by their itemID
+        //Test the retrieval of Rentals by their itemID
         System.out.println("Test finished.");
     }
 
@@ -271,7 +271,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Order(10)
     void testUpdateRental() {
         System.out.println("\n10: Testing updateRental method...");
-        // Test the updating of a specific Rental in the database
+        //Test the updating of a specific Rental in the database
         System.out.println("Test finished.");
     }
 
@@ -279,7 +279,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Order(11)
     void testDeleteRental() {
         System.out.println("\n11: Testing deleteRental method...");
-        // Test the deletion of a specific Rental from the database
+        //Test the deletion of a specific Rental from the database
         System.out.println("Test finished.");
     }
 }

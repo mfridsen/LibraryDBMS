@@ -11,7 +11,10 @@ import view.ViewTestSuite;
  * @contact matfir-1@student.ltu.se
  *
  * Test Suite for all the test classes related to this LibraryManager application.
+ *
  * Calls all the other test suites.
+ *
+ * Brought to you by inhuman amounts of tobacco.
  */
 
 @Suite
