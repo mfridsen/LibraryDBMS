@@ -13,10 +13,9 @@ import java.util.ArrayList;
  * @package edu.groupeighteen.librarydbms.control.entities
  * @contact matfir-1@student.ltu.se
  * @date 5/5/2023
- * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
+ *
+ * This class contains database CRUD operation methods as well as other methods related to the Item entity class.
+ * It contains a list of all Item titles for quicker validation.
  */
 public class ItemHandler {
     //Used to speed up searching
