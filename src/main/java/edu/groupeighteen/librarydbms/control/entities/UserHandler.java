@@ -107,16 +107,14 @@ public class UserHandler {
 
         //Execute the query and check if the input password matches the retrieved password
         QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
-        ResultSet resultSet = queryResult.getResultSet();
-        try {
+        try (queryResult) {
+            ResultSet resultSet = queryResult.getResultSet();
             if (resultSet.next()) {
                 String storedPassword = resultSet.getString("password");
                 if (password.equals(storedPassword)) {
                     isAuthenticated = true;
                 }
             }
-        } finally {
-            queryResult.close();
         }
 
         return isAuthenticated;
@@ -124,7 +122,6 @@ public class UserHandler {
 
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
-    //TODO-prio change validation to throw IllegalArgumentExceptions
     /**
      * Creates a new User with the specified username and password and saves it to the database.
      * If the User creation fails, this method returns null.
@@ -135,25 +132,23 @@ public class UserHandler {
      * @throws SQLException If an error occurs while interacting with the database
      */
     public static User createNewUser(String username, String password) throws SQLException {
-        //Update these two when more fields are added, as well as javadoc
+        //TODO-prio add to these two when more fields are added, as well as javadoc
         //No point creating invalid users
-        if (username == null ||username.isEmpty() || password == null || password.isEmpty()) {
-            System.err.println("Error creating a new user: empty username or password."); //TODO-log
-            return null;
-        }
-        if (storedUsernames.contains(username)) { //TODO-test
-            System.err.println("Error creating a new user: username taken."); //TODO-log
-            return null;
-        }
+        if (username == null ||username.isEmpty() || password == null || password.isEmpty())
+            throw new IllegalArgumentException("Empty username or password.");
+        //Usernames must be unique
+        if (storedUsernames.contains(username))
+            throw new IllegalArgumentException("Username " + username + " already taken.");
 
         //Create and save the new user, retrieving the ID
         User newUser = new User(username, password);
         newUser.setUserID(saveUser(newUser));
-        storedUsernames.add(newUser.getUsername()); //Need to remember to add to the list
+
+        //Need to remember to add to the list
+        storedUsernames.add(newUser.getUsername());
         return newUser;
     }
 
-    //TODO-prio change to try-with-resources
     /**
      * Saves a User object to the database.
      *
@@ -171,18 +166,11 @@ public class UserHandler {
         String query = "INSERT INTO users (username, password) VALUES (?, ?)"; //Update these two when more fields are added, as well as javadoc
         String[] params = {user.getUsername(), user.getPassword()}; //Update these two when more fields are added, as well as javadoc
 
-        //Execute query
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS);
-
-        //Get the generated userID
-        ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-        if (generatedKeys.next()) {
-            int id = generatedKeys.getInt(1);
-            queryResult.close();
-            return id;
-        } else {
-            queryResult.close();
-            throw new SQLException("Failed to insert the user, no ID obtained."); //TODO-exception Should probably crash program
+        //Execute query and get the generated userID, using try-with-resources
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
+            ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
+            if (generatedKeys.next()) return generatedKeys.getInt(1);
+            else throw new SQLException("Failed to insert the user, no ID obtained.");
         }
     }
 

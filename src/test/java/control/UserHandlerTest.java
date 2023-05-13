@@ -2,7 +2,6 @@ package control;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
-import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import org.junit.jupiter.api.*;
 
@@ -65,6 +64,9 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("Test finished.");
     }
 
+    /**
+     *
+     */
     @Test
     @Order(2)
     void testSaveUser() {
@@ -74,23 +76,22 @@ public class UserHandlerTest extends BaseHandlerTest {
         String username = "Test User";
         String password = "Test Password";
         User testUser = new User(username, password);
+        int userID = 0;
 
         //Test: Saving a valid user should return a valid user ID
         try {
-            testUser.setUsername(username); // Reset the username
-            testUser.setPassword(password); // Reset the password
-            int userId = UserHandler.saveUser(testUser);
-            assertTrue(userId > 0, "Saving a valid user should return a valid user ID.");
-
-            //Now, retrieve the saved user to verify that it was saved correctly.
-            User savedUser = UserHandler.getUserByID(userId);
-            assertNotNull(savedUser, "The saved user should not be null.");
-            assertEquals(username, savedUser.getUsername(), "The saved user's username should match the original username.");
-            assertEquals(password, savedUser.getPassword(), "The saved user's password should match the original password.");
+             userID = UserHandler.saveUser(testUser);
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
+        assertTrue(userID > 0, "Saving a valid user should return a valid user ID.");
+
+        //Test invalid saveUser
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.saveUser(new User("", password)));
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.saveUser(new User(null, password)));
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.saveUser(new User(username, "")));
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.saveUser(new User(username, null)));
 
         System.out.println("Test finished.");
     }
@@ -103,25 +104,27 @@ public class UserHandlerTest extends BaseHandlerTest {
     void testCreateNewUser() {
         System.out.println("\n3: Testing to create a new user...");
         String username = "example_username";
-        String[] params = {username};
-        try {
-            User newUser = UserHandler.createNewUser(username, "example_password");
-            assertNotNull(newUser);
-            assertTrue(UserHandler.getStoredUsernames().contains(newUser.getUsername()));
+        String password = "example_password";
+        User testUser = null;
 
-            String query = "SELECT username FROM users WHERE username = ?";
-            QueryResult result = DatabaseHandler.executePreparedQuery(query, params);
-            if (result.getResultSet().next()) { // call next() to move cursor to the first row
-                String storedUsername = result.getResultSet().getString("username");
-                assertEquals(storedUsername, username);
-            } else {
-                fail("No user found with username: " + username);
-            }
-            result.close();
+        //Test valid createNewUser
+        try {
+            testUser = UserHandler.createNewUser(username, password);
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
+        assertNotNull(testUser, "Creating a valid user should return a valid user object.");
+        assertTrue(testUser.getUserID() > 0, "The new user should have a valid user ID.");
+        assertEquals(username, testUser.getUsername(), "The new user's username should match the provided username.");
+        assertEquals(password, testUser.getPassword(), "The new user's password should match the provided password.");
+
+        //Test invalid createNewUser
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.createNewUser("", password));
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.createNewUser(null, password));
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.createNewUser(username, ""));
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.createNewUser(username, null));
+
         System.out.println("Test finished.");
     }
 

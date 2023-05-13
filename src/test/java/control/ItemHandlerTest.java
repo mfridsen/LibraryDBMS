@@ -41,20 +41,19 @@ public class ItemHandlerTest extends BaseHandlerTest {
         // Test data
         String itemTitle = "Test Item";
         Item testItem = new Item(itemTitle);
+        int itemID = 0;
 
         // Test: Saving a valid item should return a valid item ID
         try {
-            testItem.setTitle(itemTitle);
-            int itemId = ItemHandler.saveItem(testItem);
-            assertTrue(itemId > 0, "Saving a valid item should return a valid item ID.");
-
-            // Now, retrieve the saved item to verify that it was saved correctly.
-            Item savedItem = ItemHandler.getItemByID(itemId);
-            assertNotNull(savedItem, "The saved item should not be null.");
-            assertEquals(itemTitle, savedItem.getTitle(), "The saved item's title should match the original title.");
+            itemID = ItemHandler.saveItem(testItem);
         } catch (SQLException e) {
             fail("Saving a valid item should not throw an exception. Error: " + e.getMessage());
         }
+        assertTrue(itemID > 0, "Saving a valid item should return a valid item ID.");
+
+        //Test invalid saveItem
+        assertThrows(IllegalArgumentException.class, () -> ItemHandler.saveItem(new Item("")));
+        assertThrows(IllegalArgumentException.class, () -> ItemHandler.saveItem(new Item(null)));
 
         System.out.println("Test finished.");
     }
@@ -67,17 +66,18 @@ public class ItemHandlerTest extends BaseHandlerTest {
     @Order(2)
     void testCreateNewItem() {
         System.out.println("\n2: Testing createNewItem method...");
+        String itemTitle = "Test Item";
+        Item testItem = null;
 
         // Test: Creating a valid item should return a valid item object
         try {
-            String itemTitle = "Test Item";
-            Item newItem = ItemHandler.createNewItem(itemTitle);
-            assertNotNull(newItem, "Creating a valid item should return a valid item object.");
-            assertTrue(newItem.getItemID() > 0, "The new item should have a valid item ID.");
-            assertEquals(itemTitle, newItem.getTitle(), "The new item's title should match the provided title.");
+            testItem = ItemHandler.createNewItem(itemTitle);
         } catch (SQLException e) {
             fail("Creating a valid item should not throw an exception. Error: " + e.getMessage());
         }
+        assertNotNull(testItem, "Creating a valid item should return a valid item object.");
+        assertTrue(testItem.getItemID() > 0, "The new item should have a valid item ID.");
+        assertEquals(itemTitle, testItem.getTitle(), "The new item's title should match the provided title.");
 
         System.out.println("Test finished.");
     }

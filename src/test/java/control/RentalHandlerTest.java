@@ -37,17 +37,17 @@ public class RentalHandlerTest extends BaseHandlerTest {
     void testSaveRental() {
         System.out.println("\n1: Testing saveRental method...");
 
-        Rental rental = new Rental(1, 1, LocalDateTime.now());
+        Rental testRental = new Rental(1, 1, LocalDateTime.now());
 
         //Test valid saveRental
         int rentalID = 0;
         try {
-            rentalID = RentalHandler.saveRental(rental);
+            rentalID = RentalHandler.saveRental(testRental);
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
-        assertNotEquals(0, rentalID);
+        assertTrue(rentalID > 0, "Saving a valid rental should return a valid rental ID.");
 
         //Test invalid saveRental
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(-1, 1, LocalDateTime.now())));
@@ -62,16 +62,23 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Order(2)
     void testCreateNewRental() {
         System.out.println("\n2: Testing createNewRental method...");
+        int userID = 1;
+        int itemID = 1;
+        LocalDateTime rentalDate = LocalDateTime.now();
+        Rental testRental = null;
 
         //Test valid createNewRental
-        Rental rental = null;
         try {
-            rental = RentalHandler.createNewRental(1, 1, LocalDateTime.now());
+            testRental = RentalHandler.createNewRental(userID, itemID, rentalDate);
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
-        assertNotNull(rental);
+        assertNotNull(testRental, "Creating a valid rental should return a valid rental object.");
+        assertTrue(testRental.getRentalID() > 0, "The new rental should have a valid rental ID.");
+        assertEquals(userID, testRental.getUserID(), "The new rental's userID should match the provided userID.");
+        assertEquals(itemID, testRental.getItemID(), "The new rental's itemID should match the provided itemID.");
+        assertEquals(rentalDate, testRental.getRentalDate(), "The new rental's rentalDate should match the provided rentalDate.");
 
         //Test invalid createNewRental
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.createNewRental(-1, 1, LocalDateTime.now()));

@@ -1,5 +1,5 @@
 -- @author Mattias Fridsén
--- @project DatabaseApplicationTemplate
+-- @project LibraryDBMS
 -- @date 2/28/2023
 -- @contact matfir-1@student.ltu.se
 

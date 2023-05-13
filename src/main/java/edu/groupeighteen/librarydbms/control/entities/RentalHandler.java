@@ -38,6 +38,7 @@ public class RentalHandler {
      * @throws SQLException If an error occurs while interacting with the database.
      */
     public static Rental createNewRental(int userID, int itemID, LocalDateTime rentalDate) throws SQLException {
+        //TODO-prio add to these two when more fields are added, as well as javadoc
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
             throw new IllegalArgumentException("Invalid userID or itemID. userID: " + userID + ", itemID: " + itemID);
@@ -48,12 +49,13 @@ public class RentalHandler {
         Rental newRental = new Rental(userID, itemID, rentalDate);
         newRental.setRentalID(saveRental(newRental));
 
-        //Set username and title
+        //Set username
         User user = UserHandler.getUserByID(userID);
         if (user == null)
             throw new SQLException("Failed to find user with ID: " + userID);
         newRental.setUsername(user.getUsername());
 
+        //Set title
         Item item = ItemHandler.getItemByID(itemID);
         if (item == null)
             throw new SQLException("Failed to find item with ID: " + itemID);
@@ -79,14 +81,11 @@ public class RentalHandler {
         String query = "INSERT INTO rentals (userID, itemID, rentalDate) VALUES (?, ?, ?)";
         String[] params = {String.valueOf(rental.getUserID()), String.valueOf(rental.getItemID()), rental.getRentalDate().toString()};
 
-        //Execute query and get the generated userID, using try-with-resources
+        //Execute query and get the generated rentalID, using try-with-resources
         try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
             ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
-            } else {
-                throw new SQLException("Failed to insert the rental, no ID obtained.");
-            }
+            if (generatedKeys.next()) return generatedKeys.getInt(1);
+            else throw new SQLException("Failed to insert the rental, no ID obtained.");
         }
     }
 

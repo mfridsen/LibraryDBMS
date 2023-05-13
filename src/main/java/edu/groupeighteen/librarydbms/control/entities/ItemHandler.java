@@ -83,16 +83,17 @@ public class ItemHandler {
      * @throws SQLException If an error occurs while interacting with the database
      */
     public static Item createNewItem(String title) throws SQLException {
+        //TODO-prio add to these two when more fields are added, as well as javadoc
         //No point creating invalid items
-        if (title == null || title.isEmpty()) {
-            System.err.println("Error creating a new item: empty title."); //TODO-log
-            return null;
-        }
+        if (title == null || title.isEmpty())
+            throw new IllegalArgumentException("Empty title.");
 
         //Create and save the new item, retrieving the ID
         Item newItem = new Item(title);
         newItem.setItemID(saveItem(newItem));
-        if (!storedTitles.contains(newItem.getTitle())) //We don't need duplicates
+
+        //We don't need duplicates
+        if (!storedTitles.contains(newItem.getTitle()))
             storedTitles.add(newItem.getTitle());
         return newItem;
     }
@@ -114,18 +115,11 @@ public class ItemHandler {
         String query = "INSERT INTO items (title) VALUES (?)"; //Update these two when more fields are added, as well as javadoc
         String[] params = {item.getTitle()}; //Update these two when more fields are added, as well as javadoc
 
-        //Execute query
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS);
-
-        //Get the generated itemID
-        ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-        if (generatedKeys.next()) {
-            int itemID = generatedKeys.getInt(1);
-            queryResult.close();
-            return itemID;
-        } else {
-            queryResult.close();
-            throw new SQLException("Failed to insert the item, no ID obtained.");
+        //Execute query and get the generated itemID, using try-with-resources
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
+            ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
+            if (generatedKeys.next()) return generatedKeys.getInt(1);
+            else throw new SQLException("Failed to insert the item, no ID obtained.");
         }
     }
 
@@ -155,10 +149,10 @@ public class ItemHandler {
 
         //Execute the query and store the result in a ResultSet.
         QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
-        ResultSet resultSet = queryResult.getResultSet();
-        
-        try {
-            //If the ResultSet contains data, create a new Item object using the retrieved title 
+
+        try (queryResult) {
+            ResultSet resultSet = queryResult.getResultSet();
+            //If the ResultSet contains data, create a new Item object using the retrieved title
             //and set the item's itemID.
             if (resultSet.next()) {
                 String title = resultSet.getString("title");
@@ -166,10 +160,8 @@ public class ItemHandler {
                 item.setItemID(itemID);
                 return item;
             }
-        } finally {
-            //Close the resources.
-            queryResult.close();
         }
+        //Close the resources.
 
         //Return null if not found.
         return null;
