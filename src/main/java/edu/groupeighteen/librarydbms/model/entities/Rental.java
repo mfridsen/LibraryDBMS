@@ -46,8 +46,7 @@ public class Rental {
     }
 
     public void setRentalID(int rentalID) {
-        if (rentalID <= 0)
-            throw new IllegalArgumentException("RentalID must be greater than zero.");
+        if (rentalID <= 0) throw new IllegalArgumentException("RentalID must be greater than zero.");
         this.rentalID = rentalID;
     }
 
@@ -56,8 +55,7 @@ public class Rental {
     }
 
     public void setUserID(int userID) {
-        if (userID <= 0)
-            throw new IllegalArgumentException("UserID must be greater than zero.");
+        if (userID <= 0) throw new IllegalArgumentException("UserID must be greater than zero.");
         this.userID = userID;
     }
 
@@ -66,8 +64,7 @@ public class Rental {
     }
 
     public void setItemID(int itemID) {
-        if (itemID <= 0)
-            throw new IllegalArgumentException("ItemID must be greater than zero.");
+        if (itemID <= 0) throw new IllegalArgumentException("ItemID must be greater than zero.");
         this.itemID = itemID;
     }
 
@@ -86,9 +83,8 @@ public class Rental {
     }
 
     public void setUsername(String username) {
-        if (username == null || username.isEmpty()) {
+        if (username == null || username.isEmpty())
             throw new IllegalArgumentException("Username cannot be null or empty.");
-        }
         this.username = username;
     }
 
@@ -97,8 +93,7 @@ public class Rental {
     }
 
     public void setTitle(String title) {
-        if (title == null || title.isEmpty())
-            throw new IllegalArgumentException("Title cannot be null or empty.");
+        if (title == null || title.isEmpty()) throw new IllegalArgumentException("Title cannot be null or empty.");
         this.title = title;
     }
 }

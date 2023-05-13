@@ -10,6 +10,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,7 +110,7 @@ public class RentalHandler {
      *
      * @param rentalID The unique ID of the rental to be retrieved.
      * @return The Rental object corresponding to the provided ID, or null if no such rental is found.
-     * @throws SQLException If an error occurs while interacting with the database
+     * @throws SQLException If an error occurs while interacting with the database.
      */
     public static Rental getRentalByID(int rentalID) throws SQLException {
         //No point getting invalid rentals
@@ -138,11 +139,55 @@ public class RentalHandler {
         return null;
     }
 
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    // to make error handling more consistent
+    /**
+     * This method retrieves all rentals that have the specified rental date, creates a Rental object for each one,
+     * and adds it to a list. The list of rentals is then returned. If no rentals with the specified date are found,
+     * an empty list is returned.
+     * @param rentalDate the date of the rentals.
+     * @return The list of rentals if found, otherwise an empty list.
+     * @throws SQLException If an error occurs while interacting with the database.
+     */
     public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate) throws SQLException {
-        return null;
+        //No point getting invalid rentals
+        if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
+            throw new IllegalArgumentException("Invalid rentalDate: RentalDate cannot be null or in the future.");
+
+        //Need to truncate to seconds
+        rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
+
+        //Prepare a SQL query to select rentals by rentalDate.
+        String query = "SELECT rentalID, userID, itemID FROM rentals WHERE rentalDate = ?";
+        String[] params = {rentalDate.toString()};
+
+        //Execute the query and store the result in a ResultSet.
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+
+            //Create a list to store the Rental objects.
+            List<Rental> rentals = new ArrayList<>();
+
+            //Loop through the ResultSet. For each record, create a new Rental object and add it to the list.
+            while (resultSet.next()) {
+                int rentalID = resultSet.getInt("rentalID");
+                int userID = resultSet.getInt("userID");
+                int itemID = resultSet.getInt("itemID");
+                Rental rental = new Rental(userID, itemID, rentalDate);
+                rental.setRentalID(rentalID);
+                rentals.add(rental);
+            }
+            return rentals;
+        }
     }
 
     public static List<Rental> getRentalsByRentalDay(LocalDate rentalDay) {
+        //Gonna need some truncating at some point here
+        return null;
+    }
+
+    public static List<Rental> getRentalsByTimePeriod(LocalDate startDate, LocalDate endDate) {
+        //Gonna need some truncating at some point here
         return null;
     }
 
