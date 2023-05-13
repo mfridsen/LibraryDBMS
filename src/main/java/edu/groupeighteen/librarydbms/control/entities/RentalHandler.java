@@ -19,39 +19,39 @@ import java.util.List;
  */
 public class RentalHandler {
 
-    public static Rental createNewRental() {
+    public static Rental createNewRental(int userID, int itemID, LocalDateTime rentalDate) throws SQLException {
         return null;
     }
 
-    public static int saveRental(Rental rental) {
+    public static int saveRental(Rental rental) throws SQLException {
         return 0;
     }
 
-    public static List<Rental> getAllRentals() {
+    public static List<Rental> getAllRentals() throws SQLException {
         return null;
     }
 
-    public static Rental getRentalByID(int rentalID) {
+    public static Rental getRentalByID(int rentalID) throws SQLException {
         return new Rental(1, 1, LocalDateTime.now());
     }
 
-    public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate) {
+    public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate) throws SQLException {
         return null;
     }
 
-    public static List<Rental> getRentalsByUserID(int userID) {
+    public static List<Rental> getRentalsByUserID(int userID) throws SQLException {
         return null;
     }
 
-    public static List<Rental> getRentalsByItemID(int itemID) {
+    public static List<Rental> getRentalsByItemID(int itemID) throws SQLException {
         return null;
     }
 
-    public boolean updateRental(Rental rental) {
+    public boolean updateRental(Rental rental) throws SQLException {
         return false;
     }
 
-    public boolean deleteRental(Rental rental) {
+    public boolean deleteRental(Rental rental) throws SQLException {
         return false;
     }
 }

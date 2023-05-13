@@ -44,7 +44,7 @@ public class UserHandler {
      * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
      * @throws SQLException If an error occurs while interacting with the database
      */
-    private static ArrayList<String> retrieveUsernamesFromTable() throws SQLException {
+    public static ArrayList<String> retrieveUsernamesFromTable() throws SQLException {
         //Execute the query to retrieve all usernames
         QueryResult result = DatabaseHandler.executeQuery("SELECT username FROM users ORDER BY userID ASC");
         ArrayList<String> usernames = new ArrayList<>();

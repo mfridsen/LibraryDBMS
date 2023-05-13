@@ -25,19 +25,19 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(1)
-    void testCreateNewRental() {
-        System.out.println("\n1: Testing createNewRental method...");
-        // Test the creation of a new Rental object
-        // Remember, this method should not only create a new Rental object, but also insert it into the database
+    void testSaveRental() {
+        System.out.println("\n1: Testing saveRental method...");
+        // Test the saving of a Rental object to the database
+        // You should test both inserting a new Rental and updating an existing Rental
         System.out.println("Test finished.");
     }
 
     @Test
     @Order(2)
-    void testSaveRental() {
-        System.out.println("\n2: Testing saveRental method...");
-        // Test the saving of a Rental object to the database
-        // You should test both inserting a new Rental and updating an existing Rental
+    void testCreateNewRental() {
+        System.out.println("\n2: Testing createNewRental method...");
+        // Test the creation of a new Rental object
+        // Remember, this method should not only create a new Rental object, but also insert it into the database
         System.out.println("Test finished.");
     }
 

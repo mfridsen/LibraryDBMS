@@ -31,6 +31,7 @@ public class DatabaseConnectionTest {
     static void setup() {
         System.out.println("BeforeAll:");
         try { //TODO handle?
+            DatabaseConnection.setVerbose(true);
             DatabaseConnection.connectToLocalSQLServer();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

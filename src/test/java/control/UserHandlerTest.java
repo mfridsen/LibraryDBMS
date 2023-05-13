@@ -45,7 +45,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     //TODO-future javadoc all tests properly
 
     /**
-     * Tests the setup method in UserHandler.
+     * Tests the {@link UserHandler#setup()} method in UserHandler.
+     * {@link UserHandler#syncUsernames()} and {@link UserHandler#retrieveUsernamesFromTable()} do not need separate
+     * testing since that is already being done when testing {@link UserHandler#setup()}.
      */
     @Test
     @Order(1)

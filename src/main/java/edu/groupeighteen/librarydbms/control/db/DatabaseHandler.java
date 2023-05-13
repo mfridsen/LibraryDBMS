@@ -175,6 +175,8 @@ public class DatabaseHandler {
      * @throws SQLException If an SQL error occurs while executing the command.
      */
     public static int executeUpdate(String sql, String[] params) throws SQLException {
+        if (verbose) System.out.println("\nExecuting update: " + sql);
+
         int rowsAffected = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -200,10 +202,13 @@ public class DatabaseHandler {
      * @param filePath the path of the file
      */
     public static void executeSQLCommandsFromFile(String filePath) {
-        if (filePath.length() == 0) {
+        //No point attempting to execute from an empty file path
+        if (filePath == null || filePath.isEmpty()) {
             System.out.println("ERROR: executeSqlCommandsFromFile: No filepath.");
             return;
         }
+
+        if (verbose) System.out.println("\nExecuting commands from file: " + filePath);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;

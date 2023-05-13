@@ -20,6 +20,8 @@ import java.sql.SQLException;
  */
 public class DatabaseConnection {
     private static Connection connection = null;
+    //Print commands being run, default = not
+    private static boolean verbose = false;
 
     /**
      * Standard connection method for a default-configured local MySQL Server. Connects to the server
@@ -61,14 +63,14 @@ public class DatabaseConnection {
     public static Connection connectToDatabaseServer(String url, String user, String password)
             throws SQLException, ClassNotFoundException {
         // Load the JDBC driver
-        System.out.println("\nLoading JDBC driver...");
+        if (verbose) System.out.println("\nLoading JDBC driver...");
         Class.forName("com.mysql.cj.jdbc.Driver");
-        System.out.println("Loaded JDBC driver.");
+        if (verbose) System.out.println("Loaded JDBC driver.");
 
         // Establish a connection
-        System.out.println("Connecting to: " + user + "@" + url);
+        if (verbose) System.out.println("Connecting to: " + user + "@" + url);
         connection = DriverManager.getConnection(url, user, password);
-        System.out.println("Connected to: " + user + "@" + url);
+        if (verbose) System.out.println("Connected to: " + user + "@" + url);
         return connection;
     }
 
@@ -90,5 +92,13 @@ public class DatabaseConnection {
      */
     public static Connection getConnection() {
         return connection;
+    }
+
+    public static boolean isVerbose() {
+        return verbose;
+    }
+
+    public static void setVerbose(boolean verbose) {
+        DatabaseConnection.verbose = verbose;
     }
 }
