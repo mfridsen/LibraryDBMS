@@ -9,6 +9,7 @@ import edu.groupeighteen.librarydbms.model.entities.User;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +39,11 @@ public class RentalHandler {
         //TODO-prio add to these two when more fields are added, as well as javadoc
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
-            throw new IllegalArgumentException("Invalid userID or itemID. userID: " + userID + ", itemID: " + itemID);
-        if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
-            throw new IllegalArgumentException("Invalid rentalDate: " + rentalDate);
+            throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: " + userID + ", itemID: " + itemID);
+        if (rentalDate == null)
+            throw new IllegalArgumentException("Error creating new rental: rentalDate is null.");
+        if (rentalDate.compareTo(LocalDateTime.now()) > 0)
+            throw new IllegalArgumentException("Error creating new rental: rentalDate is in the future: " + rentalDate.toString());
 
         //Round the rentalDate to seconds or else we get lots of annoying problems when inserting and retrieving
         rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
@@ -194,18 +197,18 @@ public class RentalHandler {
      *
      * Note: The provided rentalDay LocalDateTime must not be in the future.
      *
-     * @param rentalDay the day of the rentals, represented as a LocalDateTime. The time of day part of the LocalDateTime is ignored.
+     * @param rentalDay the day of the rentals, represented as a LocalDate.
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the provided rentalDay is null or in the future.
      */
-    public static List<Rental> getRentalsByRentalDay(LocalDateTime rentalDay) throws SQLException {
+    public static List<Rental> getRentalsByRentalDay(LocalDate rentalDay) throws SQLException {
         //Validate the input
-        if (rentalDay == null || rentalDay.compareTo(LocalDateTime.now()) > 0)
+        if (rentalDay == null || rentalDay.isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Invalid rentalDay: RentalDay cannot be null or in the future.");
 
         //Create startOfDay and startOfDayPlusOne from rentalDay
-        LocalDateTime startOfDay = rentalDay.truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime startOfDay = rentalDay.atStartOfDay().truncatedTo(ChronoUnit.SECONDS);
         LocalDateTime startOfDayPlusOne = startOfDay.plusDays(1);
 
         //Prepare a SQL query to select rentals by rentalDay.
@@ -237,23 +240,88 @@ public class RentalHandler {
         return rentals;
     }
 
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    // to make error handling more consistent
+    /**
+     * This method retrieves all rentals that fall within the specified start and end dates, inclusive. It creates a Rental object for each one,
+     * and adds it to a list. The list of rentals is then returned. If no rentals within the specified time period are found,
+     * an empty list is returned.
+     *
+     * The method will throw an IllegalArgumentException if any of the following conditions are met:
+     * - The start date or end date is null.
+     * - The start date or end date is in the future.
+     * - The start date is after the end date.
+     *
+     * The start and end dates are inclusive. For example, if the start date is 2023-01-01 and the end date is 2023-01-31, rentals
+     * from both the 1st and 31st of January 2023 will be included in the result.
+     *
+     * @param startDate the start date of the time period.
+     * @param endDate the end date of the time period.
+     * @return The list of rentals if found, otherwise an empty list.
+     * @throws SQLException If an error occurs while interacting with the database.
+     * @throws IllegalArgumentException If the input dates are invalid.
+     */
     public static List<Rental> getRentalsByTimePeriod(LocalDate startDate, LocalDate endDate) throws SQLException {
-        //Gonna need some truncating at some point here
-        return null;
+        // Validate the inputs
+        if (startDate == null ||  startDate.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Invalid dates: Start date cannot be null or in the future.");
+        if (endDate == null || endDate.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Invalid dates: End date cannot be null or in the future.");
+        if (startDate.isAfter(endDate))
+            throw new IllegalArgumentException("Invalid dates: Start date must be before or equal to end date.");
+
+        // Convert the LocalDate to LocalDateTime for database comparison
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atTime(23, 59, 59);
+
+        // Prepare a SQL query to select rentals by rentalDate within a given period
+        String query = "SELECT * FROM rentals WHERE rentalDate >= ? AND rentalDate <= ?";
+        String[] params = {startDateTime.toString(), endDateTime.toString()};
+
+        // Create an empty list to store the rentals
+        List<Rental> rentals = new ArrayList<>();
+
+        // Execute the query and store the result in a ResultSet
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+
+            // Loop through the ResultSet
+            while (resultSet.next()) {
+                // For each row in the ResultSet, create a new Rental object and add it to the list
+                int rentalID = resultSet.getInt("rentalID");
+                int userID = resultSet.getInt("userID");
+                int itemID = resultSet.getInt("itemID");
+                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
+
+                Rental rental = new Rental(userID, itemID, rentalDate);
+                rental.setRentalID(rentalID);
+                rentals.add(rental);
+            }
+        }
+        // Return the list of rentals
+        return rentals;
     }
 
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    // to make error handling more consistent
     public static List<Rental> getRentalsByUserID(int userID) throws SQLException {
         return null;
     }
 
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    // to make error handling more consistent
     public static List<Rental> getRentalsByItemID(int itemID) throws SQLException {
         return null;
     }
 
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    // to make error handling more consistent
     public boolean updateRental(Rental rental) throws SQLException {
         return false;
     }
 
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    // to make error handling more consistent
     public boolean deleteRental(Rental rental) throws SQLException {
         return false;
     }
