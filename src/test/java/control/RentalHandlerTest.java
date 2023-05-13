@@ -193,11 +193,53 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("Test finished.");
     }
 
+    /**
+     * This test first creates three rentals on the same day but at different times. It then verifies that
+     * getRentalsByRentalDay can correctly retrieve all three rentals. It also tests the method's behavior when passed
+     * a day with no rentals and verifies that it correctly returns an empty list. Finally, it checks that the method
+     * correctly throws an exception when passed invalid inputs.
+     */
     @Test
     @Order(6)
     void testGetRentalsByRentalDay() {
         System.out.println("\n6: Testing getRentalsByRentalDay method...");
-        // Test the retrieval of Rentals by their rentalDate
+
+        LocalDateTime testDay1 = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime testDay2 = LocalDateTime.now().plusDays(1);
+        LocalDateTime testDay3 = LocalDateTime.now().minusDays(1);
+        LocalDateTime testDay4 = LocalDateTime.now().minusDays(2);
+
+        // Create new rentals to test with
+        try {
+            // Three rentals on the same day, but different times
+            Rental rental1 = RentalHandler.createNewRental(1, 1, testDay1.plusHours(2));
+            Rental rental2 = RentalHandler.createNewRental(2, 2, testDay1.plusHours(4));
+            Rental rental3 = RentalHandler.createNewRental(3, 3, testDay1.plusHours(6));
+
+            // Test valid getRentalsByRentalDay
+            List<Rental> rentals = RentalHandler.getRentalsByRentalDay(rental1.getRentalDate());
+            assertNotNull(rentals);
+            assertEquals(3, rentals.size()); // There should be three rentals on the same day
+
+            // Check that the correct rentals were retrieved
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            // Test with a rentalDay that no rentals have
+            rentals = RentalHandler.getRentalsByRentalDay(testDay4);
+            assertNotNull(rentals);
+            assertTrue(rentals.isEmpty());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        // Test invalid getRentalsByRentalDay
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDay(testDay2));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDay(null));
+
         System.out.println("Test finished.");
     }
 
