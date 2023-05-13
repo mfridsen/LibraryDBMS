@@ -188,8 +188,8 @@ public class UserHandler {
      * @throws SQLException If an error occurs while interacting with the database
      */
     public static User getUserByID(int userID) throws SQLException {
-        //No point getting impossible users
-        if (userID <= 0) {
+        //No point getting invalid users
+        if (userID <= 0) { //TODO-exception IllegalArgumentException
             System.err.println("Error retrieving user by userID: invalid userID " + userID); //TODO-log
             return null;
         }
@@ -199,10 +199,8 @@ public class UserHandler {
         String[] params = {String.valueOf(userID)};
 
         //Execute the query and store the result in a ResultSet.
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
-        ResultSet resultSet = queryResult.getResultSet();
-
-        try {
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
             //If the ResultSet contains data, create a new User object using the retrieved username and password,
             //and set the user's userID.
             if (resultSet.next()) {
@@ -212,11 +210,7 @@ public class UserHandler {
                 user.setUserID(userID);
                 return user;
             }
-        } finally {
-            //Close the resources.
-            queryResult.close();
         }
-
         //Return null if not found.
         return null;
     }
@@ -236,7 +230,7 @@ public class UserHandler {
      */
     public static User getUserByUsername(String username) throws SQLException {
         //No point getting invalid users
-        if (username == null || username.isEmpty()) {
+        if (username == null || username.isEmpty()) { //TODO-exception IllegalArgumentException
             System.err.println("Error retrieving user by username: empty username."); //TODO-log
             return null;
         }
@@ -246,9 +240,8 @@ public class UserHandler {
         String[] params = {username};
 
         //Execute the query and store the result in a ResultSet.
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
 
-        try {
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
             ResultSet resultSet = queryResult.getResultSet();
             //If the ResultSet contains data, create a new User object using the retrieved username and password,
             //and set the user's userID.
@@ -257,10 +250,8 @@ public class UserHandler {
                 user.setUserID(resultSet.getInt("userID"));
                 return user;
             }
-        } finally {
-            //Close the resources.
-            queryResult.close();
         }
+        //Close the resources.
 
         //Return null if not found.
         return null;

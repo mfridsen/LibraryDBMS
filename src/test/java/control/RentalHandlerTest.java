@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,7 +65,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n2: Testing createNewRental method...");
         int userID = 1;
         int itemID = 1;
-        LocalDateTime rentalDate = LocalDateTime.now();
+        LocalDateTime rentalDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS); //Need to round before test
         Rental testRental = null;
 
         //Test valid createNewRental
@@ -89,11 +90,18 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("Test finished.");
     }
 
+    /**
+     * This test creates a new rental at the start, and then checks that the getRentalByID method returns a Rental
+     * object with the same details as the created rental. It also checks that an IllegalArgumentException is thrown
+     * when trying to retrieve a rental with an invalid ID.
+     */
     @Test
     @Order(3)
     void testGetAllRentals() {
         System.out.println("\n3: Testing getAllRentals method...");
-        // Test the retrieval of all Rentals from the database
+
+
+
         System.out.println("Test finished.");
     }
 
@@ -101,7 +109,33 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Order(4)
     void testGetRentalByID() {
         System.out.println("\n4: Testing getRentalByID method...");
-        // Test the retrieval of a specific Rental by its rentalID
+
+        //Setup: create a new rental
+        Rental rental = null;
+        try {
+            rental = RentalHandler.createNewRental(1, 1, LocalDateTime.now());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during setup: " + e.getMessage());
+        }
+
+        //Test valid getRentalByID
+        Rental retrievedRental = null;
+        try {
+            retrievedRental = RentalHandler.getRentalByID(rental.getRentalID());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+        assertNotNull(retrievedRental);
+        assertEquals(rental.getRentalID(), retrievedRental.getRentalID());
+        assertEquals(rental.getUserID(), retrievedRental.getUserID());
+        assertEquals(rental.getItemID(), retrievedRental.getItemID());
+        assertEquals(rental.getRentalDate(), retrievedRental.getRentalDate());
+
+        //Test invalid getRentalByID
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalByID(-1));
+
         System.out.println("Test finished.");
     }
 

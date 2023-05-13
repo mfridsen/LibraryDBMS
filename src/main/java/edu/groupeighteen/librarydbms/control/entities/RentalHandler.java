@@ -6,13 +6,11 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Mattias Fridsén
@@ -44,7 +42,10 @@ public class RentalHandler {
             throw new IllegalArgumentException("Invalid userID or itemID. userID: " + userID + ", itemID: " + itemID);
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
             throw new IllegalArgumentException("Invalid rentalDate: " + rentalDate);
-        
+
+        //Round the rentalDate to seconds or else we get lots of annoying problems when inserting and retrieving
+        rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
+
         //Create and save the new rental
         Rental newRental = new Rental(userID, itemID, rentalDate);
         newRental.setRentalID(saveRental(newRental));
@@ -97,8 +98,44 @@ public class RentalHandler {
 
     }
 
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    // to make error handling more consistent
+    /**
+     * Retrieves a Rental object from the database based on the provided rental ID.
+     *
+     * <p>This method attempts to retrieve the rental details from the 'rentals' table in the database
+     * that correspond to the provided rental ID. If a rental with the given ID exists, a new Rental object
+     * is created with the retrieved data, and the rental's ID is set.</p>
+     *
+     * @param rentalID The unique ID of the rental to be retrieved.
+     * @return The Rental object corresponding to the provided ID, or null if no such rental is found.
+     * @throws SQLException If an error occurs while interacting with the database
+     */
     public static Rental getRentalByID(int rentalID) throws SQLException {
-        return new Rental(1, 1, LocalDateTime.now());
+        //No point getting invalid rentals
+        if (rentalID <= 0) throw new IllegalArgumentException("Invalid rentalID. rentalID: " + rentalID);
+
+        //Prepare a SQL query to select a rental by rentalID.
+        String query = "SELECT userID, itemID, rentalDate FROM rentals WHERE rentalID = ?";
+        String[] params = {String.valueOf(rentalID)};
+
+        //Execute the query and store the result in a ResultSet.
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+            //If the ResultSet contains data, create a new Rental object using the retrieved data
+            // and set the rental's rentalID.
+            if (resultSet.next()) {
+                int userID = resultSet.getInt("userID");
+                int itemID = resultSet.getInt("itemID");
+                Timestamp timestamp = resultSet.getTimestamp("rentalDate");
+                LocalDateTime rentalDate = timestamp.toLocalDateTime();  // Convert Timestamp to LocalDateTime
+                Rental rental = new Rental(userID, itemID, rentalDate);
+                rental.setRentalID(rentalID);
+                return rental;
+            }
+        }
+        //Return null if not found.
+        return null;
     }
 
     public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate) throws SQLException {

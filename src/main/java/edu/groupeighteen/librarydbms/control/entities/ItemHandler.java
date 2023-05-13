@@ -138,7 +138,7 @@ public class ItemHandler {
      */
     public static Item getItemByID(int itemID) throws SQLException {
         //No point getting impossible items
-        if (itemID <= 0) {
+        if (itemID <= 0) { //TODO-exception IllegalArgumentException
             System.err.println("Error retrieving item by itemID: invalid itemID " + itemID); //TODO-log
             return null;
         }
@@ -182,7 +182,7 @@ public class ItemHandler {
      */
     public static Item getItemByTitle(String title) throws SQLException {
         //No point getting invalid items
-        if (title == null || title.isEmpty()) {
+        if (title == null || title.isEmpty()) { //TODO-exception IllegalArgumentException
             System.err.println("Error retrieving item by title: empty title."); //TODO-log
             return null;
         }
@@ -192,9 +192,7 @@ public class ItemHandler {
         String[] params = {title};
 
         //Execute the query and store the result in a ResultSet.
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
-
-        try {
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
             ResultSet resultSet = queryResult.getResultSet();
             //If the ResultSet contains data, create a new Item object using the retrieved title,
             //and set the item's itemID.
@@ -203,11 +201,7 @@ public class ItemHandler {
                 item.setItemID(resultSet.getInt("itemID"));
                 return item;
             }
-        } finally {
-            //Close the resources.
-            queryResult.close();
         }
-
         //Return null if not found.
         return null;
     }
