@@ -1,7 +1,10 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.entities.ItemSearchGUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.UserGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.UserUpdateGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.UserWelcomeGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,12 +23,14 @@ public class MenuPageGUI {
     public JButton userButton;
     public JFrame menuFrame;
     public JPanel menuPanel;
+    private User loggedInUser;
 
     public String username;
 
 
-    public MenuPageGUI(String username) {
-        this.username = username;
+    public MenuPageGUI(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
+        this.username = loggedInUser.getUsername();
     }
 
 
@@ -65,8 +70,7 @@ public class MenuPageGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-                MyAccountGUI.alterPersonalInfo accountInfo = new MyAccountGUI.alterPersonalInfo();
-                accountInfo.changeInfoGUI();
+                new UserUpdateGUI(LibraryManager.getCurrentUser());
             }
         });
         sökButton.addActionListener(new ActionListener() {
@@ -83,8 +87,8 @@ public class MenuPageGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menuFrame.dispose();
-                UserGUI userGUI = new UserGUI();
-                userGUI.WelcomeUserGUI();
+                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI();
+                userWelcomeGUI.WelcomeUserGUI();
             }
         });
         menuFrame.add(menuPanel);

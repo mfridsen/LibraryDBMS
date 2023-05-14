@@ -1,17 +1,22 @@
-package edu.groupeighteen.librarydbms.view.GUI;
+package edu.groupeighteen.librarydbms.view.GUI.entities;
+
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * @author Jesper Truedsson
  * @project LibraryDBMS
  * @date 2023-04-24
  */
-public class MyAccountGUI {
-
-    public static class alterPersonalInfo  {
+public class UserUpdateGUI {
         private JLabel usernameLabel;
         private JTextField usernameField;
         private JLabel passwordLabel;
@@ -20,8 +25,14 @@ public class MyAccountGUI {
         private JPanel accountPanel;
         private JFrame accountFrame;
         private JButton tillbakaButton;
+        private User user;
 
-        public void changeInfoGUI() {
+    public UserUpdateGUI(User user) {
+        this.user = user;
+        changeInfoGUI();
+    }
+
+    public void changeInfoGUI() {
 
             JPanel panel = new JPanel();
             usernameLabel = new JLabel("Username:");
@@ -31,7 +42,7 @@ public class MyAccountGUI {
             changeButton = new JButton("Change");
             tillbakaButton = new JButton("Tillbaka");
             accountPanel = new JPanel();
-            accountFrame = new JFrame("Mitt Konto");
+            accountFrame = new JFrame("UserUpdateGUI");
 
             accountPanel.add(changeButton);
             accountPanel.add(tillbakaButton);
@@ -48,13 +59,29 @@ public class MyAccountGUI {
             tillbakaButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                accountFrame.dispose();
-                    MenuPageGUI menuPage = new MenuPageGUI("Välkommen" + usernameLabel);
-                    menuPage.menuGUI();
+                    accountFrame.dispose();
+                    new MenuPageGUI(LibraryManager.getCurrentUser());
+
+                }
+            });
+            changeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    accountFrame.dispose();
+                    LibraryManager.getCurrentUser().setUsername(usernameField.getText());
+                    LibraryManager.getCurrentUser().setPassword(Arrays.toString(passwordField.getPassword()));
+                    try {
+                        UserHandler.updateUser(LibraryManager.getCurrentUser());
+                        new MenuPageGUI(LibraryManager.getCurrentUser());
+
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);//TODO-Exception
+                    }
+
                 }
             });
         }
 
 
         }
-    }
+

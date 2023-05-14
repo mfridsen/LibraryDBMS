@@ -1,9 +1,13 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 /**
  * @author Johan Lund
@@ -71,7 +75,7 @@ public class HomeScreenGUI extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
-        HomeScreenGUI homeScreen = new HomeScreenGUI();
-    }
+
+
 }
+

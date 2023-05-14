@@ -12,9 +12,6 @@ import java.awt.event.ActionListener;
  *  * this class displays results for a search performed in the UserSearchGUI
  *  leads to UserGUI
  */
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class UserSearchResultGUI {
     private JPanel searchPanel;

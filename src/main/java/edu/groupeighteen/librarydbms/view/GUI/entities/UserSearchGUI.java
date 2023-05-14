@@ -1,5 +1,4 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
-import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -44,8 +43,8 @@ public class UserSearchGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchFrame.dispose();
-                UserGUI userGUI = new UserGUI();
-                userGUI.WelcomeUserGUI();
+                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI();
+                userWelcomeGUI.WelcomeUserGUI();
             }
         });
 

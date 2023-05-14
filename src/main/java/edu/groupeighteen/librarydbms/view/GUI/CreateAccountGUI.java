@@ -1,8 +1,14 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.view.GUI.entities.UserWelcomeGUI;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
 
 /**
  * @author Jesper Truedsson
@@ -16,6 +22,7 @@ public class CreateAccountGUI {
     public JPasswordField passwordField;
     public JLabel EmailLabel;
     public JTextField EmailField;
+
     public JButton tillbakaButton;
     public JButton proceedButton;
     public JPanel CreateAccountPanel;
@@ -54,6 +61,19 @@ public class CreateAccountGUI {
                 CreateAccountFrame.dispose();
                 HomeScreenGUI homeScreen = new HomeScreenGUI();
 
+            }
+        });
+        proceedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CreateAccountFrame.dispose();
+                try {
+                    User newUser = UserHandler.createNewUser(usernameField.getText(), passwordField.getPassword().toString());
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI();
+                userWelcomeGUI.WelcomeUserGUI();
             }
         });
         }
