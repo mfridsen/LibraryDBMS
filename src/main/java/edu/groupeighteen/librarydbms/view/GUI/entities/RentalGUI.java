@@ -4,6 +4,8 @@ import edu.groupeighteen.librarydbms.model.entities.Rental;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Mattias Fridsén
@@ -18,13 +20,10 @@ import java.awt.*;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class RentalGUI extends JFrame {
-    //This is used to go back to the previous frame
-    private final JFrame previousGUI; //All GUI-classes should have this
-
+public class RentalGUI extends GUI {
     private final Rental rental;
 
-    private JLabel[] labels; //Makes things a little cleaner
+    private JLabel[] labels;
     private JLabel rentalIDLabel;
     private JLabel userIDLabel;
     private JLabel usernameLabel;
@@ -32,29 +31,23 @@ public class RentalGUI extends JFrame {
     private JLabel itemTitleLabel;
     private JLabel rentalDateLabel;
 
-    private JButton[] buttons; //Makes things a little cleaner
+    private JButton[] buttons;
     private JButton previousGUIButton;
     private JButton rentalUpdateButton;
     private JButton rentalDeleteButton;
 
-    private JPanel rentalGUIPanel;
     private JPanel buttonPanel;
     private JPanel labelPanel;
 
-
-    public RentalGUI(JFrame previousFrame, Rental rental) {
-        this.previousGUI = previousFrame;
+    public RentalGUI(GUI previousGUI, Rental rental) {
+        super(previousGUI);
         this.rental = rental;
 
         setupLabels();
         setupButtons();
         setupPanels();
 
-        this.add(rentalGUIPanel);
-        this.pack(); //Packs all the things
-        this.setVisible(true); //We kinda need to be able to see it
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Can close the GUI via close button in the frame
-        this.setLocationRelativeTo(null); //Places the GUI at the center of the screen
+        this.displayGUI("RentalGUI");
     }
 
     /**
@@ -75,12 +68,34 @@ public class RentalGUI extends JFrame {
      * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
      */
     private void setupButtons() {
-        previousGUIButton = new JButton("PreviousGUI"); //Leads to previousGUI
+        //Leads to previousGUI
+        previousGUIButton = new JButton("PreviousGUI");
         //Add actionListener
-        rentalUpdateButton = new JButton("RentalUpdateGUI"); //Leads to RentalUpdateGUI
+        previousGUIButton.addActionListener(e -> {
+            if (previousGUI == null) {
+                System.err.println("No previous GUI to return to!");
+            } else {
+                dispose();
+                previousGUI.displayGUI(previousGUI.getTitle());
+            }
+        });
+
+        //Leads to RentalUpdateGUI
+        rentalUpdateButton = new JButton("RentalUpdateGUI");
         //Add actionListener
-        rentalDeleteButton = new JButton("RentalDeleteGUI"); //Leads to RentalDeleteGUI
+        rentalUpdateButton.addActionListener(e -> {
+            dispose();
+            new RentalUpdateGUI(this, rental);
+        });
+
+        //Leads to RentalDeleteGUI
+        rentalDeleteButton = new JButton("RentalDeleteGUI");
         //Add actionListener
+        rentalDeleteButton.addActionListener(e -> {
+            dispose();
+            new RentalDeleteGUI();
+        });
+
         buttons = new JButton[]{previousGUIButton, rentalUpdateButton, rentalDeleteButton};
     }
 
@@ -88,35 +103,15 @@ public class RentalGUI extends JFrame {
      * Sets up the panel.
      */
     private void setupPanels() {
-        rentalGUIPanel = new JPanel(new BorderLayout());
+        //To achieve the preferred layout, BorderLayout is needed
+        GUIPanel = new JPanel(new BorderLayout());
 
-        //We want the buttons to be ordered horizontally, in a row
-        buttonPanel = new JPanel();
+        buttonPanel = addButtonsToPanel(buttons);
 
-        //We want the labels to be ordered vertically, in a column
-        labelPanel = new JPanel();
-        labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
+        labelPanel = addLabelsToPanel(labels);
 
-        //Add buttons
-        for (JButton button : buttons)
-            buttonPanel.add(button);
-
-        //Add labels
-        for (JLabel label : labels) {
-            label.setAlignmentX(Component.LEFT_ALIGNMENT); //Align labels to the left
-            labelPanel.add(label);
-        }
-
-        rentalGUIPanel.add(labelPanel, BorderLayout.WEST); //Add labelPanel to the left
-        rentalGUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
-    }
-
-    /**
-     * Returns the previous GUI in the form of a JFrame.
-     * @return the previous GUI.
-     */
-    public JFrame getPreviousFrame() {
-        return previousGUI;
+        GUIPanel.add(labelPanel, BorderLayout.WEST); //Add labelPanel to the left
+        GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }
 
     /**

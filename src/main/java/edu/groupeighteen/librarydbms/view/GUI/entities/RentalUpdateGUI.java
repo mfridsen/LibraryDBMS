@@ -17,9 +17,7 @@ import javax.swing.*;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class RentalUpdateGUI extends JFrame {
-    //This is used to go back to the previous frame
-    private final JFrame previousGUI; //All GUI-classes should have this
+public class RentalUpdateGUI extends GUI {
 
     private final Rental rental;
 
@@ -36,8 +34,8 @@ public class RentalUpdateGUI extends JFrame {
     private JButton confirmUpdateButton;
     private JButton cancelButton;
 
-    public RentalUpdateGUI(JFrame previousGUI, Rental rental) {
-        this.previousGUI = previousGUI;
+    public RentalUpdateGUI(GUI previousGUI, Rental rental) {
+        super(previousGUI);
         this.rental = rental;
     }
 }
