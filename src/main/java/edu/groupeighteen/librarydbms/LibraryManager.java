@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.entities.User;
 
 import java.sql.SQLException;
 
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 public class LibraryManager {
 
     public static final String databaseName = "lilla_biblioteket";
+    private static User currentUser = null;
 
     //TODO clean up exceptions
     public static void main(String[] args) throws SQLException {
@@ -51,5 +53,13 @@ public class LibraryManager {
             DatabaseHandler.closeDatabaseConnection();
         }
         System.exit(status);
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        LibraryManager.currentUser = currentUser;
     }
 }
