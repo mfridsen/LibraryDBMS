@@ -42,10 +42,14 @@ public class DatabaseHandler {
         //Connect to database
         connection = DatabaseConnection.setup();
 
+        executeCommand("drop database if exists " + LibraryManager.databaseName);
+        createDatabase(LibraryManager.databaseName);
+
+        /*
         if (!databaseExists(LibraryManager.databaseName)) {
             createDatabase(LibraryManager.databaseName);
         } else executeCommand("use " + LibraryManager.databaseName);
-
+        */
     }
 
     /**
