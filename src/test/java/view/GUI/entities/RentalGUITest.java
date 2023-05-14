@@ -2,7 +2,6 @@ package view.GUI.entities;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.RentalGUI;
 import org.junit.jupiter.api.*;
 

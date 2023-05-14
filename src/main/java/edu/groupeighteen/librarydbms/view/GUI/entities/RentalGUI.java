@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms.view.GUI.entities;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Mattias Fridsén
@@ -37,6 +38,8 @@ public class RentalGUI extends JFrame {
     private JButton rentalDeleteButton;
 
     private JPanel rentalGUIPanel;
+    private JPanel buttonPanel;
+    private JPanel labelPanel;
 
 
     public RentalGUI(JFrame previousFrame, Rental rental) {
@@ -45,7 +48,7 @@ public class RentalGUI extends JFrame {
 
         setupLabels();
         setupButtons();
-        setupPanel();
+        setupPanels();
 
         this.add(rentalGUIPanel);
         this.pack(); //Packs all the things
@@ -84,14 +87,28 @@ public class RentalGUI extends JFrame {
     /**
      * Sets up the panel.
      */
-    private void setupPanel() {
-        rentalGUIPanel = new JPanel();
+    private void setupPanels() {
+        rentalGUIPanel = new JPanel(new BorderLayout());
 
+        //We want the buttons to be ordered horizontally, in a row
+        buttonPanel = new JPanel();
+
+        //We want the labels to be ordered vertically, in a column
+        labelPanel = new JPanel();
+        labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
+
+        //Add buttons
         for (JButton button : buttons)
-            rentalGUIPanel.add(button);
+            buttonPanel.add(button);
 
-        for (JLabel label : labels)
-            rentalGUIPanel.add(label);
+        //Add labels
+        for (JLabel label : labels) {
+            label.setAlignmentX(Component.LEFT_ALIGNMENT); //Align labels to the left
+            labelPanel.add(label);
+        }
+
+        rentalGUIPanel.add(labelPanel, BorderLayout.WEST); //Add labelPanel to the left
+        rentalGUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }
 
     /**
