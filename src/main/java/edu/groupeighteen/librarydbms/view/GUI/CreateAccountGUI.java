@@ -16,17 +16,17 @@ import java.sql.SQLException;
  * @date 2023-04-27
  */
 public class CreateAccountGUI {
-    public JLabel usernameLabel;
-    public JTextField usernameField;
-    public JLabel passwordLabel;
-    public JPasswordField passwordField;
-    public JLabel EmailLabel;
-    public JTextField EmailField;
+    private JLabel usernameLabel;
+    private JTextField usernameField;
+    private JLabel passwordLabel;
+    private JPasswordField passwordField;
+    private JLabel EmailLabel;
+    private JTextField EmailField;
 
-    public JButton tillbakaButton;
-    public JButton proceedButton;
-    public JPanel CreateAccountPanel;
-    public JFrame CreateAccountFrame;
+    private JButton tillbakaButton;
+    private JButton proceedButton;
+    private JPanel CreateAccountPanel;
+    private JFrame CreateAccountFrame;
 
     public void CreateAccountPage(){
         JPanel panel = new JPanel();

@@ -16,13 +16,13 @@ import java.awt.event.ActionListener;
  * @date 2023-04-21
  */
 public class MenuPageGUI {
-    public JButton sökButton;
-    public JButton mittKontoButton;
-    public JButton LoggaUtButton;
-    public JButton tillbakaButton;
-    public JButton userButton;
-    public JFrame menuFrame;
-    public JPanel menuPanel;
+    private JButton sökButton;
+    private JButton mittKontoButton;
+    private JButton LoggaUtButton;
+    private JButton tillbakaButton;
+    private JButton userButton;
+    private JFrame menuFrame;
+    private JPanel menuPanel;
     private User loggedInUser;
 
     public String username;
@@ -95,9 +95,5 @@ public class MenuPageGUI {
         menuFrame.pack();
         menuFrame.setVisible(true);
         menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
     }
-
-
 }

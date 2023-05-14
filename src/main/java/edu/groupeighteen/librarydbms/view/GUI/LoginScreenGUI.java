@@ -1,8 +1,13 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.entities.User;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 /**
  * @author Johan Lund
@@ -19,9 +24,7 @@ public class LoginScreenGUI extends JFrame {
     public JButton tillbakaButton;
     public JButton proceedButton;
 
-    private boolean validateLogin(String username, String password) {
-        return username.equals("user") && password.equals("pass");
-    }
+
 
     public void LoginPage() {
         JPanel panel = new JPanel();
@@ -53,14 +56,19 @@ public class LoginScreenGUI extends JFrame {
                 LoginFrame.dispose();
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
-                if (validateLogin(username, password)) {
-                    MenuPageGUI menuPage = new MenuPageGUI(username);
-                    menuPage.menuGUI();
-                } else {
-                    // show error message or do nothing
-                    LoginErrorGUI loginError = new LoginErrorGUI();
-                    loginError.ErrorGUI();
+                try {
+                    if (UserHandler.login(username, password)) {
+                        LibraryManager.setCurrentUser(UserHandler.getUserByUsername(username));
+                        MenuPageGUI menuPage = new MenuPageGUI(LibraryManager.getCurrentUser());
+                        menuPage.menuGUI();
+                    } else {
+                        // show error message or do nothing
+                        LoginErrorGUI loginError = new LoginErrorGUI();
+                        loginError.ErrorGUI();
 
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);// TODO-Exception
                 }
             }
         });
