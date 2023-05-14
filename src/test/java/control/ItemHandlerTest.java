@@ -42,12 +42,12 @@ public class ItemHandlerTest extends BaseHandlerTest {
     @Order(1)
     void testSaveItem() {
         System.out.println("\n1: Testing saveItem method...");
-        // Test data
+        //Test data
         String itemTitle = "Test Item";
         Item testItem = new Item(itemTitle);
         int itemID = 0;
 
-        // Test: Saving a valid item should return a valid item ID
+        //Test: Saving a valid item should return a valid item ID
         try {
             itemID = ItemHandler.saveItem(testItem);
         } catch (SQLException e) {
@@ -73,7 +73,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         String itemTitle = "Test Item";
         Item testItem = null;
 
-        // Test: Creating a valid item should return a valid item object
+        //Test: Creating a valid item should return a valid item object
         try {
             testItem = ItemHandler.createNewItem(itemTitle);
         } catch (SQLException e) {
@@ -95,7 +95,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testGetItemByID() {
         System.out.println("\n3: Testing getItemByID method...");
 
-        // Test: Retrieving an item with an invalid ID should return null
+        //Test: Retrieving an item with an invalid ID should return null
         try {
             Item nullItem = ItemHandler.getItemByID(-1);
             assertNull(nullItem, "Retrieving an item with an invalid ID should return null.");
@@ -103,7 +103,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Retrieving an item with an invalid ID should not throw an exception.");
         }
 
-        // Test: Retrieving an item with a non-existent ID should return null
+        //Test: Retrieving an item with a non-existent ID should return null
         try {
             Item nonExistentItem = ItemHandler.getItemByID(9999);
             assertNull(nonExistentItem, "Retrieving an item with a non-existent ID should return null.");
@@ -111,9 +111,9 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Retrieving an item with a non-existent ID should not throw an exception.");
         }
 
-        // Test: Retrieving a valid item should return a valid item object
+        //Test: Retrieving a valid item should return a valid item object
         try {
-            // Create a new item first to ensure a valid itemID
+            //Create a new item first to ensure a valid itemID
             String itemTitle = "Test Item";
             Item newItem = ItemHandler.createNewItem(itemTitle);
             assertNotNull(newItem);
@@ -139,7 +139,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testGetItemByTitle() {
         System.out.println("\n4: Testing GetItemByTitle method...");
 
-        // Test: Retrieving an item with a null title should return null
+        //Test: Retrieving an item with a null title should return null
         try {
             Item nullItem = ItemHandler.getItemByTitle(null);
             assertNull(nullItem, "Retrieving an item with a null title should return null.");
@@ -147,7 +147,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Retrieving an item with a null title should not throw an exception.");
         }
 
-        // Test: Retrieving an item with an empty title should return null
+        //Test: Retrieving an item with an empty title should return null
         try {
             Item emptyTitleItem = ItemHandler.getItemByTitle("");
             assertNull(emptyTitleItem, "Retrieving an item with an empty title should return null.");
@@ -155,7 +155,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Retrieving an item with an empty title should not throw an exception.");
         }
 
-        // Test: Retrieving an item with a non-existent title should return null
+        //Test: Retrieving an item with a non-existent title should return null
         try {
             Item nonExistentItem = ItemHandler.getItemByTitle("Non-existent title");
             assertNull(nonExistentItem, "Retrieving an item with a non-existent title should return null.");
@@ -163,9 +163,9 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Retrieving an item with a non-existent title should not throw an exception.");
         }
 
-        // Test: Retrieving a valid item should return a valid item object
+        //Test: Retrieving a valid item should return a valid item object
         try {
-            // Create a new item first to ensure a valid title
+            //Create a new item first to ensure a valid title
             String itemTitle = "Test Item";
             Item newItem = ItemHandler.createNewItem(itemTitle);
             assertNotNull(newItem);
@@ -190,36 +190,38 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testUpdateItem() {
         System.out.println("\n5: Testing UpdateItem method...");
 
-        // Test: Updating a non-existent item should throw an exception
+        //Test: Updating a non-existent item should return false
         try {
             Item nonExistentItem = new Item("Non-existent Item");
-            nonExistentItem.setItemID(9999);  // Assuming this ID does not exist in the database
-            ItemHandler.updateItem(nonExistentItem);
-            fail("Updating a non-existent item should throw an exception.");
+            nonExistentItem.setItemID(9999);  //Assuming this ID does not exist in the database
+            assertFalse(ItemHandler.updateItem(nonExistentItem));
         } catch (SQLException e) {
-            // Expected exception
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
         }
 
-        // Test: Updating a valid item should return true
+        //Test: Updating a valid item should return true
         try {
-            // Create a new item first to ensure a valid ID
+            //Create a new item first to ensure a valid ID
             String itemTitle = "Test Item";
             Item newItem = ItemHandler.createNewItem(itemTitle);
             assertNotNull(newItem);
 
-            // Update the title of the newly created item
+            //Update the title of the newly created item
             String updatedTitle = "Updated Test Item";
             newItem.setTitle(updatedTitle);
             boolean updated = ItemHandler.updateItem(newItem);
             assertTrue(updated, "Updating a valid item should return true.");
 
-            // Retrieve the updated item to verify the title was correctly updated
+            //Retrieve the updated item to verify the title was correctly updated
             Item updatedItem = ItemHandler.getItemByID(newItem.getItemID());
             assertNotNull(updatedItem);
             assertEquals(updatedTitle, updatedItem.getTitle(), "The updated item's title should match the new title.");
         } catch (SQLException e) {
             fail("Updating a valid item should not throw an exception. Error: " + e.getMessage());
         }
+
+        assertThrows(IllegalArgumentException.class, () -> ItemHandler.updateItem(new Item(null)));
 
         System.out.println("Test finished.");
     }
@@ -234,33 +236,35 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testDeleteItem() {
         System.out.println("\n6: Testing DeleteItem method...");
 
-        // Test: Deleting a non-existent item should return false
+        //Test: Deleting a non-existent item should return false
         try {
             Item nonExistentItem = new Item("Non-existent Item");
-            nonExistentItem.setItemID(9999);  // Assuming this ID does not exist in the database
+            nonExistentItem.setItemID(9999);  //Assuming this ID does not exist in the database
             boolean deleted = ItemHandler.deleteItem(nonExistentItem);
             assertFalse(deleted, "Deleting a non-existent item should return false.");
         } catch (SQLException e) {
             fail("Deleting a non-existent item should not throw an exception.");
         }
 
-        // Test: Deleting a valid item should return true
+        //Test: Deleting a valid item should return true
         try {
-            // Create a new item first to ensure a valid ID
+            //Create a new item first to ensure a valid ID
             String itemTitle = "Test Item";
             Item newItem = ItemHandler.createNewItem(itemTitle);
             assertNotNull(newItem);
 
-            // Delete the newly created item
+            //Delete the newly created item
             boolean deleted = ItemHandler.deleteItem(newItem);
             assertTrue(deleted, "Deleting a valid item should return true.");
 
-            // Try to retrieve the deleted item to verify it was actually deleted
+            //Try to retrieve the deleted item to verify it was actually deleted
             Item deletedItem = ItemHandler.getItemByID(newItem.getItemID());
             assertNull(deletedItem, "The deleted item should not be retrievable from the database.");
         } catch (SQLException e) {
             fail("Deleting a valid item should not throw an exception. Error: " + e.getMessage());
         }
+
+        assertThrows(IllegalArgumentException.class, () -> ItemHandler.deleteItem(new Item(null)));
 
         System.out.println("Test finished.");
     }

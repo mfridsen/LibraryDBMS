@@ -120,12 +120,12 @@ public class DatabaseHandler {
         }
         try (PreparedStatement stmt = connection.prepareStatement(command)) {
 
-            // Bind the provided parameters to the SQL statement
+            //Bind the provided parameters to the SQL statement
             for (int i = 0; i < parameters.length; i++) {
                 stmt.setString(i + 1, parameters[i]);
             }
 
-            // Execute the update and return the number of affected rows
+            //Execute the update and return the number of affected rows
             return stmt.executeUpdate();
         }
     }
@@ -211,7 +211,7 @@ public class DatabaseHandler {
                 preparedStatement.setString(i + 1, params[i]);
             }
 
-            // The method executeUpdate() returns the number of affected rows.
+            //The method executeUpdate() returns the number of affected rows.
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error executing SQL update: " + e.getMessage());
@@ -223,7 +223,7 @@ public class DatabaseHandler {
 
 
     //TODO-Exception handling, pass on upwards and also add handling of these specific
-    // exceptions in the ExceptionHandler
+    //exceptions in the ExceptionHandler
     /**
      * A simple method which reads the contents of a file, and executes any SQL commands found in that file.
      * @param filePath the path of the file
@@ -242,19 +242,19 @@ public class DatabaseHandler {
             StringBuilder commandBuilder = new StringBuilder();
 
             while ((line = reader.readLine()) != null) {
-                // Skip comments
+                //Skip comments
                 if (line.startsWith("--")) {
                     continue;
                 }
 
-                // Append the line to the command string, adding a space in between
+                //Append the line to the command string, adding a space in between
                 commandBuilder.append(line).append(" ");
 
-                // Check if the line ends with a semicolon, signifying the end of the command
+                //Check if the line ends with a semicolon, signifying the end of the command
                 if (line.endsWith(";")) {
                     String command = commandBuilder.toString();
                     executeCommand(command);
-                    // Reset the command builder for the next command
+                    //Reset the command builder for the next command
                     commandBuilder = new StringBuilder();
                 }
             }

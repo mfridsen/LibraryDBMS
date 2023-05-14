@@ -162,6 +162,10 @@ public class UserHandler {
      *         generate a new unique ID for the inserted user.
      */
     public static int saveUser(User user) throws SQLException {
+        //Validate the input
+        if (user == null)
+            throw new IllegalArgumentException("Invalid user: user is null.");
+
         //Prepare query
         String query = "INSERT INTO users (username, password) VALUES (?, ?)"; //Update these two when more fields are added, as well as javadoc
         String[] params = {user.getUsername(), user.getPassword()}; //Update these two when more fields are added, as well as javadoc
@@ -270,20 +274,19 @@ public class UserHandler {
      * @return true if the user's record was successfully updated, false otherwise.
      */
     public static boolean updateUser(User user) throws SQLException {
+        //Validate the input
+        if (user == null)
+            throw new IllegalArgumentException("Invalid user: user is null.");
+        if (user.getUserID() <= 0)
+            throw new IllegalArgumentException("Invalid user: userID must be greater than 0.");
+
         //Prepare a SQL command to update a user's username and password by userID.
         String sql = "UPDATE users SET username = ?, password = ? WHERE userID = ?";
         String[] params = {user.getUsername(), user.getPassword(), String.valueOf(user.getUserID())};
 
         //Execute the update.
-        int rowsAffected = DatabaseHandler.executeUpdate(sql, params);
-
-        //Check if the update was successful (i.e., if any rows were affected)
-        if (rowsAffected > 0) {
-            //Return whether the user was updated successfully.
-            return true;
-        } else {
-            throw new SQLException("Error updating user:");
-        }
+        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
+        return rowsAffected == 1;
     }
 
     /**
@@ -293,21 +296,25 @@ public class UserHandler {
      * @return true if the user was successfully deleted, false otherwise.
      */
     public static boolean deleteUser(User user) throws SQLException {
-        boolean isDeleted = false;
+        //Validate the input
+        if (user == null)
+            throw new IllegalArgumentException("Invalid user: user is null.");
+        if (user.getUserID() <= 0)
+            throw new IllegalArgumentException("Invalid user: userID must be greater than 0.");
+
         //Prepare a SQL command to delete a user by userID.
         String sql = "DELETE FROM users WHERE userID = ?";
         String[] params = {String.valueOf(user.getUserID())};
 
         //Execute the update.
-        int rowsAffected = DatabaseHandler.executeUpdate(sql, params);
+        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
         //Remove the deleted user's username from the usernames ArrayList.
         if (rowsAffected > 0) {
-            isDeleted = true;
             storedUsernames.remove(user.getUsername());
+            return true;
+        } else {
+            return false;
         }
-
-        //Return whether the user was deleted successfully.
-        return isDeleted;
     }
 }

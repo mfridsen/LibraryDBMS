@@ -110,6 +110,10 @@ public class ItemHandler {
      *      generate a new unique ID for the inserted item.
      */
     public static int saveItem(Item item) throws SQLException {
+        //Validate input
+        if (item == null)
+            throw new IllegalArgumentException("Invalid item: item is null.");
+
         //Prepare query
         String query = "INSERT INTO items (title) VALUES (?)"; //Update these two when more fields are added, as well as javadoc
         String[] params = {item.getTitle()}; //Update these two when more fields are added, as well as javadoc
@@ -123,7 +127,7 @@ public class ItemHandler {
     }
 
     //TODO-exception might want to throw a custom exception (like ItemNotFoundException) instead of returning null,
-    // to make error handling more consistent
+    //to make error handling more consistent
     /**
      * Retrieves a Item object from the database based on the provided item ID.
      *
@@ -167,7 +171,7 @@ public class ItemHandler {
     }
 
     //TODO-exception might want to throw a custom exception (like ItemNotFoundException) instead of returning null,
-    // to make error handling more consistent
+    //to make error handling more consistent
     /**
      * Retrieves a Item object from the database based on the provided title.
      *
@@ -218,38 +222,46 @@ public class ItemHandler {
      * @throws SQLException If an error occurs while interacting with the database
      */
     public static boolean updateItem(Item item) throws SQLException {
+        //Validate the input
+        if (item == null)
+            throw new IllegalArgumentException("Invalid item: item is null.");
+        if (item.getItemID() <= 0)
+            throw new IllegalArgumentException("Invalid item: itemID must be greater than 0.");
+
         //Prepare a SQL command to update a item's title by itemID.
         String sql = "UPDATE items SET title = ? WHERE itemID = ?";
         String[] params = {item.getTitle(), String.valueOf(item.getItemID())};
 
         //Execute the update.
-        int rowsAffected = DatabaseHandler.executeUpdate(sql, params);
+        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
         //Check if the update was successful (i.e., if any rows were affected)
-        if (rowsAffected > 0) {
-            //Return whether the item was updated successfully.
-            return true;
-        } else {
-            throw new SQLException("Error updating item:");
-        }
+        return rowsAffected == 1;
     }
 
-    //TODO-test re-test and expand comment
     /**
-     * Deletes a item from the database.
+     * Deletes a item from the database. If delete is successful, checks if there still are items with the same title
+     * in the table. If not, removes that title from storedTitles.
      *
      * @param item The item to delete.
      * @return true if the item was successfully deleted, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database
      */
     public static boolean deleteItem(Item item) throws SQLException {
+        //Validate the input
+        if (item == null)
+            throw new IllegalArgumentException("Invalid item: item is null.");
+        if (item.getItemID() <= 0)
+            throw new IllegalArgumentException("Invalid item: itemID must be greater than 0.");
+
         boolean isDeleted = false;
+
         //Prepare a SQL command to delete a item by itemID.
         String sql = "DELETE FROM items WHERE itemID = ?";
         String[] params = {String.valueOf(item.getItemID())};
 
         //Execute the update.
-        int rowsAffected = DatabaseHandler.executeUpdate(sql, params);
+        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
         //Check if the delete was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
@@ -269,7 +281,6 @@ public class ItemHandler {
 
             queryResult.close();
         }
-
         //Return whether the item was deleted successfully.
         return isDeleted;
     }

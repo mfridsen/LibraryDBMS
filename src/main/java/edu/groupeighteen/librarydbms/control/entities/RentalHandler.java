@@ -80,6 +80,10 @@ public class RentalHandler {
      *         generate a new unique ID for the inserted rental.
      */
     public static int saveRental(Rental rental) throws SQLException {
+        //Validate input
+        if (rental == null)
+            throw new IllegalArgumentException("Error saving rental: rental is null.");
+
         //Prepare query
         String query = "INSERT INTO rentals (userID, itemID, rentalDate) VALUES (?, ?, ?)";
         String[] params = {String.valueOf(rental.getUserID()), String.valueOf(rental.getItemID()), rental.getRentalDate().toString()};
@@ -92,12 +96,59 @@ public class RentalHandler {
         }
     }
 
+    /**
+     * This method retrieves all rentals from the database.
+     *
+     * It creates a SQL SELECT statement to retrieve all rentals from the 'rentals' table. It then executes this
+     * statement using the DatabaseHandler's executeQuery method, which returns a ResultSet containing all rentals.
+     * The method then loops through the ResultSet, converting each row into a Rental object and adding it to
+     * an ArrayList. Finally, it returns this ArrayList.
+     *
+     * @return An ArrayList containing all rentals in the database, each represented by a Rental object.
+     * @throws SQLException If an error occurs while interacting with the database.
+     */
     public static List<Rental> getAllRentals() throws SQLException {
-        return null;
+        //Prepare a SQL command to select all rentals from the 'rentals' table.
+        String sql = "SELECT * FROM rentals";
+
+        //Execute the query.
+        QueryResult queryResult = DatabaseHandler.executeQuery(sql);
+
+        //Retrieve the ResultSet from the QueryResult
+        ResultSet resultSet = queryResult.getResultSet();
+
+        //Convert the ResultSet into a List of Rental objects
+        List<Rental> rentals = new ArrayList<>();
+        while (resultSet.next()) {
+            int rentalID = resultSet.getInt("rentalID");
+            int userID = resultSet.getInt("userID");
+            int itemID = resultSet.getInt("itemID");
+            LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
+            Rental newRental = new Rental(userID, itemID, rentalDate);
+            newRental.setRentalID(rentalID);
+            rentals.add(newRental);
+        }
+
+        //Close the QueryResult
+        queryResult.close();
+
+        //Return the List of rentals
+        return rentals;
     }
 
+    /**
+     * Prints all data of rentals in a list.
+     * @param rentals the list of rentals.
+     */
     public static void printRentalList(List<Rental> rentals) {
-
+        System.out.println("Rentals:");
+        int count = 1;
+        for (Rental rental : rentals) {
+            System.out.println(count + " rentalID: " + rental.getRentalID() + ", userID: " + rental.getUserID()
+                    + ", username: " + rental.getUsername() + ", itemID: " + rental.getItemID()
+                    + ", item title: " + rental.getTitle() + ", rental date: " + rental.getRentalDate());
+            count++;
+        }
     }
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
@@ -399,28 +450,48 @@ public class RentalHandler {
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
      */
-    public boolean updateRental(Rental rental) throws SQLException {
-        // Validate the input
+    public static boolean updateRental(Rental rental) throws SQLException {
+        //Validate the input
         if (rental == null)
-            throw new IllegalArgumentException("Invalid rental: Rental cannot be null.");
+            throw new IllegalArgumentException("Error updating rental: rental is null.");
         if (rental.getRentalID() <= 0)
             throw new IllegalArgumentException("Invalid rental: Rental ID must be greater than 0.");
 
-        // Prepare a SQL query to update the rental details
+        //Prepare a SQL query to update the rental details
         String query = "UPDATE rentals SET userID = ?, itemID = ?, rentalDate = ? WHERE rentalID = ?";
         String[] params = {String.valueOf(rental.getUserID()),
                 String.valueOf(rental.getItemID()),
                 rental.getRentalDate().toString(),
                 String.valueOf(rental.getRentalID())};
 
-        // Execute the update and return whether it was successful
+        //Execute the update and return whether it was successful
         int rowsAffected = DatabaseHandler.executePreparedUpdate(query, params);
         return rowsAffected > 0;
     }
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    public boolean deleteRental(Rental rental) throws SQLException {
-        return false;
+    /**
+     * This method deletes the details of a given rental in the database.
+     *
+     * @param rental The rental object containing the deleted details.
+     * @return true if the delete was successful, false otherwise.
+     * @throws SQLException If an error occurs while interacting with the database.
+     * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
+     */
+    public static boolean deleteRental(Rental rental) throws SQLException {
+        //Validate the input
+        if (rental == null)
+            throw new IllegalArgumentException("Error deleting rental: rental is null.");
+        if (rental.getRentalID() <= 0)
+            throw new IllegalArgumentException("Invalid rental: Rental ID must be greater than 0.");
+
+        //Prepare a SQL query to update the rental details
+        String query = "DELETE FROM rentals WHERE rentalID = ?";
+        String[] params = {String.valueOf(rental.getRentalID())};
+
+        //Execute the update and return whether it was successful
+        int rowsAffected = DatabaseHandler.executePreparedUpdate(query, params);
+        return rowsAffected > 0;
     }
 }

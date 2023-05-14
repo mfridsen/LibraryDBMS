@@ -1,6 +1,8 @@
 package control;
 
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import org.junit.jupiter.api.*;
 
@@ -51,6 +53,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(1, -1, LocalDateTime.now())));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(1, 1, LocalDateTime.now().plusDays(1))));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(1, 1, null)));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(null));
 
         System.out.println("Test finished.");
     }
@@ -87,13 +90,46 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("Test finished.");
     }
 
-    //TODO-comment
+    /**
+     * This test method tests the getAllRentals method in RentalHandler.
+     *
+     * Test case: Retrieving all rentals.
+     * First, a few new rentals are created to populate the database.
+     * The getAllRentals method is then called to retrieve the list of rentals.
+     * The size of this list should match the number of rentals created,
+     * verifying that the method correctly retrieves all rentals from the database.
+     *
+     * If an SQLException is thrown at any point during the test, the test fails with an appropriate error message.
+     */
     @Test
     @Order(3)
     void testGetAllRentals() {
-        System.out.println("\n3: Testing getAllRentals method...");
+        System.out.println("\n12: Testing getAllRentals method...");
 
-        //TODO-prio implement
+        try {
+            //Create a few new rentals
+            Rental newRental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            Rental newRental2 = RentalHandler.createNewRental(2, 2, LocalDateTime.now().minusDays(2));
+            Rental newRental3 = RentalHandler.createNewRental(3, 3, LocalDateTime.now().minusDays(3));
+            assertNotNull(newRental1);
+            assertNotNull(newRental2);
+            assertNotNull(newRental3);
+
+            //Get the list of rentals
+            List<Rental> rentals = RentalHandler.getAllRentals();
+
+            //The list should contain the number of rentals we created
+            assertEquals(3, rentals.size(), "The list of rentals should contain the number of rentals we created.");
+
+            //Check that the rentals we created are in the list
+            assertTrue(rentals.stream().anyMatch(rental -> rental.getRentalID() == newRental1.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(rental -> rental.getRentalID() == newRental2.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(rental -> rental.getRentalID() == newRental3.getRentalID()));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
 
         System.out.println("Test finished.");
     }
@@ -379,19 +415,115 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("Test finished.");
     }
 
+    /**
+     * This test method first checks that trying to update a non-existent rental returns false. Then it checks that
+     * updating a valid rental returns true, and it verifies that the update operation actually changed the rental's
+     * details in the database. If all these checks pass, the method is working correctly.
+     */
     @Test
     @Order(10)
     void testUpdateRental() {
         System.out.println("\n10: Testing updateRental method...");
-        //Test the updating of a specific Rental in the database
+
+        //Test: Updating a non-existent rental should throw an exception
+        try {
+            Rental nonExistentRental = new Rental(1, 1, LocalDateTime.now());
+            nonExistentRental.setRentalID(9999);  //Assuming this ID does not exist in the database
+            assertFalse(RentalHandler.updateRental(nonExistentRental));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        //Test: Updating a valid rental should return true
+        try {
+            //Create a new rental first to ensure a valid rentalID
+            Rental newRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(newRental);
+
+            //Update the details of the newly created rental
+            int updatedUserID = 2;
+            int updatedItemID = 2;
+            LocalDateTime updatedRentalDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+            newRental.setUserID(updatedUserID);
+            newRental.setItemID(updatedItemID);
+            newRental.setRentalDate(updatedRentalDate);
+            boolean updated = RentalHandler.updateRental(newRental);
+            assertTrue(updated, "Updating a valid rental should return true.");
+
+            //Retrieve the updated rental to verify the details were correctly updated
+            Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNotNull(updatedRental);
+            assertEquals(updatedUserID, updatedRental.getUserID(), "The updated rental's userID should match the new userID.");
+            assertEquals(updatedItemID, updatedRental.getItemID(), "The updated rental's itemID should match the new itemID.");
+            assertEquals(updatedRentalDate, updatedRental.getRentalDate(), "The updated rental's rentalDate should match the new rentalDate.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
+        //Test invalid updateRental
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(null));
+
         System.out.println("Test finished.");
     }
 
+    /**
+     * This test method tests the deleteRental method in RentalHandler.
+     *
+     * Test case 1: Deleting a non-existent rental.
+     * The method should return false since there's no rental with the provided ID in the database.
+     *
+     * Test case 2: Deleting a rental with a null object.
+     * An IllegalArgumentException should be thrown in this case as the provided rental object is null.
+     *
+     * Test case 3: Deleting a valid rental.
+     * First, a rental is created to ensure it exists in the database. The method should then successfully delete this rental and return true.
+     * After deletion, attempting to retrieve the rental using its ID should return null, verifying that the rental was successfully deleted from the database.
+     *
+     * In all cases, if an SQLException is thrown, the test fails with an appropriate error message.
+     */
     @Test
     @Order(11)
     void testDeleteRental() {
         System.out.println("\n11: Testing deleteRental method...");
-        //Test the deletion of a specific Rental from the database
+
+        //Test: Deleting a non-existent rental should return false
+        try {
+            Rental nonExistentRental = new Rental(1, 1, LocalDateTime.now());
+            nonExistentRental.setRentalID(9999);  //Assuming this ID does not exist in the database
+            assertFalse(RentalHandler.deleteRental(nonExistentRental));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        //Test: Deleting a rental with null object should throw IllegalArgumentException
+        try {
+            Rental nullRental = null;
+            assertThrows(IllegalArgumentException.class, () -> RentalHandler.deleteRental(nullRental));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Unexpected exception occurred during test: " + e.getMessage());
+        }
+
+        //Test: Deleting a valid rental should return true
+        try {
+            //Create a new rental first to ensure a valid rentalID
+            Rental newRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(newRental);
+
+            //Delete the newly created rental
+            boolean deleted = RentalHandler.deleteRental(newRental);
+            assertTrue(deleted, "Deleting a valid rental should return true.");
+
+            //Try to retrieve the deleted rental to verify it was correctly deleted
+            Rental deletedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNull(deletedRental, "The deleted rental should not be retrievable from the database.");
+        } catch (SQLException e) {
+            fail("Deleting a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
         System.out.println("Test finished.");
     }
+
 }
