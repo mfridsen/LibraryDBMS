@@ -72,10 +72,85 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         System.out.println("Test finished.");
     }
 
+    /**
+     * Tests the executePreparedUpdate method in the DatabaseHandler class.
+     * This test includes operations of creating a new table, inserting data, updating the data, and deleting the data.
+     * For each operation, it validates the successful execution by checking the affected rows and the resulting state of the database.
+     */
     @Test
     @Order(2)
+    void testExecutePreparedUpdate() {
+        System.out.println("\n2: Testing executePreparedUpdate method...");
+
+        // Prepare SQL commands to create a new table, insert data, update it and delete data
+        String createCommand = "CREATE TABLE test_table (id INT, value INT)";
+        String insertCommand = "INSERT INTO test_table (id, value) VALUES (?, ?)";
+        String updateCommand = "UPDATE test_table SET value = ? WHERE id = ?";
+        String deleteCommand = "DELETE FROM test_table WHERE id = ?";
+
+        try {
+            // Create a new table
+            DatabaseHandler.executeCommand(createCommand);
+
+            // Insert data into the table
+            String[] insertParams = {"1", "100"};
+            DatabaseHandler.executePreparedUpdate(insertCommand, insertParams);
+
+            // Update the data
+            String[] updateParams = {"200", "1"};
+            int affectedRows = DatabaseHandler.executePreparedUpdate(updateCommand, updateParams);
+
+            // Assert that the expected number of rows were affected
+            assertEquals(1, affectedRows);
+
+            // Check if the update worked
+            String selectCommand = "SELECT value FROM test_table WHERE id = 1";
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(selectCommand, new String[]{})) {
+                ResultSet resultSet = queryResult.getResultSet();
+                if (resultSet.next()) {
+                    int value = resultSet.getInt("value");
+                    assertEquals(200, value);
+                } else {
+                    fail("No data found in test_table.");
+                }
+            }
+
+            // Delete the data
+            String[] deleteParams = {"1"};
+            affectedRows = DatabaseHandler.executePreparedUpdate(deleteCommand, deleteParams);
+
+            // Assert that the expected number of rows were affected
+            assertEquals(1, affectedRows);
+
+            // Check if the delete worked
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(selectCommand, new String[]{})) {
+                ResultSet resultSet = queryResult.getResultSet();
+                if (resultSet.next()) {
+                    fail("Data was not deleted from test_table.");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        } finally {
+            // Clean up by dropping the test table
+            String dropCommand = "DROP TABLE test_table";
+            try {
+                DatabaseHandler.executeCommand(dropCommand);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Could not drop test_table.");
+            }
+        }
+
+        System.out.println("Test finished.");
+    }
+
+    @Test
+    @Order(3)
     void testExecuteQuery() {
-        System.out.println("2: Testing executeQuery method...");
+        System.out.println("3: Testing executeQuery method...");
         String tableName = "test_table";
         try {
             // Create a new table
@@ -112,9 +187,9 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void testExecutePreparedQuery() {
-        System.out.println("3: Testing executePreparedQuery method...");
+        System.out.println("4: Testing executePreparedQuery method...");
         String tableName = "test_table";
         try {
             // Create a new table
@@ -155,9 +230,9 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void testExecuteSQLCommandsFromFile() {
-        System.out.println("4: Testing executeSQLCommandsFromFile method...");
+        System.out.println("5: Testing executeSQLCommandsFromFile method...");
         // Set up the path to the test SQL file
         String testSQLFilePath = "src/test/resources/sql/test_sql_file.sql";
 
@@ -225,9 +300,9 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void testDatabaseExistsAndCreateDatabase() {
-        System.out.println("5: Testing databaseExists and createDatabase methods...");
+        System.out.println("6: Testing databaseExists and createDatabase methods...");
         try {
             DatabaseHandler.executeCommand("drop database if exists " + LibraryManager.databaseName);
             assertFalse(DatabaseHandler.databaseExists(LibraryManager.databaseName));
@@ -243,9 +318,9 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void testExecuteUpdate() {
-        System.out.println("\n6: Testing executeUpdate...");
+        System.out.println("\n7: Testing executeUpdate...");
         setupTestTablesAndData();
 
         //Let's assume that there is a user with ID 1 in the database.

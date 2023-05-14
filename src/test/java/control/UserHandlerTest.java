@@ -26,19 +26,13 @@ public class UserHandlerTest extends BaseHandlerTest {
     @Override
     void setupAndReset() {
         super.setupAndReset();
-        setupTestTablesAndData();
-    }
-
-    @Override
-    void setupTestTablesAndData() {
-        super.setupTestTablesAndData();
         try {
-            //Needed or else anything that checks the storedUsernames will fail
             UserHandler.syncUsernames();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     //TODO-future make all tests more verbose
     //TODO-future javadoc all tests properly

@@ -35,6 +35,7 @@ public abstract class BaseHandlerTest {
             DatabaseHandler.executeCommand("drop database if exists " + testDatabaseName);
             DatabaseHandler.executeCommand("create database " + testDatabaseName);
             DatabaseHandler.executeCommand("use " + testDatabaseName);
+            setupTestTablesAndData();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -28,7 +28,11 @@ public class ItemHandlerTest extends BaseHandlerTest {
     @Override
     void setupAndReset() {
         super.setupAndReset();
-        setupTestTablesAndData();
+        try {
+            ItemHandler.setup();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

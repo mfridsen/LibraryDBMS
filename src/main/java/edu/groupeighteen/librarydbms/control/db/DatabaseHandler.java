@@ -104,6 +104,33 @@ public class DatabaseHandler {
     }
 
     //TODO-exception
+    //TODO-test
+    /**
+     * Execute an SQL update statement using a prepared statement.
+     *
+     * @param command The SQL statement to execute.
+     * @param parameters An array of values to be bound to the SQL statement.
+     * @return The number of rows affected by the update.
+     * @throws SQLException If an error occurs while interacting with the database.
+     */
+    public static int executePreparedUpdate(String command, String[] parameters) throws SQLException {
+        if (verbose) {
+            System.out.println("\nExecuting command:");
+            SQLFormatter.printFormattedSQL(command);
+        }
+        try (PreparedStatement stmt = connection.prepareStatement(command)) {
+
+            // Bind the provided parameters to the SQL statement
+            for (int i = 0; i < parameters.length; i++) {
+                stmt.setString(i + 1, parameters[i]);
+            }
+
+            // Execute the update and return the number of affected rows
+            return stmt.executeUpdate();
+        }
+    }
+
+    //TODO-exception
     /**
      * Executes a single SQL query on the connected database. SQL queries, unlike SQL commands, do not affect rows,
      * but do instead produce ResultSets which are sent up the call stack in a QueryResult.
