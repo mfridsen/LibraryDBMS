@@ -40,14 +40,14 @@ public class RentalGUI extends GUI {
     private JPanel labelPanel;
 
     public RentalGUI(GUI previousGUI, Rental rental) {
-        super(previousGUI);
+        super(previousGUI, "RentalGUI");
         this.rental = rental;
 
         setupLabels();
         setupButtons();
         setupPanels();
 
-        this.displayGUI("RentalGUI");
+        this.displayGUI();
     }
 
     /**
@@ -76,7 +76,7 @@ public class RentalGUI extends GUI {
                 System.err.println("No previous GUI to return to!");
             } else {
                 dispose();
-                previousGUI.displayGUI(previousGUI.getTitle());
+                previousGUI.displayGUI();
             }
         });
 
@@ -93,7 +93,7 @@ public class RentalGUI extends GUI {
         //Add actionListener
         rentalDeleteButton.addActionListener(e -> {
             dispose();
-            new RentalDeleteGUI();
+            new RentalDeleteGUI(this, rental);
         });
 
         buttons = new JButton[]{previousGUIButton, rentalUpdateButton, rentalDeleteButton};

@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
 
+import edu.groupeighteen.librarydbms.model.entities.Rental;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -13,13 +15,11 @@ package edu.groupeighteen.librarydbms.view.GUI.entities;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class RentalDeleteGUI {
+public class RentalDeleteGUI extends GUI {
+    private Rental rentalToDelete;
 
-    public RentalDeleteGUI() {
-
+    public RentalDeleteGUI(GUI previousGUI, Rental rentalToDelete) {
+        super(previousGUI, "RentalDeleteGUI");
+        this.rentalToDelete = rentalToDelete;
     }
-
-    /*********************************** Getters and Setters are self-explanatory. ************************************/
-
-
 }

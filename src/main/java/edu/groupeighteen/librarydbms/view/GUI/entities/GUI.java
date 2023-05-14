@@ -22,12 +22,15 @@ public class GUI extends JFrame {
     protected JPanel GUIPanel;
     protected JPanel[] panels;
 
-    public GUI(GUI previousGUI) {
+    public GUI(GUI previousGUI, String title) {
         this.previousGUI = previousGUI;
+        this.setTitle(title);
     }
 
-    public void displayGUI(String title) {
-        this.setTitle(title);
+    /**
+     *
+     */
+    public void displayGUI() {
         this.add(GUIPanel);
         this.pack(); //Packs all the things
         this.setVisible(true); //We kinda need to be able to see it

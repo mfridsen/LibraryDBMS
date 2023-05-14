@@ -19,7 +19,7 @@ import javax.swing.*;
  */
 public class RentalUpdateGUI extends GUI {
 
-    private final Rental rental;
+    private final Rental rentalToUpdate;
 
     private JLabel[] labels; //Makes things a little cleaner
     private JLabel rentalIDLabel;
@@ -34,8 +34,8 @@ public class RentalUpdateGUI extends GUI {
     private JButton confirmUpdateButton;
     private JButton cancelButton;
 
-    public RentalUpdateGUI(GUI previousGUI, Rental rental) {
-        super(previousGUI);
-        this.rental = rental;
+    public RentalUpdateGUI(GUI previousGUI, Rental rentalToUpdate) {
+        super(previousGUI, "RentalUpdateGUI");
+        this.rentalToUpdate = rentalToUpdate;
     }
 }
