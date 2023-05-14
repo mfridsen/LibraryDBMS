@@ -38,8 +38,9 @@ public class GUI extends JFrame {
     /**
      * Adds an array of JButtons to a JPanel and then returns that panel.
      * Since no Layout is being used, the default FlowLayout will order the buttons in a horizontal row.
-     * @param buttons
-     * @return
+     * This panel needs to be added to another JPanel using a BorderLayout.NORTH/SOUTH to align properly.
+     * @param buttons the array of JButtons to add to the panel.
+     * @return the new JPanel, with the buttons installed.
      */
     protected JPanel addButtonsToPanel(JButton[] buttons) {
         JPanel buttonPanel = new JPanel();
@@ -49,6 +50,13 @@ public class GUI extends JFrame {
         return buttonPanel;
     }
 
+    /**
+     * Adds an array of JLabels to a JPanel and then returns that panel.
+     * Uses a BoxLayout to align the labels vertically and on the left.
+     * This panel needs to be added to another JPanel using a BorderLayout.WEST in order to align properly.
+     * @param labels the array of JLabels to add to the panel.
+     * @return the new JPanel, with labels installed.
+     */
     protected JPanel addLabelsToPanel(JLabel[] labels) {
         JPanel labelPanel = new JPanel();
         //We want the labels to be ordered vertically, in a column
