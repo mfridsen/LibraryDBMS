@@ -1,5 +1,6 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 
 import javax.swing.*;
@@ -47,7 +48,7 @@ public class ItemSearchGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchFrame.dispose();
-                MenuPageGUI menuPage = new MenuPageGUI("Välkommen");
+                MenuPageGUI menuPage = new MenuPageGUI(LibraryManager.getCurrentUser());
                 menuPage.menuGUI();
             }
         });

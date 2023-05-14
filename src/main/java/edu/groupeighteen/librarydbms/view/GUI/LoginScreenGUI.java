@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,7 +56,7 @@ public class LoginScreenGUI extends JFrame {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 if (validateLogin(username, password)) {
-                    MenuPageGUI menuPage = new MenuPageGUI(username);
+                    MenuPageGUI menuPage = new MenuPageGUI(LibraryManager.getCurrentUser());
                     menuPage.menuGUI();
                 } else {
                     // show error message or do nothing
