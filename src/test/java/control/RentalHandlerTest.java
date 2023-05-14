@@ -1,8 +1,6 @@
 package control;
 
-import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import org.junit.jupiter.api.*;
 
@@ -525,5 +523,4 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         System.out.println("Test finished.");
     }
-
 }

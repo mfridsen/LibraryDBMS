@@ -44,7 +44,8 @@ public class DatabaseHandler {
 
         if (!databaseExists(LibraryManager.databaseName)) {
             createDatabase(LibraryManager.databaseName);
-        }
+        } else executeCommand("use " + LibraryManager.databaseName);
+
     }
 
     /**
@@ -104,7 +105,6 @@ public class DatabaseHandler {
     }
 
     //TODO-exception
-    //TODO-test
     /**
      * Execute an SQL update statement using a prepared statement.
      *
@@ -158,14 +158,13 @@ public class DatabaseHandler {
 
     //TODO-comment
     //TODO-exception
-    //TODO-test
     /**
      *
      * @param query
      * @param params
      * @return
      */
-    public static QueryResult executePreparedQuery(String query, String[] params, int... settings) {
+    public static QueryResult executePreparedQuery(String query, String[] params, int... settings) throws SQLException {
         if (verbose) {
             System.out.println("\nExecuting prepared query:");
             SQLFormatter.printFormattedSQL(query);
