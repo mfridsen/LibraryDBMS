@@ -19,13 +19,16 @@ import java.awt.*;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalGUI extends GUI {
+    //The rental object to display
     private final Rental rental;
+    //The panel containing the scroll pane which displays the Rental data
+    private JPanel scrollPanePanel;
 
-    private JScrollPane rentalScrollPane;
-
-    private JButton rentalUpdateButton;
-    private JButton rentalDeleteButton;
-
+    /**
+     *
+     * @param previousGUI
+     * @param rental
+     */
     public RentalGUI(GUI previousGUI, Rental rental) {
         super(previousGUI, "RentalGUI");
         this.rental = rental;
@@ -39,7 +42,7 @@ public class RentalGUI extends GUI {
      */
     protected JButton[] setupButtons() {
         //Leads to RentalUpdateGUI
-        rentalUpdateButton = new JButton("RentalUpdateGUI");
+        JButton rentalUpdateButton = new JButton("RentalUpdateGUI");
         //Add actionListener
         rentalUpdateButton.addActionListener(e -> {
             dispose();
@@ -47,7 +50,7 @@ public class RentalGUI extends GUI {
         });
 
         //Leads to RentalDeleteGUI
-        rentalDeleteButton = new JButton("RentalDeleteGUI");
+        JButton rentalDeleteButton = new JButton("RentalDeleteGUI");
         //Add actionListener
         rentalDeleteButton.addActionListener(e -> {
             dispose();
@@ -58,7 +61,7 @@ public class RentalGUI extends GUI {
     }
 
     /**
-     * Sets up the scroll pane.
+     * Sets up the scroll pane. Needs to be called by setupPanels.
      */
     protected void setupScrollPane() {
         //Define column names
@@ -74,16 +77,17 @@ public class RentalGUI extends GUI {
                 {"Rental Date", rental.getRentalDate()}
         };
 
-        rentalScrollPane = setupTableScrollPane(columnNames, data);
+        //Create the scroll pane
+        JScrollPane rentalScrollPane = setupScrollPaneTable(columnNames, data);
+        //Create panel and add scroll pane to it
+        scrollPanePanel = new JPanel();
+        scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);
     }
 
     /**
      * Sets up the main panel.
      */
     protected void setupPanels() {
-        GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
-        JPanel scrollPanePanel = new JPanel();
-        scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH); //Add scrollPanePanel to the top
         GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }

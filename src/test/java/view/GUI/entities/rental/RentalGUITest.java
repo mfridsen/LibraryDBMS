@@ -3,7 +3,6 @@ package view.GUI.entities.rental;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalGUI;
-import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -18,8 +17,6 @@ import java.time.LocalDateTime;
  * <p>
  * Brought to you by copious amounts of nicotine.
  */
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalGUITest {
 
     public static void main(String[] args) {

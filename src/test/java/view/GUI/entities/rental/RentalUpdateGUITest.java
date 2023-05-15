@@ -1,13 +1,11 @@
 package view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalSearchGUI;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalUpdateGUI;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 /**
  * @author Mattias Fridsén
@@ -19,12 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>
  * Brought to you by copious amounts of nicotine.
  */
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalUpdateGUITest {
 
     public static void main(String[] args) {
         LibraryManager.setup();
-        new RentalSearchGUI(null);
+        try {
+            new RentalUpdateGUI(null, RentalHandler.createNewRental(1, 1, LocalDateTime.now()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

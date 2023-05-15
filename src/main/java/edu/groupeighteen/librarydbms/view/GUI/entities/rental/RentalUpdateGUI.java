@@ -21,16 +21,19 @@ import java.awt.*;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalUpdateGUI extends GUI {
-
+    //The rental object to update
     private final Rental rentalToUpdate;
+    //The panel containing the scroll pane which displays the Rental data
+    private JPanel scrollPanePanel;
 
-    private JButton clearFieldsButton;
-    private JButton confirmUpdateButton;
-
+    /**
+     *
+     * @param previousGUI
+     * @param rentalToUpdate
+     */
     public RentalUpdateGUI(GUI previousGUI, Rental rentalToUpdate) {
         super(previousGUI, "RentalUpdateGUI");
         this.rentalToUpdate = rentalToUpdate;
-        addButtonsToPanel(new JButton[]{clearFieldsButton, confirmUpdateButton});
         setupScrollPane();
         setupPanels();
         this.displayGUI();
@@ -38,14 +41,24 @@ public class RentalUpdateGUI extends GUI {
 
     @Override
     protected JButton[] setupButtons() {
-        return null;
+        //Clears the text fields
+        JButton clearFieldsButton = new JButton("Clear Fields");
+        clearFieldsButton.addActionListener(e -> {
+            //TODO-prio implement
+        });
+
+        //Updates rentalToUpdate and opens a new RentalGUI displaying the updated Rental object
+        JButton confirmUpdateButton = new JButton("RentalGUI"); //TODO-future Change to "Confirm Update"
+        confirmUpdateButton.addActionListener(e -> {
+            //TODO-prio implement
+        });
+
+        return new JButton[]{clearFieldsButton, confirmUpdateButton};
     }
 
-    @Override
-    protected void setupPanels() {
-
-    }
-
+    /**
+     * Sets up the scroll pane with columns displaying Needs to be called by setupPanels.
+     */
     protected void setupScrollPane() {
         // Define column names
         String[] columnNames = {"Property", "Old Value", "New Value"};
@@ -59,26 +72,15 @@ public class RentalUpdateGUI extends GUI {
                 {"Item Title", rentalToUpdate.getTitle(), ""},
                 {"Rental Date", rentalToUpdate.getRentalDate(), ""}
         };
+        //<Entity>GUIs need a JScrollPane to display all their data in a good format
+        JScrollPane rentalScrollPane = setupScrollPaneTableWithButtons(columnNames, data);
+        scrollPanePanel = new JPanel();
+        scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);
+    }
 
-        // Create table model with data and column names
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames){
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Make only the third column editable
-                return column == 2;
-            }
-        };
-
-        // Create table with the model
-        JTable table = new JTable(tableModel);
-
-        // Make the table use text fields for the third column
-        table.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JTextField()));
-
-        // Add table to a scroll pane in case it gets too big
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        // Add scroll pane to the panel
-        GUIPanel.add(scrollPane, BorderLayout.CENTER);
+    @Override
+    protected void setupPanels() {
+        GUIPanel.add(scrollPanePanel, BorderLayout.NORTH); //Add scrollPanePanel to the top
+        GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }
 }

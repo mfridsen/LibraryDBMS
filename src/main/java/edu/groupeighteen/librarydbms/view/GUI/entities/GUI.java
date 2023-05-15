@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 /**
@@ -28,14 +29,15 @@ public abstract class GUI extends JFrame {
 
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
+     *
      * @param previousGUI the previous GUI object.
      * @param title the title of this GUI object.
      */
     public GUI(GUI previousGUI, String title) {
         this.previousGUI = previousGUI;
         this.setTitle(title);
-        //The previous button will always be added to the button panel
-        buttonPanel = new JPanel();
+        GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
+        buttonPanel = new JPanel(); //The previous button will always be added to the button panel
         setupPreviousGUIButton();
         buttonPanel.add(previousGUIButton);
         addButtonsToPanel(setupButtons());
@@ -65,6 +67,7 @@ public abstract class GUI extends JFrame {
     /**
      * Adds an array of JButtons to a the button JPanel.
      * Since no Layout is being used, the default FlowLayout will order the buttons in a horizontal row.
+     *
      * @param buttons the array of JButtons to add to the buttonPanel.
      */
     protected void addButtonsToPanel(JButton[] buttons) {
@@ -92,11 +95,12 @@ public abstract class GUI extends JFrame {
     /**
      * Creates a JTable with named columns and fills it with data. Then makes the table uneditable,
      * adds it to a JScrollPane and returns that scroll pane.
+     *
      * @param columnNames a String array containing the names of the columns.
      * @param data a two-dimensional Object array containing the data to fill in the columns.
      * @return a JScrollPane ready to add to a JPanel to display the table.
      */
-    protected JScrollPane setupTableScrollPane(String[] columnNames, Object[][] data) {
+    protected JScrollPane setupScrollPaneTable(String[] columnNames, Object[][] data) {
         //Create table with data and column names
         JTable table = new JTable(data, columnNames);
 
@@ -108,9 +112,41 @@ public abstract class GUI extends JFrame {
     }
 
     /**
+     * Creates a JTable with named columns and fills it with data, as well as adding a third column with
+     * editable cells where new data can be entered.
+     *
+     * Observe that SPECIFICALLY the third column is the editable one, not matter how many columns you give
+     * this method.
+     *
+     * @param columnNames a String array containing the names of the columns.
+     * @param data a two-dimensional Object array containing the data to fill in the columns.
+     * @return a JScrollPane ready to add to a JPanel to display the table.
+     */
+    protected JScrollPane setupScrollPaneTableWithButtons(String[] columnNames, Object[][] data) {
+        // Create table model with data and column names
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Make only the third column editable
+                return column == 2;
+            }
+        };
+
+        // Create table with the model
+        JTable table = new JTable(tableModel);
+
+        // Make the table use text fields for the third column
+        table.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JTextField()));
+
+        // Add table to a scroll pane in case it gets too big
+        return new JScrollPane(table);
+    }
+
+    /**
      * Adds an array of JLabels to a JPanel and then returns that panel.
      * Uses a BoxLayout to align the labels vertically and on the left.
      * This panel needs to be added to another JPanel using a BorderLayout.WEST in order to align properly.
+     *
      * @param labels the array of JLabels to add to the panel.
      * @return the new JPanel, with labels installed.
      */
