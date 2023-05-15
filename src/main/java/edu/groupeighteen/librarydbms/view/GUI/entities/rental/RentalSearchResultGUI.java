@@ -26,6 +26,16 @@ public class RentalSearchResultGUI extends GUI {
         this.resultTable = resultTable;
     }
 
+    @Override
+    protected void setupButtons() {
+
+    }
+
+    @Override
+    protected void setupPanels() {
+
+    }
+
     /*
         String[] columnNames = {"User ID", "Username", "First Name", "Last Name"};
         Object[][] data = {

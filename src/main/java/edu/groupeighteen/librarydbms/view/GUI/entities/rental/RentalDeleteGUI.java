@@ -23,4 +23,14 @@ public class RentalDeleteGUI extends GUI {
         super(previousGUI, "RentalDeleteGUI");
         this.rentalToDelete = rentalToDelete;
     }
+
+    @Override
+    protected void setupButtons() {
+
+    }
+
+    @Override
+    protected void setupPanels() {
+
+    }
 }

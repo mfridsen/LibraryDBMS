@@ -51,7 +51,8 @@ public class UserSearchGUI extends GUI {
         searchPanel.add(userIDField);
     }
 
-    private void setupPanels(){
+    @Override
+    protected void setupPanels(){
         GUIPanel = new JPanel(new BorderLayout());
         GUIPanel.add(searchPanel, BorderLayout.NORTH);
         GUIPanel.add(buttonPanel, BorderLayout.SOUTH);

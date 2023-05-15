@@ -41,7 +41,8 @@ public class RentalUpdateGUI extends GUI {
 
     }
 
-    private void setupPanels() {
+    @Override
+    protected void setupPanels() {
 
     }
 

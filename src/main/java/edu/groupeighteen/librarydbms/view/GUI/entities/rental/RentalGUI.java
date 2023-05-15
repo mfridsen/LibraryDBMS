@@ -29,14 +29,8 @@ public class RentalGUI extends GUI {
     public RentalGUI(GUI previousGUI, Rental rental) {
         super(previousGUI, "RentalGUI");
         this.rental = rental;
-        //First we set up the buttons
-        setupButtons();
-        //Then we add them to the button panel
-        addButtonsToPanel(new JButton[]{rentalUpdateButton, rentalDeleteButton});
         //Setup scroll pane
         setupScrollPane();
-        //Add all panels
-        setupPanels();
         this.displayGUI();
     }
 
@@ -59,6 +53,8 @@ public class RentalGUI extends GUI {
             dispose();
             new RentalDeleteGUI(this, rental);
         });
+
+        addButtonsToPanel(new JButton[]{rentalUpdateButton, rentalDeleteButton});
     }
 
     /**
@@ -84,7 +80,7 @@ public class RentalGUI extends GUI {
     /**
      * Sets up the main panel.
      */
-    private void setupPanels() {
+    protected void setupPanels() {
         GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
         JPanel scrollPanePanel = new JPanel();
         scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);

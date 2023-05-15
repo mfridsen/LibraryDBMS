@@ -39,9 +39,15 @@ public abstract class GUI extends JFrame {
         setupPreviousGUIButton();
         buttonPanel.add(previousGUIButton);
         setupButtons();
+        setupPanels();
     }
 
+    /**
+     * All GUI classes will need to implement this method according to their individual layouts.
+     */
     protected abstract void setupButtons();
+
+    protected abstract void setupPanels();
 
     /**
      * Performs all of the basic operations needed to display a GUI (JFrame).

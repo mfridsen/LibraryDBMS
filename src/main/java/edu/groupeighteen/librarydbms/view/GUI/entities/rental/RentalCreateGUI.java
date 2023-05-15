@@ -20,4 +20,14 @@ public class RentalCreateGUI extends GUI {
     public RentalCreateGUI(GUI previousGUI) {
         super(previousGUI, "RentalCreateGUI");
     }
+
+    @Override
+    protected void setupButtons() {
+
+    }
+
+    @Override
+    protected void setupPanels() {
+
+    }
 }

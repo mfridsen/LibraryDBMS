@@ -20,4 +20,14 @@ public class ItemCreateGUI extends GUI {
     public ItemCreateGUI(GUI previousGUI) {
         super(previousGUI, "ItemCreateGUI");
     }
+
+    @Override
+    protected void setupButtons() {
+
+    }
+
+    @Override
+    protected void setupPanels() {
+
+    }
 }

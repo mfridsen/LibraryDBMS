@@ -21,5 +21,13 @@ public class RentalSearchGUI extends GUI {
         super(previousGUI, "RentalSearchGUI");
     }
 
+    @Override
+    protected void setupButtons() {
 
+    }
+
+    @Override
+    protected void setupPanels() {
+
+    }
 }

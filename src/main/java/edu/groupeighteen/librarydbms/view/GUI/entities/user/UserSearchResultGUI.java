@@ -29,6 +29,16 @@ public class UserSearchResultGUI extends GUI {
         this.username = username;
     }
 
+    @Override
+    protected void setupButtons() {
+
+    }
+
+    @Override
+    protected void setupPanels() {
+
+    }
+
     public void userResults() {
         searchPanel = new JPanel();
         searchFrame = new JFrame("UserSearchResultGUI");
