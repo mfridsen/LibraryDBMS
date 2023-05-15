@@ -19,5 +19,6 @@ public class ItemCreateGUI extends GUI {
 
     public ItemCreateGUI(GUI previousGUI) {
         super(previousGUI, "ItemCreateGUI");
+        //asd
     }
 }
