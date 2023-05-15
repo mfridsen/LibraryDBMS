@@ -1,11 +1,15 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 /**
  * @author Mattias Fridsén
@@ -22,7 +26,9 @@ import java.awt.*;
  */
 public class RentalUpdateGUI extends GUI {
     //The rental object to update
-    private final Rental rentalToUpdate;
+    private Rental rentalToUpdate;
+    //We need the table to be a member variable in order to access its data via the buttons
+    private JTable rentalUpdateTable;
     //The panel containing the scroll pane which displays the Rental data
     private JPanel scrollPanePanel;
 
@@ -41,23 +47,72 @@ public class RentalUpdateGUI extends GUI {
 
     @Override
     protected JButton[] setupButtons() {
-        //Clears the text fields
-        JButton clearFieldsButton = new JButton("Clear Fields");
-        clearFieldsButton.addActionListener(e -> {
-            //TODO-prio implement
+        //Clears the data cells
+        JButton resetCellsButton = new JButton("Reset");
+        //Reset the editable fields //TODO-bug doesn't clear selected field
+        resetCellsButton.addActionListener(e -> {
+            for (int row = 0; row < rentalUpdateTable.getRowCount(); row++) {
+                for (int col = 0; col < rentalUpdateTable.getColumnCount(); col++) {
+                    if (col == 2) { // Assuming the 3rd column is the editable column
+                        rentalUpdateTable.setValueAt("", row, col);
+                    }
+                }
+            }
         });
 
         //Updates rentalToUpdate and opens a new RentalGUI displaying the updated Rental object
         JButton confirmUpdateButton = new JButton("RentalGUI"); //TODO-future Change to "Confirm Update"
         confirmUpdateButton.addActionListener(e -> {
-            //TODO-prio implement
+            // Get the new values from the table
+            String userID = (String) rentalUpdateTable.getValueAt(1, 2);
+            String username = (String) rentalUpdateTable.getValueAt(2, 2);
+            String itemID = (String) rentalUpdateTable.getValueAt(3, 2);
+            String itemTitle = (String) rentalUpdateTable.getValueAt(4, 2);
+            String rentalDate = (String) rentalUpdateTable.getValueAt(5, 2);
+
+            // Update the rentalToUpdate object
+            // Only update if new value is not null or empty
+            try {
+                if (userID != null && !userID.isEmpty()) {
+                    rentalToUpdate.setUserID(Integer.parseInt(userID));
+                }
+                // No parsing required for username, it is a string
+                if (username != null && !username.isEmpty()) {
+                    rentalToUpdate.setUsername(username);
+                }
+                if (itemID != null && !itemID.isEmpty()) {
+                    rentalToUpdate.setItemID(Integer.parseInt(itemID));
+                }
+                // No parsing required for itemTitle, it is a string
+                if (itemTitle != null && !itemTitle.isEmpty()) {
+                    rentalToUpdate.setTitle(itemTitle);
+                }
+                if (rentalDate != null && !rentalDate.isEmpty()) {
+                    rentalToUpdate.setRentalDate(LocalDateTime.parse(rentalDate));
+                }
+            } catch (NumberFormatException nfe) {
+                System.err.println("One of the fields that requires a number received an invalid input.");
+            } catch (DateTimeParseException dtpe) {
+                System.err.println("The date field received an invalid input. Please ensure it is in the correct format.");
+            }
+
+            // Now you can call the update method
+            try {
+                RentalHandler.updateRental(rentalToUpdate);
+                dispose();
+                rentalToUpdate = RentalHandler.getRentalByID(rentalToUpdate.getRentalID()); //TODO-prio doesn't fully work yet
+                new RentalGUI(this, rentalToUpdate);
+            } catch (SQLException sqle) {
+                sqle.printStackTrace();
+                LibraryManager.exit(1);
+            }
         });
 
-        return new JButton[]{clearFieldsButton, confirmUpdateButton};
+        return new JButton[]{resetCellsButton, confirmUpdateButton};
     }
 
     /**
-     * Sets up the scroll pane with columns displaying Needs to be called by setupPanels.
+     * Sets up the scroll pane.
      */
     protected void setupScrollPane() {
         // Define column names
@@ -72,9 +127,14 @@ public class RentalUpdateGUI extends GUI {
                 {"Item Title", rentalToUpdate.getTitle(), ""},
                 {"Rental Date", rentalToUpdate.getRentalDate(), ""}
         };
-        //<Entity>GUIs need a JScrollPane to display all their data in a good format
-        JScrollPane rentalScrollPane = setupScrollPaneTableWithButtons(columnNames, data);
-        scrollPanePanel = new JPanel();
+
+        //Create the table
+        this.rentalUpdateTable = setupTableWithEditableCells(columnNames, data);
+        //Create scroll pane and add table to it
+        JScrollPane rentalScrollPane = new JScrollPane();
+        rentalScrollPane.setViewportView(rentalUpdateTable);
+        //Create panel and add scroll pane to it
+        scrollPanePanel = new JPanel(new BorderLayout());
         scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);
     }
 

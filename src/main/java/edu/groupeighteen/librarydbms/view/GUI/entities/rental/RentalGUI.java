@@ -61,7 +61,7 @@ public class RentalGUI extends GUI {
     }
 
     /**
-     * Sets up the scroll pane. Needs to be called by setupPanels.
+     * Sets up the scroll pane.
      */
     protected void setupScrollPane() {
         //Define column names

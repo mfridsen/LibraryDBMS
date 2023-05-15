@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author Mattias Fridsén
@@ -75,7 +76,7 @@ public class Rental {
     public void setRentalDate(LocalDateTime rentalDate) {
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
             throw new IllegalArgumentException("RentalDate cannot be null or in the future.");
-        this.rentalDate = rentalDate;
+        this.rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS); //TODO-test we added truncation, test it
     }
 
     public String getUsername() {

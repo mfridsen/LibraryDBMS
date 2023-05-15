@@ -111,6 +111,7 @@ public abstract class GUI extends JFrame {
         return new JScrollPane(table);
     }
 
+    //TODO-comment rework comment
     /**
      * Creates a JTable with named columns and fills it with data, as well as adding a third column with
      * editable cells where new data can be entered.
@@ -122,7 +123,7 @@ public abstract class GUI extends JFrame {
      * @param data a two-dimensional Object array containing the data to fill in the columns.
      * @return a JScrollPane ready to add to a JPanel to display the table.
      */
-    protected JScrollPane setupScrollPaneTableWithButtons(String[] columnNames, Object[][] data) {
+    protected JTable setupTableWithEditableCells(String[] columnNames, Object[][] data) {
         // Create table model with data and column names
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames){
             @Override
@@ -131,15 +132,11 @@ public abstract class GUI extends JFrame {
                 return column == 2;
             }
         };
-
         // Create table with the model
         JTable table = new JTable(tableModel);
-
         // Make the table use text fields for the third column
         table.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JTextField()));
-
-        // Add table to a scroll pane in case it gets too big
-        return new JScrollPane(table);
+        return table;
     }
 
     /**
