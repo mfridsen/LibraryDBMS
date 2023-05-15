@@ -33,18 +33,21 @@ public class UserSearchResultGUI extends GUI {
         searchPanel = new JPanel();
         searchFrame = new JFrame("UserSearchResultGUI");
         lånaButton = new JButton("Låna");
-        tillbakaButton = new JButton("Tillbaka");
         visaobjektButton = new JButton("Visa objekt");
 
         JLabel resultatLabel;
-        if (searchedUser != null && containsIgnoreCase(searchedUser, userArray)) {
-            resultatLabel = new JLabel("Resultat: " + searchedUser);
+        /*
+        if (username != null && containsIgnoreCase(username)) {
+            resultatLabel = new JLabel("Resultat: " + username);
         } else {
             resultatLabel = new JLabel("Inget resultat hittades.");
         }
+
+         */
+        resultatLabel = new JLabel("Inget resultat hittades.");
+
         searchPanel.add(resultatLabel);
         searchPanel.add(lånaButton);
-        searchPanel.add(tillbakaButton);
         searchPanel.add(visaobjektButton);
 
         searchFrame.getContentPane().add(searchPanel); // Add the panel to the content pane
