@@ -30,66 +30,26 @@ public class RentalGUI extends GUI {
     private JLabel itemTitleLabel;
     private JLabel rentalDateLabel;
 
-    private JTable rentalTable;
     private JScrollPane rentalScrollPane;
 
-    private JButton[] buttons;
     private JButton previousGUIButton;
     private JButton rentalUpdateButton;
     private JButton rentalDeleteButton;
 
-    private JPanel buttonPanel;
-    private JPanel labelPanel;
+    private JPanel scrollPanePanel;
 
     public RentalGUI(GUI previousGUI, Rental rental) {
         super(previousGUI, "RentalGUI");
         this.rental = rental;
 
         //setupLabels();
-        setupTable();
+
         setupButtons();
+        addButtonsToPanel(new JButton[]{previousGUIButton, rentalUpdateButton, rentalDeleteButton});
+        setupScrollPane();
         setupPanels();
 
         this.displayGUI();
-    }
-
-    /**
-     * Reads the data from the Rental object and sets labels accordingly.
-     */
-    private void setupLabels() {
-        rentalIDLabel  = new JLabel("Rental ID:    " + rental.getRentalID());
-        userIDLabel    = new JLabel("User ID:      " + rental.getUserID());
-        usernameLabel  = new JLabel("Username:     " + rental.getUsername());
-        itemIDLabel    = new JLabel("Item ID:      " + rental.getItemID());
-        itemTitleLabel = new JLabel("Item Title:   " + rental.getTitle());
-        rentalDateLabel = new JLabel("Rental Date:  " + rental.getRentalDate());
-
-        labels = new JLabel[]{rentalIDLabel, userIDLabel, usernameLabel, itemIDLabel, itemTitleLabel, rentalDateLabel};
-    }
-
-    //TODO-prio move to GUI class
-    private void setupTable() {
-        // Define column names
-        String[] columnNames = {"Property", "Value"};
-
-        // Gather data
-        Object[][] data = {
-                {"Rental ID", rental.getRentalID()},
-                {"User ID", rental.getUserID()},
-                {"Username", rental.getUsername()},
-                {"Item ID", rental.getItemID()},
-                {"Item Title", rental.getTitle()},
-                {"Rental Date", rental.getRentalDate()}
-        };
-
-        // Create table with data and column names
-        rentalTable = new JTable(data, columnNames);
-
-        // Make the table uneditable
-        rentalTable.setDefaultEditor(Object.class, null);
-
-        // Add table to a scroll pane in case it gets too big
-        rentalScrollPane = new JScrollPane(rentalTable);
     }
 
     /**
@@ -123,22 +83,36 @@ public class RentalGUI extends GUI {
             dispose();
             new RentalDeleteGUI(this, rental);
         });
-
-        buttons = new JButton[]{previousGUIButton, rentalUpdateButton, rentalDeleteButton};
     }
 
     /**
-     * Sets up the panel.
+     * Sets up the scroll pane.
+     */
+    private void setupScrollPane() {
+        //Define column names
+        String[] columnNames = {"Property", "Value"};
+
+        //Gather data
+        Object[][] data = {
+                {"Rental ID", rental.getRentalID()},
+                {"User ID", rental.getUserID()},
+                {"Username", rental.getUsername()},
+                {"Item ID", rental.getItemID()},
+                {"Item Title", rental.getTitle()},
+                {"Rental Date", rental.getRentalDate()}
+        };
+
+        rentalScrollPane = setupTableScrollPane(columnNames, data);
+    }
+
+    /**
+     * Sets up the main panel.
      */
     private void setupPanels() {
-        //To achieve the preferred layout, BorderLayout is needed
-        GUIPanel = new JPanel(new BorderLayout());
-        buttonPanel = addButtonsToPanel(buttons);
-        //labelPanel = addLabelsToPanel(labels);
-        labelPanel = new JPanel();
-        labelPanel.add(rentalScrollPane, BorderLayout.CENTER);
-        //GUIPanel.add(labelPanel, BorderLayout.WEST); //Add labelPanel to the left
-        GUIPanel.add(rentalTable, BorderLayout.NORTH);
+        GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
+        scrollPanePanel = new JPanel();
+        scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);
+        GUIPanel.add(scrollPanePanel, BorderLayout.NORTH); //Add scrollPanePanel to the top
         GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }
 

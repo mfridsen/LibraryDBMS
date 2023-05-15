@@ -20,6 +20,9 @@ public abstract class GUI extends JFrame {
     //This is used to go back to the previous GUI
     protected final GUI previousGUI;
     protected JPanel GUIPanel;
+
+    protected JPanel buttonPanel;
+
     protected JPanel[] panels;
 
     public GUI(GUI previousGUI, String title) {
@@ -43,14 +46,30 @@ public abstract class GUI extends JFrame {
      * Since no Layout is being used, the default FlowLayout will order the buttons in a horizontal row.
      * This panel needs to be added to another JPanel using a BorderLayout.NORTH/SOUTH to align properly.
      * @param buttons the array of JButtons to add to the panel.
-     * @return the new JPanel, with the buttons installed.
      */
-    protected JPanel addButtonsToPanel(JButton[] buttons) {
-        JPanel buttonPanel = new JPanel();
+    protected void addButtonsToPanel(JButton[] buttons) {
+        buttonPanel = new JPanel();
         //We want the buttons to be ordered horizontally, in a row
         for (JButton button : buttons)
             buttonPanel.add(button);
-        return buttonPanel;
+    }
+
+    /**
+     * Creates a JTable with named columns and fills it with data. Then makes the table uneditable,
+     * adds it to a JScrollPane and returns that scroll pane.
+     * @param columnNames a String array containing the names of the columns.
+     * @param data a two-dimensional Object array containing the data to fill in the columns.
+     * @return a JScrollPane ready to add to a JPanel to display the table.
+     */
+    protected JScrollPane setupTableScrollPane(String[] columnNames, Object[][] data) {
+        //Create table with data and column names
+        JTable table = new JTable(data, columnNames);
+
+        //Make the table uneditable
+        table.setDefaultEditor(Object.class, null);
+
+        //Add table to a scroll pane in case it gets too big, and return it
+        return new JScrollPane(table);
     }
 
     /**
