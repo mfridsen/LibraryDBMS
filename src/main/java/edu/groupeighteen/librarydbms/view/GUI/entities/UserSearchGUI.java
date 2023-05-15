@@ -55,6 +55,7 @@ public class UserSearchGUI {
                 searchFrame.dispose();
                 UserSearchResultGUI userSearchResultGUI = new UserSearchResultGUI(searchedUsername, userArray);
                 userSearchResultGUI.userResults();
+                //hej
             }
         });
     }
