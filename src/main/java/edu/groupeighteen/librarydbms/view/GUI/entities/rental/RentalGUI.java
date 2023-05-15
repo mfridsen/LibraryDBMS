@@ -24,7 +24,7 @@ public class RentalGUI extends GUI {
 
     private JScrollPane rentalScrollPane;
 
-    private JButton previousGUIButton;
+
     private JButton rentalUpdateButton;
     private JButton rentalDeleteButton;
 
@@ -35,7 +35,7 @@ public class RentalGUI extends GUI {
         //setupLabels();
 
         setupButtons();
-        addButtonsToPanel(new JButton[]{previousGUIButton, rentalUpdateButton, rentalDeleteButton});
+        addButtonsToPanel(new JButton[]{rentalUpdateButton, rentalDeleteButton});
         setupScrollPane();
         setupPanels();
 
@@ -46,18 +46,6 @@ public class RentalGUI extends GUI {
      * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
      */
     private void setupButtons() {
-        //Leads to previousGUI
-        previousGUIButton = new JButton("PreviousGUI");
-        //Add actionListener
-        previousGUIButton.addActionListener(e -> {
-            if (previousGUI == null) {
-                System.err.println("No previous GUI to return to!");
-            } else {
-                dispose();
-                previousGUI.displayGUI();
-            }
-        });
-
         //Leads to RentalUpdateGUI
         rentalUpdateButton = new JButton("RentalUpdateGUI");
         //Add actionListener

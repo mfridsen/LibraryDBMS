@@ -19,11 +19,12 @@ import java.awt.*;
 public abstract class GUI extends JFrame {
     //This is used to go back to the previous GUI
     protected final GUI previousGUI;
-
     //All GUI objects will have at least one 'main' panel, to which we can add other panels, such as the buttonPanel
     protected JPanel GUIPanel;
-    //All GUI
+    //All GUI objects will have a button panel at the bottom
     protected JPanel buttonPanel;
+    //All GUI objects (except the absolutely first in the stack, but whatever) will have a "Back" button
+    protected JButton previousGUIButton;
 
     public GUI(GUI previousGUI, String title) {
         this.previousGUI = previousGUI;
@@ -49,9 +50,23 @@ public abstract class GUI extends JFrame {
      */
     protected void addButtonsToPanel(JButton[] buttons) {
         buttonPanel = new JPanel();
+        setupPreviousGUIButton();
+        buttonPanel.add(previousGUIButton);
         //We want the buttons to be ordered horizontally, in a row
         for (JButton button : buttons)
             buttonPanel.add(button);
+    }
+
+    private void setupPreviousGUIButton() {
+        previousGUIButton = new JButton("Previous GUI");
+        previousGUIButton.addActionListener(e -> {
+            if (previousGUI == null) {
+                System.err.println("No previous GUI to return to!");
+            } else {
+                dispose();
+                previousGUI.displayGUI();
+            }
+        });
     }
 
     /**
