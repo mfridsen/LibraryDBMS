@@ -29,6 +29,8 @@ public class RentalGUI extends GUI {
     public RentalGUI(GUI previousGUI, Rental rental) {
         super(previousGUI, "RentalGUI");
         this.rental = rental;
+        setupScrollPane();
+        setupPanels();
         this.displayGUI();
     }
 

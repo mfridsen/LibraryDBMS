@@ -38,8 +38,7 @@ public abstract class GUI extends JFrame {
         buttonPanel = new JPanel();
         setupPreviousGUIButton();
         buttonPanel.add(previousGUIButton);
-        JButton[] buttons = setupButtons();
-        addButtonsToPanel(buttons);
+        addButtonsToPanel(setupButtons());
     }
 
     /**
