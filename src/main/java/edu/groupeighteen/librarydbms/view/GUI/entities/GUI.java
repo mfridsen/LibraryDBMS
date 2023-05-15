@@ -16,7 +16,7 @@ import java.awt.*;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class GUI extends JFrame {
+public abstract class GUI extends JFrame {
     //This is used to go back to the previous GUI
     protected final GUI previousGUI;
     protected JPanel GUIPanel;
@@ -28,7 +28,7 @@ public class GUI extends JFrame {
     }
 
     /**
-     *
+     * Performs all of the basic operations needed to display a GUI (JFrame).
      */
     public void displayGUI() {
         this.add(GUIPanel);

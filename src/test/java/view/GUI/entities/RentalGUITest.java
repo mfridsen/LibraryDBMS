@@ -2,13 +2,11 @@ package view.GUI.entities;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.view.GUI.entities.RentalGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalGUI;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén

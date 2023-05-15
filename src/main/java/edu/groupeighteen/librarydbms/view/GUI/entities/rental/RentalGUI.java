@@ -1,11 +1,10 @@
-package edu.groupeighteen.librarydbms.view.GUI.entities;
+package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mattias Fridsén
@@ -105,11 +104,8 @@ public class RentalGUI extends GUI {
     private void setupPanels() {
         //To achieve the preferred layout, BorderLayout is needed
         GUIPanel = new JPanel(new BorderLayout());
-
         buttonPanel = addButtonsToPanel(buttons);
-
         labelPanel = addLabelsToPanel(labels);
-
         GUIPanel.add(labelPanel, BorderLayout.WEST); //Add labelPanel to the left
         GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }

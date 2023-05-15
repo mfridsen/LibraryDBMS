@@ -1,6 +1,7 @@
-package edu.groupeighteen.librarydbms.view.GUI.entities;
+package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 /**
  * @author Mattias Fridsén
@@ -16,7 +17,7 @@ import edu.groupeighteen.librarydbms.model.entities.Rental;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalDeleteGUI extends GUI {
-    private Rental rentalToDelete;
+    private final Rental rentalToDelete;
 
     public RentalDeleteGUI(GUI previousGUI, Rental rentalToDelete) {
         super(previousGUI, "RentalDeleteGUI");

@@ -1,6 +1,7 @@
-package edu.groupeighteen.librarydbms.view.GUI.entities;
+package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 
@@ -31,6 +32,7 @@ public class RentalUpdateGUI extends GUI {
 
 
 
+    private JButton clearFieldsButton;
     private JButton confirmUpdateButton;
     private JButton cancelButton;
 
