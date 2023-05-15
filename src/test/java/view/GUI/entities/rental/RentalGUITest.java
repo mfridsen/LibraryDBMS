@@ -1,4 +1,4 @@
-package view.GUI.entities;
+package view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
@@ -21,13 +21,6 @@ import java.time.LocalDateTime;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalGUITest {
-    @BeforeAll
-    static void setUp() {
-    }
-
-    @AfterAll
-    static void tearDown() {
-    }
 
     public static void main(String[] args) {
         //Need to setup everything before GUI

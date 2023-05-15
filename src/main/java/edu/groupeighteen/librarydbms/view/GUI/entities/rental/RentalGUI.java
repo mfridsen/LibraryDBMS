@@ -12,11 +12,10 @@ import java.awt.*;
  * @package edu.groupeighteen.librarydbms.view.GUI.entities
  * @contact matfir-1@student.ltu.se
  * @date 5/14/2023
- * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
+ *
+ * This class displays all data for a given Rental Object. It also contains buttons to perform relevant CRUD
+ * operations on the object.
+ *
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalGUI extends GUI {
@@ -24,28 +23,27 @@ public class RentalGUI extends GUI {
 
     private JScrollPane rentalScrollPane;
 
-
     private JButton rentalUpdateButton;
     private JButton rentalDeleteButton;
 
     public RentalGUI(GUI previousGUI, Rental rental) {
         super(previousGUI, "RentalGUI");
         this.rental = rental;
-
-        //setupLabels();
-
+        //First we set up the buttons
         setupButtons();
+        //Then we add them to the button panel
         addButtonsToPanel(new JButton[]{rentalUpdateButton, rentalDeleteButton});
+        //Setup scroll pane
         setupScrollPane();
+        //Add all panels
         setupPanels();
-
         this.displayGUI();
     }
 
     /**
      * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
      */
-    private void setupButtons() {
+    protected void setupButtons() {
         //Leads to RentalUpdateGUI
         rentalUpdateButton = new JButton("RentalUpdateGUI");
         //Add actionListener

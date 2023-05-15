@@ -26,10 +26,22 @@ public abstract class GUI extends JFrame {
     //All GUI objects (except the absolutely first in the stack, but whatever) will have a "Back" button
     protected JButton previousGUIButton;
 
+    /**
+     * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
+     * @param previousGUI the previous GUI object.
+     * @param title the title of this GUI object.
+     */
     public GUI(GUI previousGUI, String title) {
         this.previousGUI = previousGUI;
         this.setTitle(title);
+        //The previous button will always be added to the button panel
+        buttonPanel = new JPanel();
+        setupPreviousGUIButton();
+        buttonPanel.add(previousGUIButton);
+        setupButtons();
     }
+
+    protected abstract void setupButtons();
 
     /**
      * Performs all of the basic operations needed to display a GUI (JFrame).
@@ -43,20 +55,20 @@ public abstract class GUI extends JFrame {
     }
 
     /**
-     * Adds an array of JButtons to a JPanel and then returns that panel.
+     * Adds an array of JButtons to a the button JPanel.
      * Since no Layout is being used, the default FlowLayout will order the buttons in a horizontal row.
-     * This panel needs to be added to another JPanel using a BorderLayout.NORTH/SOUTH to align properly.
-     * @param buttons the array of JButtons to add to the panel.
+     * @param buttons the array of JButtons to add to the buttonPanel.
      */
     protected void addButtonsToPanel(JButton[] buttons) {
-        buttonPanel = new JPanel();
-        setupPreviousGUIButton();
-        buttonPanel.add(previousGUIButton);
         //We want the buttons to be ordered horizontally, in a row
         for (JButton button : buttons)
             buttonPanel.add(button);
     }
 
+    /**
+     * Since all GUIs will have a "Back" button that functions exactly the same, we might as well just
+     * set it up here.
+     */
     private void setupPreviousGUIButton() {
         previousGUIButton = new JButton("Previous GUI");
         previousGUIButton.addActionListener(e -> {

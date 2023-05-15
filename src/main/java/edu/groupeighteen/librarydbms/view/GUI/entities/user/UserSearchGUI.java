@@ -31,7 +31,7 @@ public class UserSearchGUI extends GUI {
         this.displayGUI();
     }
 
-    private void setupButtons(){
+    protected void setupButtons(){
         searchButton = new JButton("UserSearchResultGUI");
         searchButton.addActionListener(e -> {
             dispose();

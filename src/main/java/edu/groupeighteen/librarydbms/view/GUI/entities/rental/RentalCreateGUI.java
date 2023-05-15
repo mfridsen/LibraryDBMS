@@ -15,11 +15,9 @@ import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class RentalSearchGUI extends GUI {
+public class RentalCreateGUI extends GUI {
 
-    public RentalSearchGUI(GUI previousGUI) {
-        super(previousGUI, "RentalSearchGUI");
+    public RentalCreateGUI(GUI previousGUI) {
+        super(previousGUI, "RentalCreateGUI");
     }
-
-
 }

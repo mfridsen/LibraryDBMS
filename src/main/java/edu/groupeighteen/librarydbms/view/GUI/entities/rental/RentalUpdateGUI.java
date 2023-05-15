@@ -26,10 +26,26 @@ public class RentalUpdateGUI extends GUI {
 
     private JButton clearFieldsButton;
     private JButton confirmUpdateButton;
-    private JButton cancelButton;
 
+    public RentalUpdateGUI(GUI previousGUI, Rental rentalToUpdate) {
+        super(previousGUI, "RentalUpdateGUI");
+        this.rentalToUpdate = rentalToUpdate;
+        addButtonsToPanel(new JButton[]{clearFieldsButton, confirmUpdateButton});
+        setupScrollPane();
+        setupPanels();
+        this.displayGUI();
+    }
 
-    private void setupLabels() {
+    @Override
+    protected void setupButtons() {
+
+    }
+
+    private void setupPanels() {
+
+    }
+
+    private void setupScrollPane() {
         // Define column names
         String[] columnNames = {"Property", "Old Value", "New Value"};
 
@@ -63,10 +79,5 @@ public class RentalUpdateGUI extends GUI {
 
         // Add scroll pane to the panel
         GUIPanel.add(scrollPane, BorderLayout.CENTER);
-    }
-
-    public RentalUpdateGUI(GUI previousGUI, Rental rentalToUpdate) {
-        super(previousGUI, "RentalUpdateGUI");
-        this.rentalToUpdate = rentalToUpdate;
     }
 }
