@@ -27,8 +27,8 @@ public class RentalSearchResultGUI extends GUI {
     }
 
     @Override
-    protected void setupButtons() {
-
+    protected JButton[] setupButtons() {
+        return null;
     }
 
     @Override

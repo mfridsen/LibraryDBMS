@@ -30,8 +30,8 @@ public class UserSearchResultGUI extends GUI {
     }
 
     @Override
-    protected void setupButtons() {
-
+    protected JButton[] setupButtons() {
+        return null;
     }
 
     @Override

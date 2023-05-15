@@ -3,6 +3,8 @@ package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
+import javax.swing.*;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -25,8 +27,8 @@ public class RentalDeleteGUI extends GUI {
     }
 
     @Override
-    protected void setupButtons() {
-
+    protected JButton[] setupButtons() {
+        return null;
     }
 
     @Override

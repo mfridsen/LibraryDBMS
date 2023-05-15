@@ -2,6 +2,8 @@ package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
+import javax.swing.*;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -22,8 +24,8 @@ public class RentalSearchGUI extends GUI {
     }
 
     @Override
-    protected void setupButtons() {
-
+    protected JButton[] setupButtons() {
+        return null;
     }
 
     @Override

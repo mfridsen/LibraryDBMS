@@ -37,8 +37,8 @@ public class RentalUpdateGUI extends GUI {
     }
 
     @Override
-    protected void setupButtons() {
-
+    protected JButton[] setupButtons() {
+        return null;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class RentalUpdateGUI extends GUI {
 
     }
 
-    private void setupScrollPane() {
+    protected void setupScrollPane() {
         // Define column names
         String[] columnNames = {"Property", "Old Value", "New Value"};
 

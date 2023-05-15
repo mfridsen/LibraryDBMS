@@ -31,12 +31,13 @@ public class UserSearchGUI extends GUI {
         this.displayGUI();
     }
 
-    protected void setupButtons(){
+    protected JButton[] setupButtons(){
         searchButton = new JButton("UserSearchResultGUI");
         searchButton.addActionListener(e -> {
             dispose();
             new UserSearchResultGUI(this, Integer.parseInt(userIDField.getText()), usernameField.getText());
         });
+        return new JButton[]{searchButton};
     }
 
     private void setupSearchPanel() {

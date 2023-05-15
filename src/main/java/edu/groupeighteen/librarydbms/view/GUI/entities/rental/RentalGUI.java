@@ -29,15 +29,13 @@ public class RentalGUI extends GUI {
     public RentalGUI(GUI previousGUI, Rental rental) {
         super(previousGUI, "RentalGUI");
         this.rental = rental;
-        //Setup scroll pane
-        setupScrollPane();
         this.displayGUI();
     }
 
     /**
      * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
      */
-    protected void setupButtons() {
+    protected JButton[] setupButtons() {
         //Leads to RentalUpdateGUI
         rentalUpdateButton = new JButton("RentalUpdateGUI");
         //Add actionListener
@@ -54,13 +52,13 @@ public class RentalGUI extends GUI {
             new RentalDeleteGUI(this, rental);
         });
 
-        addButtonsToPanel(new JButton[]{rentalUpdateButton, rentalDeleteButton});
+        return new JButton[]{rentalUpdateButton, rentalDeleteButton};
     }
 
     /**
      * Sets up the scroll pane.
      */
-    private void setupScrollPane() {
+    protected void setupScrollPane() {
         //Define column names
         String[] columnNames = {"Property", "Value"};
 
