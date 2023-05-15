@@ -19,11 +19,11 @@ import java.awt.*;
 public abstract class GUI extends JFrame {
     //This is used to go back to the previous GUI
     protected final GUI previousGUI;
+
+    //All GUI objects will have at least one 'main' panel, to which we can add other panels, such as the buttonPanel
     protected JPanel GUIPanel;
-
+    //All GUI
     protected JPanel buttonPanel;
-
-    protected JPanel[] panels;
 
     public GUI(GUI previousGUI, String title) {
         this.previousGUI = previousGUI;

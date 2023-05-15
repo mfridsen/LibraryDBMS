@@ -1,4 +1,4 @@
-package edu.groupeighteen.librarydbms.view.GUI.entities;
+package edu.groupeighteen.librarydbms.view.GUI.entities.item;
 
 /**
  * @author Jesper Truedsson

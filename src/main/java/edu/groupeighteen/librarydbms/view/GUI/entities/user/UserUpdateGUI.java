@@ -1,4 +1,4 @@
-package edu.groupeighteen.librarydbms.view.GUI.entities;
+package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;

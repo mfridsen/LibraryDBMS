@@ -2,7 +2,7 @@ package edu.groupeighteen.librarydbms.view.GUI;
 
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.view.GUI.entities.UserWelcomeGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserWelcomeGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

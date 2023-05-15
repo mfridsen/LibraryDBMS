@@ -2,9 +2,9 @@ package edu.groupeighteen.librarydbms.view.GUI;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.view.GUI.entities.ItemSearchGUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.UserUpdateGUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.UserWelcomeGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.item.ItemSearchGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserUpdateGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserWelcomeGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

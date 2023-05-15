@@ -22,21 +22,11 @@ import java.awt.*;
 public class RentalGUI extends GUI {
     private final Rental rental;
 
-    private JLabel[] labels;
-    private JLabel rentalIDLabel;
-    private JLabel userIDLabel;
-    private JLabel usernameLabel;
-    private JLabel itemIDLabel;
-    private JLabel itemTitleLabel;
-    private JLabel rentalDateLabel;
-
     private JScrollPane rentalScrollPane;
 
     private JButton previousGUIButton;
     private JButton rentalUpdateButton;
     private JButton rentalDeleteButton;
-
-    private JPanel scrollPanePanel;
 
     public RentalGUI(GUI previousGUI, Rental rental) {
         super(previousGUI, "RentalGUI");
@@ -110,7 +100,7 @@ public class RentalGUI extends GUI {
      */
     private void setupPanels() {
         GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
-        scrollPanePanel = new JPanel();
+        JPanel scrollPanePanel = new JPanel();
         scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH); //Add scrollPanePanel to the top
         GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
