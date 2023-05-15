@@ -4,3 +4,9 @@
 4: döp knappar till den klass de leder till KLART
 5: lägg till "se objekt/användare" knapp i SearchResultGUI KLART
 6: SearchresultGUI ska kunna visa flera träffar
+
+Ny
+1: Ta bort alla main-metoder i alla gui-klasser
+2: Skapa test-klasser för varje gui som jag vill se
+3: Ändra format till samma format som i UserSearchGUI
+4: Sätta upp knappar

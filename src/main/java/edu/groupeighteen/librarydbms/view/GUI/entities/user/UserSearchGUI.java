@@ -1,6 +1,9 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,56 +15,45 @@ import java.awt.event.ActionListener;
  *  * this class handles searching for users
  *   * leads to UserSearchResultGUI
  */
-public class UserSearchGUI {
+public class UserSearchGUI extends GUI {
+    private JLabel usernameLabel;
+    private JLabel userIDLabel;
     private JTextField usernameField;
+    private JTextField userIDField;
     private JButton searchButton;
-    private JButton tillbakaButton;
     private JPanel searchPanel;
-    private JFrame searchFrame;
+    public UserSearchGUI(GUI previousGUI) {
+        super(previousGUI, "UserSearchGUI");
+        setupButtons();
+        addButtonsToPanel(new JButton[]{searchButton});
+        setupSearchPanel();
+        setupPanels();
+        this.displayGUI();
+    }
 
-    private String[] userArray = { "Kalle Karlsson", "Johan Lund", "Max Zorin", "James Bond", "Axl Rose" };
-
-    public void SearchGUI() {
-        JLabel searchLabel = new JLabel("Sök användare");
-        usernameField = new JTextField(10);
+    private void setupButtons(){
         searchButton = new JButton("UserSearchResultGUI");
-        tillbakaButton = new JButton("Tillbaka");
-        searchPanel = new JPanel();
-        searchFrame = new JFrame("UserSearchGUI");
-
-        searchPanel.add(searchLabel);
-        searchPanel.add(usernameField);
-        searchPanel.add(searchButton);
-        searchPanel.add(tillbakaButton);
-
-        searchFrame.add(searchPanel);
-        searchFrame.pack();
-        searchFrame.setVisible(true);
-        searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchFrame.dispose();
-                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI();
-                userWelcomeGUI.WelcomeUserGUI();
-            }
-        });
-
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchedUsername = usernameField.getText();
-                searchFrame.dispose();
-                UserSearchResultGUI userSearchResultGUI = new UserSearchResultGUI(searchedUsername, userArray);
-                userSearchResultGUI.userResults();
-
-            }
+        searchButton.addActionListener(e -> {
+            dispose();
+            new UserSearchResultGUI(this, Integer.parseInt(userIDField.getText()), usernameField.getText());
         });
     }
 
-    public static void main(String[] args) {
-        UserSearchGUI searchGUI = new UserSearchGUI();
-        searchGUI.SearchGUI();
+    private void setupSearchPanel() {
+        usernameLabel = new JLabel("Search username: ");
+        usernameField = new JTextField(10);
+        userIDLabel = new JLabel("Search userID: ");
+        userIDField = new JTextField(5);
+        searchPanel = new JPanel();
+        searchPanel.add(usernameLabel);
+        searchPanel.add(usernameField);
+        searchPanel.add(userIDLabel);
+        searchPanel.add(userIDField);
+    }
+
+    private void setupPanels(){
+        GUIPanel = new JPanel(new BorderLayout());
+        GUIPanel.add(searchPanel, BorderLayout.NORTH);
+        GUIPanel.add(buttonPanel, BorderLayout.SOUTH);
     }
 }

@@ -1,5 +1,6 @@
 package view;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.view.GUI.HomeScreenGUI;
@@ -19,14 +20,8 @@ import java.sql.SQLException;
  */
 public class HomeScreenGUITest {
     public static void main(String[] args) {
-        try {
-            DatabaseHandler.setup(true);
-            UserHandler.setup();
-            HomeScreenGUI homeScreen = new HomeScreenGUI();
-
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        LibraryManager.setup();
+        new HomeScreenGUI();
 
     }
 }

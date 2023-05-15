@@ -38,22 +38,8 @@ public class UserWelcomeGUI {
         welcomeFrame.setVisible(true);
         welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                welcomeFrame.dispose();
-                MenuPageGUI menuPage = new MenuPageGUI(LibraryManager.getCurrentUser());
-                menuPage.menuGUI();
-            }
-        });
+        searchButton.addActionListener(e -> {
 
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                welcomeFrame.dispose();
-               UserSearchGUI userSearchGUI = new UserSearchGUI();
-               userSearchGUI.SearchGUI();
-            }
         });
     }
 

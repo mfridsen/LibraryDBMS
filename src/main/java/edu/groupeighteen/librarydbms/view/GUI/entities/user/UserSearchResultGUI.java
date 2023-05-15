@@ -1,6 +1,10 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
+
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Jesper Truedsson
@@ -11,18 +15,18 @@ import javax.swing.*;
  *  leads to UserGUI
  */
 
-public class UserSearchResultGUI {
+public class UserSearchResultGUI extends GUI {
     private JPanel searchPanel;
     private JFrame searchFrame;
     private JButton lånaButton;
-    private JButton tillbakaButton;
     private JButton visaobjektButton;
-    private String searchedUser;
-    private String[] userArray;
+    private int userID;
+    private String username;
 
-    public UserSearchResultGUI(String searchedUser, String[] userArray) {
-        this.searchedUser = searchedUser;
-        this.userArray = userArray;
+    public UserSearchResultGUI(GUI previousGUI, int userID, String username) {
+        super(previousGUI, "UserSearchResultGUI");
+        this.userID = userID;
+        this.username = username;
     }
 
     public void userResults() {
@@ -58,10 +62,11 @@ public class UserSearchResultGUI {
         return false;
     }
 
-    public static void main(String[] args) {
-        // Test code
-        String[] userArray = { "User1", "User2", "User3", "User4", "User5" };
-        UserSearchResultGUI userSearchResultGUI = new UserSearchResultGUI("User3", userArray);
-        userSearchResultGUI.userResults();
+    public void searchUserID(int userID){
+
+    }
+
+    public void searchUsername(String username){
+
     }
 }
