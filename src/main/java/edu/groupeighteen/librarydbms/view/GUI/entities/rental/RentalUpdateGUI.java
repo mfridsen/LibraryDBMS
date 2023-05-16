@@ -42,7 +42,7 @@ public class RentalUpdateGUI extends GUI {
         this.rentalToUpdate = rentalToUpdate;
         setupScrollPane();
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
     @Override
@@ -98,9 +98,8 @@ public class RentalUpdateGUI extends GUI {
 
             // Now you can call the update method
             try {
-                RentalHandler.updateRental(rentalToUpdate);
+                RentalHandler.updateRental(rentalToUpdate); //TODO-prio doesn't update properly
                 dispose();
-                rentalToUpdate = RentalHandler.getRentalByID(rentalToUpdate.getRentalID()); //TODO-prio doesn't fully work yet
                 new RentalGUI(this, rentalToUpdate);
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
@@ -141,6 +140,5 @@ public class RentalUpdateGUI extends GUI {
     @Override
     protected void setupPanels() {
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH); //Add scrollPanePanel to the top
-        GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }
 }

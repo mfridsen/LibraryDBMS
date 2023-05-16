@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Mattias Fridsén
@@ -18,18 +19,25 @@ import javax.swing.*;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalCreateGUI extends GUI {
+    private JPanel scrollPanePanel;
 
     public RentalCreateGUI(GUI previousGUI) {
         super(previousGUI, "RentalCreateGUI");
+        setupScrollPane();
+        setupPanels();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
-        return null;
+        return new JButton[]{};
+    }
+
+    private void setupScrollPane() {
     }
 
     @Override
     protected void setupPanels() {
-
+        GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
     }
 }

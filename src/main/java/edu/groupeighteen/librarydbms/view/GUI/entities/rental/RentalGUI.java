@@ -34,7 +34,7 @@ public class RentalGUI extends GUI {
         this.rental = rental;
         setupScrollPane();
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
     /**
@@ -77,8 +77,10 @@ public class RentalGUI extends GUI {
                 {"Rental Date", rental.getRentalDate()}
         };
 
+        JTable rentalUpdateTable = setupScrollPaneTable(columnNames, data);
         //Create the scroll pane
-        JScrollPane rentalScrollPane = setupScrollPaneTable(columnNames, data);
+        JScrollPane rentalScrollPane = new JScrollPane();
+        rentalScrollPane.setViewportView(rentalUpdateTable);
         //Create panel and add scroll pane to it
         scrollPanePanel = new JPanel();
         scrollPanePanel.add(rentalScrollPane, BorderLayout.CENTER);
@@ -89,7 +91,6 @@ public class RentalGUI extends GUI {
      */
     protected void setupPanels() {
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH); //Add scrollPanePanel to the top
-        GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }
 
     /**

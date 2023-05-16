@@ -41,6 +41,7 @@ public abstract class GUI extends JFrame {
         setupPreviousGUIButton();
         buttonPanel.add(previousGUIButton);
         addButtonsToPanel(setupButtons());
+        GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
     }
 
     /**
@@ -100,15 +101,14 @@ public abstract class GUI extends JFrame {
      * @param data a two-dimensional Object array containing the data to fill in the columns.
      * @return a JScrollPane ready to add to a JPanel to display the table.
      */
-    protected JScrollPane setupScrollPaneTable(String[] columnNames, Object[][] data) {
+    protected JTable setupScrollPaneTable(String[] columnNames, Object[][] data) {
         //Create table with data and column names
         JTable table = new JTable(data, columnNames);
 
         //Make the table uneditable
         table.setDefaultEditor(Object.class, null);
 
-        //Add table to a scroll pane in case it gets too big, and return it
-        return new JScrollPane(table);
+        return table;
     }
 
     //TODO-comment rework comment

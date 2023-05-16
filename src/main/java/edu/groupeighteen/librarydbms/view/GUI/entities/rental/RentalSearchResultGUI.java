@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Mattias Fridsén
@@ -19,21 +20,30 @@ import javax.swing.*;
  */
 public class RentalSearchResultGUI extends GUI {
 
-    private JTable resultTable;
+    private JTable searchResultTable;
+    private JScrollPane searchResultScrollPane;
+    private JPanel searchResultPanel;
 
     public RentalSearchResultGUI(GUI previousGUI, JTable resultTable) {
         super(previousGUI, "RentalSearchResultGUI");
-        this.resultTable = resultTable;
+        this.searchResultTable = resultTable;
+        setupScrollPane();
+        setupPanels();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
-        return null;
+        return new JButton[]{};
+    }
+
+    private void setupScrollPane() {
+        searchResultPanel.add(searchResultScrollPane, BorderLayout.CENTER);
     }
 
     @Override
     protected void setupPanels() {
-
+        GUIPanel.add(searchResultPanel);
     }
 
     /*

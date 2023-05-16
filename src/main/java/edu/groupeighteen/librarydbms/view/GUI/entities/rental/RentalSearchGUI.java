@@ -18,6 +18,7 @@ import javax.swing.*;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalSearchGUI extends GUI {
+    private JPanel searchFieldsPanel;
 
     public RentalSearchGUI(GUI previousGUI) {
         super(previousGUI, "RentalSearchGUI");
@@ -25,11 +26,11 @@ public class RentalSearchGUI extends GUI {
 
     @Override
     protected JButton[] setupButtons() {
-        return null;
+        return new JButton[]{};
     }
 
     @Override
     protected void setupPanels() {
-
+        GUIPanel.add(searchFieldsPanel);
     }
 }

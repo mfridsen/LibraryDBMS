@@ -20,19 +20,22 @@ import javax.swing.*;
  */
 public class RentalDeleteGUI extends GUI {
     private final Rental rentalToDelete;
+    private JPanel enterPasswordPanel;
 
     public RentalDeleteGUI(GUI previousGUI, Rental rentalToDelete) {
         super(previousGUI, "RentalDeleteGUI");
         this.rentalToDelete = rentalToDelete;
+        setupPanels();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
-        return null;
+        return new JButton[]{};
     }
 
     @Override
     protected void setupPanels() {
-
+        GUIPanel.add(enterPasswordPanel);
     }
 }
