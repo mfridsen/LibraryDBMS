@@ -506,10 +506,18 @@ public class RentalHandler {
     }
 
     private static Rental compareRentals(Rental oldRental, Rental newRental) {
+        //create newerRental due to argument by reference or whatever
+        //duplicate data from newRental
+        //compare to oldRental
+        //return appropriately
         return null;
     }
 
-    private static Item compareItems(Rental oldRental, Rental newRental) {
+    private static Item compareItems(Item oldItem, Item NewItem) {
+        //create newerItem due to argument by reference or whatever
+        //duplicate data from newItem
+        //compare to oldItem
+        //return appropriately
         return null;
     }
 
