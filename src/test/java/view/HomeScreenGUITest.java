@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class HomeScreenGUITest {
     public static void main(String[] args) {
         LibraryManager.setup();
-        new HomeScreenGUI();
+        new HomeScreenGUI(null);
 
     }
 }

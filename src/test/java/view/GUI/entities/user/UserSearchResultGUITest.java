@@ -17,6 +17,6 @@ import org.junit.Test;
 public class UserSearchResultGUITest {
     public static void main(String[] args) {
         LibraryManager.setup();
-        new UserSearchResultGUI(null);
+        new UserSearchResultGUI(null, 1, "user1");
     }
 }

@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserWelcomeGUI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -17,16 +18,8 @@ import java.sql.SQLException;
  * @date 2023-04-27
  */
 public class CreateAccountGUI extends GUI {
-    private JLabel usernameLabel;
     private JTextField usernameField;
-    private JLabel passwordLabel;
     private JPasswordField passwordField;
-    private JLabel EmailLabel;
-    private JTextField EmailField;
-
-    private JButton proceedButton;
-    private JPanel CreateAccountPanel;
-    private JFrame CreateAccountFrame;
 
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
@@ -35,61 +28,45 @@ public class CreateAccountGUI extends GUI {
     public CreateAccountGUI(GUI previousGUI) {
         super(previousGUI, "CreateAccountGUI");
         setupButtons();
-        addButtonsToPanel(new JButton[]{proceedButton});
         setupPanels();
         this.displayGUI();
-
     }
-
-    public void CreateAccountPage(){
-        JPanel panel = new JPanel();
-        usernameLabel = new JLabel("Skapa Användarnamn:");
-        usernameField = new JTextField(10);
-        passwordLabel = new JLabel("Skapa Lösenord:");
-        passwordField = new JPasswordField(10);
-        EmailLabel = new JLabel("Skapa Email");
-        EmailField = new JTextField(10);
-        CreateAccountFrame = new JFrame("Skapa Konto");
-        CreateAccountPanel = new JPanel();
-        proceedButton = new JButton("Skapa");
-
-        CreateAccountPanel.add(proceedButton);
-        CreateAccountPanel.add(usernameLabel);
-        CreateAccountPanel.add(usernameField);
-        CreateAccountPanel.add(passwordLabel);
-        CreateAccountPanel.add(passwordField);
-        CreateAccountPanel.add(EmailLabel);
-        CreateAccountPanel.add(EmailField);
-
-        CreateAccountFrame.add(CreateAccountPanel);
-        CreateAccountFrame.pack();
-        CreateAccountFrame.setVisible(true);
-        CreateAccountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-        proceedButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CreateAccountFrame.dispose();
-                try {
-                    User newUser = UserHandler.createNewUser(usernameField.getText(), passwordField.getPassword().toString());
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI();
-                userWelcomeGUI.WelcomeUserGUI();
-            }
-        });
-        }
 
     @Override
     protected JButton[] setupButtons() {
-        return new JButton[0];
+        JButton proceedButton = new JButton("Skapa");
+        proceedButton.addActionListener(e -> {
+            dispose();
+            try {
+                User newUser = UserHandler.createNewUser(usernameField.getText(), passwordField.getPassword().toString());
+                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI(this, newUser);
+                userWelcomeGUI.WelcomeUserGUI();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        return new JButton[]{proceedButton};
     }
 
     @Override
     protected void setupPanels() {
+        JLabel usernameLabel = new JLabel("Skapa Användarnamn:");
+        usernameField = new JTextField(10);
+        JLabel passwordLabel = new JLabel("Skapa Lösenord:");
+        passwordField = new JPasswordField(10);
+        JLabel emailLabel = new JLabel("Skapa Email");
+        JTextField emailField = new JTextField(10);
+        JPanel createAccountPanel = new JPanel();
 
+        createAccountPanel.add(usernameLabel);
+        createAccountPanel.add(usernameField);
+        createAccountPanel.add(passwordLabel);
+        createAccountPanel.add(passwordField);
+        createAccountPanel.add(emailLabel);
+        createAccountPanel.add(emailField);
+
+        GUIPanel.add(createAccountPanel, BorderLayout.NORTH);
+        GUIPanel.add(buttonPanel, BorderLayout.SOUTH);
     }
 }
 

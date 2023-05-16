@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.item.ItemSearchGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserGUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserUpdateGUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserWelcomeGUI;
 
@@ -21,84 +22,52 @@ public class MenuPageGUI extends GUI {
     private JButton mittKontoButton;
     private JButton LoggaUtButton;
     private JButton userButton;
-    private JFrame menuFrame;
     private JPanel menuPanel;
     private User loggedInUser;
 
     public String username;
 
 
-    public MenuPageGUI(User loggedInUser, String username, GUI previousGUI) {
+    public MenuPageGUI(User loggedInUser, GUI previousGUI) {
         super(previousGUI, "MenuPageGUI");
         this.loggedInUser = loggedInUser;
         this.username = loggedInUser.getUsername();
-        setupButtons();
-        addButtonsToPanel(new JButton[]{LoggaUtButton});
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
-
-
-
-    public void menuGUI(){
-        menuFrame = new JFrame("MenuPageGUI");
-        menuPanel = new JPanel();
+    @Override
+    protected JButton[] setupButtons() {
         sökButton = new JButton("ItemSearchGUI");
         LoggaUtButton = new JButton("HomeScreenGUI");
         mittKontoButton = new JButton("MyAccountGUI");
         userButton = new JButton("UserGUI");
 
-        JLabel welcomeLabel = new JLabel("Välkommen, " + username + "!");
-        menuPanel.add(welcomeLabel);
-        menuPanel.add(LoggaUtButton);
-        menuPanel.add(mittKontoButton);
-        menuPanel.add(sökButton);
-        menuPanel.add(userButton);
-        LoggaUtButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuFrame.dispose();
-                new HomeScreenGUI();
-            }
-        });
-        mittKontoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuFrame.dispose();
-                new UserUpdateGUI(LibraryManager.getCurrentUser());
-            }
-        });
-        sökButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuFrame.dispose();
-               ItemSearchGUI search = new ItemSearchGUI();
-               search.searchGUI();
-
-            }
+        LoggaUtButton.addActionListener(e -> {
+            dispose();
+            new HomeScreenGUI(this);
         });
 
-        userButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuFrame.dispose();
-                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI();
-                userWelcomeGUI.WelcomeUserGUI();
-            }
+        mittKontoButton.addActionListener(e -> {
+            dispose();
+            new UserUpdateGUI(this, LibraryManager.getCurrentUser());
         });
-        menuFrame.add(menuPanel);
-        menuFrame.pack();
-        menuFrame.setVisible(true);
-        menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
 
-    @Override
-    protected JButton[] setupButtons() {
-        return new JButton[0];
+        sökButton.addActionListener(e -> {
+            dispose();
+            new ItemSearchGUI(this);
+        });
+
+        userButton.addActionListener(e -> {
+            dispose();
+            new UserGUI(LibraryManager.getCurrentUser(), this);
+        });
+
+        return new JButton[]{LoggaUtButton, mittKontoButton, sökButton, userButton};
     }
 
     @Override
     protected void setupPanels() {
-
+        JLabel welcomeLabel = new JLabel("Välkommen, " + username + "!");
+        menuPanel.add(welcomeLabel);
     }
 }

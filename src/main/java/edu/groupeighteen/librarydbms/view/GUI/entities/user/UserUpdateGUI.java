@@ -18,73 +18,52 @@ import java.util.Arrays;
  * @date 2023-04-24
  */
 public class UserUpdateGUI extends GUI {
-        private JLabel usernameLabel;
-        private JTextField usernameField;
-        private JLabel passwordLabel;
-        private JPasswordField passwordField;
-        private JButton changeButton;
-        private JPanel accountPanel;
-        private JFrame accountFrame;
-        private User user;
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private User user;
 
     public UserUpdateGUI(GUI previousGUI, User user) {
         super(previousGUI, "UserUpdateGUI");
         this.user = user;
-        changeInfoGUI();
-        setupButtons();
-        addButtonsToPanel(new JButton[]{changeButton});
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
-
-    public void changeInfoGUI() {
-
-            JPanel panel = new JPanel();
-            usernameLabel = new JLabel("Username:");
-            usernameField = new JTextField(10);
-            passwordLabel = new JLabel("Password:");
-            passwordField = new JPasswordField(10);
-            changeButton = new JButton("Change");
-            accountPanel = new JPanel();
-            accountFrame = new JFrame("UserUpdateGUI");
-
-            accountPanel.add(changeButton);
-            accountPanel.add(usernameLabel);
-            accountPanel.add(usernameField);
-            accountPanel.add(passwordLabel);
-            accountPanel.add(passwordField);
-
-            accountFrame.add(accountPanel);
-            accountFrame.pack();
-            accountFrame.setVisible(true);
-            accountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            changeButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    accountFrame.dispose();
-                    LibraryManager.getCurrentUser().setUsername(usernameField.getText());
-                    LibraryManager.getCurrentUser().setPassword(Arrays.toString(passwordField.getPassword()));
-                    try {
-                        UserHandler.updateUser(LibraryManager.getCurrentUser());
-                        new MenuPageGUI(LibraryManager.getCurrentUser());
-
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);//TODO-Exception
-                    }
-
-                }
-            });
-        }
 
 
     @Override
     protected JButton[] setupButtons() {
-        return new JButton[0];
+        JButton changeButton = new JButton("Change");
+
+        changeButton.addActionListener(e -> {
+            dispose();
+            LibraryManager.getCurrentUser().setUsername(usernameField.getText());
+            LibraryManager.getCurrentUser().setPassword(Arrays.toString(passwordField.getPassword()));
+            try {
+                UserHandler.updateUser(LibraryManager.getCurrentUser());
+                new MenuPageGUI(LibraryManager.getCurrentUser(),this);
+
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);//TODO-Exception
+            }
+
+        });
+        return new JButton[]{changeButton};
     }
 
     @Override
     protected void setupPanels() {
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameField = new JTextField(10);
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordField = new JPasswordField(10);
+        JPanel accountPanel = new JPanel();
 
+        accountPanel.add(usernameLabel);
+        accountPanel.add(usernameField);
+        accountPanel.add(passwordLabel);
+        accountPanel.add(passwordField);
+
+        GUIPanel.add(accountPanel);
     }
 }
 

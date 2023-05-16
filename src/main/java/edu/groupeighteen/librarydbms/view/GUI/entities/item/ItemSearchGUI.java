@@ -22,7 +22,6 @@ public class ItemSearchGUI extends GUI {
     private JTextField sökNamnField;
     private JButton sökButton;
     private JPanel searchPanel;
-    private JFrame searchFrame;
 
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
@@ -30,47 +29,33 @@ public class ItemSearchGUI extends GUI {
      */
     public ItemSearchGUI(GUI previousGUI) {
         super(previousGUI, "ItemSearchGUI");
-        setupButtons();
-        addButtonsToPanel(new JButton[]{sökButton});
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
+    @Override
+    protected JButton[] setupButtons() {
+        sökButton = new JButton("ItemSearchResultGUI");
 
-    public void searchGUI() {
+        sökButton.addActionListener(e -> {
+            String searchedBook = sökNamnField.getText();
+            dispose();
+            new ItemSearchResultGUI(this, searchedBook);
+        });
+        return new JButton[]{sökButton};
+    }
+
+    @Override
+    protected void setupPanels() {
         searchPanel = new JPanel();
-        searchFrame = new JFrame("ItemSearchGUI"); //"sök bok/film"
 
         sökNamnLabel = new JLabel("Sök Namn");
         sökNamnField = new JTextField(10);
-        sökButton = new JButton("ItemSearchResultGUI");
 
         searchPanel.add(sökButton);
         searchPanel.add(sökNamnLabel);
         searchPanel.add(sökNamnField);
 
-        searchFrame.add(searchPanel);
-        searchFrame.pack();
-        searchFrame.setVisible(true);
-        searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        sökButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchedBook = sökNamnField.getText();
-                searchFrame.dispose();
-                ItemSearchResultGUI searchResult = new ItemSearchResultGUI(searchedBook);
-            }
-        });
-    }
-
-    @Override
-    protected JButton[] setupButtons() {
-        return new JButton[0];
-    }
-
-    @Override
-    protected void setupPanels() {
-
+        GUIPanel.add(searchPanel);
     }
 }

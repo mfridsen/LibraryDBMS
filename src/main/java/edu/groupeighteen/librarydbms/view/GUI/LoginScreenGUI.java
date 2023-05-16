@@ -21,7 +21,6 @@ public class LoginScreenGUI extends GUI {
     public JLabel passwordLabel;
     public JPasswordField passwordField;
     public JPanel LoginPanel;
-    public JFrame LoginFrame;
     public JButton proceedButton;
 
     /**
@@ -30,62 +29,46 @@ public class LoginScreenGUI extends GUI {
      */
     public LoginScreenGUI(GUI previousGUI) {
         super(previousGUI, "LoginScreenGUI");
-    }
-
-
-    public void LoginPage() {
-        JPanel panel = new JPanel();
-        usernameLabel = new JLabel("Username:");
-        usernameField = new JTextField(10);
-        passwordLabel = new JLabel("Password:");
-        passwordField = new JPasswordField(10);
-        LoginFrame = new JFrame("LoginScreenGUI");
-        LoginPanel = new JPanel();
-        proceedButton = new JButton("MenuPageGUI");
-
-        LoginPanel.add(proceedButton);
-        LoginPanel.add(usernameLabel);
-        LoginPanel.add(usernameField);
-        LoginPanel.add(passwordLabel);
-        LoginPanel.add(passwordField);
-
-
-        LoginFrame.add(LoginPanel);
-        LoginFrame.pack();
-        LoginFrame.setVisible(true);
-        LoginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        proceedButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LoginFrame.dispose();
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                try {
-                    if (UserHandler.login(username, password)) {
-                        LibraryManager.setCurrentUser(UserHandler.getUserByUsername(username));
-                        MenuPageGUI menuPage = new MenuPageGUI(LibraryManager.getCurrentUser());
-                        menuPage.menuGUI();
-                    } else {
-                        // show error message or do nothing
-                        LoginErrorGUI loginError = new LoginErrorGUI(null);// TODO-prio change from null to this
-                        loginError.ErrorGUI();
-
-                    }
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);// TODO-Exception
-                }
-            }
-        });
+        setupPanels();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
-        return new JButton[0];
+        proceedButton = new JButton("MenuPageGUI");
+
+        proceedButton.addActionListener(e -> {
+            dispose();
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            try {
+                if (UserHandler.login(username, password)) {
+                    LibraryManager.setCurrentUser(UserHandler.getUserByUsername(username));
+                    new MenuPageGUI(LibraryManager.getCurrentUser(), this);
+                } else {
+                    // show error message or do nothing
+                    new LoginErrorGUI(this);// TODO-prio change from null to this
+
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);// TODO-Exception
+            }
+
+        });
+        return new JButton[]{proceedButton};
     }
 
     @Override
     protected void setupPanels() {
-
+        usernameLabel = new JLabel("Username:");
+        usernameField = new JTextField(10);
+        passwordLabel = new JLabel("Password:");
+        passwordField = new JPasswordField(10);
+        LoginPanel = new JPanel();
+        LoginPanel.add(usernameLabel);
+        LoginPanel.add(usernameField);
+        LoginPanel.add(passwordLabel);
+        LoginPanel.add(passwordField);
+        GUIPanel.add(LoginPanel);
     }
 }

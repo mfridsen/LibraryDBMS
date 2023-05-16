@@ -22,43 +22,29 @@ public class LoginErrorGUI extends GUI {
      */
     public LoginErrorGUI(GUI previousGUI) {
         super(previousGUI, "LoginErrorGUI");
+        setupPanels();
+        displayGUI();
     }
-
-
-
-    public void ErrorGUI() {
-        JPanel panel = new JPanel();
-        errorMessageLabel = new JLabel("Error! Enter the correct username and password");
+    @Override
+    protected JButton[] setupButtons() {
         okButton = new JButton("OK");
 
-        panel.setLayout(new GridLayout(2, 1));
-        panel.add(errorMessageLabel);
-        panel.add(okButton);
-
-        add(panel);
-        pack();
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            LoginScreenGUI loginPage = new LoginScreenGUI();
-            loginPage.LoginPage();
-
-            }
+        okButton.addActionListener(e -> {
+            dispose();
+            new LoginScreenGUI(this);
         });
-    }
 
-    @Override
-    protected void setupButtons() {
-
+        return new JButton[]{okButton};
     }
 
     @Override
     protected void setupPanels() {
+        JPanel panel = new JPanel();
+        errorMessageLabel = new JLabel("Error! Enter the correct username and password");
 
+        panel.setLayout(new GridLayout(2, 1));
+        panel.add(errorMessageLabel);
+        GUIPanel.add(panel);
     }
 }
 
