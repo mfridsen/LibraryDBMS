@@ -25,6 +25,7 @@ public class LoginErrorGUI extends GUI {
     }
 
 
+
     public void ErrorGUI() {
         JPanel panel = new JPanel();
         errorMessageLabel = new JLabel("Error! Enter the correct username and password");

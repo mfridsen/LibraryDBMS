@@ -20,6 +20,10 @@ public class UserDeleteGUI extends GUI {
         super(previousGUI, "UserDeleteGUI");
         this.user = user;
         this.deleteUser = new JLabel("Delete user: " + user.getUsername() + "?");
+        setupButtons();
+        addButtonsToPanel(new JButton[]{confirmButton, cancelButton});
+        setupPanels();
+        this.displayGUI();
     }
 
     @Override

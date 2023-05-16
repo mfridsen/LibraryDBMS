@@ -27,6 +27,10 @@ public class UserSearchResultGUI extends GUI {
         super(previousGUI, "UserSearchResultGUI");
         this.userID = userID;
         this.username = username;
+        setupButtons();
+        addButtonsToPanel(new JButton[]{visaobjektButton, lånaButton});
+        setupPanels();
+        this.displayGUI();
     }
 
     @Override

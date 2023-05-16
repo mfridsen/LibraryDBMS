@@ -30,6 +30,10 @@ public class UserGUI extends GUI {
         super(prevoiusGUI, "UserGUI");
         this.user = user;
         this.userIDLabel = new JLabel("userID: " + user.getUserID());
+        setupButtons();
+        addButtonsToPanel(new JButton[]{deleteButton, updateButton});
+        setupPanels();
+        this.displayGUI();
     }
 
     @Override

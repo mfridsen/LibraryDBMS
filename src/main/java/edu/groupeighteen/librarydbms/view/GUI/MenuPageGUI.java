@@ -33,6 +33,10 @@ public class MenuPageGUI extends GUI {
         super(previousGUI, "MenuPageGUI");
         this.loggedInUser = loggedInUser;
         this.username = loggedInUser.getUsername();
+        setupButtons();
+        addButtonsToPanel(new JButton[]{LoggaUtButton});
+        setupPanels();
+        this.displayGUI();
     }
 
 

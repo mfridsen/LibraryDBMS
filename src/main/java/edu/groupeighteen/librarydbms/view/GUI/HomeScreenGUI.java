@@ -26,6 +26,11 @@ public class HomeScreenGUI extends GUI {
 
     public HomeScreenGUI(GUI previousGUI) {
         super(previousGUI, "HomeScreenGUI");
+        setupButtons();
+        addButtonsToPanel(new JButton[]{loginHereButton});
+        setupPanels();
+        this.displayGUI();
+
         welcomeLabel = new JLabel("Welcome to the library system");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
