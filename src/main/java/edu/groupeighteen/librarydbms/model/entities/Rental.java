@@ -66,7 +66,7 @@ public class Rental {
     }
 
     public void setRentalID(int rentalID) {
-        if (rentalID <= 0) throw new IllegalArgumentException("RentalID must be greater than zero.");
+        if (rentalID <= 0) throw new IllegalArgumentException("RentalID must be greater than zero. Received: " + rentalID);
         this.rentalID = rentalID;
     }
 
@@ -75,7 +75,7 @@ public class Rental {
     }
 
     public void setUserID(int userID) {
-        if (userID <= 0) throw new IllegalArgumentException("UserID must be greater than zero.");
+        if (userID <= 0) throw new IllegalArgumentException("UserID must be greater than zero. Received: " + userID);
         this.userID = userID;
     }
 
@@ -84,7 +84,7 @@ public class Rental {
     }
 
     public void setItemID(int itemID) {
-        if (itemID <= 0) throw new IllegalArgumentException("ItemID must be greater than zero.");
+        if (itemID <= 0) throw new IllegalArgumentException("ItemID must be greater than zero. Received: " + itemID );
         this.itemID = itemID;
     }
 
@@ -94,7 +94,7 @@ public class Rental {
 
     public void setRentalDate(LocalDateTime rentalDate) {
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
-            throw new IllegalArgumentException("RentalDate cannot be null or in the future.");
+            throw new IllegalArgumentException("RentalDate cannot be null or in the future. Received: " + rentalDate);
         this.rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS); //TODO-test we added truncation, test it
     }
 
@@ -104,7 +104,7 @@ public class Rental {
 
     public void setUsername(String username) {
         if (username == null || username.isEmpty())
-            throw new IllegalArgumentException("Username cannot be null or empty.");
+            throw new IllegalArgumentException("Username cannot be null or empty. Received: " + username);
         this.username = username;
     }
 
@@ -113,7 +113,7 @@ public class Rental {
     }
 
     public void setTitle(String title) {
-        if (title == null || title.isEmpty()) throw new IllegalArgumentException("Title cannot be null or empty.");
+        if (title == null || title.isEmpty()) throw new IllegalArgumentException("Title cannot be null or empty. Received: " + title);
         this.title = title;
     }
 }

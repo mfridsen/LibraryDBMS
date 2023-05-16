@@ -168,12 +168,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertEquals(rental.getUserID(), retrievedRental.getUserID());
         assertEquals(rental.getItemID(), retrievedRental.getItemID());
         assertEquals(rental.getRentalDate(), retrievedRental.getRentalDate());
+        assertEquals(rental.getUsername(), retrievedRental.getUsername()); //New test for username
+        assertEquals(rental.getTitle(), retrievedRental.getTitle()); //New test for title
 
         //Test invalid getRentalByID
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalByID(-1));
 
         System.out.println("Test finished.");
     }
+
 
     /**
      * This test method first creates a few new rentals, two with the current date and time and one with a future date.
@@ -427,7 +430,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     void testUpdateRental() {
         System.out.println("\n10: Testing updateRental method...");
 
-        //Test 1: Updating a non-existent rental should throw an exception
+        //Test case 1: Updating a non-existent rental should throw an exception
         System.out.println("\nTesting test case 1: non-existent rental...");
         try {
             Rental nonExistentRental = new Rental(1, 1, LocalDateTime.now());
@@ -455,7 +458,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        //Test 2: Updating a valid rental should return true
+        //Test case 2: Updating a valid rental should return true
         System.out.println("\nTesting test case 2: valid rentals...");
         try {
             //Create a new rental first to ensure a valid rentalID
@@ -486,14 +489,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        //Test 3: invalid updateRental
+        //Test case 3: invalid updateRental
         System.out.println("\nTesting test case 3: invalid rentals...");
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(null, null));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(RentalHandler.createNewRental(1, 1, LocalDateTime.now()), null));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(null, RentalHandler.createNewRental(1, 1, LocalDateTime.now())));
         System.out.println("Test case 3 finished.");
 
-        //Test 4: userID is changed but not username
+        //Test case 4: userID is changed but not username
         System.out.println("\nTesting test case 4: userID is changed but not username...");
         try {
             Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
@@ -514,7 +517,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        //Test 5: username is changed but not userID
+        //Test case 5: username is changed but not userID
         System.out.println("\nTesting test case 5: username is changed but not userID...");
         try {
             Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
@@ -535,15 +538,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        //Test 6: both userID and username are changed
-        System.out.println("\nTesting test case 6: both userID and username are changed...");
+        //Test case 6: both userID and username are changed and valid
+        System.out.println("\nTesting test case 6: both userID and username are changed and valid...");
         try {
             Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
             assertNotNull(oldRental);
 
             Rental newRental = new Rental(oldRental);
             int updatedUserID = 2; //Assuming this userID exists
-            String updatedUsername = "newUsername"; //Assuming this username exists and corresponds to the new userID
+            String updatedUsername = "user2"; //Assuming this username exists and corresponds to the new userID
             newRental.setUserID(updatedUserID);
             newRental.setUsername(updatedUsername);
 
@@ -559,7 +562,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        //Test 7: itemID is changed but not title
+        //Test case 7: itemID is changed but not title
         System.out.println("\nTesting test case 7: itemID is changed but not title...");
         try {
             Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
@@ -580,14 +583,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        //Test 8: title is changed but not itemID
+        //Test case 8: title is changed but not itemID
         System.out.println("\nTesting test case 8: title is changed but not itemID...");
         try {
             Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
             assertNotNull(oldRental);
 
             Rental newRental = new Rental(oldRental);
-            String updatedTitle = "newTitle"; //Assuming this title exists and corresponds to the same itemID
+            String updatedTitle = "item2"; //Assuming this title exists and corresponds to the same itemID
             newRental.setTitle(updatedTitle);
 
             boolean updated = RentalHandler.updateRental(oldRental, newRental);
@@ -601,15 +604,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        //Test 9: both itemID and title are changed
-        System.out.println("\nTesting test case 9: both itemID and title are changed...");
+        //Test case 9: both itemID and title are changed and valid
+        System.out.println("\nTesting test case 9: both itemID and title are changed and valid...");
         try {
             Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
             assertNotNull(oldRental);
 
             Rental newRental = new Rental(oldRental);
             int updatedItemID = 2; //Assuming this itemID exists
-            String updatedTitle = "newTitle"; //Assuming this title exists and corresponds to the new itemID
+            String updatedTitle = "item2"; //Assuming this title exists and corresponds to the new itemID
             newRental.setItemID(updatedItemID);
             newRental.setTitle(updatedTitle);
 

@@ -152,6 +152,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
+    //TODO-test!
     /**
      * Retrieves a Rental object from the database based on the provided rental ID.
      *
@@ -181,8 +182,22 @@ public class RentalHandler {
                 int itemID = resultSet.getInt("itemID");
                 Timestamp timestamp = resultSet.getTimestamp("rentalDate");
                 LocalDateTime rentalDate = timestamp.toLocalDateTime();  //Convert Timestamp to LocalDateTime
+
+                User user = UserHandler.getUserByID(userID);
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setTitle(item.getTitle());
+
                 return rental;
             }
         }

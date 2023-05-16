@@ -15,6 +15,16 @@ INSERT INTO users (username, password) VALUES
 
 -- //TODO add Item test data here
 INSERT INTO items (title) VALUES
+('item1'),
+('item2'),
+('item3'),
+('item4'),
+('item5'),
+('item6'),
+('item7'),
+('item8'),
+('item9'),
+('item10'),
 ('The Blade Itself'),
 ('Before They Are Hanged'),
 ('Last Argument Of Kings'),
