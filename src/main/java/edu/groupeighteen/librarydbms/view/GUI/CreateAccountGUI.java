@@ -24,7 +24,6 @@ public class CreateAccountGUI extends GUI {
     private JLabel EmailLabel;
     private JTextField EmailField;
 
-    private JButton tillbakaButton;
     private JButton proceedButton;
     private JPanel CreateAccountPanel;
     private JFrame CreateAccountFrame;
@@ -36,7 +35,7 @@ public class CreateAccountGUI extends GUI {
     public CreateAccountGUI(GUI previousGUI) {
         super(previousGUI, "CreateAccountGUI");
         setupButtons();
-        addButtonsToPanel(new JButton[]{proceedButton, tillbakaButton});
+        addButtonsToPanel(new JButton[]{proceedButton});
         setupPanels();
         this.displayGUI();
 
@@ -52,11 +51,9 @@ public class CreateAccountGUI extends GUI {
         EmailField = new JTextField(10);
         CreateAccountFrame = new JFrame("Skapa Konto");
         CreateAccountPanel = new JPanel();
-        tillbakaButton = new JButton("Tillbaka");
         proceedButton = new JButton("Skapa");
 
         CreateAccountPanel.add(proceedButton);
-        CreateAccountPanel.add(tillbakaButton);
         CreateAccountPanel.add(usernameLabel);
         CreateAccountPanel.add(usernameField);
         CreateAccountPanel.add(passwordLabel);
@@ -69,14 +66,7 @@ public class CreateAccountGUI extends GUI {
         CreateAccountFrame.setVisible(true);
         CreateAccountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CreateAccountFrame.dispose();
-                HomeScreenGUI homeScreen = new HomeScreenGUI();
 
-            }
-        });
         proceedButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

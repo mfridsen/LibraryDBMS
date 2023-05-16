@@ -22,7 +22,6 @@ public class LoginScreenGUI extends GUI {
     public JPasswordField passwordField;
     public JPanel LoginPanel;
     public JFrame LoginFrame;
-    public JButton tillbakaButton;
     public JButton proceedButton;
 
     /**
@@ -42,11 +41,9 @@ public class LoginScreenGUI extends GUI {
         passwordField = new JPasswordField(10);
         LoginFrame = new JFrame("LoginScreenGUI");
         LoginPanel = new JPanel();
-        tillbakaButton = new JButton("Tillbaka");
         proceedButton = new JButton("MenuPageGUI");
 
         LoginPanel.add(proceedButton);
-        LoginPanel.add(tillbakaButton);
         LoginPanel.add(usernameLabel);
         LoginPanel.add(usernameField);
         LoginPanel.add(passwordLabel);
@@ -78,14 +75,6 @@ public class LoginScreenGUI extends GUI {
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);// TODO-Exception
                 }
-            }
-        });
-
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LoginFrame.dispose();
-                HomeScreenGUI homeScreen = new HomeScreenGUI();
             }
         });
     }

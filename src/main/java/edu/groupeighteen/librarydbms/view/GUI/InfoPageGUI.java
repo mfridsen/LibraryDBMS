@@ -14,8 +14,6 @@ import java.awt.event.ActionListener;
 public class InfoPageGUI extends GUI {
     public JFrame firstFrame;
     public JPanel firstPanel;
-    public JButton tillbakaButton;
-
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
      *
@@ -23,7 +21,7 @@ public class InfoPageGUI extends GUI {
     public InfoPageGUI(GUI previousGUI) {
         super(previousGUI, "InfoPageGUI");
         setupButtons();
-        addButtonsToPanel(new JButton[]{tillbakaButton});
+        addButtonsToPanel(new JButton[]{});
         setupPanels();
         this.displayGUI();
     }
@@ -32,7 +30,6 @@ public class InfoPageGUI extends GUI {
         // skapar infoGUI
         firstFrame = new JFrame("Information");
         firstPanel = new JPanel();
-        tillbakaButton = new JButton("Tillbaka");
 
         firstPanel.add(new JLabel("Hej och välkommen till Lilla Biblioteket"));
         firstPanel.add(new JLabel("Våra öppetider är: "));
@@ -44,16 +41,7 @@ public class InfoPageGUI extends GUI {
         firstPanel.add(new JLabel("Vi erbjuder en härlig atmosfär och många spännande böcker."));
         firstPanel.add(new JLabel(""));
 
-        firstPanel.add(tillbakaButton);
 
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                firstFrame.dispose();
-                new HomeScreenGUI();
-
-            }
-        });
         // Add the first panel to the first frame and set its properties
         firstFrame.add(firstPanel);
         firstFrame.pack();

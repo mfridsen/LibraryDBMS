@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
 public class UserWelcomeGUI extends GUI {
     private JLabel welcomeLabel;
     private JButton searchButton;
-    private JButton tillbakaButton;
     private JPanel welcomePanel;
     private JFrame welcomeFrame;
     private User user;
@@ -30,7 +29,7 @@ public class UserWelcomeGUI extends GUI {
     public UserWelcomeGUI(GUI previousGUI, User user) {
         super(previousGUI, "UserWelcomeGUI");
         setupButtons();
-        addButtonsToPanel(new JButton[]{searchButton, tillbakaButton});
+        addButtonsToPanel(new JButton[]{searchButton});
         setupPanels();
         this.displayGUI();
     }
@@ -38,13 +37,11 @@ public class UserWelcomeGUI extends GUI {
     public void WelcomeUserGUI() {
         welcomeLabel = new JLabel("Sök");
         searchButton = new JButton("UserSearchGUI");
-        tillbakaButton = new JButton("Tillbaka");
         welcomePanel = new JPanel();
         welcomeFrame = new JFrame("UserGUI");
 
         welcomePanel.add(welcomeLabel);
         welcomePanel.add(searchButton);
-        welcomePanel.add(tillbakaButton);
 
         welcomeFrame.add(welcomePanel);
         welcomeFrame.pack();

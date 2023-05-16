@@ -21,7 +21,6 @@ public class ItemSearchGUI extends GUI {
     private JLabel sökNamnLabel;
     private JTextField sökNamnField;
     private JButton sökButton;
-    private JButton tillbakaButton;
     private JPanel searchPanel;
     private JFrame searchFrame;
 
@@ -32,7 +31,7 @@ public class ItemSearchGUI extends GUI {
     public ItemSearchGUI(GUI previousGUI) {
         super(previousGUI, "ItemSearchGUI");
         setupButtons();
-        addButtonsToPanel(new JButton[]{sökButton, tillbakaButton});
+        addButtonsToPanel(new JButton[]{sökButton});
         setupPanels();
         this.displayGUI();
     }
@@ -45,10 +44,8 @@ public class ItemSearchGUI extends GUI {
         sökNamnLabel = new JLabel("Sök Namn");
         sökNamnField = new JTextField(10);
         sökButton = new JButton("ItemSearchResultGUI");
-        tillbakaButton = new JButton("Tillbaka");
 
         searchPanel.add(sökButton);
-        searchPanel.add(tillbakaButton);
         searchPanel.add(sökNamnLabel);
         searchPanel.add(sökNamnField);
 
@@ -56,15 +53,6 @@ public class ItemSearchGUI extends GUI {
         searchFrame.pack();
         searchFrame.setVisible(true);
         searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchFrame.dispose();
-                MenuPageGUI menuPage = new MenuPageGUI(LibraryManager.getCurrentUser());
-                menuPage.menuGUI();
-            }
-        });
 
         sökButton.addActionListener(new ActionListener() {
             @Override

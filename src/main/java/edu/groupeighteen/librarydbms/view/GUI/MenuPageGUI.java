@@ -20,7 +20,6 @@ public class MenuPageGUI extends GUI {
     private JButton sökButton;
     private JButton mittKontoButton;
     private JButton LoggaUtButton;
-    private JButton tillbakaButton;
     private JButton userButton;
     private JFrame menuFrame;
     private JPanel menuPanel;
@@ -44,7 +43,6 @@ public class MenuPageGUI extends GUI {
     public void menuGUI(){
         menuFrame = new JFrame("MenuPageGUI");
         menuPanel = new JPanel();
-        tillbakaButton = new JButton("Tillbaka");
         sökButton = new JButton("ItemSearchGUI");
         LoggaUtButton = new JButton("HomeScreenGUI");
         mittKontoButton = new JButton("MyAccountGUI");
@@ -52,19 +50,10 @@ public class MenuPageGUI extends GUI {
 
         JLabel welcomeLabel = new JLabel("Välkommen, " + username + "!");
         menuPanel.add(welcomeLabel);
-        menuPanel.add(tillbakaButton);
         menuPanel.add(LoggaUtButton);
         menuPanel.add(mittKontoButton);
         menuPanel.add(sökButton);
         menuPanel.add(userButton);
-
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuFrame.dispose();
-                new LoginScreenGUI();
-            }
-        });
         LoggaUtButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

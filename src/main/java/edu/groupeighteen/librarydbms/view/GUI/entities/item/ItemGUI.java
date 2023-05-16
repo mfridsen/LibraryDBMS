@@ -17,12 +17,7 @@ public class ItemGUI extends GUI {
         private Item item;
         private JLabel itemIDLabel;
         private JLabel itemLabel;
-
         private JLabel ISBNLabel;
-
-
-
-        private JButton tillbakaButton;
         private JButton updateButton;
         private JButton deleteButton;
         private JPanel ItemGUIPanel;
@@ -33,7 +28,7 @@ public class ItemGUI extends GUI {
         this.item = item;
     this.itemIDLabel = new JLabel("itemID: " + item.getItemID());
         setupButtons();
-        addButtonsToPanel(new JButton[]{updateButton, deleteButton, tillbakaButton});
+        addButtonsToPanel(new JButton[]{updateButton, deleteButton});
         setupPanels();
         this.displayGUI();
     }

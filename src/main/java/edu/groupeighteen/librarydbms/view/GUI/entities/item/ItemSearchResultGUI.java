@@ -19,7 +19,6 @@ public class ItemSearchResultGUI extends GUI {
     private JPanel searchPanel;
     private JFrame searchFrame;
     private JButton lånaButton;
-    private JButton tillbakaButton;
     private JButton visaobjektButton;
     private String searchedBook;
     private String[] bookTitles = { "Harry Potter", "The Mist", "Revenge Of The Sith", "Harry Potter hej", "Harry Potter 3" }; // Example book titles
@@ -33,7 +32,6 @@ public class ItemSearchResultGUI extends GUI {
         searchPanel = new JPanel();
         searchFrame = new JFrame("ItemSearchResultGUI");
         lånaButton = new JButton("Låna");
-        tillbakaButton = new JButton("Tillbaka");
         visaobjektButton = new JButton("Visa objekt");
 
         JLabel resultatLabel;
@@ -44,22 +42,12 @@ public class ItemSearchResultGUI extends GUI {
         }
         searchPanel.add(resultatLabel);
         searchPanel.add(lånaButton);
-        searchPanel.add(tillbakaButton);
         searchPanel.add(visaobjektButton);
 
         searchFrame.add(searchPanel);
         searchFrame.pack();
         searchFrame.setVisible(true);
         searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        tillbakaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchFrame.dispose();
-                ItemSearchGUI search = new ItemSearchGUI();
-                search.searchGUI();
-            }
-        });
     }
 
     private String getFormattedBookTitle() {

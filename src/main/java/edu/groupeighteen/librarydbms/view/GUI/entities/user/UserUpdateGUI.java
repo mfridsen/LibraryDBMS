@@ -25,7 +25,6 @@ public class UserUpdateGUI extends GUI {
         private JButton changeButton;
         private JPanel accountPanel;
         private JFrame accountFrame;
-        private JButton tillbakaButton;
         private User user;
 
     public UserUpdateGUI(GUI previousGUI, User user) {
@@ -33,7 +32,7 @@ public class UserUpdateGUI extends GUI {
         this.user = user;
         changeInfoGUI();
         setupButtons();
-        addButtonsToPanel(new JButton[]{changeButton, tillbakaButton});
+        addButtonsToPanel(new JButton[]{changeButton});
         setupPanels();
         this.displayGUI();
     }
@@ -46,12 +45,10 @@ public class UserUpdateGUI extends GUI {
             passwordLabel = new JLabel("Password:");
             passwordField = new JPasswordField(10);
             changeButton = new JButton("Change");
-            tillbakaButton = new JButton("Tillbaka");
             accountPanel = new JPanel();
             accountFrame = new JFrame("UserUpdateGUI");
 
             accountPanel.add(changeButton);
-            accountPanel.add(tillbakaButton);
             accountPanel.add(usernameLabel);
             accountPanel.add(usernameField);
             accountPanel.add(passwordLabel);
@@ -61,15 +58,6 @@ public class UserUpdateGUI extends GUI {
             accountFrame.pack();
             accountFrame.setVisible(true);
             accountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            tillbakaButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    accountFrame.dispose();
-                    new MenuPageGUI(LibraryManager.getCurrentUser());
-
-                }
-            });
             changeButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
