@@ -36,7 +36,7 @@ public class CreateAccountGUI extends GUI {
     public CreateAccountGUI(GUI previousGUI) {
         super(previousGUI, "CreateAccountGUI");
         setupButtons();
-        addButtonsToPanel(new JButton[]{proceedButton});
+        addButtonsToPanel(new JButton[]{proceedButton, tillbakaButton});
         setupPanels();
         this.displayGUI();
 

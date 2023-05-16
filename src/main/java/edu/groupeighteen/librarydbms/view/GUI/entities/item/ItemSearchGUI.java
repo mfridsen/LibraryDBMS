@@ -31,6 +31,10 @@ public class ItemSearchGUI extends GUI {
      */
     public ItemSearchGUI(GUI previousGUI) {
         super(previousGUI, "ItemSearchGUI");
+        setupButtons();
+        addButtonsToPanel(new JButton[]{sökButton, tillbakaButton});
+        setupPanels();
+        this.displayGUI();
     }
 
 

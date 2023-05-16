@@ -29,6 +29,10 @@ public class UserWelcomeGUI extends GUI {
      */
     public UserWelcomeGUI(GUI previousGUI, User user) {
         super(previousGUI, "UserWelcomeGUI");
+        setupButtons();
+        addButtonsToPanel(new JButton[]{searchButton, tillbakaButton});
+        setupPanels();
+        this.displayGUI();
     }
 
     public void WelcomeUserGUI() {

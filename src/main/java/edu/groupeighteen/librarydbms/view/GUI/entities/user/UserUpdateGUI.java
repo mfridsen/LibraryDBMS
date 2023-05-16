@@ -32,6 +32,10 @@ public class UserUpdateGUI extends GUI {
         super(previousGUI, "UserUpdateGUI");
         this.user = user;
         changeInfoGUI();
+        setupButtons();
+        addButtonsToPanel(new JButton[]{changeButton, tillbakaButton});
+        setupPanels();
+        this.displayGUI();
     }
 
     public void changeInfoGUI() {

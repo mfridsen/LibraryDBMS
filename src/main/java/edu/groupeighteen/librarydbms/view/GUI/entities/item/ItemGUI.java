@@ -32,6 +32,10 @@ public class ItemGUI extends GUI {
         super(preiousGUI, "ItemGUI");
         this.item = item;
     this.itemIDLabel = new JLabel("itemID: " + item.getItemID());
+        setupButtons();
+        addButtonsToPanel(new JButton[]{updateButton, deleteButton, tillbakaButton});
+        setupPanels();
+        this.displayGUI();
     }
 
     @Override

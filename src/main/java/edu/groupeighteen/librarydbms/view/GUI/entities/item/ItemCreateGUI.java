@@ -21,6 +21,10 @@ public class ItemCreateGUI extends GUI {
 
     public ItemCreateGUI(GUI previousGUI) {
         super(previousGUI, "ItemCreateGUI");
+        setupButtons();
+        addButtonsToPanel(new JButton[]{});
+        setupPanels();
+        this.displayGUI();
     }
 
     @Override
