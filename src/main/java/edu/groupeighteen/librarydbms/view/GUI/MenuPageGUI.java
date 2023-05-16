@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.view.GUI;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.item.ItemSearchGUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserUpdateGUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserWelcomeGUI;
@@ -15,7 +16,7 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class MenuPageGUI {
+public class MenuPageGUI extends GUI {
     private JButton sökButton;
     private JButton mittKontoButton;
     private JButton LoggaUtButton;
@@ -28,7 +29,8 @@ public class MenuPageGUI {
     public String username;
 
 
-    public MenuPageGUI(User loggedInUser) {
+    public MenuPageGUI(User loggedInUser, String username, GUI previousGUI) {
+        super(previousGUI, "MenuPageGUI");
         this.loggedInUser = loggedInUser;
         this.username = loggedInUser.getUsername();
     }
@@ -95,5 +97,15 @@ public class MenuPageGUI {
         menuFrame.pack();
         menuFrame.setVisible(true);
         menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    @Override
+    protected JButton[] setupButtons() {
+        return new JButton[0];
+    }
+
+    @Override
+    protected void setupPanels() {
+
     }
 }

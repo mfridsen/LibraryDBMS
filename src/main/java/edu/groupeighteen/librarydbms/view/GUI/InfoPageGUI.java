@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,10 +11,18 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class InfoPageGUI {
+public class InfoPageGUI extends GUI {
     public JFrame firstFrame;
     public JPanel firstPanel;
     public JButton tillbakaButton;
+
+    /**
+     * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
+     *
+     */
+    public InfoPageGUI(GUI previousGUI) {
+        super(previousGUI, "InfoPageGUI");
+    }
 
     public void showInfoGUI(){
         // skapar infoGUI
@@ -47,6 +57,16 @@ public class InfoPageGUI {
         firstFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
+
+    }
+
+    @Override
+    protected JButton[] setupButtons() {
+        return new JButton[0];
+    }
+
+    @Override
+    protected void setupPanels() {
 
     }
 }

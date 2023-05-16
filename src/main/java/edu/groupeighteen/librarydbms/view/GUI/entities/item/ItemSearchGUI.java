@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.view.GUI.entities.item;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -16,13 +17,21 @@ import java.awt.event.ActionListener;
  * leads to ItemSearchResultGUI
  */
 
-public class ItemSearchGUI extends JFrame {
+public class ItemSearchGUI extends GUI {
     private JLabel sökNamnLabel;
     private JTextField sökNamnField;
     private JButton sökButton;
     private JButton tillbakaButton;
     private JPanel searchPanel;
     private JFrame searchFrame;
+
+    /**
+     * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
+     *
+     */
+    public ItemSearchGUI(GUI previousGUI) {
+        super(previousGUI, "ItemSearchGUI");
+    }
 
 
     public void searchGUI() {
@@ -61,5 +70,15 @@ public class ItemSearchGUI extends JFrame {
                 ItemSearchResultGUI searchResult = new ItemSearchResultGUI(searchedBook);
             }
         });
+    }
+
+    @Override
+    protected JButton[] setupButtons() {
+        return new JButton[0];
+    }
+
+    @Override
+    protected void setupPanels() {
+
     }
 }

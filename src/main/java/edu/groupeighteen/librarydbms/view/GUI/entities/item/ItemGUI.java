@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.view.GUI.entities.item;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 
@@ -12,7 +13,7 @@ import javax.swing.*;
  *
  * this class displays all information about a single item object
  */
-public class ItemGUI {
+public class ItemGUI extends GUI {
         private Item item;
         private JLabel itemIDLabel;
         private JLabel itemLabel;
@@ -27,8 +28,19 @@ public class ItemGUI {
         private JPanel ItemGUIPanel;
         private JFrame ItemGUIFrame;
 
-    public ItemGUI(Item item){
-    this.item = item;
+    public ItemGUI(Item item, GUI preiousGUI){
+        super(preiousGUI, "ItemGUI");
+        this.item = item;
     this.itemIDLabel = new JLabel("itemID: " + item.getItemID());
+    }
+
+    @Override
+    protected JButton[] setupButtons() {
+        return new JButton[0];
+    }
+
+    @Override
+    protected void setupPanels() {
+
     }
 }
