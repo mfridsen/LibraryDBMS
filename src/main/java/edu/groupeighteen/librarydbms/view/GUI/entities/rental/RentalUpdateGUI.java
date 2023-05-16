@@ -26,7 +26,7 @@ import java.time.format.DateTimeParseException;
  */
 public class RentalUpdateGUI extends GUI {
     //The rental object to update
-    private Rental rentalToUpdate;
+    private final Rental rentalToUpdate;
     //We need the table to be a member variable in order to access its data via the buttons
     private JTable rentalUpdateTable;
     //The panel containing the scroll pane which displays the Rental data
@@ -38,7 +38,7 @@ public class RentalUpdateGUI extends GUI {
      * @param rentalToUpdate
      */
     public RentalUpdateGUI(GUI previousGUI, Rental rentalToUpdate) {
-        super(previousGUI, "RentalUpdateGUI");
+        super(previousGUI, "RentalUpdateGUI for rentalID = " + rentalToUpdate.getRentalID());
         this.rentalToUpdate = rentalToUpdate;
         setupScrollPane();
         setupPanels();
@@ -64,11 +64,11 @@ public class RentalUpdateGUI extends GUI {
         JButton confirmUpdateButton = new JButton("RentalGUI"); //TODO-future Change to "Confirm Update"
         confirmUpdateButton.addActionListener(e -> {
             // Get the new values from the table
-            String userID = (String) rentalUpdateTable.getValueAt(1, 2);
-            String username = (String) rentalUpdateTable.getValueAt(2, 2);
-            String itemID = (String) rentalUpdateTable.getValueAt(3, 2);
-            String itemTitle = (String) rentalUpdateTable.getValueAt(4, 2);
-            String rentalDate = (String) rentalUpdateTable.getValueAt(5, 2);
+            String userID = (String) rentalUpdateTable.getValueAt(0, 2);
+            String username = (String) rentalUpdateTable.getValueAt(1, 2);
+            String itemID = (String) rentalUpdateTable.getValueAt(2, 2);
+            String itemTitle = (String) rentalUpdateTable.getValueAt(3, 2);
+            String rentalDate = (String) rentalUpdateTable.getValueAt(4, 2);
 
             // Update the rentalToUpdate object
             // Only update if new value is not null or empty
@@ -119,7 +119,6 @@ public class RentalUpdateGUI extends GUI {
 
         // Gather data
         Object[][] data = {
-                {"Rental ID", rentalToUpdate.getRentalID(), ""},
                 {"User ID", rentalToUpdate.getUserID(), ""},
                 {"Username", rentalToUpdate.getUsername(), ""},
                 {"Item ID", rentalToUpdate.getItemID(), ""},
