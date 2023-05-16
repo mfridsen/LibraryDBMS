@@ -444,57 +444,73 @@ public class RentalHandler {
     /**
      * This method updates the details of a given rental in the database.
      *
-     * @param rental The rental object containing the updated details.
+     * @param newRental The rental object containing the updated details.
      * @return true if the update was successful, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
      */
-    public static boolean updateRental(Rental rental) throws SQLException {
-        //Validate the input
-        if (rental == null)
-            throw new IllegalArgumentException("Error updating rental: rental is null.");
-        if (rental.getRentalID() <= 0)
-            throw new IllegalArgumentException("Invalid rental: Rental ID must be greater than 0.");
+    public static boolean updateRental(Rental oldRental, Rental newRental) throws SQLException {
+        // Validate the input
+        if (oldRental == null)
+            throw new IllegalArgumentException("Error updating rental: oldRental is null.");
+        if (newRental == null)
+            throw new IllegalArgumentException("Error updating rental: newRental is null.");
+        if (newRental.getRentalID() <= 0 || oldRental.getRentalID() <= 0)
+            throw new IllegalArgumentException("Invalid rental: Rental ID must be greater than 0. " +
+                    "oldRental ID: " + oldRental.getRentalID() + ", newRental ID: " + newRental.getRentalID());
 
-        //TODO-prio we're gonna need to change this accordingly:
-        // we probably need to receive a "oldRental" and a "newRental" as arguments
-        // then we need to check which fields have been changed
-        // if userID is changed, but not username, we user UserHandler to fetch the appropriate username before update
-        // if username is changed, but not userID, we do vice-versa
-        // if both are changed, check that both refer to the same user object
-        //      if not, throw IllegalArgumentException("userID and username don't match")
-        //      if they do, update without any fetching
-        // if itemID is changed, but not title, use ItemHandler
-        // and vice versa
-        // if both are changed...
-        //      if not, throw
-        //      if yes, update without fetch
+        // If userID is changed, but not username, fetch the appropriate username
+        if (oldRental.getUserID() != newRental.getUserID() && oldRental.getUsername().equals(newRental.getUsername())) {
+            User user = UserHandler.getUserByID(newRental.getUserID());
+            if (user == null)
+                throw new SQLException("updateRental 1: fetched user is null.");
 
+            newRental.setUsername(user.getUsername());
+        }
+        // If username is changed, but not userID, fetch the appropriate userID
+        else if (!oldRental.getUsername().equals(newRental.getUsername()) && oldRental.getUserID() == newRental.getUserID()) {
+            User user = UserHandler.getUserByUsername(newRental.getUsername());
+            if (user == null)
+                throw new SQLException("updateRental 2: fetched user is null.");
 
-        //Set username
-        User user = UserHandler.getUserByID(rental.getUserID());
-        if (user == null)
-            throw new SQLException("Failed to find user with ID: " + rental.getUserID());
-        rental.setUsername(user.getUsername());
+            newRental.setUserID(user.getUserID());
+        }
+        // If both are changed, check that both refer to the same user object
+        else if (!oldRental.getUsername().equals(newRental.getUsername()) && oldRental.getUserID() != newRental.getUserID()) {
+            User user = UserHandler.getUserByID(newRental.getUserID());
+            if (user == null)
+                throw new SQLException("updateRental 3: fetched user is null.");
 
-        //Set title
-        Item item = ItemHandler.getItemByID(rental.getItemID());
-        if (item == null)
-            throw new SQLException("Failed to find item with ID: " + rental.getItemID());
-        rental.setTitle(item.getTitle());
+            if (!user.getUsername().equals(newRental.getUsername())) {
+                throw new IllegalArgumentException("userID and username don't match");
+            }
+        }
 
-        //Prepare a SQL query to update the rental details
+        //TODO-prio newRental = compareRentals(oldRental, newRental);
+
+        // Similar checks for itemID and title
+        // TODO: Implement similar logic for itemID and title
+
+        // Prepare a SQL query to update the rental details
         String query = "UPDATE rentals SET userID = ?, itemID = ?, rentalDate = ?, username = ?, title = ? WHERE rentalID = ?";
-        String[] params = {String.valueOf(rental.getUserID()),
-                String.valueOf(rental.getItemID()),
-                rental.getRentalDate().toString(),
-                rental.getUsername(),
-                rental.getTitle(),
-                String.valueOf(rental.getRentalID())};
+        String[] params = {String.valueOf(newRental.getUserID()),
+                String.valueOf(newRental.getItemID()),
+                newRental.getRentalDate().toString(),
+                newRental.getUsername(),
+                newRental.getTitle(),
+                String.valueOf(newRental.getRentalID())};
 
-        //Execute the update and return whether it was successful
+        // Execute the update and return whether it was successful
         int rowsAffected = DatabaseHandler.executePreparedUpdate(query, params);
         return rowsAffected > 0;
+    }
+
+    private static Rental compareRentals(Rental oldRental, Rental newRental) {
+        return null;
+    }
+
+    private static Item compareItems(Rental oldRental, Rental newRental) {
+        return null;
     }
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
