@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.view.GUI;
 
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserWelcomeGUI;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ import java.sql.SQLException;
  * @project LibraryDBMS
  * @date 2023-04-27
  */
-public class CreateAccountGUI {
+public class CreateAccountGUI extends GUI {
     private JLabel usernameLabel;
     private JTextField usernameField;
     private JLabel passwordLabel;
@@ -27,6 +28,19 @@ public class CreateAccountGUI {
     private JButton proceedButton;
     private JPanel CreateAccountPanel;
     private JFrame CreateAccountFrame;
+
+    /**
+     * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
+     *
+     */
+    public CreateAccountGUI(GUI previousGUI) {
+        super(previousGUI, "CreateAccountGUI");
+        setupButtons();
+        addButtonsToPanel(new JButton[]{proceedButton});
+        setupPanels();
+        this.displayGUI();
+
+    }
 
     public void CreateAccountPage(){
         JPanel panel = new JPanel();
@@ -77,5 +91,15 @@ public class CreateAccountGUI {
             }
         });
         }
+
+    @Override
+    protected JButton[] setupButtons() {
+        return new JButton[0];
     }
+
+    @Override
+    protected void setupPanels() {
+
+    }
+}
 

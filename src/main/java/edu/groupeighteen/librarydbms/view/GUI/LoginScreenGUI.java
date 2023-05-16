@@ -63,7 +63,7 @@ public class LoginScreenGUI extends JFrame {
                         menuPage.menuGUI();
                     } else {
                         // show error message or do nothing
-                        LoginErrorGUI loginError = new LoginErrorGUI();
+                        LoginErrorGUI loginError = new LoginErrorGUI(null);// TODO-prio change from null to this
                         loginError.ErrorGUI();
 
                     }

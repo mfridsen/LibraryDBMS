@@ -62,9 +62,4 @@ public class ItemSearchGUI extends JFrame {
             }
         });
     }
-
-    public static void main(String[] args) {
-        ItemSearchGUI search = new ItemSearchGUI();
-        search.searchGUI();
-    }
 }

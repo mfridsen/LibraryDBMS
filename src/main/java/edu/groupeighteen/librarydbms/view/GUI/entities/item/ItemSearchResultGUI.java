@@ -71,8 +71,4 @@ public class ItemSearchResultGUI extends JFrame {
     private boolean containsIgnoreCase(String search, String source){
         return source.toLowerCase().contains(search.toLowerCase());
     }
-
-    public static void main(String[] args) {
-        ItemSearchResultGUI searchResult = new ItemSearchResultGUI("Book Title");
-    }
 }

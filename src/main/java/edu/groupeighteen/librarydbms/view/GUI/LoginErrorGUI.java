@@ -1,4 +1,6 @@
 package edu.groupeighteen.librarydbms.view.GUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,9 +11,18 @@ import java.awt.event.ActionListener;
  * @project LibraryDBMS
  * @date 2023-05-05
  */
-public class LoginErrorGUI extends JFrame {
+public class LoginErrorGUI extends GUI {
     private JLabel errorMessageLabel;
     private JButton okButton;
+
+    /**
+     * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
+     *
+     * @param previousGUI the previous GUI object.
+     */
+    public LoginErrorGUI(GUI previousGUI) {
+        super(previousGUI, "LoginErrorGUI");
+    }
 
 
     public void ErrorGUI() {
@@ -37,6 +48,16 @@ public class LoginErrorGUI extends JFrame {
 
             }
         });
+    }
+
+    @Override
+    protected void setupButtons() {
+
+    }
+
+    @Override
+    protected void setupPanels() {
+
     }
 }
 

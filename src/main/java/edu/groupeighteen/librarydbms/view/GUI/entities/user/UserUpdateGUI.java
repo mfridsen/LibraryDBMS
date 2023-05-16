@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +17,7 @@ import java.util.Arrays;
  * @project LibraryDBMS
  * @date 2023-04-24
  */
-public class UserUpdateGUI {
+public class UserUpdateGUI extends GUI {
         private JLabel usernameLabel;
         private JTextField usernameField;
         private JLabel passwordLabel;
@@ -27,7 +28,8 @@ public class UserUpdateGUI {
         private JButton tillbakaButton;
         private User user;
 
-    public UserUpdateGUI(User user) {
+    public UserUpdateGUI(GUI previousGUI, User user) {
+        super(previousGUI, "UserUpdateGUI");
         this.user = user;
         changeInfoGUI();
     }
@@ -83,5 +85,14 @@ public class UserUpdateGUI {
         }
 
 
-        }
+    @Override
+    protected JButton[] setupButtons() {
+        return new JButton[0];
+    }
+
+    @Override
+    protected void setupPanels() {
+
+    }
+}
 

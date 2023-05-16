@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.view.GUI;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class HomeScreenGUI extends JFrame {
+public class HomeScreenGUI extends GUI {
 
     public JLabel welcomeLabel;
     public JPanel buttonPanel;
@@ -23,7 +24,8 @@ public class HomeScreenGUI extends JFrame {
     public JButton infoButton;
     public JButton skapakontoButton;
 
-    public HomeScreenGUI() {
+    public HomeScreenGUI(GUI previousGUI) {
+        super(previousGUI, "HomeScreenGUI");
         welcomeLabel = new JLabel("Welcome to the library system");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -76,6 +78,14 @@ public class HomeScreenGUI extends JFrame {
     }
 
 
+    @Override
+    protected JButton[] setupButtons() {
+        return new JButton[0];
+    }
 
+    @Override
+    protected void setupPanels() {
+
+    }
 }
 
