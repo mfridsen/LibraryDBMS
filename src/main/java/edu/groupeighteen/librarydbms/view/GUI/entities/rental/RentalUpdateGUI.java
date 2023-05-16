@@ -27,6 +27,8 @@ import java.time.format.DateTimeParseException;
 public class RentalUpdateGUI extends GUI {
     //The rental object to update
     private final Rental rentalToUpdate;
+    //The new rental object
+    private Rental updatedRental;
     //We need the table to be a member variable in order to access its data via the buttons
     private JTable rentalUpdateTable;
     //The panel containing the scroll pane which displays the Rental data
@@ -63,6 +65,12 @@ public class RentalUpdateGUI extends GUI {
         //Updates rentalToUpdate and opens a new RentalGUI displaying the updated Rental object
         JButton confirmUpdateButton = new JButton("RentalGUI"); //TODO-future Change to "Confirm Update"
         confirmUpdateButton.addActionListener(e -> {
+            //Duplicate rentalToUpdate
+            updatedRental = new Rental(rentalToUpdate.getUserID(), rentalToUpdate.getItemID(), rentalToUpdate.getRentalDate());
+            updatedRental.setRentalID(rentalToUpdate.getRentalID());
+            updatedRental.setUsername(rentalToUpdate.getUsername());
+            updatedRental.setTitle(rentalToUpdate.getTitle());
+
             // Get the new values from the table
             String userID = (String) rentalUpdateTable.getValueAt(0, 2);
             String username = (String) rentalUpdateTable.getValueAt(1, 2);
@@ -74,21 +82,21 @@ public class RentalUpdateGUI extends GUI {
             // Only update if new value is not null or empty
             try {
                 if (userID != null && !userID.isEmpty()) {
-                    rentalToUpdate.setUserID(Integer.parseInt(userID));
+                    updatedRental.setUserID(Integer.parseInt(userID));
                 }
                 // No parsing required for username, it is a string
                 if (username != null && !username.isEmpty()) {
-                    rentalToUpdate.setUsername(username);
+                    updatedRental.setUsername(username);
                 }
                 if (itemID != null && !itemID.isEmpty()) {
-                    rentalToUpdate.setItemID(Integer.parseInt(itemID));
+                    updatedRental.setItemID(Integer.parseInt(itemID));
                 }
                 // No parsing required for itemTitle, it is a string
                 if (itemTitle != null && !itemTitle.isEmpty()) {
-                    rentalToUpdate.setTitle(itemTitle);
+                    updatedRental.setTitle(itemTitle);
                 }
                 if (rentalDate != null && !rentalDate.isEmpty()) {
-                    rentalToUpdate.setRentalDate(LocalDateTime.parse(rentalDate));
+                    updatedRental.setRentalDate(LocalDateTime.parse(rentalDate));
                 }
             } catch (NumberFormatException nfe) {
                 System.err.println("One of the fields that requires a number received an invalid input.");

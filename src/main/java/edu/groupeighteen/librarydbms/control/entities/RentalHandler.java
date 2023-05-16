@@ -456,11 +456,40 @@ public class RentalHandler {
         if (rental.getRentalID() <= 0)
             throw new IllegalArgumentException("Invalid rental: Rental ID must be greater than 0.");
 
+        //TODO-prio we're gonna need to change this accordingly:
+        // we probably need to receive a "oldRental" and a "newRental" as arguments
+        // then we need to check which fields have been changed
+        // if userID is changed, but not username, we user UserHandler to fetch the appropriate username before update
+        // if username is changed, but not userID, we do vice-versa
+        // if both are changed, check that both refer to the same user object
+        //      if not, throw IllegalArgumentException("userID and username don't match")
+        //      if they do, update without any fetching
+        // if itemID is changed, but not title, use ItemHandler
+        // and vice versa
+        // if both are changed...
+        //      if not, throw
+        //      if yes, update without fetch
+
+
+        //Set username
+        User user = UserHandler.getUserByID(rental.getUserID());
+        if (user == null)
+            throw new SQLException("Failed to find user with ID: " + rental.getUserID());
+        rental.setUsername(user.getUsername());
+
+        //Set title
+        Item item = ItemHandler.getItemByID(rental.getItemID());
+        if (item == null)
+            throw new SQLException("Failed to find item with ID: " + rental.getItemID());
+        rental.setTitle(item.getTitle());
+
         //Prepare a SQL query to update the rental details
-        String query = "UPDATE rentals SET userID = ?, itemID = ?, rentalDate = ? WHERE rentalID = ?";
+        String query = "UPDATE rentals SET userID = ?, itemID = ?, rentalDate = ?, username = ?, title = ? WHERE rentalID = ?";
         String[] params = {String.valueOf(rental.getUserID()),
                 String.valueOf(rental.getItemID()),
                 rental.getRentalDate().toString(),
+                rental.getUsername(),
+                rental.getTitle(),
                 String.valueOf(rental.getRentalID())};
 
         //Execute the update and return whether it was successful
