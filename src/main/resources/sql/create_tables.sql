@@ -15,18 +15,20 @@ CREATE TABLE `Users` (
     PRIMARY KEY (userID)
 );
 
---Item
+-- Item
 CREATE TABLE Items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     PRIMARY KEY (itemID)
 );
 
---Checkout
+-- Checkout
 CREATE TABLE Rentals (
     rentalID INT AUTO_INCREMENT UNIQUE NOT NULL,
     userID INT NOT NULL,
     itemID INT NOT NULL,
+    username VARCHAR(20),
+    title VARCHAR(255),
     rentalDate DATETIME NOT NULL,
     PRIMARY KEY (rentalID),
     FOREIGN KEY (userID) REFERENCES users (userID),

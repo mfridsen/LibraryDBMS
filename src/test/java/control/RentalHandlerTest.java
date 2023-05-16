@@ -1,7 +1,11 @@
 package control;
 
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.model.entities.User;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -423,30 +427,52 @@ public class RentalHandlerTest extends BaseHandlerTest {
     void testUpdateRental() {
         System.out.println("\n10: Testing updateRental method...");
 
-        //Test: Updating a non-existent rental should throw an exception
+        //Test 1: Updating a non-existent rental should throw an exception
+        System.out.println("\nTesting test case 1: non-existent rental...");
         try {
             Rental nonExistentRental = new Rental(1, 1, LocalDateTime.now());
             nonExistentRental.setRentalID(9999);  //Assuming this ID does not exist in the database
-            assertFalse(RentalHandler.updateRental(nonExistentRental));
+
+            //Username still needs to be correctly set
+            User user = UserHandler.getUserByID(1);
+            if (user == null) {
+                throw new SQLException("User with ID 1 does not exist.");
+            }
+            nonExistentRental.setUsername(user.getUsername());
+
+            //Title still needs to be correctly set
+            Item item = ItemHandler.getItemByID(1);
+            if (item == null) {
+                throw new SQLException("Item with ID 1 does not exist.");
+            }
+            nonExistentRental.setTitle(item.getTitle());
+
+            //Actual test
+            assertFalse(RentalHandler.updateRental(nonExistentRental, nonExistentRental));
+            System.out.println("Test case 1 finished.");
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        //Test: Updating a valid rental should return true
+        //Test 2: Updating a valid rental should return true
+        System.out.println("\nTesting test case 2: valid rentals...");
         try {
             //Create a new rental first to ensure a valid rentalID
-            Rental newRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
-            assertNotNull(newRental);
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
 
-            //Update the details of the newly created rental
+            //Copy the rental to a newRental object
+            Rental newRental = new Rental(oldRental);
+
+            //Update the details of the newRental
             int updatedUserID = 2;
             int updatedItemID = 2;
             LocalDateTime updatedRentalDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
             newRental.setUserID(updatedUserID);
             newRental.setItemID(updatedItemID);
             newRental.setRentalDate(updatedRentalDate);
-            boolean updated = RentalHandler.updateRental(newRental);
+            boolean updated = RentalHandler.updateRental(oldRental, newRental);
             assertTrue(updated, "Updating a valid rental should return true.");
 
             //Retrieve the updated rental to verify the details were correctly updated
@@ -455,12 +481,149 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertEquals(updatedUserID, updatedRental.getUserID(), "The updated rental's userID should match the new userID.");
             assertEquals(updatedItemID, updatedRental.getItemID(), "The updated rental's itemID should match the new itemID.");
             assertEquals(updatedRentalDate, updatedRental.getRentalDate(), "The updated rental's rentalDate should match the new rentalDate.");
+            System.out.println("Test case 2 finished.");
         } catch (SQLException e) {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        //Test invalid updateRental
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(null));
+        //Test 3: invalid updateRental
+        System.out.println("\nTesting test case 3: invalid rentals...");
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(null, null));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(RentalHandler.createNewRental(1, 1, LocalDateTime.now()), null));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.updateRental(null, RentalHandler.createNewRental(1, 1, LocalDateTime.now())));
+        System.out.println("Test case 3 finished.");
+
+        //Test 4: userID is changed but not username
+        System.out.println("\nTesting test case 4: userID is changed but not username...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            int updatedUserID = 2; //Assuming this userID exists and corresponds to the same username
+            newRental.setUserID(updatedUserID);
+
+            boolean updated = RentalHandler.updateRental(oldRental, newRental);
+            assertTrue(updated, "Updating a valid rental should return true.");
+
+            Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNotNull(updatedRental);
+            assertEquals(updatedUserID, updatedRental.getUserID(), "The updated rental's userID should match the new userID.");
+            System.out.println("Test case 4 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
+        //Test 5: username is changed but not userID
+        System.out.println("\nTesting test case 5: username is changed but not userID...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            String updatedUsername = "user2"; //Assuming this username exists and corresponds to the same userID
+            newRental.setUsername(updatedUsername);
+
+            boolean updated = RentalHandler.updateRental(oldRental, newRental);
+            assertTrue(updated, "Updating a valid rental should return true.");
+
+            Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNotNull(updatedRental);
+            assertEquals(updatedUsername, updatedRental.getUsername(), "The updated rental's username should match the new username.");
+            System.out.println("Test case 5 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
+        //Test 6: both userID and username are changed
+        System.out.println("\nTesting test case 6: both userID and username are changed...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            int updatedUserID = 2; //Assuming this userID exists
+            String updatedUsername = "newUsername"; //Assuming this username exists and corresponds to the new userID
+            newRental.setUserID(updatedUserID);
+            newRental.setUsername(updatedUsername);
+
+            boolean updated = RentalHandler.updateRental(oldRental, newRental);
+            assertTrue(updated, "Updating a valid rental should return true.");
+
+            Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNotNull(updatedRental);
+            assertEquals(updatedUserID, updatedRental.getUserID(), "The updated rental's userID should match the new userID.");
+            assertEquals(updatedUsername, updatedRental.getUsername(), "The updated rental's username should match the new username.");
+            System.out.println("Test case 6 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
+        //Test 7: itemID is changed but not title
+        System.out.println("\nTesting test case 7: itemID is changed but not title...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            int updatedItemID = 2; //Assuming this itemID exists and corresponds to the same title
+            newRental.setItemID(updatedItemID);
+
+            boolean updated = RentalHandler.updateRental(oldRental, newRental);
+            assertTrue(updated, "Updating a valid rental should return true.");
+
+            Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNotNull(updatedRental);
+            assertEquals(updatedItemID, updatedRental.getItemID(), "The updated rental's itemID should match the new itemID.");
+            System.out.println("Test case 7 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
+        //Test 8: title is changed but not itemID
+        System.out.println("\nTesting test case 8: title is changed but not itemID...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            String updatedTitle = "newTitle"; //Assuming this title exists and corresponds to the same itemID
+            newRental.setTitle(updatedTitle);
+
+            boolean updated = RentalHandler.updateRental(oldRental, newRental);
+            assertTrue(updated, "Updating a valid rental should return true.");
+
+            Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNotNull(updatedRental);
+            assertEquals(updatedTitle, updatedRental.getTitle(), "The updated rental's title should match the new title.");
+            System.out.println("Test case 8 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
+        //Test 9: both itemID and title are changed
+        System.out.println("\nTesting test case 9: both itemID and title are changed...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            int updatedItemID = 2; //Assuming this itemID exists
+            String updatedTitle = "newTitle"; //Assuming this title exists and corresponds to the new itemID
+            newRental.setItemID(updatedItemID);
+            newRental.setTitle(updatedTitle);
+
+            boolean updated = RentalHandler.updateRental(oldRental, newRental);
+            assertTrue(updated, "Updating a valid rental should return true.");
+
+            Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
+            assertNotNull(updatedRental);
+            assertEquals(updatedItemID, updatedRental.getItemID(), "The updated rental's itemID should match the new itemID.");
+            assertEquals(updatedTitle, updatedRental.getTitle(), "The updated rental's title should match the new title.");
+            System.out.println("Test case 9 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
 
         System.out.println("Test finished.");
     }

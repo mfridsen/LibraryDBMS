@@ -26,9 +26,9 @@ import java.time.format.DateTimeParseException;
  */
 public class RentalUpdateGUI extends GUI {
     //The rental object to update
-    private final Rental rentalToUpdate;
+    private final Rental oldRental;
     //The new rental object
-    private Rental updatedRental;
+    private Rental newRental;
     //We need the table to be a member variable in order to access its data via the buttons
     private JTable rentalUpdateTable;
     //The panel containing the scroll pane which displays the Rental data
@@ -41,7 +41,7 @@ public class RentalUpdateGUI extends GUI {
      */
     public RentalUpdateGUI(GUI previousGUI, Rental rentalToUpdate) {
         super(previousGUI, "RentalUpdateGUI for rentalID = " + rentalToUpdate.getRentalID());
-        this.rentalToUpdate = rentalToUpdate;
+        this.oldRental = rentalToUpdate;
         setupScrollPane();
         setupPanels();
         displayGUI();
@@ -66,10 +66,7 @@ public class RentalUpdateGUI extends GUI {
         JButton confirmUpdateButton = new JButton("RentalGUI"); //TODO-future Change to "Confirm Update"
         confirmUpdateButton.addActionListener(e -> {
             //Duplicate rentalToUpdate
-            updatedRental = new Rental(rentalToUpdate.getUserID(), rentalToUpdate.getItemID(), rentalToUpdate.getRentalDate());
-            updatedRental.setRentalID(rentalToUpdate.getRentalID());
-            updatedRental.setUsername(rentalToUpdate.getUsername());
-            updatedRental.setTitle(rentalToUpdate.getTitle());
+            newRental = new Rental(oldRental);
 
             // Get the new values from the table
             String userID = (String) rentalUpdateTable.getValueAt(0, 2);
@@ -82,21 +79,21 @@ public class RentalUpdateGUI extends GUI {
             // Only update if new value is not null or empty
             try {
                 if (userID != null && !userID.isEmpty()) {
-                    updatedRental.setUserID(Integer.parseInt(userID));
+                    newRental.setUserID(Integer.parseInt(userID));
                 }
                 // No parsing required for username, it is a string
                 if (username != null && !username.isEmpty()) {
-                    updatedRental.setUsername(username);
+                    newRental.setUsername(username);
                 }
                 if (itemID != null && !itemID.isEmpty()) {
-                    updatedRental.setItemID(Integer.parseInt(itemID));
+                    newRental.setItemID(Integer.parseInt(itemID));
                 }
                 // No parsing required for itemTitle, it is a string
                 if (itemTitle != null && !itemTitle.isEmpty()) {
-                    updatedRental.setTitle(itemTitle);
+                    newRental.setTitle(itemTitle);
                 }
                 if (rentalDate != null && !rentalDate.isEmpty()) {
-                    updatedRental.setRentalDate(LocalDateTime.parse(rentalDate));
+                    newRental.setRentalDate(LocalDateTime.parse(rentalDate));
                 }
             } catch (NumberFormatException nfe) {
                 System.err.println("One of the fields that requires a number received an invalid input.");
@@ -106,9 +103,9 @@ public class RentalUpdateGUI extends GUI {
 
             // Now you can call the update method
             try {
-                RentalHandler.updateRental(rentalToUpdate); //TODO-prio doesn't update properly
+                RentalHandler.updateRental(oldRental, newRental); //TODO-prio doesn't update properly
                 dispose();
-                new RentalGUI(this, rentalToUpdate);
+                new RentalGUI(this, oldRental);
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
                 LibraryManager.exit(1);
@@ -127,11 +124,11 @@ public class RentalUpdateGUI extends GUI {
 
         // Gather data
         Object[][] data = {
-                {"User ID", rentalToUpdate.getUserID(), ""},
-                {"Username", rentalToUpdate.getUsername(), ""},
-                {"Item ID", rentalToUpdate.getItemID(), ""},
-                {"Item Title", rentalToUpdate.getTitle(), ""},
-                {"Rental Date", rentalToUpdate.getRentalDate(), ""}
+                {"User ID", oldRental.getUserID(), ""},
+                {"Username", oldRental.getUsername(), ""},
+                {"Item ID", oldRental.getItemID(), ""},
+                {"Item Title", oldRental.getTitle(), ""},
+                {"Rental Date", oldRental.getRentalDate(), ""}
         };
 
         //Create the table

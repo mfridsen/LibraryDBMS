@@ -459,37 +459,7 @@ public class RentalHandler {
             throw new IllegalArgumentException("Invalid rental: Rental ID must be greater than 0. " +
                     "oldRental ID: " + oldRental.getRentalID() + ", newRental ID: " + newRental.getRentalID());
 
-        // If userID is changed, but not username, fetch the appropriate username
-        if (oldRental.getUserID() != newRental.getUserID() && oldRental.getUsername().equals(newRental.getUsername())) {
-            User user = UserHandler.getUserByID(newRental.getUserID());
-            if (user == null)
-                throw new SQLException("updateRental 1: fetched user is null.");
-
-            newRental.setUsername(user.getUsername());
-        }
-        // If username is changed, but not userID, fetch the appropriate userID
-        else if (!oldRental.getUsername().equals(newRental.getUsername()) && oldRental.getUserID() == newRental.getUserID()) {
-            User user = UserHandler.getUserByUsername(newRental.getUsername());
-            if (user == null)
-                throw new SQLException("updateRental 2: fetched user is null.");
-
-            newRental.setUserID(user.getUserID());
-        }
-        // If both are changed, check that both refer to the same user object
-        else if (!oldRental.getUsername().equals(newRental.getUsername()) && oldRental.getUserID() != newRental.getUserID()) {
-            User user = UserHandler.getUserByID(newRental.getUserID());
-            if (user == null)
-                throw new SQLException("updateRental 3: fetched user is null.");
-
-            if (!user.getUsername().equals(newRental.getUsername())) {
-                throw new IllegalArgumentException("userID and username don't match");
-            }
-        }
-
-        //TODO-prio newRental = compareRentals(oldRental, newRental);
-
-        // Similar checks for itemID and title
-        // TODO: Implement similar logic for itemID and title
+        compareRentals(oldRental, newRental);
 
         // Prepare a SQL query to update the rental details
         String query = "UPDATE rentals SET userID = ?, itemID = ?, rentalDate = ?, username = ?, title = ? WHERE rentalID = ?";
@@ -505,21 +475,58 @@ public class RentalHandler {
         return rowsAffected > 0;
     }
 
-    private static Rental compareRentals(Rental oldRental, Rental newRental) {
-        //create newerRental due to argument by reference or whatever
-        //duplicate data from newRental
-        //compare to oldRental
-        //return appropriately
-        return null;
+    private static void compareRentals(Rental oldRental, Rental newRental) throws SQLException {
+        //1: If userIDs are different and usernames are the same, update newRental's username
+        if (oldRental.getUserID() != newRental.getUserID() && oldRental.getUsername().equals(newRental.getUsername())) {
+            User user = UserHandler.getUserByID(newRental.getUserID());
+            if (user == null)
+                throw new SQLException("compareRentals 1: fetched user is null.");
+            newRental.setUsername(user.getUsername());
+        }
+        //2: If userIDs are the same and usernames are different, update newRental's userID
+        else if (oldRental.getUserID() == newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
+            User user = UserHandler.getUserByUsername(newRental.getUsername());
+            if (user == null)
+                throw new SQLException("compareRentals 2: fetched user is null.");
+            newRental.setUserID(user.getUserID());
+        }
+        //3: If both userIDs and usernames are different, check that they refer to the same user
+        else if (oldRental.getUserID() != newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
+            User user = UserHandler.getUserByID(newRental.getUserID());
+            if (user == null)
+                throw new SQLException("compareRentals 3: fetched user is null.");
+
+            if (!user.getUsername().equals(newRental.getUsername())) {
+                throw new IllegalArgumentException("compareRentals 3: userID and username don't match");
+            }
+        }
+
+        //4: If itemIDs are different and titles are the same, update newRental's title
+        if (oldRental.getItemID() != newRental.getItemID() && oldRental.getTitle().equals(newRental.getTitle())) {
+            Item item = ItemHandler.getItemByID(newRental.getItemID());
+            if (item == null)
+                throw new SQLException("compareRentals 4: fetched item is null.");
+            newRental.setTitle(item.getTitle());
+        }
+        //5: If itemIDs are the same and titles are different, update newRental's itemID
+        else if (oldRental.getItemID() == newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
+            Item item = ItemHandler.getItemByTitle(newRental.getTitle());
+            if (item == null)
+                throw new SQLException("compareRentals 5: fetched item is null.");
+            newRental.setItemID(item.getItemID());
+        }
+        //6: If both itemIDs and titles are different, check that they refer to the same item
+        else if (oldRental.getItemID() != newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
+            Item item = ItemHandler.getItemByID(newRental.getItemID());
+            if (item == null)
+                throw new SQLException("compareRentals 6: fetched item is null.");
+
+            if (!item.getTitle().equals(newRental.getTitle())) {
+                throw new IllegalArgumentException("compareRentals 6: itemID and title don't match");
+            }
+        }
     }
 
-    private static Item compareItems(Item oldItem, Item NewItem) {
-        //create newerItem due to argument by reference or whatever
-        //duplicate data from newItem
-        //compare to oldItem
-        //return appropriately
-        return null;
-    }
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent

@@ -14,7 +14,6 @@ INSERT INTO users (username, password) VALUES
 ('uname', 'pword');
 
 -- //TODO add Item test data here
-
 INSERT INTO items (title) VALUES
 ('The Blade Itself'),
 ('Before They Are Hanged'),

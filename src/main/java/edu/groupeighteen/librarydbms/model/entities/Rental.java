@@ -32,6 +32,12 @@ public class Rental {
     private String username; //Set upon creation or retrieval
     private String title; //Set upon creation or retrieval
 
+    /**
+     * Main constructor.
+     * @param userID
+     * @param itemID
+     * @param rentalDate
+     */
     public Rental(int userID, int itemID, LocalDateTime rentalDate) {
         this.rentalID = 0;
         setUserID(userID);
@@ -39,6 +45,19 @@ public class Rental {
         setRentalDate(rentalDate);
         this.username = null;
         this.title = null;
+    }
+
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public Rental(Rental other) {
+        this.rentalID = other.rentalID;
+        this.userID = other.userID;
+        this.username = other.username;
+        this.itemID = other.itemID;
+        this.title = other.title;
+        this.rentalDate = other.rentalDate;  // Assuming LocalDateTime is immutable
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
