@@ -23,10 +23,25 @@ public class User {
     private String username;
     private String password; //TODO-future hash and salt
 
+    /**
+     * Regular Constructor.
+     * @param username
+     * @param password
+     */
     public User(String username, String password) {
         this.userID = 0;
         setUsername(username);
         setPassword(password);
+    }
+
+    /**
+     * Copy Constructor.
+     * @param other
+     */
+    public User(User other) {
+        this.userID = other.userID;
+        this.username = other.username;
+        this.password = other.password;
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
