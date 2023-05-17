@@ -22,6 +22,8 @@ import java.util.Arrays;
  * But not before.
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
+ *
+ * TODO completely overhaul this class to be a OptionPaneGUI or whatever they're called instead
  */
 public class RentalDeleteGUI extends GUI {
     private final Rental rentalToDelete;
@@ -60,6 +62,7 @@ public class RentalDeleteGUI extends GUI {
         JPanel passwordPanel = new JPanel();
         JLabel passwordLabel = new JLabel("Enter Password:");
         passwordField = new JPasswordField();
+        passwordField.setColumns(10);
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
         GUIPanel.add(passwordPanel);

@@ -19,25 +19,52 @@ import java.awt.*;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalCreateGUI extends GUI {
-    private JPanel scrollPanePanel;
+    private JButton resetButton;
+    private JButton createButton;
+
+    private JTextField userIDField;
+    private JTextField itemIDField;
 
     public RentalCreateGUI(GUI previousGUI) {
         super(previousGUI, "RentalCreateGUI");
-        setupScrollPane();
         setupPanels();
         displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
-        return new JButton[]{};
+        resetButton = new JButton("Reset Fields");
+        resetButton.addActionListener(e -> {
+            resetFields();
+        });
+
+        createButton = new JButton("Create Rental");
+        createButton.addActionListener(e -> {
+
+        });
+
+        return new JButton[]{resetButton, createButton};
     }
 
-    private void setupScrollPane() {
+    private void resetFields() {
+        userIDField.setText("");
+        itemIDField.setText("");
     }
+
 
     @Override
     protected void setupPanels() {
-        GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
+        JPanel textFieldsPanel = new JPanel();
+        textFieldsPanel.setLayout(new GridLayout(2,2));
+        JLabel userIDLabel = new JLabel("Enter user ID:");
+        userIDField = new JTextField(10);
+        JLabel itemIDLabel = new JLabel("Enter item ID:");
+        itemIDField = new JTextField(10);
+        textFieldsPanel.add(userIDLabel);
+        textFieldsPanel.add(userIDField);
+        textFieldsPanel.add(itemIDLabel);
+        textFieldsPanel.add(itemIDField);
+
+        GUIPanel.add(textFieldsPanel, BorderLayout.NORTH);
     }
 }
