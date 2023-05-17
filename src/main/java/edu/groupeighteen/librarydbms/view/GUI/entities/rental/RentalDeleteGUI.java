@@ -26,6 +26,8 @@ import java.util.Arrays;
  * TODO completely overhaul this class to be a OptionPaneGUI or whatever they're called instead
  */
 public class RentalDeleteGUI extends GUI {
+
+    //TODO-comment
     private final Rental rentalToDelete;
     private JPasswordField passwordField;
 

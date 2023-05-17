@@ -95,7 +95,7 @@ public class RentalUpdateGUI extends GUI {
     private JButton setupResetButton(){
         //Clears the data cells
         JButton resetCellsButton = new JButton("Reset");
-        //Reset the editable fields //TODO-bug doesn't clear selected field
+        //Reset the editable cells //TODO-bug doesn't clear selected field
         resetCellsButton.addActionListener(e -> {
             resetCells();
         });
@@ -171,7 +171,7 @@ public class RentalUpdateGUI extends GUI {
                     newRental.setRentalDate(LocalDateTime.parse(rentalDate));
                 }
             } catch (NumberFormatException nfe) {
-                System.err.println("One of the fields that requires a number received an invalid input.");
+                System.err.println("One of the fields that requires a number received an invalid input. User ID:" + userID + ", Item ID: " + itemID);
             } catch (DateTimeParseException dtpe) {
                 System.err.println("The date field received an invalid input. Please ensure it is in the correct format.");
             }
@@ -220,7 +220,7 @@ public class RentalUpdateGUI extends GUI {
         };
 
         //Use the column names and data to create a new table with editable cells.
-        rentalUpdateTable = setupTableWithEditableCells(columnNames, data);
+        rentalUpdateTable = setupTableWithEditableCells(columnNames, data, 2);
 
         //Create a new scroll pane and add the table to it.
         JScrollPane rentalScrollPane = new JScrollPane();

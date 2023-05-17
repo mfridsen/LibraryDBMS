@@ -40,7 +40,6 @@ public class CreateAccountGUI extends GUI {
             try {
                 User newUser = UserHandler.createNewUser(usernameField.getText(), passwordField.getPassword().toString());
                 UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI(this, newUser);
-                userWelcomeGUI.WelcomeUserGUI();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }

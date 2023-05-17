@@ -1,9 +1,11 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
+import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * @author Mattias Fridsén
@@ -19,14 +21,15 @@ import java.awt.*;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalSearchResultGUI extends GUI {
+    private List<Rental> searchResultList;
 
     private JTable searchResultTable;
     private JScrollPane searchResultScrollPane;
     private JPanel searchResultPanel;
 
-    public RentalSearchResultGUI(GUI previousGUI, JTable resultTable) {
+    public RentalSearchResultGUI(GUI previousGUI, List<Rental> searchResultList) {
         super(previousGUI, "RentalSearchResultGUI");
-        this.searchResultTable = resultTable;
+        this.searchResultList = searchResultList;
         setupScrollPane();
         setupPanels();
         displayGUI();

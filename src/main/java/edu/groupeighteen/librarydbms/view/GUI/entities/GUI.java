@@ -113,29 +113,27 @@ public abstract class GUI extends JFrame {
 
     //TODO-comment rework comment
     /**
-     * Creates a JTable with named columns and fills it with data, as well as adding a third column with
+     * Creates a JTable with named columns and fills it with data, as well as adding a column with
      * editable cells where new data can be entered.
-     *
-     * Observe that SPECIFICALLY the third column is the editable one, not matter how many columns you give
-     * this method.
      *
      * @param columnNames a String array containing the names of the columns.
      * @param data a two-dimensional Object array containing the data to fill in the columns.
+     * @param editableCol the column which is desired to be editable.
      * @return a JScrollPane ready to add to a JPanel to display the table.
      */
-    protected JTable setupTableWithEditableCells(String[] columnNames, Object[][] data) {
+    protected JTable setupTableWithEditableCells(String[] columnNames, Object[][] data, int editableCol) {
         // Create table model with data and column names
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames){
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Make only the third column editable
-                return column == 2;
+                // Make only the desired column editable
+                return column == editableCol;
             }
         };
         // Create table with the model
         JTable table = new JTable(tableModel);
         // Make the table use text fields for the third column
-        table.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JTextField()));
+        table.getColumnModel().getColumn(editableCol).setCellEditor(new DefaultCellEditor(new JTextField()));
         return table;
     }
 

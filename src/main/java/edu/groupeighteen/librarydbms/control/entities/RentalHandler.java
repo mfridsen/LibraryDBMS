@@ -473,6 +473,30 @@ public class RentalHandler {
         return rentals;
     }
 
+    //TODO-prio implement
+    //TODO-test
+    //TODO-comment
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    //to make error handling more consistent
+    public static List<Rental> getRentalsByUsername(String username) {
+        List<Rental> rentals = new ArrayList<>();
+
+        return rentals;
+    }
+
+    //TODO-prio implement
+    //TODO-test
+    //TODO-comment
+    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    //to make error handling more consistent
+    public static List<Rental> getRentalsByItemTitle(String title) {
+        List<Rental> rentals = new ArrayList<>();
+
+        return rentals;
+    }
+
+
+
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
     /**
