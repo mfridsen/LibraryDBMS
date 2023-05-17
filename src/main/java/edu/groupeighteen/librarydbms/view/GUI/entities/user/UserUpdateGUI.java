@@ -26,16 +26,12 @@ import java.util.Arrays;
 public class UserUpdateGUI extends GUI {
     private final User oldUser;
     private User newUser;
-    private User user;
-
-    private JTextField usernameField;
     private JTable userUpdateTable;
-    private JPasswordField passwordField;
     private JPanel scrollPanePanel;
 
 
     public UserUpdateGUI(GUI previousGUI, User userToUpdate) {
-        super(previousGUI, "UserUpdateGUI" + userToUpdate.getUserID());
+        super(previousGUI, "UserUpdateGUI for userID = " + userToUpdate.getUserID());
         this.oldUser = userToUpdate;
         setupScrollPane();
         setupPanels();
@@ -73,7 +69,7 @@ public class UserUpdateGUI extends GUI {
         JButton confirmUpdateButton = new JButton("Confirm Update");
         confirmUpdateButton.addActionListener(e -> {
             //Duplicate oldRental
-            newUser = new  user(oldUser);
+            newUser = new User(oldUser);
 
             //Get the new values from the table
             String userID = (String) userUpdateTable.getValueAt(0, 2);
