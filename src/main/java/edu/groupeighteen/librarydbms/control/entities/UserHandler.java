@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.model.entities.User;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mattias Fridsén
@@ -77,6 +78,19 @@ public class UserHandler {
      */
     public static ArrayList<String> getStoredUsernames() {
         return storedUsernames;
+    }
+
+    //TODO-prio update when User class is finished
+    /**
+     * Prints all non-sensitive data for all Users in a list.
+     * @param userList the list of User objects.
+     */
+    public static void printUserList(List<User> userList) {
+        System.out.println("Users:");
+        int count = 1;
+        for (User user : userList) {
+            System.out.println(count + " userID: " + user.getUserID() + ", username: " + user.getUsername());
+        }
     }
 
     /**

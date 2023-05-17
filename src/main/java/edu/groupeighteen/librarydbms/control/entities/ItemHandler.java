@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mattias Fridsén
@@ -71,6 +72,14 @@ public class ItemHandler {
     //TODO-comment
     public static ArrayList<String> getStoredTitles() {
         return storedTitles;
+    }
+
+    public static void printItemList(List<Item> itemList) {
+        System.out.println("Items:");
+        int count = 1;
+        for (Item item : itemList) {
+            System.out.println(count + " itemID: " + item.getItemID() + ", title: " + item.getTitle());
+        }
     }
 
     /**

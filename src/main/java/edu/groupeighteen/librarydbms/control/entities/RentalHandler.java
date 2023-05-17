@@ -161,6 +161,7 @@ public class RentalHandler {
         return rentals;
     }
 
+    //TODO-prio update when Rental class is finished
     /**
      * Prints all data of rentals in a list.
      * @param rentals the list of rentals.
@@ -208,11 +209,13 @@ public class RentalHandler {
                 Timestamp timestamp = resultSet.getTimestamp("rentalDate");
                 LocalDateTime rentalDate = timestamp.toLocalDateTime();  //Convert Timestamp to LocalDateTime
 
+                //Get user by ID
                 User user = UserHandler.getUserByID(userID);
                 if (user == null) {
                     throw new SQLException("Error retrieving user from database by ID: username null.");
                 }
 
+                //Get item by ID
                 Item item = ItemHandler.getItemByID(itemID);
                 if (item == null) {
                     throw new SQLException("Error retrieving item from database by ID: title null.");
@@ -265,8 +268,24 @@ public class RentalHandler {
                 int rentalID = resultSet.getInt("rentalID");
                 int userID = resultSet.getInt("userID");
                 int itemID = resultSet.getInt("itemID");
+
+                //Get user by ID
+                User user = UserHandler.getUserByID(userID); //TODO-test THIS IS NEW
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                //Get item by ID
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setItemTitle(item.getTitle());
+
                 rentals.add(rental);
             }
         }
@@ -321,8 +340,23 @@ public class RentalHandler {
                 int itemID = resultSet.getInt("itemID");
                 LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
 
+                //Get user by ID
+                User user = UserHandler.getUserByID(userID); //TODO-test THIS IS NEWLY ADDED
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                //Get item by ID
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setItemTitle(item.getTitle());
+
                 rentals.add(rental);
             }
         }
@@ -383,8 +417,23 @@ public class RentalHandler {
                 int itemID = resultSet.getInt("itemID");
                 LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
 
+                //Get user by ID
+                User user = UserHandler.getUserByID(userID); //TODO-test THIS IS NEW
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                //Get item by ID
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setItemTitle(item.getTitle());
+
                 rentals.add(rental);
             }
         }
@@ -426,8 +475,23 @@ public class RentalHandler {
                 int itemID = resultSet.getInt("itemID");
                 LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
 
+                //Get user by ID
+                User user = UserHandler.getUserByID(userID); //TODO-test THIS IS NEW
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                //Get item by ID
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setItemTitle(item.getTitle());
+
                 rentals.add(rental);
             }
         }
@@ -470,8 +534,23 @@ public class RentalHandler {
                 int userID = resultSet.getInt("userID");
                 LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
 
+                //Get user by ID
+                User user = UserHandler.getUserByID(userID); //TODO-test THIS IS NEW
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                //Get item by ID
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setItemTitle(item.getTitle());
+
                 rentals.add(rental);
             }
         }
