@@ -14,7 +14,7 @@ import view.ViewTestSuite;
  *
  * Calls all the other test suites.
  *
- * Brought to you by inhuman amounts of tobacco.
+ * Brought to you by inhumane amounts of tobacco.
  */
 
 @Suite

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,7 +32,7 @@ public class RentalTest {
     void testConstructor() {
         System.out.println("\n1: Testing Rental Constructor...");
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         Rental rental = new Rental(1, 1, now);
 
         assertNotNull(rental);

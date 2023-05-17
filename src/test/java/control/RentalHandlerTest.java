@@ -628,6 +628,48 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
+        //Test case 10: both userID and username are changed and mismatched
+        System.out.println("\nTesting test case 10: both userID and username are changed and mismatched...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            int updatedUserID = 2; //Assuming this userID exists
+            String updatedUsername = "user3"; //Assuming this username exists but does not match the updated userID
+            newRental.setUserID(updatedUserID);
+            newRental.setUsername(updatedUsername);
+
+            assertThrows(IllegalArgumentException.class, () -> {
+                RentalHandler.updateRental(oldRental, newRental);
+            });
+
+            System.out.println("Test case 10 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
+        //Test case 11: both itemID and title are changed and mismatched
+        System.out.println("\nTesting test case 11: both itemID and title are changed and mismatched...");
+        try {
+            Rental oldRental = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
+            assertNotNull(oldRental);
+
+            Rental newRental = new Rental(oldRental);
+            int updatedItemID = 2; //Assuming this itemID exists
+            String updatedTitle = "item3"; //Assuming this title exists but does not match the updated itemID
+            newRental.setItemID(updatedItemID);
+            newRental.setTitle(updatedTitle);
+
+            assertThrows(IllegalArgumentException.class, () -> {
+                RentalHandler.updateRental(oldRental, newRental);
+            });
+
+            System.out.println("Test case 11 finished.");
+        } catch (SQLException e) {
+            fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
+        }
+
         System.out.println("Test finished.");
     }
 

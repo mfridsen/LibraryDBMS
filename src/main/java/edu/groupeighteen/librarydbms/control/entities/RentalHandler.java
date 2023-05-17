@@ -499,14 +499,14 @@ public class RentalHandler {
             newRental.setUsername(user.getUsername());
         }
         //2: If userIDs are the same and usernames are different, update newRental's userID
-        else if (oldRental.getUserID() == newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
+        if (oldRental.getUserID() == newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
             User user = UserHandler.getUserByUsername(newRental.getUsername());
             if (user == null)
                 throw new SQLException("compareRentals 2: fetched user is null.");
             newRental.setUserID(user.getUserID());
         }
         //3: If both userIDs and usernames are different, check that they refer to the same user
-        else if (oldRental.getUserID() != newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
+        if (oldRental.getUserID() != newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
             User user = UserHandler.getUserByID(newRental.getUserID());
             if (user == null)
                 throw new SQLException("compareRentals 3: fetched user is null.");
@@ -524,14 +524,14 @@ public class RentalHandler {
             newRental.setTitle(item.getTitle());
         }
         //5: If itemIDs are the same and titles are different, update newRental's itemID
-        else if (oldRental.getItemID() == newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
+        if (oldRental.getItemID() == newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
             Item item = ItemHandler.getItemByTitle(newRental.getTitle());
             if (item == null)
                 throw new SQLException("compareRentals 5: fetched item is null.");
             newRental.setItemID(item.getItemID());
         }
         //6: If both itemIDs and titles are different, check that they refer to the same item
-        else if (oldRental.getItemID() != newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
+        if (oldRental.getItemID() != newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
             Item item = ItemHandler.getItemByID(newRental.getItemID());
             if (item == null)
                 throw new SQLException("compareRentals 6: fetched item is null.");
