@@ -65,8 +65,7 @@ public class UserGUI extends GUI {
 
     @Override
     protected void setupPanels() {
-        JLabel userIDLabel = new JLabel("userID: " + user.getUserID());
-
+        GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
     }
     public User getUser(){
         return user;
