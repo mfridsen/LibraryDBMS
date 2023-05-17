@@ -21,6 +21,10 @@ public class Item {
     private int itemID; //Primary key
     private String title;
 
+    /**
+     * Regular Constructor.
+     * @param title
+     */
     public Item(String title) {
         this.itemID = 0;
         setTitle(title);
