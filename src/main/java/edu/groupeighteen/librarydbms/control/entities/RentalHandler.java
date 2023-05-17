@@ -255,6 +255,8 @@ public class RentalHandler {
      * This method retrieves all rentals that have the specified rental date, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals with the specified date are found,
      * an empty list is returned.
+     *
+     * Usage: check if returned list is not empty.
      * 
      * @param rentalDate the date of the rentals.
      * @return The list of rentals if found, otherwise an empty list.
@@ -321,6 +323,8 @@ public class RentalHandler {
      * that occurred on that specific calendar day, regardless of the time of day they occurred.
      *
      * Note: The provided rentalDay LocalDateTime must not be in the future.
+     *
+     * Usage: check if returned list is not empty.
      *
      * @param rentalDay the day of the rentals, represented as a LocalDate.
      * @return The list of rentals if found, otherwise an empty list.
@@ -395,6 +399,8 @@ public class RentalHandler {
      * The start and end dates are inclusive. For example, if the start date is 2023-01-01 and the end date is 2023-01-31, rentals
      * from both the 1st and 31st of January 2023 will be included in the result.
      *
+     * Usage: check if returned list is not empty.
+     *
      * @param startDate the start date of the time period.
      * @param endDate the end date of the time period.
      * @return The list of rentals if found, otherwise an empty list.
@@ -464,6 +470,8 @@ public class RentalHandler {
      * and adds it to a list. The list of rentals is then returned. If no rentals are found for the specified user,
      * an empty list is returned.
      *
+     * Usage: check if returned list is not empty.
+     *
      * @param userID the ID of the user whose rentals are to be retrieved.
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
@@ -521,6 +529,8 @@ public class RentalHandler {
      * This method retrieves all rentals that have the specified item ID, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals with the specified item ID are found,
      * an empty list is returned.
+     *
+     * Usage: check if returned list is not empty.
      *
      * @param itemID the ID of the item.
      * @return The list of rentals if found, otherwise an empty list.
@@ -581,6 +591,8 @@ public class RentalHandler {
      * and adds it to a list. The list of rentals is then returned. If no rentals for the specified username are found,
      * an empty list is returned.
      *
+     * Usage: check if returned list is not empty.
+     *
      * @param username the username for which the rentals are to be retrieved.
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
@@ -634,18 +646,67 @@ public class RentalHandler {
         return rentals;
     }
 
-    //TODO-prio implement
-    //TODO-test
-    //TODO-comment
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    public static List<Rental> getRentalsByItemTitle(String title) {
+    /**
+     * This method retrieves all rentals for the specified item title, creates a Rental object for each one,
+     * and adds it to a list. The list of rentals is then returned. If no rentals for the specified item title are found,
+     * an empty list is returned.
+     *
+     * Usage: check if returned list is not empty.
+     *
+     * @param title the title of the item for which the rentals are to be retrieved.
+     * @return The list of rentals if found, otherwise an empty list.
+     * @throws SQLException If an error occurs while interacting with the database.
+     * @throws IllegalArgumentException If the provided title is null or empty.
+     */
+    public static List<Rental> getRentalsByItemTitle(String title) throws SQLException {
+        //Validate the input
+        if (title == null || title.isEmpty())
+            throw new IllegalArgumentException("Invalid title: title can't be null or empty.");
+
+        //Prepare a SQL query to select rentals by item title
+        String query = "SELECT rentals.* FROM rentals INNER JOIN items ON rentals.itemID = items.itemID WHERE items.title = ?";
+        String[] params = {title};
+
+        //Create an empty list to store the rentals
         List<Rental> rentals = new ArrayList<>();
 
+        //Execute the query and store the result in a ResultSet
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+
+            //Loop through the ResultSet
+            while (resultSet.next()) {
+                //For each row in the ResultSet, create a new Rental object and add it to the list
+                int rentalID = resultSet.getInt("rentalID");
+                int userID = resultSet.getInt("userID");
+                int itemID = resultSet.getInt("itemID");
+                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
+
+                //Get user by ID
+                User user = UserHandler.getUserByID(userID);
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                //Get item by ID
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
+                Rental rental = new Rental(userID, itemID, rentalDate);
+                rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setItemTitle(item.getTitle());
+
+                rentals.add(rental);
+            }
+        }
+        //Return the list of rentals
         return rentals;
     }
-
-
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent

@@ -557,9 +557,63 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * This test first creates three rentals with the same item title. It then verifies that getRentalsByItemTitle can
+     * correctly retrieve all three rentals. It also tests the method's behavior when passed an item title with no rentals
+     * and verifies that it correctly returns an empty list.
+     * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
+     */
+    @Test
+    @Order(11)
+    void testGetRentalsByItemTitle() {
+        System.out.println("\n11: Testing getRentalsByItemTitle method...");
 
+        //Create new rentals to test with
+        try {
+            //Create three rentals with the same item title
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
 
+            Rental rental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(3));
+            Rental rental2 = RentalHandler.createNewRental(2, 1, LocalDateTime.now().minusDays(2));
+            Rental rental3 = RentalHandler.createNewRental(3, 1, LocalDateTime.now().minusDays(1));
 
+            //Set item title for each rental
+            rental1.setItemTitle(item1.getTitle());
+            rental2.setItemTitle(item1.getTitle());
+            rental3.setItemTitle(item1.getTitle());
+
+            //Test valid getRentalsByItemTitle
+            List<Rental> rentals = RentalHandler.getRentalsByItemTitle(item1.getTitle());
+            assertNotNull(rentals);
+            assertEquals(3, rentals.size()); //There should be three rentals for this item title
+
+            //Check that the correct rentals were retrieved
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            //Check that title was set correctly
+            assertEquals(item1.getTitle(), rentals.get(0).getItemTitle());
+
+            //Test with a title that has no rentals
+            Item item2 = ItemHandler.getItemByID(2);
+            assertNotNull(item2);
+            rentals = RentalHandler.getRentalsByItemTitle(item2.getTitle());
+            assertNotNull(rentals);
+            assertTrue(rentals.isEmpty());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        //Test invalid getRentalsByItemTitle
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByItemTitle(null));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByItemTitle(""));
+
+        System.out.println("\nTEST FINISHED.");
+    }
 
     /**
      * Tests the updateRental method in the RentalHandler class. The method tests various scenarios including both valid and invalid cases.
