@@ -48,6 +48,16 @@ public class Rental {
     }
 
     /**
+     * Quick constructor, only needs userID and itemID and calls the main constructor with these and
+     * LocalDateTime.now() as arguments.
+     * @param userID
+     * @param itemID
+     */
+    public Rental(int userID, int itemID) {
+        this(userID, itemID, LocalDateTime.now());
+    }
+
+    /**
      * Copy constructor.
      * @param other
      */

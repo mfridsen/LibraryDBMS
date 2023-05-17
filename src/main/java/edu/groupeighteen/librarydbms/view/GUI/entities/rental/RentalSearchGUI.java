@@ -132,6 +132,7 @@ public class RentalSearchGUI extends GUI {
             if (!searchResultList.isEmpty()) {
                 dispose();
                 new RentalSearchResultGUI(this, searchResultList);
+                RentalHandler.printRentalList(searchResultList);
             } else System.err.println("No results found for search.");
         });
         return searchButton;
@@ -140,8 +141,10 @@ public class RentalSearchGUI extends GUI {
     //TODO-test
     /**
      * Performs a search based on the data in the editable cells of the rentalSearchTable.
-     * Each row in the table corresponds to a different search parameter (rental ID, user ID, username, item ID, item title, rental date).
-     * If the cell data for a row is not null or empty, an attempt will be made to parse it into the appropriate type (int or String or LocalDateTime)
+     * Each row in the table corresponds to a different search parameter (rental ID, user ID, username, item ID,
+     * item title, rental date).
+     * If the cell data for a row is not null or empty, an attempt will be made to parse it into the appropriate type
+     * (int or String or LocalDateTime)
      * and perform the corresponding search. The search results are then added to a list of Rentals.
      *
      * If a search doesn't generate any results, a message will be printed to the system error stream.

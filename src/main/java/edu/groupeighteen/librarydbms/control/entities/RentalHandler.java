@@ -86,6 +86,12 @@ public class RentalHandler {
         return newRental;
     }
 
+    //TODO-test
+    //TODO-comment
+    public static Rental createNewRental(int userID, int itemID) throws SQLException {
+        return createNewRental(userID, itemID, LocalDateTime.now());
+    }
+
     /**
      * Saves a Rental object to the database.
      *
