@@ -24,11 +24,9 @@ public class UserSearchGUI extends GUI {
     private JPanel searchPanel;
     public UserSearchGUI(GUI previousGUI) {
         super(previousGUI, "UserSearchGUI");
-        setupButtons();
-        addButtonsToPanel(new JButton[]{searchButton});
         setupSearchPanel();
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
     protected JButton[] setupButtons(){
