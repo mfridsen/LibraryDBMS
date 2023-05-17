@@ -1,9 +1,14 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
+import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * @author Mattias Fridsén
@@ -20,8 +25,7 @@ import javax.swing.*;
  */
 public class RentalDeleteGUI extends GUI {
     private final Rental rentalToDelete;
-    private JPanel enterPasswordPanel;
-    private JButton confirmButton;
+    private JPasswordField passwordField;
 
     public RentalDeleteGUI(GUI previousGUI, Rental rentalToDelete) {
         super(previousGUI, "RentalDeleteGUI");
@@ -32,15 +36,32 @@ public class RentalDeleteGUI extends GUI {
 
     @Override
     protected JButton[] setupButtons() {
-        confirmButton = new JButton("Confirm Delete");
+        JButton confirmButton = new JButton("Confirm Delete");
         confirmButton.addActionListener(e -> {
-
+            //TODO-prio you shouldn't be able to access this GUI at all without being logged in (and staff)
+            if (LibraryManager.getCurrentUser() != null) {
+                if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
+                        Arrays.toString(passwordField.getPassword()))) {
+                    try {
+                        RentalHandler.deleteRental(rentalToDelete);
+                        //dispose();
+                        //TODO-prio return to some other GUI, probably the LoginGUI
+                    } catch (SQLException sqle) {
+                        sqle.printStackTrace();
+                    }
+                }
+            }
         });
-        return new JButton[]{};
+        return new JButton[]{confirmButton};
     }
 
     @Override
     protected void setupPanels() {
-        GUIPanel.add(enterPasswordPanel);
+        JPanel passwordPanel = new JPanel();
+        JLabel passwordLabel = new JLabel("Enter Password:");
+        passwordField = new JPasswordField();
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(passwordField);
+        GUIPanel.add(passwordPanel);
     }
 }
