@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 
 public class UserSearchResultGUI extends GUI {
     private JPanel searchPanel;
-    private JFrame searchFrame;
     private JButton lånaButton;
     private JButton visaobjektButton;
     private int userID;
@@ -27,28 +26,21 @@ public class UserSearchResultGUI extends GUI {
         super(previousGUI, "UserSearchResultGUI");
         this.userID = userID;
         this.username = username;
-        setupButtons();
-        addButtonsToPanel(new JButton[]{visaobjektButton, lånaButton});
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
+        lånaButton = new JButton("Låna");
+        visaobjektButton = new JButton("Visa objekt");
+
         return null;
     }
 
     @Override
     protected void setupPanels() {
-
-    }
-
-    public void userResults() {
         searchPanel = new JPanel();
-        searchFrame = new JFrame("UserSearchResultGUI");
-        lånaButton = new JButton("Låna");
-        visaobjektButton = new JButton("Visa objekt");
-
         JLabel resultatLabel;
         /*
         if (username != null && containsIgnoreCase(username)) {
@@ -59,15 +51,8 @@ public class UserSearchResultGUI extends GUI {
 
          */
         resultatLabel = new JLabel("Inget resultat hittades.");
-
         searchPanel.add(resultatLabel);
-        searchPanel.add(lånaButton);
-        searchPanel.add(visaobjektButton);
 
-        searchFrame.getContentPane().add(searchPanel); // Add the panel to the content pane
-        searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        searchFrame.pack();
-        searchFrame.setVisible(true);
     }
 
     private boolean containsIgnoreCase(String search, String[] source) {
