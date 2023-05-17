@@ -81,7 +81,7 @@ public class RentalHandler {
         Item item = ItemHandler.getItemByID(itemID);
         if (item == null)
             throw new SQLException("Failed to find item with ID: " + itemID);
-        newRental.setTitle(item.getTitle());
+        newRental.setItemTitle(item.getTitle());
 
         return newRental;
     }
@@ -165,7 +165,7 @@ public class RentalHandler {
         for (Rental rental : rentals) {
             System.out.println(count + " rentalID: " + rental.getRentalID() + ", userID: " + rental.getUserID()
                     + ", username: " + rental.getUsername() + ", itemID: " + rental.getItemID()
-                    + ", item title: " + rental.getTitle() + ", rental date: " + rental.getRentalDate());
+                    + ", item title: " + rental.getItemTitle() + ", rental date: " + rental.getRentalDate());
             count++;
         }
     }
@@ -215,7 +215,7 @@ public class RentalHandler {
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
                 rental.setUsername(user.getUsername());
-                rental.setTitle(item.getTitle());
+                rental.setItemTitle(item.getTitle());
 
                 return rental;
             }
@@ -525,7 +525,7 @@ public class RentalHandler {
                 String.valueOf(newRental.getItemID()),
                 newRental.getRentalDate().toString(),
                 newRental.getUsername(),
-                newRental.getTitle(),
+                newRental.getItemTitle(),
                 String.valueOf(newRental.getRentalID())};
 
         //Execute the update and return whether it was successful
@@ -578,26 +578,26 @@ public class RentalHandler {
         }
 
         //4: If itemIDs are different and titles are the same, update newRental's title
-        if (oldRental.getItemID() != newRental.getItemID() && oldRental.getTitle().equals(newRental.getTitle())) {
+        if (oldRental.getItemID() != newRental.getItemID() && oldRental.getItemTitle().equals(newRental.getItemTitle())) {
             Item item = ItemHandler.getItemByID(newRental.getItemID());
             if (item == null)
                 throw new SQLException("compareRentals 4: fetched item is null.");
-            newRental.setTitle(item.getTitle());
+            newRental.setItemTitle(item.getTitle());
         }
         //5: If itemIDs are the same and titles are different, update newRental's itemID
-        if (oldRental.getItemID() == newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
-            Item item = ItemHandler.getItemByTitle(newRental.getTitle());
+        if (oldRental.getItemID() == newRental.getItemID() && !oldRental.getItemTitle().equals(newRental.getItemTitle())) {
+            Item item = ItemHandler.getItemByTitle(newRental.getItemTitle());
             if (item == null)
                 throw new SQLException("compareRentals 5: fetched item is null.");
             newRental.setItemID(item.getItemID());
         }
         //6: If both itemIDs and titles are different, check that they refer to the same item
-        if (oldRental.getItemID() != newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
+        if (oldRental.getItemID() != newRental.getItemID() && !oldRental.getItemTitle().equals(newRental.getItemTitle())) {
             Item item = ItemHandler.getItemByID(newRental.getItemID());
             if (item == null)
                 throw new SQLException("compareRentals 6: fetched item is null.");
 
-            if (!item.getTitle().equals(newRental.getTitle())) {
+            if (!item.getTitle().equals(newRental.getItemTitle())) {
                 throw new IllegalArgumentException("compareRentals 6: itemID and title don't match");
             }
         }

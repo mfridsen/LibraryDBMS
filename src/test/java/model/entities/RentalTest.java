@@ -119,12 +119,12 @@ public class RentalTest {
         Rental rental = new Rental(1, 1, LocalDateTime.now());
 
         //Test valid setTitle
-        rental.setTitle("Harry Potter 2");
-        assertEquals("Harry Potter 2", rental.getTitle());
+        rental.setItemTitle("Harry Potter 2");
+        assertEquals("Harry Potter 2", rental.getItemTitle());
 
         //Test invalid setTitle
-        assertThrows(IllegalArgumentException.class, () -> rental.setTitle(null));
-        assertThrows(IllegalArgumentException.class, () -> rental.setTitle(""));
+        assertThrows(IllegalArgumentException.class, () -> rental.setItemTitle(null));
+        assertThrows(IllegalArgumentException.class, () -> rental.setItemTitle(""));
 
         System.out.println("\nTEST FINISHED.");
     }

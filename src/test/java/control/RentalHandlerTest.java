@@ -24,12 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * Unit Test for the RentalHandler class.
  */
-
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalHandlerTest extends BaseHandlerTest {
 
     //TODO-future make all tests more verbose
-    //TODO-future javadoc tests properly
     //TODO-prio change order of tests to match order of methods
 
     /**
@@ -196,7 +194,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertEquals(rental.getItemID(), retrievedRental.getItemID());
         assertEquals(rental.getRentalDate(), retrievedRental.getRentalDate());
         assertEquals(rental.getUsername(), retrievedRental.getUsername()); //New test for username
-        assertEquals(rental.getTitle(), retrievedRental.getTitle()); //New test for title
+        assertEquals(rental.getItemTitle(), retrievedRental.getItemTitle()); //New test for title
 
         //Test invalid getRentalByID
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalByID(-1));
@@ -488,7 +486,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             if (item == null) {
                 throw new SQLException("Item with ID 1 does not exist.");
             }
-            nonExistentRental.setTitle(item.getTitle());
+            nonExistentRental.setItemTitle(item.getTitle());
 
             //Actual test
             assertFalse(RentalHandler.updateRental(nonExistentRental, nonExistentRental));
@@ -631,14 +629,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             Rental newRental = new Rental(oldRental);
             String updatedTitle = "item2"; //Assuming this title exists and corresponds to the same itemID
-            newRental.setTitle(updatedTitle);
+            newRental.setItemTitle(updatedTitle);
 
             boolean updated = RentalHandler.updateRental(oldRental, newRental);
             assertTrue(updated, "Updating a valid rental should return true.");
 
             Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
             assertNotNull(updatedRental);
-            assertEquals(updatedTitle, updatedRental.getTitle(), "The updated rental's title should match the new title.");
+            assertEquals(updatedTitle, updatedRental.getItemTitle(), "The updated rental's title should match the new title.");
             System.out.println("Test case 8 finished.");
         } catch (SQLException e) {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
@@ -654,7 +652,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             int updatedItemID = 2; //Assuming this itemID exists
             String updatedTitle = "item2"; //Assuming this title exists and corresponds to the new itemID
             newRental.setItemID(updatedItemID);
-            newRental.setTitle(updatedTitle);
+            newRental.setItemTitle(updatedTitle);
 
             boolean updated = RentalHandler.updateRental(oldRental, newRental);
             assertTrue(updated, "Updating a valid rental should return true.");
@@ -662,7 +660,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             Rental updatedRental = RentalHandler.getRentalByID(newRental.getRentalID());
             assertNotNull(updatedRental);
             assertEquals(updatedItemID, updatedRental.getItemID(), "The updated rental's itemID should match the new itemID.");
-            assertEquals(updatedTitle, updatedRental.getTitle(), "The updated rental's title should match the new title.");
+            assertEquals(updatedTitle, updatedRental.getItemTitle(), "The updated rental's title should match the new title.");
             System.out.println("Test case 9 finished.");
         } catch (SQLException e) {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
@@ -699,7 +697,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             int updatedItemID = 2; //Assuming this itemID exists
             String updatedTitle = "item3"; //Assuming this title exists but does not match the updated itemID
             newRental.setItemID(updatedItemID);
-            newRental.setTitle(updatedTitle);
+            newRental.setItemTitle(updatedTitle);
 
             assertThrows(IllegalArgumentException.class, () -> {
                 RentalHandler.updateRental(oldRental, newRental);
