@@ -30,6 +30,15 @@ public class Item {
         setTitle(title);
     }
 
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    public Item(Item other) {
+        this.itemID = other.itemID;
+        this.title = other.title;
+    }
+
     /*********************************** Getters and Setters are self-explanatory. ************************************/
     public int getItemID() {
         return itemID;
