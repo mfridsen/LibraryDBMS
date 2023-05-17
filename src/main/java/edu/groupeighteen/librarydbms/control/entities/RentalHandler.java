@@ -20,7 +20,27 @@ import java.util.List;
  * @contact matfir-1@student.ltu.se
  * @date 5/5/2023
  *
- * This class contains database CRUD operation methods as well as other methods related to the Rental entity class.
+ * The RentalHandler class provides methods to manage rental data in a database. It allows you to add,
+ * retrieve, update, and delete rental records.
+ *
+ * The class provides the following methods:
+ * - addRental(Rental rental): Adds a new rental to the database.
+ * - getRentalByID(int rentalID): Retrieves a rental by its ID.
+ * - getRentalsByUserID(int userID): Retrieves all rentals associated with a specific user ID.
+ * - getRentalsByItemID(int itemID): Retrieves all rentals associated with a specific item ID.
+ * - updateRental(Rental oldRental, Rental newRental): Updates the details of a rental in the database.
+ * - deleteRental(Rental rental): Deletes a rental from the database.
+ *
+ * Additionally, the class provides the following private method:
+ * - compareRentals(Rental oldRental, Rental newRental): Compares two Rental objects and validates/updates user and
+ *   item data.
+ *
+ * The RentalHandler class uses the DatabaseHandler class to interact with the database and performs data validation
+ * before executing database operations. It throws SQLException if an error occurs while interacting with the database
+ * and IllegalArgumentException if the provided data is not valid.
+ *
+ * TODO: The current implementation returns null or false when a rental cannot be found. This might be changed to
+ *  throw a custom exception (like RentalNotFoundException) to make error handling more consistent.
  */
 public class RentalHandler {
 
@@ -181,8 +201,22 @@ public class RentalHandler {
                 int itemID = resultSet.getInt("itemID");
                 Timestamp timestamp = resultSet.getTimestamp("rentalDate");
                 LocalDateTime rentalDate = timestamp.toLocalDateTime();  //Convert Timestamp to LocalDateTime
+
+                User user = UserHandler.getUserByID(userID);
+                if (user == null) {
+                    throw new SQLException("Error retrieving user from database by ID: username null.");
+                }
+
+                Item item = ItemHandler.getItemByID(itemID);
+                if (item == null) {
+                    throw new SQLException("Error retrieving item from database by ID: title null.");
+                }
+
                 Rental rental = new Rental(userID, itemID, rentalDate);
                 rental.setRentalID(rentalID);
+                rental.setUsername(user.getUsername());
+                rental.setTitle(item.getTitle());
+
                 return rental;
             }
         }
@@ -450,7 +484,7 @@ public class RentalHandler {
      * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
      */
     public static boolean updateRental(Rental oldRental, Rental newRental) throws SQLException {
-        // Validate the input
+        //Validate the input
         if (oldRental == null)
             throw new IllegalArgumentException("Error updating rental: oldRental is null.");
         if (newRental == null)
@@ -461,7 +495,7 @@ public class RentalHandler {
 
         compareRentals(oldRental, newRental);
 
-        // Prepare a SQL query to update the rental details
+        //Prepare a SQL query to update the rental details
         String query = "UPDATE rentals SET userID = ?, itemID = ?, rentalDate = ?, username = ?, title = ? WHERE rentalID = ?";
         String[] params = {String.valueOf(newRental.getUserID()),
                 String.valueOf(newRental.getItemID()),
@@ -470,11 +504,29 @@ public class RentalHandler {
                 newRental.getTitle(),
                 String.valueOf(newRental.getRentalID())};
 
-        // Execute the update and return whether it was successful
+        //Execute the update and return whether it was successful
         int rowsAffected = DatabaseHandler.executePreparedUpdate(query, params);
         return rowsAffected > 0;
     }
 
+    /**
+     * Compares two Rental objects, typically an old and a new version of the same rental, and validates/updates user and item data.
+     * This method is used to ensure the consistency and correctness of user and item data when updating a rental.
+     *
+     * @param oldRental The original Rental object, typically fetched from the database.
+     * @param newRental The updated Rental object, typically received from an update request.
+     *
+     * Functionality:
+     * 1. If userIDs are different and usernames are the same, it updates newRental's username to match the username of the user associated with the new userID.
+     * 2. If userIDs are the same and usernames are different, it updates newRental's userID to match the userID of the user associated with the new username.
+     * 3. If both userIDs and usernames are different, it checks that they refer to the same user.
+     * 4. If itemIDs are different and titles are the same, it updates newRental's title to match the title of the item associated with the new itemID.
+     * 5. If itemIDs are the same and titles are different, it updates newRental's itemID to match the itemID of the item associated with the new title.
+     * 6. If both itemIDs and titles are different, it checks that they refer to the same item.
+     *
+     * @throws SQLException If a user or item associated with the provided IDs cannot be fetched.
+     * @throws IllegalArgumentException If the updated user or item data are inconsistent (usernames and userIDs or titles and itemIDs do not match).
+     */
     private static void compareRentals(Rental oldRental, Rental newRental) throws SQLException {
         //1: If userIDs are different and usernames are the same, update newRental's username
         if (oldRental.getUserID() != newRental.getUserID() && oldRental.getUsername().equals(newRental.getUsername())) {
@@ -484,14 +536,14 @@ public class RentalHandler {
             newRental.setUsername(user.getUsername());
         }
         //2: If userIDs are the same and usernames are different, update newRental's userID
-        else if (oldRental.getUserID() == newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
+        if (oldRental.getUserID() == newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
             User user = UserHandler.getUserByUsername(newRental.getUsername());
             if (user == null)
                 throw new SQLException("compareRentals 2: fetched user is null.");
             newRental.setUserID(user.getUserID());
         }
         //3: If both userIDs and usernames are different, check that they refer to the same user
-        else if (oldRental.getUserID() != newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
+        if (oldRental.getUserID() != newRental.getUserID() && !oldRental.getUsername().equals(newRental.getUsername())) {
             User user = UserHandler.getUserByID(newRental.getUserID());
             if (user == null)
                 throw new SQLException("compareRentals 3: fetched user is null.");
@@ -509,14 +561,14 @@ public class RentalHandler {
             newRental.setTitle(item.getTitle());
         }
         //5: If itemIDs are the same and titles are different, update newRental's itemID
-        else if (oldRental.getItemID() == newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
+        if (oldRental.getItemID() == newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
             Item item = ItemHandler.getItemByTitle(newRental.getTitle());
             if (item == null)
                 throw new SQLException("compareRentals 5: fetched item is null.");
             newRental.setItemID(item.getItemID());
         }
         //6: If both itemIDs and titles are different, check that they refer to the same item
-        else if (oldRental.getItemID() != newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
+        if (oldRental.getItemID() != newRental.getItemID() && !oldRental.getTitle().equals(newRental.getTitle())) {
             Item item = ItemHandler.getItemByID(newRental.getItemID());
             if (item == null)
                 throw new SQLException("compareRentals 6: fetched item is null.");
@@ -526,7 +578,6 @@ public class RentalHandler {
             }
         }
     }
-
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent

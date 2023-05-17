@@ -21,7 +21,7 @@ public class User {
 
     private int userID; //Primary key
     private String username;
-    private String password;
+    private String password; //TODO-future hash and salt
 
     public User(String username, String password) {
         this.userID = 0;
@@ -36,7 +36,7 @@ public class User {
 
     public void setUserID(int userID) {
         if (userID <= 0) {
-            throw new IllegalArgumentException("UserID must be greater than zero.");
+            throw new IllegalArgumentException("UserID must be greater than zero. Received: " + userID);
         }
         this.userID = userID;
     }
@@ -47,7 +47,7 @@ public class User {
 
     public void setUsername(String username) {
         if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty.");
+            throw new IllegalArgumentException("Username cannot be null or empty. Received: " + username);
         }
         this.username = username;
     }
@@ -58,7 +58,7 @@ public class User {
 
     public void setPassword(String password) {
         if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty.");
+            throw new IllegalArgumentException("Password cannot be null or empty. Received: " + password);
         }
         this.password = password;
     }

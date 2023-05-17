@@ -33,7 +33,7 @@ public class Item {
 
     public void setItemID(int itemID) {
         if (itemID <= 0) {
-            throw new IllegalArgumentException("ItemID must be greater than zero.");
+            throw new IllegalArgumentException("ItemID must be greater than zero. Received: " + itemID);
         }
         this.itemID = itemID;
     }
@@ -44,7 +44,7 @@ public class Item {
 
     public void setTitle(String title) {
         if (title == null || title.isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be null or empty.");
+            throw new IllegalArgumentException("Title cannot be null or empty. Received: " + title);
         }
         this.title = title;
     }
