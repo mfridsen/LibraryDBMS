@@ -132,6 +132,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n3: Testing getAllRentals method...");
 
         try {
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
+            User user1 = UserHandler.getUserByID(1);
+            assertNotNull(user1);
+
             //Create a few new rentals
             Rental newRental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(1));
             Rental newRental2 = RentalHandler.createNewRental(2, 2, LocalDateTime.now().minusDays(2));
@@ -150,6 +155,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertTrue(rentals.stream().anyMatch(rental -> rental.getRentalID() == newRental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(rental -> rental.getRentalID() == newRental2.getRentalID()));
             assertTrue(rentals.stream().anyMatch(rental -> rental.getRentalID() == newRental3.getRentalID()));
+
+            //Check that username was set correctly
+            assertEquals(user1.getUsername(), rentals.get(0).getUsername());
+            //Check that the correct title has been retrieved
+            assertEquals(item1.getTitle(), rentals.get(0).getItemTitle());
 
             //Print rentals for fun
             RentalHandler.printRentalList(rentals);
@@ -221,6 +231,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         //Create new rentals to test with
         try {
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
+            User user1 = UserHandler.getUserByID(1);
+            assertNotNull(user1);
+
             Rental rental1 = RentalHandler.createNewRental(1, 1, testDate1);
             Rental rental2 = RentalHandler.createNewRental(2, 2, testDate1);
             Rental rental3 = RentalHandler.createNewRental(3, 3, testDate3); //This rental has a different date
@@ -234,6 +249,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
             assertFalse(rentals.contains(rental3));
+
+            //Check that username was set correctly
+            assertEquals(user1.getUsername(), rentals.get(0).getUsername());
+            //Check that the correct title has been retrieved
+            assertEquals(item1.getTitle(), rentals.get(0).getItemTitle());
 
             //Test with a rentalDate that no rentals have
             rentals = RentalHandler.getRentalsByRentalDate(testDate4);
@@ -270,6 +290,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         //Create new rentals to test with
         try {
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
+            User user1 = UserHandler.getUserByID(1);
+            assertNotNull(user1);
+
             //Three rentals on the same day, but different times
             Rental rental1 = RentalHandler.createNewRental(1, 1, testDay1.atStartOfDay().plusHours(2));
             Rental rental2 = RentalHandler.createNewRental(2, 2, testDay1.atStartOfDay().plusHours(4));
@@ -284,6 +309,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            //Check that username was set correctly
+            assertEquals(user1.getUsername(), rentals.get(0).getUsername());
+            //Check that the correct title has been retrieved
+            assertEquals(item1.getTitle(), rentals.get(0).getItemTitle());
 
             //Test with a rentalDay that no rentals have
             rentals = RentalHandler.getRentalsByRentalDay(testDay4);
@@ -322,6 +352,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         //Create new rentals to test with
         try {
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
+            User user1 = UserHandler.getUserByID(1);
+            assertNotNull(user1);
+
             Rental rental1 = RentalHandler.createNewRental(1, 1, yesterday.atStartOfDay());
             Rental rental2 = RentalHandler.createNewRental(2, 2, today.atStartOfDay());
             Rental rental3 = RentalHandler.createNewRental(3, 3, twoDaysAgo.atStartOfDay());
@@ -335,6 +370,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            //Check that username was set correctly
+            assertEquals(user1.getUsername(), rentals.get(0).getUsername());
+            //Check that the correct title has been retrieved
+            assertEquals(item1.getTitle(), rentals.get(0).getItemTitle());
 
             //Test with a period that no rentals have
             rentals = RentalHandler.getRentalsByTimePeriod(threeWeeksAgo, twoWeeksAgo);
@@ -369,6 +409,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         //Create new rentals to test with
         try {
             //Create three rentals with the same userID
+            User user1 = UserHandler.getUserByID(1);
+            assertNotNull(user1);
             Rental rental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(3));
             Rental rental2 = RentalHandler.createNewRental(1, 2, LocalDateTime.now().minusDays(2));
             Rental rental3 = RentalHandler.createNewRental(1, 3, LocalDateTime.now().minusDays(1));
@@ -382,6 +424,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            //Check that username was set correctly
+            assertEquals(user1.getUsername(), rentals.get(0).getUsername());
 
             //Test with a userID that has no rentals
             rentals = RentalHandler.getRentalsByUserID(2);
@@ -414,6 +459,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         //Create new rentals to test with
         try {
             //Create three rentals with the same itemID
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
             Rental rental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(3));
             Rental rental2 = RentalHandler.createNewRental(2, 1, LocalDateTime.now().minusDays(2));
             Rental rental3 = RentalHandler.createNewRental(3, 1, LocalDateTime.now().minusDays(1));
@@ -427,6 +474,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
             assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            //Check that the correct title has been retrieved
+            assertEquals(item1.getTitle(), rentals.get(0).getItemTitle());
 
             //Test with a itemID that has no rentals
             rentals = RentalHandler.getRentalsByItemID(2);
@@ -444,6 +494,72 @@ public class RentalHandlerTest extends BaseHandlerTest {
         
         System.out.println("\nTEST FINISHED.");
     }
+
+    /**
+     * This test first creates three rentals with the same username. It then verifies that getRentalsByUsername can
+     * correctly retrieve all three rentals. It also tests the method's behavior when passed a username with no rentals
+     * and verifies that it correctly returns an empty list.
+     * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
+     */
+    @Test
+    @Order(10)
+    void testGetRentalsByUsername() {
+        System.out.println("\n10: Testing getRentalsByUsername method...");
+
+        //Create new rentals to test with
+        try {
+            //Create three rentals with the same username
+            User user1 = UserHandler.getUserByID(1);
+            assertNotNull(user1);
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
+
+            Rental rental1 = RentalHandler.createNewRental(1, 1, LocalDateTime.now().minusDays(3));
+            Rental rental2 = RentalHandler.createNewRental(1, 2, LocalDateTime.now().minusDays(2));
+            Rental rental3 = RentalHandler.createNewRental(1, 3, LocalDateTime.now().minusDays(1));
+
+            //Set username for each rental
+            rental1.setUsername(user1.getUsername());
+            rental2.setUsername(user1.getUsername());
+            rental3.setUsername(user1.getUsername());
+
+            //Test valid getRentalsByUsername
+            List<Rental> rentals = RentalHandler.getRentalsByUsername(user1.getUsername());
+            assertNotNull(rentals);
+            assertEquals(3, rentals.size()); //There should be three rentals for this username
+
+            //Check that the correct rentals were retrieved
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental1.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental2.getRentalID()));
+            assertTrue(rentals.stream().anyMatch(r -> r.getRentalID() == rental3.getRentalID()));
+
+            //Check that username was set correctly
+            assertEquals(user1.getUsername(), rentals.get(0).getUsername());
+            //Check that the correct title has been retrieved
+            assertEquals(item1.getTitle(), rentals.get(0).getItemTitle());
+
+            //Test with a username that has no rentals
+            User user2 = UserHandler.getUserByID(2);
+            assertNotNull(user2);
+            rentals = RentalHandler.getRentalsByUsername(user2.getUsername());
+            assertNotNull(rentals);
+            assertTrue(rentals.isEmpty());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        //Test invalid getRentalsByUsername
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByUsername(null));
+        assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByUsername(""));
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+
+
+
 
     /**
      * Tests the updateRental method in the RentalHandler class. The method tests various scenarios including both valid and invalid cases.
@@ -464,9 +580,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * The test method also handles SQLExceptions that may be thrown during the process. The method prints out the test status and any exceptions thrown during the test.
      */
     @Test
-    @Order(10)
+    @Order(12)
     void testUpdateRental() {
-        System.out.println("\n10: Testing updateRental method...");
+        System.out.println("\n12: Testing updateRental method...");
 
         //Test case 1: Updating a non-existent rental should throw an exception
         System.out.println("\nTesting test case 1: non-existent rental...");
@@ -727,9 +843,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * In all cases, if an SQLException is thrown, the test fails with an appropriate error message.
      */
     @Test
-    @Order(11)
+    @Order(13)
     void testDeleteRental() {
-        System.out.println("\n11: Testing deleteRental method...");
+        System.out.println("\n13: Testing deleteRental method...");
 
         //Test: Deleting a non-existent rental should return false
         try {
