@@ -31,7 +31,7 @@ public class Item {
     }
 
     /**
-     * Copy constructor.
+     * Copy Constructor.
      * @param other
      */
     public Item(Item other) {
