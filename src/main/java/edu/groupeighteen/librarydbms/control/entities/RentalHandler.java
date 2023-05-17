@@ -152,7 +152,6 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    //TODO-test!
     /**
      * Retrieves a Rental object from the database based on the provided rental ID.
      *
@@ -465,7 +464,7 @@ public class RentalHandler {
      * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
      */
     public static boolean updateRental(Rental oldRental, Rental newRental) throws SQLException {
-        // Validate the input
+        //Validate the input
         if (oldRental == null)
             throw new IllegalArgumentException("Error updating rental: oldRental is null.");
         if (newRental == null)
@@ -476,7 +475,7 @@ public class RentalHandler {
 
         compareRentals(oldRental, newRental);
 
-        // Prepare a SQL query to update the rental details
+        //Prepare a SQL query to update the rental details
         String query = "UPDATE rentals SET userID = ?, itemID = ?, rentalDate = ?, username = ?, title = ? WHERE rentalID = ?";
         String[] params = {String.valueOf(newRental.getUserID()),
                 String.valueOf(newRental.getItemID()),
@@ -485,11 +484,29 @@ public class RentalHandler {
                 newRental.getTitle(),
                 String.valueOf(newRental.getRentalID())};
 
-        // Execute the update and return whether it was successful
+        //Execute the update and return whether it was successful
         int rowsAffected = DatabaseHandler.executePreparedUpdate(query, params);
         return rowsAffected > 0;
     }
 
+    /**
+     * Compares two Rental objects, typically an old and a new version of the same rental, and validates/updates user and item data.
+     * This method is used to ensure the consistency and correctness of user and item data when updating a rental.
+     *
+     * @param oldRental The original Rental object, typically fetched from the database.
+     * @param newRental The updated Rental object, typically received from an update request.
+     *
+     * Functionality:
+     * 1. If userIDs are different and usernames are the same, it updates newRental's username to match the username of the user associated with the new userID.
+     * 2. If userIDs are the same and usernames are different, it updates newRental's userID to match the userID of the user associated with the new username.
+     * 3. If both userIDs and usernames are different, it checks that they refer to the same user.
+     * 4. If itemIDs are different and titles are the same, it updates newRental's title to match the title of the item associated with the new itemID.
+     * 5. If itemIDs are the same and titles are different, it updates newRental's itemID to match the itemID of the item associated with the new title.
+     * 6. If both itemIDs and titles are different, it checks that they refer to the same item.
+     *
+     * @throws SQLException If a user or item associated with the provided IDs cannot be fetched.
+     * @throws IllegalArgumentException If the updated user or item data are inconsistent (usernames and userIDs or titles and itemIDs do not match).
+     */
     private static void compareRentals(Rental oldRental, Rental newRental) throws SQLException {
         //1: If userIDs are different and usernames are the same, update newRental's username
         if (oldRental.getUserID() != newRental.getUserID() && oldRental.getUsername().equals(newRental.getUsername())) {
@@ -541,7 +558,6 @@ public class RentalHandler {
             }
         }
     }
-
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
