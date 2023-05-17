@@ -165,7 +165,7 @@ public class RentalUpdateGUI extends GUI {
                 }
                 //No parsing required for itemTitle, it is a string
                 if (itemTitle != null && !itemTitle.isEmpty()) {
-                    newRental.setTitle(itemTitle);
+                    newRental.setItemTitle(itemTitle);
                 }
                 if (rentalDate != null && !rentalDate.isEmpty()) {
                     newRental.setRentalDate(LocalDateTime.parse(rentalDate));
@@ -215,7 +215,7 @@ public class RentalUpdateGUI extends GUI {
                 {"User ID", oldRental.getUserID(), ""},
                 {"Username", oldRental.getUsername(), ""},
                 {"Item ID", oldRental.getItemID(), ""},
-                {"Item Title", oldRental.getTitle(), ""},
+                {"Item Title", oldRental.getItemTitle(), ""},
                 {"Rental Date", oldRental.getRentalDate(), ""}
         };
 

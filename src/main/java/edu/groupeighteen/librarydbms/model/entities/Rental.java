@@ -30,7 +30,7 @@ public class Rental {
     private int itemID; //Foreign key referencing Item
     private LocalDateTime rentalDate; //Date of creation
     private String username; //Set upon creation or retrieval
-    private String title; //Set upon creation or retrieval
+    private String itemTitle; //Set upon creation or retrieval
 
     /**
      * Main constructor.
@@ -44,7 +44,7 @@ public class Rental {
         setItemID(itemID);
         setRentalDate(rentalDate);
         this.username = null;
-        this.title = null;
+        this.itemTitle = null;
     }
 
     /**
@@ -56,7 +56,7 @@ public class Rental {
         this.userID = other.userID;
         this.username = other.username;
         this.itemID = other.itemID;
-        this.title = other.title;
+        this.itemTitle = other.itemTitle;
         this.rentalDate = other.rentalDate;  // Assuming LocalDateTime is immutable
     }
 
@@ -108,12 +108,12 @@ public class Rental {
         this.username = username;
     }
 
-    public String getTitle() {
-        return title;
+    public String getItemTitle() {
+        return itemTitle;
     }
 
-    public void setTitle(String title) {
-        if (title == null || title.isEmpty()) throw new IllegalArgumentException("Title cannot be null or empty. Received: " + title);
-        this.title = title;
+    public void setItemTitle(String itemTitle) {
+        if (itemTitle == null || itemTitle.isEmpty()) throw new IllegalArgumentException("Title cannot be null or empty. Received: " + itemTitle);
+        this.itemTitle = itemTitle;
     }
 }

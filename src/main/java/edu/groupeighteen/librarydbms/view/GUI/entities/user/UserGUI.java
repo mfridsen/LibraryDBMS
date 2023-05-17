@@ -54,7 +54,7 @@ public class UserGUI extends GUI {
                 {"Username", user.getUsername()},
 
         };
-        JTable userUpdateTable = setupScrollPaneTable(columnNames, data);
+        JTable userUpdateTable = setupTable(columnNames, data);
         JScrollPane userScrollPane = new JScrollPane();
         userScrollPane.setViewportView(userUpdateTable);
         scrollPanePanel = new JPanel();

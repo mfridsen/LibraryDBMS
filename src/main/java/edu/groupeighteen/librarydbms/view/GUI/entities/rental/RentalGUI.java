@@ -79,11 +79,11 @@ public class RentalGUI extends GUI {
                 {"User ID", rental.getUserID()},
                 {"Username", rental.getUsername()},
                 {"Item ID", rental.getItemID()},
-                {"Item Title", rental.getTitle()},
+                {"Item Title", rental.getItemTitle()},
                 {"Rental Date", rental.getRentalDate()}
         };
 
-        JTable rentalUpdateTable = setupScrollPaneTable(columnNames, data);
+        JTable rentalUpdateTable = setupTable(columnNames, data);
         //Create the scroll pane
         JScrollPane rentalScrollPane = new JScrollPane();
         rentalScrollPane.setViewportView(rentalUpdateTable);

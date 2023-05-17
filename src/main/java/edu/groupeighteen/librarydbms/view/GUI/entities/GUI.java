@@ -94,14 +94,13 @@ public abstract class GUI extends JFrame {
     }
 
     /**
-     * Creates a JTable with named columns and fills it with data. Then makes the table uneditable,
-     * adds it to a JScrollPane and returns that scroll pane.
+     * Creates a JTable with named columns and fills it with data, then returns the JTable.
      *
      * @param columnNames a String array containing the names of the columns.
      * @param data a two-dimensional Object array containing the data to fill in the columns.
-     * @return a JScrollPane ready to add to a JPanel to display the table.
+     * @return a JTable ready to add to a JScrollPane.
      */
-    protected JTable setupScrollPaneTable(String[] columnNames, Object[][] data) {
+    protected JTable setupTable(String[] columnNames, Object[][] data) {
         //Create table with data and column names
         JTable table = new JTable(data, columnNames);
 
@@ -119,7 +118,7 @@ public abstract class GUI extends JFrame {
      * @param columnNames a String array containing the names of the columns.
      * @param data a two-dimensional Object array containing the data to fill in the columns.
      * @param editableCol the column which is desired to be editable.
-     * @return a JScrollPane ready to add to a JPanel to display the table.
+     * @return a JTable ready to add to a JScrollPane.
      */
     protected JTable setupTableWithEditableCells(String[] columnNames, Object[][] data, int editableCol) {
         // Create table model with data and column names
