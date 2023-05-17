@@ -1,14 +1,11 @@
-package edu.groupeighteen.librarydbms.view.GUI;
+package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserWelcomeGUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 
@@ -17,7 +14,7 @@ import java.sql.SQLException;
  * @project LibraryDBMS
  * @date 2023-04-27
  */
-public class CreateAccountGUI extends GUI {
+public class UserCreateGUI extends GUI {
     private JTextField usernameField;
     private JPasswordField passwordField;
 
@@ -25,7 +22,7 @@ public class CreateAccountGUI extends GUI {
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
      *
      */
-    public CreateAccountGUI(GUI previousGUI) {
+    public UserCreateGUI(GUI previousGUI) {
         super(previousGUI, "CreateAccountGUI");
         setupButtons();
         setupPanels();

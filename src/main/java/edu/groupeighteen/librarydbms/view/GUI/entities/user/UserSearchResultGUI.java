@@ -1,10 +1,12 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
+import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * @author Jesper Truedsson
@@ -19,13 +21,11 @@ public class UserSearchResultGUI extends GUI {
     private JPanel searchPanel;
     private JButton lånaButton;
     private JButton visaobjektButton;
-    private int userID;
-    private String username;
+    private List<User> searchResultList;
 
-    public UserSearchResultGUI(GUI previousGUI, int userID, String username) {
+    public UserSearchResultGUI(GUI previousGUI, List<User> searchResultList) {
         super(previousGUI, "UserSearchResultGUI");
-        this.userID = userID;
-        this.username = username;
+        this.searchResultList = searchResultList;
         setupPanels();
         displayGUI();
     }

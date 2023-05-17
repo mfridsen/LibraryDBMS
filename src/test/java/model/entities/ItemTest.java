@@ -34,7 +34,7 @@ public class ItemTest {
         assertEquals("Harry Potter", validItem.getTitle());
 
         //Test invalid constructor
-        assertThrows(IllegalArgumentException.class, () -> new Item(null));
+        assertThrows(IllegalArgumentException.class, () -> new Item((String) null));
         assertThrows(IllegalArgumentException.class, () -> new Item(""));
 
         System.out.println("\nTEST FINISHED.");

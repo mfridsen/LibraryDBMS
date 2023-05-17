@@ -1,14 +1,10 @@
 package edu.groupeighteen.librarydbms.view.GUI;
 
-import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
-import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
+import edu.groupeighteen.librarydbms.view.GUI.entities.user.UserCreateGUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 /**
  * @author Johan Lund
@@ -52,7 +48,7 @@ public class HomeScreenGUI extends GUI {
 
         skapakontoButton.addActionListener(e -> {
             dispose();
-            new CreateAccountGUI(this);
+            new UserCreateGUI(this);
         });
 
         return new JButton[]{loginHereButton, infoButton, skapakontoButton};

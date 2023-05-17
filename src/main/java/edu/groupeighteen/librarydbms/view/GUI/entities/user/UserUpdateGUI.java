@@ -87,7 +87,7 @@ public class UserUpdateGUI extends GUI {
 
                 //No parsing required for itemTitle, it is a string
             } catch (NumberFormatException nfe) {
-                System.err.println("One of the fields that requires a number received an invalid input. User ID:" + userID + ", Item ID: " + itemID);
+                System.err.println("One of the fields that requires a number received an invalid input. User ID:" + userID);
             } catch (DateTimeParseException dtpe) {
                 System.err.println("The date field received an invalid input. Please ensure it is in the correct format.");
             }

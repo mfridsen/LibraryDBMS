@@ -57,7 +57,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         //Test invalid saveItem
         assertThrows(IllegalArgumentException.class, () -> ItemHandler.saveItem(new Item("")));
-        assertThrows(IllegalArgumentException.class, () -> ItemHandler.saveItem(new Item(null)));
+        assertThrows(IllegalArgumentException.class, () -> ItemHandler.saveItem(new Item((String) null)));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -221,7 +221,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Updating a valid item should not throw an exception. Error: " + e.getMessage());
         }
 
-        assertThrows(IllegalArgumentException.class, () -> ItemHandler.updateItem(new Item(null)));
+        assertThrows(IllegalArgumentException.class, () -> ItemHandler.updateItem(new Item((String) null)));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -264,7 +264,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Deleting a valid item should not throw an exception. Error: " + e.getMessage());
         }
 
-        assertThrows(IllegalArgumentException.class, () -> ItemHandler.deleteItem(new Item(null)));
+        assertThrows(IllegalArgumentException.class, () -> ItemHandler.deleteItem(new Item((String) null)));
 
         System.out.println("\nTEST FINISHED.");
     }

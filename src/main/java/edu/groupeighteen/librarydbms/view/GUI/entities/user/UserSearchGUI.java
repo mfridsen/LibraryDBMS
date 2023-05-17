@@ -1,19 +1,13 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalSearchResultGUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +20,11 @@ import java.util.List;
  *   * leads to UserSearchResultGUI
  */
 public class UserSearchGUI extends GUI {
-    private JLabel usernameLabel;
-    private JLabel userIDLabel;
-    private JTextField usernameField;
-    private JTextField userIDField;
     private JTable userSearchTable;
     private JPanel searchFieldsPanel;
     public UserSearchGUI(GUI previousGUI) {
         super(previousGUI, "UserSearchGUI");
-        setupSearchPanel();
+        setupScrollPane();
         setupPanels();
         displayGUI();
     }
@@ -79,7 +69,7 @@ public class UserSearchGUI extends GUI {
         return searchButton;
     }
     private List<User> performSearch() {
-        List<Rental> searchResultList = new ArrayList<>();
+        List<User> searchResultList = new ArrayList<>();
 
         for (int row = 0; row < userSearchTable.getRowCount(); row++) {
             //Retrieve cell data
@@ -93,56 +83,24 @@ public class UserSearchGUI extends GUI {
             //Attempt to parse the cell data and perform the search
             try {
                 switch (row) {
-                    //Rental ID
-                    case 0 -> {
-                        int UserID = Integer.parseInt(cellData.toString());
-                        Rental rentalByID = RentalHandler.getRentalByID(UserID);
-                        if (usernameField != null) {
-                            searchResultList.add(rentalByID);
-                        } else System.err.println("No user found for userID: " + UserID);
-                    }
                     //User ID
-                    case 1 -> {
+                    case 0 -> {
                         int userID = Integer.parseInt(cellData.toString());
-                        List<User> rentalByUserIDList = RentalHandler.getRentalsByUserID(userID);
-                        if (!rentalByUserIDList.isEmpty()) {
-                            searchResultList.addAll(ByUserIDList);
-                        } else System.err.println("No rentals found for userID: " + userID);
+                        User user = UserHandler.getUserByID(userID);
+                        if (!(user == null)) {
+                            searchResultList.add(user);
+                        } else System.err.println("No user found for userID: " + userID);
                     }
                     //Username
-                    case 2 -> {
+                    case 1 -> {
                         String username = cellData.toString();
-                        List<Rental> rentalByUsernameList = RentalHandler.getRentalsByUsername(username);
-                        if (!rentalByUsernameList.isEmpty()) {
-                            searchResultList.addAll(rentalByUsernameList);
-                        } else System.err.println("No rentals found for username: " + username);
-                    }
-                    //Item ID
-                    case 3 -> {
-                        int itemID = Integer.parseInt(cellData.toString());
-                        List<Rental> rentalByItemIDList = RentalHandler.getRentalsByItemID(itemID);
-                        if (!rentalByItemIDList.isEmpty()) {
-                            searchResultList.addAll(rentalByItemIDList);
-                        } else System.err.println("No rentals found for itemID: " + itemID);
-                    }
-                    //Item Title
-                    case 4 -> {
-                        String itemTitle = cellData.toString();
-                        List<Rental> rentalByItemTitleList = RentalHandler.getRentalsByItemTitle(itemTitle);
-                        if (!rentalByItemTitleList.isEmpty()) {
-                            searchResultList.addAll(rentalByItemTitleList);
-                        } else System.err.println("No rentals found for item title: " + itemTitle);
-                    }
-                    //Rental date, assuming the date is stored as a String in the format "yyyy-MM-dd"
-                    case 5 -> {
-                        LocalDateTime rentalDate = LocalDateTime.parse(cellData.toString());
-                        List<Rental> rentalByDateList = RentalHandler.getRentalsByRentalDate(rentalDate);
-                        if (!rentalByDateList.isEmpty()) {
-                            searchResultList.addAll(rentalByDateList);
-                        } else System.err.println("No rentals found for rental date: " + rentalDate);
+                        User user = UserHandler.getUserByUsername(username);
+                        if (!(user == null)) {
+                            searchResultList.add(user);
+                        } else System.err.println("No user found for username: " + username);
                     }
                 }
-            } catch (NumberFormatException | DateTimeParseException nfe) {
+            } catch (NumberFormatException nfe) {
                 //The cell data could not be parsed to an int or a date, do nothing
                 System.err.println("Wrong data type for field: " + userSearchTable.getValueAt(row, 0));
             }
