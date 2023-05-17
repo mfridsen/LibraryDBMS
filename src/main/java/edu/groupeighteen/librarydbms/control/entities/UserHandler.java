@@ -120,6 +120,20 @@ public class UserHandler {
         return isAuthenticated;
     }
 
+    /**
+     * Validates the user's password.
+     *
+     * This method compares the password provided as an argument with the password stored in the User object.
+     * If the provided password matches the stored password, the method returns true. Otherwise, it returns false.
+     *
+     * @param user The User object whose password is to be validated.
+     * @param password The password to validate.
+     * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
+     */
+    public static boolean validateUser(User user, String password) {
+        return user.getPassword().equals(password);
+    }
+
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
     /**

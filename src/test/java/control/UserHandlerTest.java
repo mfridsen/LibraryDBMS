@@ -322,4 +322,27 @@ public class UserHandlerTest extends BaseHandlerTest {
 
         System.out.println("Test finished.");
     }
+
+    /**
+     * Test method for {@link UserHandler#validateUser(User, String)}.
+     * This test checks if the method correctly validates the user password.
+     *
+     * The method is tested with a user object with a known password.
+     * First, the method is called with the correct password, expecting a true result.
+     * Then, the method is called with an incorrect password, expecting a false result.
+     */
+    @Test
+    @Order(9)
+    void validateUserTest() {
+        System.out.println("\n8: Testing validateUser...");
+        // Create a User object for the test
+        User testUser = new User("testUser", "testPassword");
+
+        // Test with the correct password
+        assertTrue(UserHandler.validateUser(testUser, "testPassword"), "Password should be valid");
+
+        // Test with an incorrect password
+        assertFalse(UserHandler.validateUser(testUser, "wrongPassword"), "Password should be invalid");
+        System.out.println("Test finished.");
+    }
 }
