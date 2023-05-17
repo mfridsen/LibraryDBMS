@@ -21,16 +21,17 @@ public class UserUpdateGUI extends GUI {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private User user;
+    private JPanel scrollPanePanel;
+
 
     public UserUpdateGUI(GUI previousGUI, User user) {
         super(previousGUI, "UserUpdateGUI");
         this.user = user;
+        setupScrollPane();
         setupPanels();
         displayGUI();
     }
 
-
-    @Override
     protected JButton[] setupButtons() {
         JButton changeButton = new JButton("Change");
 
@@ -48,6 +49,20 @@ public class UserUpdateGUI extends GUI {
 
         });
         return new JButton[]{changeButton};
+
+    private void setupScrollPane() {
+        String[] columNames = {"Old Name", "New Name"};
+        Object[][] data = {
+                {"User ID", oldUser.getUserID(), ""},
+                {"Username", oldRental.getUsername(), ""},
+                {"Item ID", oldRental.getItemID(), ""},
+                {"Item Title", oldRental.getTitle(), ""},
+        };
+    }
+
+
+    @Override
+
     }
 
     @Override
