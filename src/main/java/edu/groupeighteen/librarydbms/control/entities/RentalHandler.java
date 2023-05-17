@@ -20,7 +20,27 @@ import java.util.List;
  * @contact matfir-1@student.ltu.se
  * @date 5/5/2023
  *
- * This class contains database CRUD operation methods as well as other methods related to the Rental entity class.
+ * The RentalHandler class provides methods to manage rental data in a database. It allows you to add,
+ * retrieve, update, and delete rental records.
+ *
+ * The class provides the following methods:
+ * - addRental(Rental rental): Adds a new rental to the database.
+ * - getRentalByID(int rentalID): Retrieves a rental by its ID.
+ * - getRentalsByUserID(int userID): Retrieves all rentals associated with a specific user ID.
+ * - getRentalsByItemID(int itemID): Retrieves all rentals associated with a specific item ID.
+ * - updateRental(Rental oldRental, Rental newRental): Updates the details of a rental in the database.
+ * - deleteRental(Rental rental): Deletes a rental from the database.
+ *
+ * Additionally, the class provides the following private method:
+ * - compareRentals(Rental oldRental, Rental newRental): Compares two Rental objects and validates/updates user and
+ *   item data.
+ *
+ * The RentalHandler class uses the DatabaseHandler class to interact with the database and performs data validation
+ * before executing database operations. It throws SQLException if an error occurs while interacting with the database
+ * and IllegalArgumentException if the provided data is not valid.
+ *
+ * TODO: The current implementation returns null or false when a rental cannot be found. This might be changed to
+ *  throw a custom exception (like RentalNotFoundException) to make error handling more consistent.
  */
 public class RentalHandler {
 
