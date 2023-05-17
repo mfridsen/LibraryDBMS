@@ -70,7 +70,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(1, 1, null)));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -114,7 +114,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.createNewRental(1, 1, LocalDateTime.now().plusDays(1)));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.createNewRental(1, 1, null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -131,7 +131,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     @Test
     @Order(3)
     void testGetAllRentals() {
-        System.out.println("\n12: Testing getAllRentals method...");
+        System.out.println("\n3: Testing getAllRentals method...");
 
         try {
             //Create a few new rentals
@@ -160,7 +160,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -201,7 +201,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         //Test invalid getRentalByID
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalByID(-1));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
 
@@ -251,7 +251,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDate(testDate2));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDate(null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -301,7 +301,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDay(testDay2));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByRentalDay(null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -354,7 +354,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByTimePeriod(today, yesterday));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByTimePeriod(tomorrow, tomorrow.plusDays(1)));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -399,7 +399,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByUserID(0));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByUserID(-1));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -444,7 +444,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByItemID(0));
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.getRentalsByItemID(-1));
         
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -710,7 +710,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Updating a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -769,6 +769,6 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Deleting a valid rental should not throw an exception. Error: " + e.getMessage());
         }
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 }

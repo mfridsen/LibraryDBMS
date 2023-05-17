@@ -40,7 +40,7 @@ public class RentalTest {
         assertEquals(1, rental.getItemID());
         assertEquals(now, rental.getRentalDate());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class RentalTest {
         rental.setRentalID(1);
         assertEquals(1, rental.getRentalID());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -72,7 +72,7 @@ public class RentalTest {
         rental.setUserID(2);
         assertEquals(2, rental.getUserID());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class RentalTest {
         rental.setItemID(2);
         assertEquals(2, rental.getItemID());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class RentalTest {
         rental.setUsername("new_username");
         assertEquals("new_username", rental.getUsername());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -126,6 +126,6 @@ public class RentalTest {
         assertThrows(IllegalArgumentException.class, () -> rental.setTitle(null));
         assertThrows(IllegalArgumentException.class, () -> rental.setTitle(""));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 }

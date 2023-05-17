@@ -50,7 +50,7 @@ public class UserTest {
         assertEquals("username", user.getUsername());
         assertEquals("password", user.getPassword());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class UserTest {
         user.setUserID(1);
         assertEquals(1, user.getUserID());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class UserTest {
         user.setUsername("new_username");
         assertEquals("new_username", user.getUsername());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -107,6 +107,6 @@ public class UserTest {
         user.setPassword("new_password");
         assertEquals("new_password", user.getPassword());
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 }

@@ -55,7 +55,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -88,7 +88,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> UserHandler.saveUser(new User(username, null)));
         assertThrows(IllegalArgumentException.class, () -> UserHandler.saveUser(null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -120,7 +120,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> UserHandler.createNewUser(username, ""));
         assertThrows(IllegalArgumentException.class, () -> UserHandler.createNewUser(username, null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -167,7 +167,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -203,7 +203,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -242,7 +242,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
             fail("Exception occurred during test: " + e.getMessage());
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -287,7 +287,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
         assertThrows(IllegalArgumentException.class, () -> UserHandler.updateUser(null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -320,7 +320,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
         assertThrows(IllegalArgumentException.class, () -> UserHandler.deleteUser(null));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -343,6 +343,6 @@ public class UserHandlerTest extends BaseHandlerTest {
 
         // Test with an incorrect password
         assertFalse(UserHandler.validateUser(testUser, "wrongPassword"), "Password should be invalid");
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 }

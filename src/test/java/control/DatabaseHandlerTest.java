@@ -34,7 +34,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     @Test
     @Order(1)
     void testExecuteCommand() {
-        System.out.println("1: Testing executeSingleSQLCommand method...");
+        System.out.println("\n1: Testing executeSingleSQLCommand method...");
         //1. Create a temporary table in the test database
         String createTempTable = "CREATE TABLE temp_table (id INT PRIMARY KEY, name VARCHAR(255));";
         try {
@@ -69,7 +69,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         } catch (SQLException e) {
             fail("Failed to drop temp_table: " + e.getMessage());
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -144,13 +144,13 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             }
         }
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(3)
     void testExecuteQuery() {
-        System.out.println("3: Testing executeQuery method...");
+        System.out.println("\n3: Testing executeQuery method...");
         String tableName = "test_table";
         try {
             //Create a new table
@@ -183,13 +183,13 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
                 fail("Exception occurred while closing resources: " + e.getMessage());
             }
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(4)
     void testExecutePreparedQuery() {
-        System.out.println("4: Testing executePreparedQuery method...");
+        System.out.println("\n4: Testing executePreparedQuery method...");
         String tableName = "test_table";
         try {
             //Create a new table
@@ -226,13 +226,13 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
                 fail("Exception occurred while closing resources: " + e.getMessage());
             }
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(5)
     void testExecuteSQLCommandsFromFile() {
-        System.out.println("5: Testing executeSQLCommandsFromFile method...");
+        System.out.println("\n5: Testing executeSQLCommandsFromFile method...");
         //Set up the path to the test SQL file
         String testSQLFilePath = "src/test/resources/sql/test_sql_file.sql";
 
@@ -268,7 +268,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         }
 
         testFile.delete();
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -302,7 +302,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     @Test
     @Order(6)
     void testDatabaseExistsAndCreateDatabase() {
-        System.out.println("6: Testing databaseExists and createDatabase methods...");
+        System.out.println("\n6: Testing databaseExists and createDatabase methods...");
         try {
             DatabaseHandler.executeCommand("drop database if exists " + LibraryManager.databaseName);
             assertFalse(DatabaseHandler.databaseExists(LibraryManager.databaseName));
@@ -314,14 +314,13 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
             fail("Failed to execute SQL command.");
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(7)
     void testExecuteUpdate() {
         System.out.println("\n7: Testing executeUpdate...");
-        setupTestTablesAndData();
 
         //Let's assume that there is a user with ID 1 in the database.
         int userIdToUpdate = 1;
@@ -348,6 +347,6 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
             fail("Failed to execute update: " + e.getMessage());
         }
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 }

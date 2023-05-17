@@ -59,6 +59,7 @@ public class DatabaseConnectionTest {
         System.out.println("Asserting connection is not null, should be true: " + (connection != null));
         Assertions.assertNotNull(connection);
         DatabaseConnection.closeConnection();
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -83,6 +84,7 @@ public class DatabaseConnectionTest {
         System.out.println("Asserting that error message contains '" + expectedMessage +
                 "', should be true: " + actualMessage.contains(expectedMessage));
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -107,6 +109,7 @@ public class DatabaseConnectionTest {
         System.out.println("Asserting that error message contains '" + expectedMessage +
                 "', should be true: " + actualMessage.contains(expectedMessage));
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -131,5 +134,6 @@ public class DatabaseConnectionTest {
         System.out.println("Asserting that error message contains '" + expectedMessage +
                 "', should be true: " + actualMessage.contains(expectedMessage));
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
+        System.out.println("\nTEST FINISHED.");
     }
 }

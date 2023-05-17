@@ -229,10 +229,12 @@ public class RentalSearchGUI extends GUI {
 
     /**
      * Sets up the scroll pane that contains the rental search table.
-     * The table includes columns for "Property" and "Search Value", where each row corresponds to a different rental property.
-     * The first column contains the property names and the second column is editable for inputting search values.
+     * The table includes columns for "Property" and "Search Value", where each row corresponds to a different rental
+     * property. The first column contains the property names and the second column is editable for inputting
+     * search values.
      *
-     * The rental search table is then placed within a scroll pane, which is added to the 'searchFieldsPanel' with a BorderLayout.
+     * The rental search table is then placed within a scroll pane, which is added to the 'searchFieldsPanel' with a
+     * BorderLayout.
      *
      * The properties are as follows: "Rental ID", "User ID", "Username", "Item ID", "Item Title", and "Rental Date".
      */

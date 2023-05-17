@@ -59,7 +59,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> ItemHandler.saveItem(new Item("")));
         assertThrows(IllegalArgumentException.class, () -> ItemHandler.saveItem(new Item(null)));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -83,7 +83,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         assertTrue(testItem.getItemID() > 0, "The new item should have a valid item ID.");
         assertEquals(itemTitle, testItem.getTitle(), "The new item's title should match the provided title.");
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -127,7 +127,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Retrieving a valid item should not throw an exception. Error: " + e.getMessage());
         }
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -178,7 +178,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("Retrieving a valid item should not throw an exception. Error: " + e.getMessage());
         }
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -223,7 +223,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         assertThrows(IllegalArgumentException.class, () -> ItemHandler.updateItem(new Item(null)));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -266,6 +266,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         assertThrows(IllegalArgumentException.class, () -> ItemHandler.deleteItem(new Item(null)));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 }

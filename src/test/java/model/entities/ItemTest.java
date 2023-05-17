@@ -37,7 +37,7 @@ public class ItemTest {
         assertThrows(IllegalArgumentException.class, () -> new Item(null));
         assertThrows(IllegalArgumentException.class, () -> new Item(""));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ItemTest {
         assertThrows(IllegalArgumentException.class, () -> validItem.setItemID(0));
         assertThrows(IllegalArgumentException.class, () -> validItem.setItemID(-1));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -73,6 +73,6 @@ public class ItemTest {
         assertThrows(IllegalArgumentException.class, () -> validItem.setTitle(null));
         assertThrows(IllegalArgumentException.class, () -> validItem.setTitle(""));
 
-        System.out.println("Test finished.");
+        System.out.println("\nTEST FINISHED.");
     }
 }
