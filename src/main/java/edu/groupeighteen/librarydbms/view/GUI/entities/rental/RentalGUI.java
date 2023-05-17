@@ -19,6 +19,8 @@ import java.awt.*;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalGUI extends GUI {
+    //TODO-comment
+    //TODO-test
     //The rental object to display
     private final Rental rental;
     //The panel containing the scroll pane which displays the Rental data
