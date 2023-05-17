@@ -44,6 +44,9 @@ import java.util.List;
  */
 public class RentalHandler {
 
+    //TODO-prio UPDATE ALL METHODS AND TEST METHODS WHEN THE REST OF THE FIELDS ARE ADDED
+    //TODO-prio ADD GET METHODS FOR ALL NEW FIELDS AS WELL AS TEST METHODS FOR THEM
+
     /**
      * Creates a new Rental with the specified userID, itemID and rentalDate, and saves it to the database.
      * If the Rental creation fails, this method returns null.
@@ -55,7 +58,6 @@ public class RentalHandler {
      * @throws SQLException If an error occurs while interacting with the database.
      */
     public static Rental createNewRental(int userID, int itemID, LocalDateTime rentalDate) throws SQLException {
-        //TODO-prio add to these two when more fields are added, as well as javadoc
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
             throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: " + userID + ", itemID: " + itemID);

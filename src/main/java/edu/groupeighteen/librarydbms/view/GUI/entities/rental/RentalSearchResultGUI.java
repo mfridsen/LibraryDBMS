@@ -21,6 +21,7 @@ import java.util.List;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class RentalSearchResultGUI extends GUI {
+    //TODO-prio clear searchResultList of duplicates
     private final List<Rental> searchResultList;
 
     private JPanel searchResultPanel;

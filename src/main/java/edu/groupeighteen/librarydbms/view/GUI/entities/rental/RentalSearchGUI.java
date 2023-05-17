@@ -46,6 +46,7 @@ import java.util.List;
  * @see GUI
  */
 public class RentalSearchGUI extends GUI {
+    //TODO-prio add search-by-day and search-by-dates
     private JPanel searchFieldsPanel;
     private JTable rentalSearchTable;
 
@@ -133,7 +134,10 @@ public class RentalSearchGUI extends GUI {
                 dispose();
                 new RentalSearchResultGUI(this, searchResultList);
                 RentalHandler.printRentalList(searchResultList);
-            } else System.err.println("No results found for search.");
+            } else {
+                System.err.println("No results found for search.");
+                resetCells();
+            }
         });
         return searchButton;
     }
