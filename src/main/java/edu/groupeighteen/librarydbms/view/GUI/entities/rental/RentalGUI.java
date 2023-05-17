@@ -16,7 +16,6 @@ import java.awt.*;
  * This class displays all data for a given Rental Object. It also contains buttons to perform relevant CRUD
  * operations on the object.
  *
- *
  * Brought to you by enough nicotine to kill a large horse.
  *
  * @see GUI
@@ -46,6 +45,7 @@ public class RentalGUI extends GUI {
     /**
      * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
      */
+    @Override
     protected JButton[] setupButtons() {
         //Leads to RentalUpdateGUI
         JButton rentalUpdateButton = new JButton("RentalUpdateGUI");
@@ -95,6 +95,7 @@ public class RentalGUI extends GUI {
     /**
      * Sets up the main panel.
      */
+    @Override
     protected void setupPanels() {
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH); //Add scrollPanePanel to the top
     }

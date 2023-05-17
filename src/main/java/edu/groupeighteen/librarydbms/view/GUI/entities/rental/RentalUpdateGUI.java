@@ -77,6 +77,7 @@ public class RentalUpdateGUI extends GUI {
      *
      * @return JButton[] An array containing the 'Reset' and 'Confirm Update' buttons.
      */
+    @Override
     protected JButton[] setupButtons() {
         JButton resetCellsButton = setupResetButton();
         JButton confirmUpdateButton = setupConfirmButton();
@@ -236,6 +237,7 @@ public class RentalUpdateGUI extends GUI {
      * In this method, the scroll pane panel created in setupScrollPane() is added
      * to the north area (top) of the GUIPanel.
      */
+    @Override
     protected void setupPanels() {
         //Add the scroll pane panel to the north area (top) of the GUIPanel.
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
