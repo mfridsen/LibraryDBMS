@@ -94,9 +94,9 @@ public class UserUpdateGUI extends GUI {
 
             //Now call the update method
             try {
-                UserHandler.updateUser(newUser, oldUser);
+                UserHandler.updateUser(newUser);
                 dispose();
-                new RentalGUI(this, newUser);
+                new UserGUI(newUser, this);
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
                 LibraryManager.exit(1);
@@ -110,7 +110,7 @@ public class UserUpdateGUI extends GUI {
 
 
     private void setupScrollPane() {
-        String[] columNames = {"Old Name", "New Name"};
+        String[] columnNames = {"Property", "Old Value", "New Value"};
         Object[][] data = {
                 {"User ID", oldUser.getUserID(), ""},
                 {"Username", oldUser.getUsername(), ""},
