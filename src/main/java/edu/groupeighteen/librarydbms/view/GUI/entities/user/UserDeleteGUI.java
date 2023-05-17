@@ -12,27 +12,31 @@ import javax.swing.*;
  */
 public class UserDeleteGUI extends GUI {
     private User user;
-    private JButton cancelButton;
     private JButton confirmButton;
     private JLabel deleteUser;
 
     public UserDeleteGUI(User user, GUI previousGUI) {
         super(previousGUI, "UserDeleteGUI");
         this.user = user;
-        this.deleteUser = new JLabel("Delete user: " + user.getUsername() + "?");
-        setupButtons();
-        addButtonsToPanel(new JButton[]{confirmButton, cancelButton});
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
-        return new JButton[0];
+        confirmButton = new JButton("Confirm Delete");
+        confirmButton.addActionListener(e -> {
+            dispose();
+            //delete user
+            //previous gui = null
+            //return to appropriate gui
+        });
+        return new JButton[]{confirmButton};
     }
 
     @Override
     protected void setupPanels() {
+        this.deleteUser = new JLabel("Delete user: " + user.getUsername() + "?");
 
     }
 }

@@ -1,12 +1,9 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.user;
-import edu.groupeighteen.librarydbms.LibraryManager;
+
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Jesper Truedsson
@@ -19,7 +16,6 @@ public class UserWelcomeGUI extends GUI {
     private JLabel welcomeLabel;
     private JButton searchButton;
     private JPanel welcomePanel;
-    private JFrame welcomeFrame;
     private User user;
 
     /**
@@ -28,38 +24,28 @@ public class UserWelcomeGUI extends GUI {
      */
     public UserWelcomeGUI(GUI previousGUI, User user) {
         super(previousGUI, "UserWelcomeGUI");
-        setupButtons();
-        addButtonsToPanel(new JButton[]{searchButton});
+        this.user = user;
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
-
-    public void WelcomeUserGUI() {
-        welcomeLabel = new JLabel("Sök");
-        searchButton = new JButton("UserSearchGUI");
-        welcomePanel = new JPanel();
-        welcomeFrame = new JFrame("UserGUI");
-
-        welcomePanel.add(welcomeLabel);
-        welcomePanel.add(searchButton);
-
-        welcomeFrame.add(welcomePanel);
-        welcomeFrame.pack();
-        welcomeFrame.setVisible(true);
-        welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        searchButton.addActionListener(e -> {
-
-        });
-    }
-
     @Override
     protected JButton[] setupButtons() {
-        return new JButton[0];
+        searchButton = new JButton("UserSearchGUI");
+
+        searchButton.addActionListener(e -> {
+            dispose();
+            new UserSearchGUI(this);
+        });
+        return new JButton[]{searchButton};
     }
 
     @Override
     protected void setupPanels() {
+        welcomeLabel = new JLabel("Sök");
+        welcomePanel = new JPanel();
 
+        welcomePanel.add(welcomeLabel);
+
+        GUIPanel.add(welcomePanel);
     }
 }
