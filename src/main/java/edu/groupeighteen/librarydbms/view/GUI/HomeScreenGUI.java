@@ -50,6 +50,7 @@ public class HomeScreenGUI extends GUI {
             dispose();
             new UserCreateGUI(this);
         });
+        //aksjf ndjsla fjlan fl
 
         return new JButton[]{loginHereButton, infoButton, skapakontoButton};
     }
