@@ -36,6 +36,7 @@ public class UserSearchResultGUI extends GUI {
         visaobjektButton = new JButton("Visa objekt");
 
         return new JButton[]{};
+        //kommentar
     }
 
     @Override
