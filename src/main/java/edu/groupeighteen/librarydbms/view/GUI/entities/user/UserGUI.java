@@ -21,8 +21,8 @@ public class UserGUI extends GUI {
      * @param user
      */
 
-    public UserGUI(User user, GUI prevoiusGUI) {
-        super(prevoiusGUI, "UserGUI");
+    public UserGUI(GUI previousGUI, User user) {
+        super(previousGUI, "UserGUI");
         this.user = user;
         setupScrollPane();
         setupPanels();
@@ -41,13 +41,13 @@ public class UserGUI extends GUI {
         JButton deleteButton = new JButton("Delete User");
         deleteButton.addActionListener(e -> {
             dispose();
-            new UserDeleteGUI(user, this);
+            new UserDeleteGUI(this, user);
         });
         return new JButton[]{deleteButton, updateButton};
     }
 
     private void setupScrollPane() {
-        String[] columnNames = {};
+        String[] columnNames = {"Property", "Value"};
 
         Object[][] data = {
                 {"User ID", user.getUserID()},
@@ -59,8 +59,6 @@ public class UserGUI extends GUI {
         userScrollPane.setViewportView(userUpdateTable);
         scrollPanePanel = new JPanel();
         scrollPanePanel.add(userScrollPane, BorderLayout.CENTER);
-
-
     }
 
     @Override

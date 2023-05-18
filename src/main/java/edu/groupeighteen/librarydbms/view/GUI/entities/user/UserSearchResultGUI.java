@@ -35,7 +35,7 @@ public class UserSearchResultGUI extends GUI {
         lånaButton = new JButton("Låna");
         visaobjektButton = new JButton("Visa objekt");
 
-        return null;
+        return new JButton[]{};
     }
 
     @Override

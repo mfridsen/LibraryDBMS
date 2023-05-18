@@ -21,7 +21,7 @@ public class UserDeleteGUI extends GUI {
     private JPasswordField passwordField;
 
 
-    public UserDeleteGUI(User usertoDelete, GUI previousGUI) {
+    public UserDeleteGUI(GUI previousGUI, User usertoDelete) {
         super(previousGUI, "UserDeleteGUI");
         this.usertoDelete = usertoDelete;
         setupPanels();

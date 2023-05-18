@@ -1,22 +1,14 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
-import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalGUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 
 /**
  * @author Jesper Truedsson
@@ -96,7 +88,7 @@ public class UserUpdateGUI extends GUI {
             try {
                 UserHandler.updateUser(newUser);
                 dispose();
-                new UserGUI(newUser, this);
+                new UserGUI(this, newUser);
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
                 LibraryManager.exit(1);

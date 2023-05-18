@@ -5,5 +5,5 @@ package edu.groupeighteen.librarydbms.view.GUI;
  * @project LibraryDBMS
  * @date 2023-05-08
  */
-public class MyAccountTeacherGUI {
+public class MyAccountGUI {
 }

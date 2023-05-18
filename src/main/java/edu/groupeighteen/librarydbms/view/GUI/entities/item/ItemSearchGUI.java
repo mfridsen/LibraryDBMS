@@ -1,12 +1,8 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.item;
 
-import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.view.GUI.MenuPageGUI;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Jesper Truedsson

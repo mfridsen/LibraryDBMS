@@ -1,5 +1,6 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities.user;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
@@ -7,6 +8,7 @@ import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 
 /**
@@ -20,49 +22,73 @@ public class UserCreateGUI extends GUI {
 
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
-     *
      */
     public UserCreateGUI(GUI previousGUI) {
-        super(previousGUI, "CreateAccountGUI");
-        setupButtons();
+        super(previousGUI, "UserCreateGUI");
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
-        JButton proceedButton = new JButton("Skapa");
+
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(e -> {
+            resetFields();
+        });
+        JButton proceedButton = new JButton("Create User");
         proceedButton.addActionListener(e -> {
-            dispose();
-            try {
-                User newUser = UserHandler.createNewUser(usernameField.getText(), passwordField.getPassword().toString());
-                UserWelcomeGUI userWelcomeGUI = new UserWelcomeGUI(this, newUser);
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
+            createUser();
         });
         return new JButton[]{proceedButton};
     }
 
     @Override
     protected void setupPanels() {
-        JLabel usernameLabel = new JLabel("Skapa Användarnamn:");
+        JPanel textFieldsPanel = new JPanel();
+        textFieldsPanel.setLayout(new GridLayout(2, 2));
+        JLabel userNameLabel = new JLabel("Enter Username");
         usernameField = new JTextField(10);
-        JLabel passwordLabel = new JLabel("Skapa Lösenord:");
+        JLabel passwordLabel = new JLabel("Enter Password");
         passwordField = new JPasswordField(10);
-        JLabel emailLabel = new JLabel("Skapa Email");
-        JTextField emailField = new JTextField(10);
-        JPanel createAccountPanel = new JPanel();
+        textFieldsPanel.add(userNameLabel);
+        textFieldsPanel.add(usernameField);
+        textFieldsPanel.add(passwordLabel);
+        textFieldsPanel.add(usernameField);
 
-        createAccountPanel.add(usernameLabel);
-        createAccountPanel.add(usernameField);
-        createAccountPanel.add(passwordLabel);
-        createAccountPanel.add(passwordField);
-        createAccountPanel.add(emailLabel);
-        createAccountPanel.add(emailField);
+        GUIPanel.add(textFieldsPanel, BorderLayout.NORTH);
 
-        GUIPanel.add(createAccountPanel, BorderLayout.NORTH);
-        GUIPanel.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void resetFields() {
+        usernameField.setText("");
+        passwordField.setText("");
+    }
+
+    private void createUser() {
+        String usernameStr = usernameField.getText();
+        String passwordStr = Arrays.toString(passwordField.getPassword());
+
+        if (usernameStr.isEmpty()) {
+            System.err.println("To create a new user you need to enter in a username. Username: " + usernameStr);
+            resetFields();
+            return;
+        }
+        if (passwordStr.isEmpty()) {
+            System.err.println("To create a new user you need to enter in an password. Password: " + passwordStr);
+            resetFields();
+            return;
+        }
+        //If successful, dispose, create a new user and open a new UserGUI for that user
+        try{
+            dispose();
+            User newUser = UserHandler.createNewUser(usernameStr, passwordStr);
+            new UserGUI(this, newUser);
+        } catch (SQLException sqle) {
+            System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
+            sqle.printStackTrace();
+            LibraryManager.exit(1);
+        }
     }
 }
 
