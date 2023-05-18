@@ -1,7 +1,8 @@
-package edu.groupeighteen.librarydbms.view.gui;
+package edu.groupeighteen.librarydbms.view.buttons;
 
 import edu.groupeighteen.librarydbms.model.entities.Entity;
 import edu.groupeighteen.librarydbms.model.entities.Entity;
+import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;

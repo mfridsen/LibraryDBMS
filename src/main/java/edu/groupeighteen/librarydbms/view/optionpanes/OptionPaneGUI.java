@@ -1,4 +1,6 @@
-package edu.groupeighteen.librarydbms.view.gui;
+package edu.groupeighteen.librarydbms.view.optionpanes;
+
+import javax.swing.*;
 
 /**
  * @author Mattias Fridsén
@@ -13,7 +15,7 @@ package edu.groupeighteen.librarydbms.view.gui;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public abstract class OptionPaneGUI {
+public abstract class OptionPaneGUI extends JOptionPane {
 
     public OptionPaneGUI() {
 

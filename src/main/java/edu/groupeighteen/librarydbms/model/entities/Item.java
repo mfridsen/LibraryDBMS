@@ -20,6 +20,7 @@ public class Item extends Entity {
 
     private int itemID; //Primary key
     private String title;
+    private int allowedRentalDays;
 
     /**
      * Regular Constructor.
@@ -37,6 +38,7 @@ public class Item extends Entity {
     public Item(Item other) {
         this.itemID = other.itemID;
         this.title = other.title;
+        this.allowedRentalDays = other.allowedRentalDays;
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
@@ -60,5 +62,14 @@ public class Item extends Entity {
             throw new IllegalArgumentException("Title cannot be null or empty. Received: " + title);
         }
         this.title = title;
+    }
+
+    //TODO-implement properly
+    public int getAllowedRentalDays() {
+        return allowedRentalDays;
+    }
+
+    public void setAllowedRentalDays(int allowedRentalDays) {
+        this.allowedRentalDays = allowedRentalDays;
     }
 }

@@ -2,7 +2,7 @@ package edu.groupeighteen.librarydbms.view.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.LoginScreenGUI;
-import edu.groupeighteen.librarydbms.view.gui.ButtonRenderer;
+import edu.groupeighteen.librarydbms.view.buttons.ButtonRenderer;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -69,7 +69,7 @@ public class RentalSearchResultGUI extends GUI {
     protected JButton[] setupButtons() {
         JButton homeButton = new JButton("Home");
         homeButton.addActionListener(e -> {
-            dispose(); //TODO-prio probably correct but needs discussion
+            dispose(); //TODO-prio should open a MyAccountGUI depending on what type of User is logged on
             new LoginScreenGUI(this);
         });
         return new JButton[]{homeButton};

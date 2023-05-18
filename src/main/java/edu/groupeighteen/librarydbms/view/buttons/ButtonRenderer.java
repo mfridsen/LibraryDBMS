@@ -1,4 +1,4 @@
-package edu.groupeighteen.librarydbms.view.gui;
+package edu.groupeighteen.librarydbms.view.buttons;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

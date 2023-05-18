@@ -1,5 +1,8 @@
 package edu.groupeighteen.librarydbms.view.gui;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.view.HomeScreenGUI;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -26,6 +29,7 @@ public abstract class GUI extends JFrame {
     protected JPanel buttonPanel;
     //All GUI objects (except the absolutely first in the stack, but whatever) will have a "Back" button
     protected JButton previousGUIButton;
+    protected JButton logoutButton;
 
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
@@ -39,9 +43,28 @@ public abstract class GUI extends JFrame {
         GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
         buttonPanel = new JPanel(); //The previous button will always be added to the button panel
         setupPreviousGUIButton();
+        setupLogoutButton();
         buttonPanel.add(previousGUIButton);
+        if (!(logoutButton == null)) buttonPanel.add(logoutButton);
         addButtonsToPanel(setupButtons());
         GUIPanel.add(buttonPanel, BorderLayout.SOUTH); //Add buttonPanel to the bottom
+    }
+
+    /**
+     * GUIs will need a logout button, whenever a User is logged in.
+     */
+    protected void setupLogoutButton() {
+        if (LibraryManager.getCurrentUser() != null) {
+            logoutButton = new JButton("Log Out");
+            logoutButton.addActionListener(e -> {
+                //TODO-prio should have an OptionPane pop up to confirm logout
+                dispose();
+                //Log out user
+                LibraryManager.setCurrentUser(null);
+                //Go to Home Screen, null previousGUI because otherwise things will get messy
+                new HomeScreenGUI(null);
+            });
+        }
     }
 
     /**

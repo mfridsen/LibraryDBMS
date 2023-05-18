@@ -1,5 +1,8 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -56,16 +59,36 @@ public class Rental extends Entity {
     private String itemTitle;
 
     /**
+     * The date and time when the rental item is due to be returned.
+     */
+    private LocalDateTime rentalDueDate;
+
+    /**
+     * The date and time when the rental item was actually returned.
+     */
+    private LocalDateTime rentalReturnDate;
+
+    /**
+     * Any late fee that was incurred due to late return of the rental item.
+     */
+    private double lateFee;
+
+    /**
      * Main constructor.
      * @param userID
      * @param itemID
      * @param rentalDate
      */
-    public Rental(int userID, int itemID, LocalDateTime rentalDate) {
+    public Rental(int userID, int itemID, LocalDateTime rentalDate, int allowedRentalDays) {
         this.rentalID = 0;
         setUserID(userID);
         setItemID(itemID);
         setRentalDate(rentalDate);
+        this.username = null;
+        this.itemTitle = null;
+        this.rentalDueDate = rentalDate.plusDays(allowedRentalDays);
+        this.rentalReturnDate = null;
+        this.lateFee = 0.0;
         this.username = null;
         this.itemTitle = null;
     }
@@ -76,8 +99,8 @@ public class Rental extends Entity {
      * @param userID
      * @param itemID
      */
-    public Rental(int userID, int itemID) {
-        this(userID, itemID, LocalDateTime.now());
+    public Rental(int userID, int itemID) throws SQLException {
+        this(userID, itemID, LocalDateTime.now(), ItemHandler.getAllowedRentalDaysByID(itemID));
     }
 
     /**

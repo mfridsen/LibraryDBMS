@@ -293,4 +293,14 @@ public class ItemHandler {
         //Return whether the item was deleted successfully.
         return isDeleted;
     }
+
+    //TODO-test
+    //TODO-comment
+    //TODO-implement
+    //TODO-exception
+    public static int getAllowedRentalDaysByID(int itemID) throws SQLException {
+        Item item = getItemByID(itemID);
+        if (item != null) return item.getAllowedRentalDays();
+        else throw new IllegalArgumentException("Couldn't find item with ID: " + itemID);
+    }
 }
