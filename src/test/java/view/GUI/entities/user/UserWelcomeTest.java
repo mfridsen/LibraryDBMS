@@ -24,6 +24,7 @@ public class UserWelcomeTest {
             new UserGUI(null, UserHandler.getUserByID(1));
         } catch (SQLException e) {
             throw new RuntimeException(e);
+
         }
     }
 }

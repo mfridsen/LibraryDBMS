@@ -20,8 +20,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
         //View tests
-        DummyViewTest.class, //TODO REMOVE THIS WHEN REAL TEST CLASSES HAVE BEEN CREATED
-        //TODO CREATE PROPER TEST CLASSES FOR THIS SUITE
+
 })
 
 public class ViewTestSuite {

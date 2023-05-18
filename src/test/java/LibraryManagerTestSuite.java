@@ -1,8 +1,9 @@
+
 import control.ControlTestSuite;
 import model.ModelTestSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-import view.ViewTestSuite;
+
 
 /**
  * @project LibraryDBMS
@@ -19,10 +20,10 @@ import view.ViewTestSuite;
 
 @Suite
 @SelectClasses({
-        //Control tests
-        ControlTestSuite.class,
         //Model tests
         ModelTestSuite.class,
+        //Control tests
+        ControlTestSuite.class,
         //View tests excluded cause I have no idea how to test GUIs yet lol
         //ViewTestSuite.class
 })
