@@ -2,10 +2,8 @@ package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.GUI.LoginScreenGUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.ButtonEditor;
 import edu.groupeighteen.librarydbms.view.GUI.entities.ButtonRenderer;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
-import edu.groupeighteen.librarydbms.view.GUI.entities.RentalTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,8 +103,8 @@ public class RentalSearchResultGUI extends GUI {
             ButtonRenderer buttonRenderer = new ButtonRenderer();
             searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
             for (Rental rental : searchResultList) {
-                ButtonEditor buttonEditor = new ButtonEditor(new JCheckBox(), rental, this);
-                searchResultTable.getColumnModel().getColumn(4).setCellEditor(buttonEditor);
+                RentalGUIButtonEditor rentalGUIButtonEditor = new RentalGUIButtonEditor(new JCheckBox(), rental, this);
+                searchResultTable.getColumnModel().getColumn(4).setCellEditor(rentalGUIButtonEditor);
             }
 
             JScrollPane searchResultScrollPane = new JScrollPane();

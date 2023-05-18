@@ -13,7 +13,7 @@ package edu.groupeighteen.librarydbms.model.entities;
  *      ItemIDs have to be positive integers.
  *      Titles cannot be null or empty. //TODO-future add min and max length
  */
-public class Item {
+public class Item extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything

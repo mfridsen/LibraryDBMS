@@ -19,10 +19,10 @@ import view.ViewTestSuite;
 
 @Suite
 @SelectClasses({
-        //Control tests
-        ControlTestSuite.class,
         //Model tests
         ModelTestSuite.class,
+        //Control tests
+        ControlTestSuite.class,
         //View tests excluded cause I have no idea how to test GUIs yet lol
         //ViewTestSuite.class
 })

@@ -14,7 +14,7 @@ package edu.groupeighteen.librarydbms.model.entities;
  *      Usernames cannot be null or empty. //TODO-future add min and max length 3-20
  *      Passwords cannot be null or empty. //TODO-future add min and max length 8-50
  */
-public class User {
+public class User extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
