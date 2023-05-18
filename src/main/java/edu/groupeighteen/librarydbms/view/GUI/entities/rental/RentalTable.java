@@ -1,7 +1,7 @@
-package edu.groupeighteen.librarydbms.view.GUI.entities;
+package edu.groupeighteen.librarydbms.view.GUI.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
-import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalTableModel;
+import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -21,9 +21,9 @@ import java.util.List;
 public class RentalTable extends JTable {
 
     /**
-     * The list of ButtonEditor instances associated with this RentalTable.
+     * The list of RentalGUIButtonEditor instances associated with this RentalTable.
      */
-    private final List<ButtonEditor> editors;
+    private final List<RentalGUIButtonEditor> editors;
 
     /**
      * Constructs a RentalTable with the specified model, rentals, and previous GUI.
@@ -36,7 +36,7 @@ public class RentalTable extends JTable {
         super(model);
         this.editors = new ArrayList<>();
         for (Rental rental : rentals) {
-            this.editors.add(new ButtonEditor(new JCheckBox(), rental, previousGUI));
+            this.editors.add(new RentalGUIButtonEditor(new JCheckBox(), rental, previousGUI));
         }
     }
 
@@ -45,7 +45,7 @@ public class RentalTable extends JTable {
      *
      * @param row       the row of the cell to edit.
      * @param column    the column of the cell to edit.
-     * @return          if the specified cell is in the 'View Rental' column, a ButtonEditor is returned
+     * @return          if the specified cell is in the 'View Rental' column, a RentalGUIButtonEditor is returned
      *                  that opens a RentalGUI for the Rental object associated with the row.
      *                  Otherwise, the result of the superclass's getCellEditor method is returned.
      */

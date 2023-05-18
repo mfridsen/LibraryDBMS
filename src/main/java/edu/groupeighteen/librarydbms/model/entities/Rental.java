@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit;
  *      Usernames cannot be null or empty. //TODO-future add min and max length
  *      Titles cannot be null or empty. //TODO-future add min and max length
  */
-public class Rental {
+public class Rental extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything

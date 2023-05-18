@@ -1,5 +1,6 @@
 package edu.groupeighteen.librarydbms.view.GUI.entities;
 
+import edu.groupeighteen.librarydbms.model.entities.Entity;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.GUI.entities.rental.RentalGUI;
 
@@ -12,29 +13,31 @@ import java.awt.*;
  * @package edu.groupeighteen.librarydbms.view.GUI.entities
  * @contact matfir-1@student.ltu.se
  * @date 5/18/2023
- *
- * This class is used to define the behaviour of the "View Rental" button in a JTable cell.
- * It extends the DefaultCellEditor class, and overrides necessary methods to provide the required functionality.
- * The editor will be used in the table displaying the list of rentals in the application.
+ * <p>
+ * We plan as much as we can (based on the knowledge available),
+ * When we can (based on the time and resources available),
+ * But not before.
+ * <p>
+ * Brought to you by enough nicotine to kill a large horse.
  */
-public class ButtonEditor extends DefaultCellEditor {
+public abstract class EntityButtonEditor extends DefaultCellEditor {
     protected JButton button;
-    private final String label;
-    private boolean isPushed;
-    private final Rental rental;
-    private final GUI previousGUI;
+    protected final String label;
+    protected boolean isPushed;
+    protected final Entity entity;
+    protected final GUI previousGUI;
 
     /**
-     * Constructs a ButtonEditor object.
+     * Constructs an EntityButtonEditor object.
      * Sets up the action listener for the button and configures its visual settings.
      *
      * @param checkBox a JCheckBox object which is sent to the parent constructor.
-     * @param rental a Rental object that this button corresponds to.
+     * @param entity an Entity object that this button corresponds to.
      * @param previousGUI the previous GUI screen.
      */
-    public ButtonEditor(JCheckBox checkBox, Rental rental, GUI previousGUI) {
+    public EntityButtonEditor(JCheckBox checkBox, Entity entity, GUI previousGUI) {
         super(checkBox);
-        this.rental = rental;
+        this.entity = entity;
         this.previousGUI = previousGUI;
         label = "View";
         button = new JButton();
@@ -61,17 +64,20 @@ public class ButtonEditor extends DefaultCellEditor {
 
     /**
      * Returns the current editing value from the cell.
-     * If the button has been clicked (isPushed is true), it creates a new RentalGUI.
+     * If the button has been clicked (isPushed is true), it creates a new EntityGUI.
+     *
+     * Has to be implemented for each child class.
      *
      * @return the current editing value from the cell.
      */
-    public Object getCellEditorValue() {
+    public abstract Object getCellEditorValue();
+    /*{
         if (isPushed) {
             new RentalGUI(previousGUI, rental);
         }
         isPushed = false;
-        return label; // Return a new String so the original is not affected
-    }
+        return label;
+    }*/
 
     /**
      * Notifies the table that editing has stopped in the current cell, and resets isPushed to false.
