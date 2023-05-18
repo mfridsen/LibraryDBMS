@@ -25,12 +25,35 @@ public class Rental {
     //TODO-future add more fields and methods
     //TODO-comment everything
 
-    private int rentalID; //Primary key
-    private int userID; //Foreign key referencing User
-    private int itemID; //Foreign key referencing Item
-    private LocalDateTime rentalDate; //Date of creation
-    private String username; //Set upon creation or retrieval
-    private String itemTitle; //Set upon creation or retrieval
+    /**
+     * The rental ID, which serves as the primary key for the rental.
+     */
+    private int rentalID;
+
+    /**
+     * The user ID, which serves as a foreign key referencing the associated user.
+     */
+    private int userID;
+
+    /**
+     * The item ID, which serves as a foreign key referencing the associated item.
+     */
+    private int itemID;
+
+    /**
+     * The date and time of the rental's creation.
+     */
+    private LocalDateTime rentalDate;
+
+    /**
+     * The username associated with the rental, set upon creation or retrieval.
+     */
+    private String username;
+
+    /**
+     * The title of the item associated with the rental, set upon creation or retrieval.
+     */
+    private String itemTitle;
 
     /**
      * Main constructor.
@@ -70,60 +93,127 @@ public class Rental {
         this.rentalDate = other.rentalDate;  // Assuming LocalDateTime is immutable
     }
 
-    /*********************************** Getters and Setters are self-explanatory. ************************************/
+    /**
+     * Returns the rental ID.
+     *
+     * @return the rental ID
+     */
     public int getRentalID() {
         return rentalID;
     }
 
+    /**
+     * Sets the rental ID.
+     *
+     * @param rentalID the rental ID to set
+     * @throws IllegalArgumentException if the rental ID is less than or equal to zero
+     */
     public void setRentalID(int rentalID) {
         if (rentalID <= 0) throw new IllegalArgumentException("RentalID must be greater than zero. Received: " + rentalID);
         this.rentalID = rentalID;
     }
 
+    /**
+     * Returns the user ID.
+     *
+     * @return the user ID
+     */
     public int getUserID() {
         return userID;
     }
 
+    /**
+     * Sets the user ID.
+     *
+     * @param userID the user ID to set
+     * @throws IllegalArgumentException if the user ID is less than or equal to zero
+     */
     public void setUserID(int userID) {
         if (userID <= 0) throw new IllegalArgumentException("UserID must be greater than zero. Received: " + userID);
         this.userID = userID;
     }
 
+    /**
+     * Returns the item ID.
+     *
+     * @return the item ID
+     */
     public int getItemID() {
         return itemID;
     }
 
+    /**
+     * Sets the item ID.
+     *
+     * @param itemID the item ID to set
+     * @throws IllegalArgumentException if the item ID is less than or equal to zero
+     */
     public void setItemID(int itemID) {
-        if (itemID <= 0) throw new IllegalArgumentException("ItemID must be greater than zero. Received: " + itemID );
+        if (itemID <= 0) throw new IllegalArgumentException("ItemID must be greater than zero. Received: " + itemID);
         this.itemID = itemID;
     }
 
+    /**
+     * Returns the rental date.
+     *
+     * @return the rental date
+     */
     public LocalDateTime getRentalDate() {
         return rentalDate;
     }
 
+    /**
+     * Sets the rental date.
+     *
+     * @param rentalDate the rental date to set
+     * @throws IllegalArgumentException if the rental date is null or in the future
+     */
     public void setRentalDate(LocalDateTime rentalDate) {
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
             throw new IllegalArgumentException("RentalDate cannot be null or in the future. Received: " + rentalDate);
-        this.rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS); //TODO-test we added truncation, test it
+        this.rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
     }
 
+    /**
+     * Returns the username.
+     *
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Sets the username.
+     *
+     * @param username the username to set
+     * @throws IllegalArgumentException if the username is null or empty
+     */
     public void setUsername(String username) {
         if (username == null || username.isEmpty())
             throw new IllegalArgumentException("Username cannot be null or empty. Received: " + username);
         this.username = username;
     }
 
+    /**
+     * Returns the item title.
+     *
+     * @return the item title
+     */
     public String getItemTitle() {
         return itemTitle;
     }
 
+    /**
+     * Sets the item title.
+     *
+     * @param itemTitle the item title to set
+     * @throws IllegalArgumentException if the item title is null or empty
+     */
     public void setItemTitle(String itemTitle) {
-        if (itemTitle == null || itemTitle.isEmpty()) throw new IllegalArgumentException("Title cannot be null or empty. Received: " + itemTitle);
+        if (itemTitle == null || itemTitle.isEmpty())
+            throw new IllegalArgumentException("Title cannot be null or empty. Received: " + itemTitle);
         this.itemTitle = itemTitle;
     }
+
 }
