@@ -1,16 +1,7 @@
 package view;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
-import edu.groupeighteen.librarydbms.control.entities.UserHandler;
-import edu.groupeighteen.librarydbms.view.GUI.HomeScreenGUI;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import java.sql.SQLException;
+import edu.groupeighteen.librarydbms.view.HomeScreenGUI;
 
 /**
  * @author Jesper Truedsson
