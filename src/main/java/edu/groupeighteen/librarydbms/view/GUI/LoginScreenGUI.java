@@ -2,12 +2,9 @@ package edu.groupeighteen.librarydbms.view.GUI;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
-import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.GUI.entities.GUI;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 /**
@@ -44,7 +41,7 @@ public class LoginScreenGUI extends GUI {
             try {
                 if (UserHandler.login(username, password)) {
                     LibraryManager.setCurrentUser(UserHandler.getUserByUsername(username));
-                    new MenuPageGUI(LibraryManager.getCurrentUser(), this);
+                    //new MenuPageGUI(LibraryManager.getCurrentUser(), this);
                 } else {
                     // show error message or do nothing
                     new LoginErrorGUI(this);// TODO-prio change from null to this
