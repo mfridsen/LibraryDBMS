@@ -3,10 +3,12 @@ package edu.groupeighteen.librarydbms.control.entities;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mattias Fridsén
@@ -19,21 +21,25 @@ import java.util.List;
  * It contains a list of all Item titles for quicker validation.
  */
 public class ItemHandler {
-    //Used to speed up searching
-    private static ArrayList<String> storedTitles = new ArrayList<>();
-
-    //TODO-comment update this comment
     /**
-     * To ensure that things are done in the correct order, only DatabaseHandler will retrieve its connection
-     * on its own. The rest of the Handlers need to be assigned the connection, by calling their setup methods
-     * with the connection as argument after the DatabaseHandlers setup method has been called.
+     * Used to speed up searching
+     */
+    private static Map<String, Integer> storedTitles = new HashMap<>();
+
+    /**
+     * Syncs the storedTitles against the items table.
+     *
+     * @throws SQLException if there's an error executing the SQL query
      */
     public static void setup() throws SQLException {
         syncTitles();
     }
 
-    //TODO-comment
-    //TODO-test
+    /**
+     * Syncs the storedTitles by retrieving titles from the items table.
+     *
+     * @throws SQLException if there's an error executing the SQL query
+     */
     public static void syncTitles() throws SQLException {
         if (!storedTitles.isEmpty()) {
             storedTitles.clear();
@@ -41,39 +47,58 @@ public class ItemHandler {
         storedTitles = retrieveTitlesFromTable();
     }
 
-    //TODO-comment
-    //TODO-test
-    private static ArrayList<String> retrieveTitlesFromTable() throws SQLException {
-        //Execute the query to retrieve all titles
-        QueryResult result = DatabaseHandler.executeQuery("SELECT title FROM items ORDER BY itemID ASC");
-        ArrayList<String> titles = new ArrayList<>();
+    /**
+     * Retrieves titles from the items table and returns them as a map with title-count pairs.
+     *
+     * @return a map of titles and their counts
+     * @throws SQLException if there's an error executing the SQL query
+     */
+    private static Map<String, Integer> retrieveTitlesFromTable() throws SQLException {
+        // Execute the query to retrieve all titles
+        QueryResult result = DatabaseHandler.executeQuery("SELECT title, count(*) as count FROM items GROUP BY title ORDER BY title ASC");
+        Map<String, Integer> titles = new HashMap<>();
 
-        //Add the retrieved titles to the ArrayList
+        // Add the retrieved titles to the map
         while (result.getResultSet().next()) {
-            titles.add(result.getResultSet().getString("title"));
+            titles.put(result.getResultSet().getString("title"), result.getResultSet().getInt("count"));
         }
 
-        //Close the resources
+        // Close the resources
         result.close();
         return titles;
     }
 
-    //TODO-comment
-    //TODO-test
+    /**
+     * Prints the stored titles and their counts.
+     */
     public static void printTitles() {
         System.out.println("\nTitles:");
-        int num = 1;
-        for (String title : storedTitles) {
-            System.out.println(num + ": " + title);
-            num++;
-        }
+        storedTitles.forEach((title, count) -> System.out.println("Title: " + title + " Available: " + count));
     }
 
-    //TODO-comment
-    public static ArrayList<String> getStoredTitles() {
+    /**
+     * Returns the storedTitles map.
+     *
+     * @return the storedTitles map
+     */
+    public static Map<String, Integer> getStoredTitles() {
         return storedTitles;
     }
 
+    /**
+     * Sets the storedTitles map.
+     *
+     * @param storedTitles the map of titles and their counts to set
+     */
+    public static void setStoredTitles(Map<String, Integer> storedTitles) {
+        ItemHandler.storedTitles = storedTitles;
+    }
+
+    /**
+     * Prints the list of items with their IDs and titles.
+     *
+     * @param itemList the list of items to print
+     */
     public static void printItemList(List<Item> itemList) {
         System.out.println("Items:");
         int count = 1;
@@ -82,36 +107,25 @@ public class ItemHandler {
         }
     }
 
-    /**
-     * Creates a new Item with the specified title and saves it to the database.
-     * If the Item creation fails, this method returns null.
-     *
-     * @param title the title of the new Item object.
-     * @return the created Item object on success, null on failure.
-     * @throws SQLException If an error occurs while interacting with the database
-     */
+
+
     public static Item createNewItem(String title) throws SQLException {
-        //TODO-prio add to these two when more fields are added, as well as javadoc
-        //No point creating invalid items
         if (title == null || title.isEmpty())
             throw new IllegalArgumentException("Empty title.");
 
-        //Create and save the new item, retrieving the ID
         Item newItem = new Item(title);
         newItem.setItemID(saveItem(newItem));
 
-        //We don't need duplicates
-        if (!storedTitles.contains(newItem.getTitle()))
-            storedTitles.add(newItem.getTitle());
+        storedTitles.put(newItem.getTitle(), storedTitles.getOrDefault(newItem.getTitle(), 0) + 1);
         return newItem;
     }
 
     /**
      * Saves an Item object to the database.
      *
-     * <p>This method attempts to insert a new item into the 'item' table. It uses the title property of the
+     * This method attempts to insert a new item into the 'item' table. It uses the title property of the
      * provided Item object to populate the new record. The database is expected to generate
-     * a unique ID for each new item, which is retrieved and returned by this method.</p>
+     * a unique ID for each new item, which is retrieved and returned by this method.
      *
      * @param item the Item object to be saved. This object should have a title set.
      * @return the unique itemID generated by the database for the new item record.
@@ -140,9 +154,9 @@ public class ItemHandler {
     /**
      * Retrieves a Item object from the database based on the provided item ID.
      *
-     * <p>This method attempts to retrieve the item details from the 'items' table in the database
+     * This method attempts to retrieve the item details from the 'items' table in the database
      * that correspond to the provided item ID. If a item with the given ID exists, a new Item object
-     * is created with the retrieved title and the item's ID is set.</p>
+     * is created with the retrieved title and the item's ID is set.
      *
      * @param itemID The unique ID of the item to be retrieved.
      * @return The Item object corresponding to the provided ID, or null if no such item is found.
@@ -184,9 +198,9 @@ public class ItemHandler {
     /**
      * Retrieves a Item object from the database based on the provided title.
      *
-     * <p>This method attempts to retrieve the item details from the 'items' table in the database
+     * This method attempts to retrieve the item details from the 'items' table in the database
      * that correspond to the provided title. If a item with the given title exists, a new Item
-     * object is created with the retrieved title.</p>
+     * object is created with the retrieved title.
      *
      * @param title The title of the item to be retrieved.
      * @return The Item object corresponding to the provided title, or null if no such item is found.
@@ -218,81 +232,97 @@ public class ItemHandler {
         return null;
     }
 
-    /**
-     * Updates the corresponding item's record in the database with the details of the provided Item object.
-     *
-     * This method prepares a SQL UPDATE command to modify the existing item's title based on
-     * the Item object's itemID. It sets the values for the prepared statement using the Item object's data and
-     * executes the update.
-     *
-     * @param item The Item object containing the updated details of the item.
-     *             The item's itemID should correspond to an existing item in the database.
-     * @return true if the item's record was successfully updated, false otherwise.
-     * @throws SQLException If an error occurs while interacting with the database
-     */
+
+
     public static boolean updateItem(Item item) throws SQLException {
-        //Validate the input
+        // Validate the input
         if (item == null)
             throw new IllegalArgumentException("Invalid item: item is null.");
         if (item.getItemID() <= 0)
             throw new IllegalArgumentException("Invalid item: itemID must be greater than 0.");
 
-        //Prepare a SQL command to update a item's title by itemID.
+        // Get the old title
+        String oldTitle = getItemTitleById(item.getItemID());
+
+        // Prepare a SQL command to update an item's title by itemID.
         String sql = "UPDATE items SET title = ? WHERE itemID = ?";
         String[] params = {item.getTitle(), String.valueOf(item.getItemID())};
 
-        //Execute the update.
+        // Execute the update.
         int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
-        //Check if the update was successful (i.e., if any rows were affected)
+        // If the update was successful, update the storedTitles
+        if (rowsAffected == 1) {
+            // Decrement the count of the old title. Remove the entry if the count reaches 0.
+            storedTitles.put(oldTitle, storedTitles.get(oldTitle) - 1);
+            if (storedTitles.get(oldTitle) == 0) {
+                storedTitles.remove(oldTitle);
+            }
+
+            // Increment the count of the new title. Add a new entry if the title does not exist yet.
+            storedTitles.put(item.getTitle(), storedTitles.getOrDefault(item.getTitle(), 0) + 1);
+        }
+
         return rowsAffected == 1;
     }
 
-    /**
-     * Deletes a item from the database. If delete is successful, checks if there still are items with the same title
-     * in the table. If not, removes that title from storedTitles.
-     *
-     * @param item The item to delete.
-     * @return true if the item was successfully deleted, false otherwise.
-     * @throws SQLException If an error occurs while interacting with the database
-     */
-    public static boolean deleteItem(Item item) throws SQLException {
+    private static String getItemTitleById(int itemId) throws SQLException {
+        String sql = "SELECT title FROM items WHERE itemID = ?";
+        String[] params = {String.valueOf(itemId)};
+        QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+
+        if(queryResult.getResultSet().next()){
+            return queryResult.getResultSet().getString("title");
+        }else{
+            throw new SQLException("Item with ID " + itemId + " does not exist.");
+        }
+    }
+
+
+
+    public static boolean deleteItem(Item item) throws SQLException, ItemNotFoundException {
         //Validate the input
         if (item == null)
             throw new IllegalArgumentException("Invalid item: item is null.");
         if (item.getItemID() <= 0)
             throw new IllegalArgumentException("Invalid item: itemID must be greater than 0.");
 
-        boolean isDeleted = false;
+        // Check if the item exists in the database
+        String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
+        String[] params = {String.valueOf(item.getItemID())};
+
+        QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+        ResultSet resultSet = queryResult.getResultSet();
+        resultSet.next(); // Move to the first row
+
+        // If the item does not exist, throw an exception
+        if (resultSet.getInt(1) == 0) {
+            queryResult.close();
+            throw new ItemNotFoundException(item.getItemID());
+        }
+
+        queryResult.close();
 
         //Prepare a SQL command to delete a item by itemID.
-        String sql = "DELETE FROM items WHERE itemID = ?";
-        String[] params = {String.valueOf(item.getItemID())};
+        sql = "DELETE FROM items WHERE itemID = ?";
+        params = new String[]{String.valueOf(item.getItemID())};
 
         //Execute the update.
         int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
         //Check if the delete was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
-            isDeleted = true;
-
-            //Check if there are still other items with the same title
-            sql = "SELECT COUNT(*) FROM items WHERE title = ?";
-            params[0] = item.getTitle();
-            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
-            ResultSet resultSet = queryResult.getResultSet();
-            resultSet.next(); //Move to the first row
-
-            //If no other items with the same title exist, remove the title from storedTitles
-            if (resultSet.getInt(1) == 0) {
+            // Decrement the count of the item's title. Remove the entry if the count reaches 0.
+            storedTitles.put(item.getTitle(), storedTitles.get(item.getTitle()) - 1);
+            if (storedTitles.get(item.getTitle()) == 0) {
                 storedTitles.remove(item.getTitle());
             }
-
-            queryResult.close();
+            return true;
         }
-        //Return whether the item was deleted successfully.
-        return isDeleted;
+
+        return false;
     }
+
 
     //TODO-test
     //TODO-comment

@@ -37,14 +37,14 @@ public class RentalTest {
     void testRentalConstructor_ForCreation_ValidInput() {
         System.out.println("\n1: Testing Rental constructor for creation with valid input...");
 
-        // Inputs for the constructor
+        //Inputs for the constructor
         int userID = 1;
         int itemID = 1;
 
-        // Call the constructor
+        //Call the constructor
         Rental rental = new Rental(userID, itemID);
 
-        // Check the values of the object
+        //Check the values of the object
         assertEquals(0, rental.getRentalID(), "Rental ID should be 0 for a newly created rental.");
         assertEquals(userID, rental.getUserID(), "User ID should match the input.");
         assertEquals(itemID, rental.getItemID(), "Item ID should match the input.");
@@ -70,15 +70,15 @@ public class RentalTest {
     void testRentalConstructor_ForCreation_InvalidInput() {
         System.out.println("\n2: Testing Rental constructor for creation with invalid input...");
 
-        // Inputs for the constructor
+        //Inputs for the constructor
         int invalidUserID = 0;
         int invalidItemID = -1;
 
-        // Test invalid user ID
+        //Test invalid user ID
         assertThrows(IllegalArgumentException.class, () -> new Rental(invalidUserID, 1),
                 "Constructor should throw an IllegalArgumentException when the user ID is not valid.");
 
-        // Test invalid item ID
+        //Test invalid item ID
         assertThrows(IllegalArgumentException.class, () -> new Rental(1, invalidItemID),
                 "Constructor should throw an IllegalArgumentException when the item ID is not valid.");
 
@@ -95,7 +95,7 @@ public class RentalTest {
     void testRentalConstructor_FromDatabase_ValidInput() {
         System.out.println("\n3: Testing Rental constructor with data retrieved from the database...");
 
-        // Inputs for the constructor
+        //Inputs for the constructor
         int rentalID = 1;
         int userID = 1;
         int itemID = 1;
@@ -108,7 +108,7 @@ public class RentalTest {
 
         Rental rental = new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee);
 
-        // Test all fields
+        //Test all fields
         assertEquals(rentalID, rental.getRentalID(), "RentalID not set correctly.");
         assertEquals(userID, rental.getUserID(), "UserID not set correctly.");
         assertEquals(itemID, rental.getItemID(), "ItemID not set correctly.");
@@ -131,42 +131,42 @@ public class RentalTest {
     void testRentalConstructor_FromDatabase_InvalidInput() {
         System.out.println("\n4: Testing Rental constructor with data retrieved from the database and invalid input...");
 
-        // Invalid inputs for the constructor
+        //Invalid inputs for the constructor
         int rentalID = -1;
         int userID = -1;
         int itemID = -1;
-        LocalDateTime rentalDate = LocalDateTime.now().plusDays(1); // In future
+        LocalDateTime rentalDate = LocalDateTime.now().plusDays(1); //In future
         String username = "";
         String itemTitle = "";
-        LocalDateTime rentalDueDate = LocalDateTime.now().minusDays(1); // In past
-        LocalDateTime rentalReturnDate = LocalDateTime.now().minusDays(10); // Before rentalDate
-        double lateFee = -0.01; // Negative fee
+        LocalDateTime rentalDueDate = LocalDateTime.now().minusDays(1); //In past
+        LocalDateTime rentalReturnDate = LocalDateTime.now().minusDays(10); //Before rentalDate
+        double lateFee = -0.01; //Negative fee
 
-        // Testing invalid rentalID
+        //Testing invalid rentalID
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when rentalID was invalid.");
 
-        // Testing invalid userID
+        //Testing invalid userID
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when userID was invalid.");
 
-        // Testing invalid itemID
+        //Testing invalid itemID
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when itemID was invalid.");
 
-        // Testing invalid rentalDate
+        //Testing invalid rentalDate
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when rentalDate was invalid.");
 
-        // Testing invalid username
+        //Testing invalid username
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when username was invalid.");
 
-        // Testing invalid itemTitle
+        //Testing invalid itemTitle
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when itemTitle was invalid.");
 
-        // Testing invalid rentalDueDate
+        //Testing invalid rentalDueDate
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when rentalDueDate was invalid.");
 
-        // Testing invalid rentalReturnDate
+        //Testing invalid rentalReturnDate
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when rentalReturnDate was invalid.");
 
-        // Testing invalid lateFee
+        //Testing invalid lateFee
         assertThrows(IllegalArgumentException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee), "Rental constructor did not throw exception when lateFee was invalid.");
 
         System.out.println("\nTEST FINISHED.");
@@ -183,14 +183,14 @@ public class RentalTest {
     void testRentalConstructor_CopyRental() {
         System.out.println("\n5: Testing Rental copy constructor...");
 
-        // Create a rental object
+        //Create a rental object
         LocalDateTime now = LocalDateTime.now();
         Rental originalRental = new Rental(1, 2, 3, now, "username", "itemTitle", now.plusDays(7), null, 0.0);
 
-        // Use the copy constructor
+        //Use the copy constructor
         Rental copyRental = new Rental(originalRental);
 
-        // Check that all fields are identical
+        //Check that all fields are identical
         assertEquals(originalRental.getRentalID(), copyRental.getRentalID());
         assertEquals(originalRental.getUserID(), copyRental.getUserID());
         assertEquals(originalRental.getItemID(), copyRental.getItemID());
@@ -248,7 +248,7 @@ public class RentalTest {
         assertThrows(IllegalArgumentException.class, () -> rental.setRentalDate(null));
         assertThrows(IllegalArgumentException.class, () -> rental.setRentalDate(LocalDateTime.now().plusSeconds(1)));
         rental.setRentalDate(LocalDateTime.now());
-        // Assuming your test completes within a second, this should pass.
+        //Assuming your test completes within a second, this should pass.
         assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), rental.getRentalDate());
         System.out.println("\nTEST FINISHED.");
     }
@@ -294,8 +294,8 @@ public class RentalTest {
     void testSetRentalReturnDate() {
         System.out.println("\n13: Testing setRentalReturnDate...");
         Rental rental = new Rental(1, 1);
-        rental.setRentalDate(LocalDateTime.now().minusDays(1)); // Set RentalDate to make RentalReturnDate setting possible
-        assertThrows(IllegalArgumentException.class, () -> rental.setRentalReturnDate(LocalDateTime.now().minusDays(2))); // Return date before RentalDate
+        rental.setRentalDate(LocalDateTime.now().minusDays(1)); //Set RentalDate to make RentalReturnDate setting possible
+        assertThrows(IllegalArgumentException.class, () -> rental.setRentalReturnDate(LocalDateTime.now().minusDays(2))); //Return date before RentalDate
         rental.setRentalReturnDate(LocalDateTime.now());
         assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), rental.getRentalReturnDate());
         System.out.println("\nTEST FINISHED.");

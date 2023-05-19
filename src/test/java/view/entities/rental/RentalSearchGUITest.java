@@ -26,7 +26,7 @@ public class RentalSearchGUITest {
 
     public static void main(String[] args) {
         LibraryManager.setup();
-        try {
+        /*try {
             RentalHandler.createNewRental(1, 1);
             RentalHandler.createNewRental(2, 2);
             RentalHandler.createNewRental(3, 3);
@@ -38,5 +38,7 @@ public class RentalSearchGUITest {
             e.printStackTrace();
         }
         new RentalSearchGUI(null);
+
+         */
     }
 }

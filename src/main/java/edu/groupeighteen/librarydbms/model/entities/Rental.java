@@ -131,7 +131,7 @@ public class Rental extends Entity {
         this.rentalID = other.rentalID;
         this.userID = other.userID;
         this.itemID = other.itemID;
-        this.rentalDate = other.rentalDate;  // Assuming LocalDateTime is immutable
+        this.rentalDate = other.rentalDate;  //Assuming LocalDateTime is immutable
         this.username = other.username;
         this.itemTitle = other.itemTitle;
         this.rentalDueDate = other.rentalDueDate;

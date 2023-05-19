@@ -109,6 +109,7 @@ public class DatabaseHandler {
     }
 
     //TODO-exception
+    //TODO-TEST
     /**
      * Execute an SQL update statement using a prepared statement.
      *
@@ -122,11 +123,14 @@ public class DatabaseHandler {
             System.out.println("\nExecuting command:");
             SQLFormatter.printFormattedSQL(command);
         }
+
         try (PreparedStatement stmt = connection.prepareStatement(command)) {
 
             //Bind the provided parameters to the SQL statement
-            for (int i = 0; i < parameters.length; i++) {
-                stmt.setString(i + 1, parameters[i]);
+            if (parameters != null) {
+                for (int i = 0; i < parameters.length; i++) {
+                    stmt.setString(i + 1, parameters[i]);
+                }
             }
 
             //Execute the update and return the number of affected rows

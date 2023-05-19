@@ -18,10 +18,14 @@ public class User extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
+    public static final int USER_ALLOWED_RENTALS = 5;
 
     private int userID; //Primary key
     private String username;
     private String password; //TODO-future hash and salt
+    private final int allowedRentals; //TODO-test
+    private int currentRentals; //TODO-test
+    private double lateFee; //TODO-test
 
     /**
      * Regular Constructor.
@@ -32,6 +36,9 @@ public class User extends Entity {
         this.userID = 0;
         setUsername(username);
         setPassword(password);
+        this.allowedRentals = USER_ALLOWED_RENTALS;
+        this.currentRentals = 0;
+        this.lateFee = 0.0;
     }
 
     /**
@@ -42,6 +49,9 @@ public class User extends Entity {
         this.userID = other.userID;
         this.username = other.username;
         this.password = other.password;
+        this.allowedRentals = other.allowedRentals;
+        this.currentRentals = other.currentRentals;
+        this.lateFee = other.lateFee;
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
@@ -76,5 +86,27 @@ public class User extends Entity {
             throw new IllegalArgumentException("Password cannot be null or empty. Received: " + password);
         }
         this.password = password;
+    }
+
+    public int getAllowedRentals() {
+        return allowedRentals;
+    }
+
+    public int getCurrentRentals() {
+        return currentRentals;
+    }
+
+    public void setCurrentRentals(int currentRentals) {
+        this.currentRentals = currentRentals;
+    }
+
+    public double getLateFee() {
+        return lateFee;
+    }
+
+    public void setLateFee(double lateFee) {
+        if (lateFee < 0)
+            throw new IllegalArgumentException("Late fee cannot be less than zero. Received: " + lateFee);
+        this.lateFee = lateFee;
     }
 }

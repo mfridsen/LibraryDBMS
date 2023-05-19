@@ -9,12 +9,16 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -89,7 +93,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             System.out.println("\nTEST FINISHED.");
 
-        } catch (UserNotFoundException | ItemNotFoundException e) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException e) {
             e.printStackTrace();
             fail("Test should be able to retrieve user or item with correct IDs. userID: " + validUserID + ", itemID: " + validItemID);
         } catch (SQLException sqle) {
@@ -203,6 +207,125 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         System.out.println("\nTEST FINISHED.");
     }
+
+    /**
+     * Test case for createNewRental method when user tries to rent an item that's already rented out.
+     */
+    @Test
+    @Order(6)
+    void testCreateNewRental_ItemAlreadyRented() {
+        System.out.println("\n6: Testing createNewRental method with an item that's already rented out...");
+
+        // Your test code here...
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for createNewRental method when user tries to rent more items than allowed.
+     */
+    @Test
+    @Order(7)
+    void testCreateNewRental_MaxRentalsExceeded() {
+        System.out.println("\n7: Testing createNewRental method with more rentals than allowed...");
+
+        // Your test code here...
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for createNewRental method when user tries to rent an item but they have unpaid late fees.
+     */
+    @Test
+    @Order(8)
+    void testCreateNewRental_UnpaidLateFees() {
+        System.out.println("\n8: Testing createNewRental method when user has unpaid late fees...");
+
+        // Your test code here...
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for the getAllRentals method with an empty database.
+     *
+     * This test verifies that the getAllRentals method correctly returns an empty list when there are no rentals
+     * in the database.
+     *
+     * It clears the rentals table in the database, calls the getAllRentals method, and compares the expected empty
+     * list with the actual result.
+     *
+     * If the actual result matches the expected empty list, the test passes.
+     */
+    @Test
+    @Order(9)
+    void testGetAllRentals_EmptyRentalsTable() {
+        System.out.println("\n9: Testing getAllRentals method with an empty database...");
+
+        // Clear the rentals table in the database
+        try {
+            DatabaseHandler.executeCommand("DELETE FROM Rentals");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        List<Rental> expectedRentals = Collections.emptyList();
+        List<Rental> actualRentals;
+        try {
+            actualRentals = RentalHandler.getAllRentals();
+            assertEquals(expectedRentals, actualRentals);
+        } catch (SQLException | UserNotFoundException | ItemNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(10)
+    void testGetAllRentals_PopulatedRentalsTable() {
+        System.out.println("\n10: Testing getAllRentals method with some rentals in the database...");
+
+        //Create some rentals
+        try {
+            RentalHandler.createNewRental(1, 1);
+            RentalHandler.createNewRental(2, 2);
+            RentalHandler.createNewRental(3, 3);
+            RentalHandler.createNewRental(4, 4);
+            RentalHandler.createNewRental(5, 5);
+        } catch (SQLException | ItemNotFoundException | UserNotFoundException | RentalNotAllowedException e) {
+            e.printStackTrace();
+            fail("Error while creating rentals: " + e.getMessage());
+        }
+
+        //Retrieve all rentals
+        List<Rental> rentals = null;
+        try {
+            rentals = RentalHandler.getAllRentals();
+        } catch (SQLException | UserNotFoundException | ItemNotFoundException e) {
+            e.printStackTrace();
+            fail("Error while retrieving rentals: " + e.getMessage());
+        }
+
+        //Check if the number of rentals retrieved matches the number of rentals created
+        assertNotNull(rentals, "The retrieved rentals list should not be null.");
+        assertEquals(5, rentals.size(), "The number of retrieved rentals does not match the number of created rentals.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(11)
+    void testGetAllRentals_NonexistentUserOrItem() {
+        System.out.println("\n9: Testing getAllRentals method with a non-existent user or item...");
+
+        // Your test code here...
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+
 
 /**
      * This test method tests the getAllRentals method in RentalHandler.

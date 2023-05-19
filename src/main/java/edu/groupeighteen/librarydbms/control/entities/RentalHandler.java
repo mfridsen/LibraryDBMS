@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 
 import java.sql.*;
@@ -67,8 +68,11 @@ public class RentalHandler {
      *                                  or if the number of allowed rental days is not a positive integer.
      * @throws SQLException if there is an error fetching the user or item from their handlers, 
      *                      or if there is an error saving the new rental in the database.
+     * @throws RentalNotAllowedException if the item is already rented out,
+     *                      or if the user has rented to their capacity,
+     *                      or if the user has a late fee.
      */
-    public static Rental createNewRental(int userID, int itemID) throws SQLException, UserNotFoundException, ItemNotFoundException {
+    public static Rental createNewRental(int userID, int itemID) throws SQLException, UserNotFoundException, ItemNotFoundException, RentalNotAllowedException {
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
             throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: "
@@ -77,17 +81,31 @@ public class RentalHandler {
         //Create and save the new rental
         Rental newRental = new Rental(userID, itemID);
 
-        //Set username (ONLY IN OBJECT, NOT IN TABLE)
-        User user = UserHandler.getUserByID(userID);
-        if (user == null)
-            throw new UserNotFoundException(userID);
-        newRental.setUsername(user.getUsername());
-
-        //Set title (ONLY IN OBJECT, NOT IN TABLE)
+        //Retrieve item based on ID
         Item item = ItemHandler.getItemByID(itemID);
+        //Couldn't retrieve item
         if (item == null)
             throw new ItemNotFoundException(itemID);
+        //No copies are available
+        //TODO-prio add checking if there are available copies and test
+        //Set title (ONLY IN OBJECT, NOT IN TABLE)
         newRental.setItemTitle(item.getTitle());
+
+        //Retrieve user based on ID
+        User user = UserHandler.getUserByID(userID);
+        //Couldn't retrieve user
+        if (user == null)
+            throw new UserNotFoundException(userID);
+        //To many current rentals for user
+        if (user.getCurrentRentals() >= user.getAllowedRentals())
+            throw new RentalNotAllowedException("User not allowed to rent due to already renting to capacity. " +
+                    "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
+        //User has late fee
+        if (user.getLateFee() > 0)
+            throw new RentalNotAllowedException("User not allowed to rent due to having a late fee. " +
+                    "Late fee: " + user.getLateFee());
+        //Set username (ONLY IN OBJECT, NOT IN TABLE)
+        newRental.setUsername(user.getUsername());
 
         //Obtain and set AllowedRentalDays
         int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
@@ -148,17 +166,17 @@ public class RentalHandler {
     }
 
     /**
-     * This method retrieves all rentals from the database.
+     * Retrieves all rentals from the 'rentals' table in the database and returns them as a list of Rental objects.
+     * Throws SQLException if there's an error executing the SQL query.
+     * Throws UserNotFoundException if a user associated with a rental is not found.
+     * Throws ItemNotFoundException if an item associated with a rental is not found.
      *
-     * It creates a SQL SELECT statement to retrieve all rentals from the 'rentals' table. It then executes this
-     * statement using the DatabaseHandler's executeQuery method, which returns a ResultSet containing all rentals.
-     * The method then loops through the ResultSet, converting each row into a Rental object and adding it to
-     * an ArrayList. Finally, it returns this ArrayList.
-     *
-     * @return An ArrayList containing all rentals in the database, each represented by a Rental object.
-     * @throws SQLException If an error occurs while interacting with the database.
+     * @return a list of Rental objects representing all rentals in the database
+     * @throws SQLException          if there's an error executing the SQL query
+     * @throws UserNotFoundException if a user associated with a rental is not found
+     * @throws ItemNotFoundException if an item associated with a rental is not found
      */
-    public static List<Rental> getAllRentals() throws SQLException {
+    public static List<Rental> getAllRentals() throws SQLException, UserNotFoundException, ItemNotFoundException {
         //Prepare a SQL command to select all rentals from the 'rentals' table.
         String sql = "SELECT * FROM rentals";
 
@@ -175,25 +193,39 @@ public class RentalHandler {
             int userID = resultSet.getInt("userID");
             int itemID = resultSet.getInt("itemID");
             LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
+            LocalDateTime rentalDueDate = resultSet.getTimestamp("rentalDueDate").toLocalDateTime();
+            // Get the rental return date. This can be null in the database.
+            Timestamp returnDateTimestamp = resultSet.getTimestamp("rentalReturnDate");
+            LocalDateTime rentalReturnDate = null;
+            // Convert timestamp to LocalDateTime only if it is not null.
+            if (returnDateTimestamp != null) {
+                rentalReturnDate = returnDateTimestamp.toLocalDateTime();
+            }
+            float lateFee = resultSet.getFloat("lateFee");
 
             //Get user by ID
             User user = UserHandler.getUserByID(userID);
             if (user == null) {
-                throw new SQLException("Error retrieving user from database by ID: username null.");
+                throw new UserNotFoundException(userID);
             }
 
             //Get item by ID
             Item item = ItemHandler.getItemByID(itemID);
             if (item == null) {
-                throw new SQLException("Error retrieving item from database by ID: title null.");
+                throw new ItemNotFoundException(itemID);
             }
 
+            //Create Rental object and set all fields
             Rental rental = new Rental(userID, itemID);
             rental.setRentalID(rentalID);
             rental.setRentalDate(rentalDate);
             rental.setUsername(user.getUsername());
             rental.setItemTitle(item.getTitle());
+            rental.setRentalDueDate(rentalDueDate);
+            rental.setRentalReturnDate(rentalReturnDate);
+            rental.setLateFee(lateFee);
 
+            //Add to list
             rentals.add(rental);
         }
 
@@ -208,21 +240,23 @@ public class RentalHandler {
     /**
      * Prints all data of rentals in a list.
      * @param rentals the list of rentals.
-     *//*
+     */
     public static void printRentalList(List<Rental> rentals) {
         System.out.println("Rentals:");
         int count = 1;
         for (Rental rental : rentals) {
             System.out.println(count + " rentalID: " + rental.getRentalID() + ", userID: " + rental.getUserID()
                     + ", username: " + rental.getUsername() + ", itemID: " + rental.getItemID()
-                    + ", item title: " + rental.getItemTitle() + ", rental date: " + rental.getRentalDate());
+                    + ", item title: " + rental.getItemTitle() + ", rental date: " + rental.getRentalDate()
+                    + ", rental due date: " + rental.getRentalDueDate()
+                    + ", rental return date: " + rental.getRentalReturnDate() + ", late fee: " + rental.getLateFee());
             count++;
         }
     }
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    *//**
+    /**
      * Retrieves a Rental object from the database based on the provided rental ID.
      *
      * This method attempts to retrieve the rental details from the 'rentals' table in the database
