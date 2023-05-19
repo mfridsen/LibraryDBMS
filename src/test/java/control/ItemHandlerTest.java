@@ -405,17 +405,157 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     //TODO-test getItemByISBN
 
+    //TODO-test getItemsByGenre
+
     //TODO-test getItemByAuthor
 
     //TODO-test getItemByPublisher
 
     //TODO-test getItemByType
 
-    //TODO-test updateItem
 
 
 
-    //TODO-test deleteItem
+    @Test
+    @Order(42)
+    void testUpdateItem_NullItem() {
+        System.out.println("\n42: Testing updateItem with null item...");
+
+        try {
+            // Try to update with null item
+            ItemHandler.updateItem(null);
+            fail("An IllegalArgumentException was expected.");
+        } catch (IllegalArgumentException iae) {
+            assertEquals("Invalid item: item is null.", iae.getMessage());
+        } catch (SQLException | ItemNotFoundException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(43)
+    void testUpdateItem_NonexistentItemID() {
+        System.out.println("\n43: Testing updateItem with a nonexistent itemID...");
+
+        try {
+            // Create an item with nonexistent ID
+            Item nonexistentItem = new Item("Nonexistent Item");
+            nonexistentItem.setItemID(99999);
+
+            // Try to update this nonexistent item
+            ItemHandler.updateItem(nonexistentItem);
+            fail("An ItemNotFoundException was expected.");
+        } catch (ItemNotFoundException inf) {
+            assertEquals("Failed to find item with title: Item with ID 99999 does not exist.", inf.getMessage());
+        } catch (SQLException | IllegalArgumentException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(44)
+    void testUpdateItem_ValidItem() {
+        System.out.println("\n44: Testing updateItem with a valid item...");
+
+        try {
+            // Create a new item
+            Item validItem = ItemHandler.createNewItem("Valid Item");
+
+            // Update the title of the item
+            String newTitle = "Updated Item";
+            validItem.setTitle(newTitle);
+            boolean isUpdated = ItemHandler.updateItem(validItem);
+
+            // Check if the item was updated
+            assertTrue(isUpdated);
+
+            // Retrieve the updated item
+            Item updatedItem = ItemHandler.getItemByID(validItem.getItemID());
+
+            // The retrieved item should not be null and should have the new title
+            assertNotNull(updatedItem);
+            assertEquals(newTitle, updatedItem.getTitle());
+        } catch (SQLException | ItemNotFoundException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(45)
+    void testDeleteItem_NullItem() {
+        System.out.println("\n45: Testing deleteItem with null item...");
+
+        try {
+            // Try to delete null item
+            ItemHandler.deleteItem(null);
+            fail("An IllegalArgumentException was expected.");
+        } catch (IllegalArgumentException iae) {
+            assertEquals("Invalid item: item is null.", iae.getMessage());
+        } catch (SQLException | ItemNotFoundException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(46)
+    void testDeleteItem_NonexistentItem() {
+        System.out.println("\n46: Testing deleteItem with a nonexistent item...");
+
+        try {
+            // Create an item with nonexistent ID
+            Item nonexistentItem = new Item("Nonexistent Item");
+            nonexistentItem.setItemID(99999);
+
+            // Try to delete this nonexistent item
+            ItemHandler.deleteItem(nonexistentItem);
+            fail("An ItemNotFoundException was expected.");
+        } catch (ItemNotFoundException inf) {
+            assertEquals("Failed to find item with ID: 99999", inf.getMessage());
+        } catch (SQLException | IllegalArgumentException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(47)
+    void testDeleteItem_ValidItem() {
+        System.out.println("\n47: Testing deleteItem with a valid item...");
+
+        try {
+            // Create a new item
+            Item validItem = ItemHandler.createNewItem("Valid Item");
+
+            // Delete the item
+            boolean isDeleted = ItemHandler.deleteItem(validItem);
+
+            // Check if the item was deleted
+            assertTrue(isDeleted);
+
+            // Try to retrieve the deleted item
+            try {
+                ItemHandler.getItemByID(validItem.getItemID());
+                fail("An ItemNotFoundException was expected.");
+            } catch (ItemNotFoundException inf) {
+                assertEquals("Failed to find item with ID: " + validItem.getItemID(), inf.getMessage());
+            }
+
+        } catch (SQLException | ItemNotFoundException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
 
 
 

@@ -18,7 +18,7 @@ public class User extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
-    public static final int USER_ALLOWED_RENTALS = 5;
+    public static final int USER_DEFAULT_ALLOWED_RENTALS = 5;
 
     private int userID; //Primary key
     private String username;
@@ -36,7 +36,7 @@ public class User extends Entity {
         this.userID = 0;
         setUsername(username);
         setPassword(password);
-        this.allowedRentals = USER_ALLOWED_RENTALS;
+        this.allowedRentals = USER_DEFAULT_ALLOWED_RENTALS;
         this.currentRentals = 0;
         this.lateFee = 0.0;
     }

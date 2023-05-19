@@ -195,45 +195,73 @@ public class ItemHandler {
     }
 
 
-    public static Item getItemsByISBN(String ISBN) {
+    public static List<Item> getItemsByISBN(String ISBN) {
         //Empty ISBN
         //Null ISBN
         //Incorrect format ISBN
         //Item does not exist
         //Item does exist
-        // == 5 test cases
+        //Multiple items exist
+        // == 6 test cases
+        return null;
+    }
+
+    public static List<Item> getItemsByGenre(String genre) {
+        //Empty genre
+        //Null genre
+        //genre does not exist
+        //items don't exist in genre
+        //Item does exist
+        //Multiple items exist
+        // == 6 test cases
         return null;
     }
 
     public static List<Item> getItemsByAuthor(String authorName) {
-        //empty author
-        //null author
+        //empty authorName
+        //null authorName
         //no such author
         //author exists, but no titles for some reason
+        //author exists and has title
+        //Multiple items exist for author
+        // == 6 test cases
 
         return null;
     }
 
     public static Item getItemsByPublisher(String publisherName) {
+        //empty publisherName
+        //null publisherName
+        //no such publisher
+        //publisher exists, but no titles for some reason
+        //publisher exists and has title
+        //Multiple items exist for publisher
+        // == 6 test cases
+
         return null;
     }
 
-    public static Item getItemsByType(String type) { //Not going to be string
+    public static Item getItemsByType(String type) { //Not going to be string, but an ENUM instead
+        //Invalid enum should not be possible...
+
+        //No items of such type
+        //Single item of type
+        //multiple items of type
+        // == 3 test cases
+
         return null;
     }
 
+    // == 27 test cases
 
-    //TODO-test ASAP
     //TODO-prio update when Item is finished
-    public static boolean updateItem(Item item) throws SQLException {
+    public static boolean updateItem(Item item) throws SQLException, ItemNotFoundException {
         // Validate the input
         if (item == null)
             throw new IllegalArgumentException("Invalid item: item is null.");
-        if (item.getItemID() <= 0)
-            throw new IllegalArgumentException("Invalid item: itemID must be greater than 0.");
 
         // Get the old title
-        String oldTitle = getItemTitleById(item.getItemID());
+        String oldTitle = getItemTitleByID(item.getItemID());
 
         // Prepare a SQL command to update an item's title by itemID.
         String sql = "UPDATE items SET title = ? WHERE itemID = ?";
@@ -253,11 +281,10 @@ public class ItemHandler {
             // Increment the count of the new title. Add a new entry if the title does not exist yet.
             storedTitles.put(item.getTitle(), storedTitles.getOrDefault(item.getTitle(), 0) + 1);
         }
-
         return rowsAffected == 1;
     }
 
-    private static String getItemTitleById(int itemId) throws SQLException {
+    private static String getItemTitleByID(int itemId) throws SQLException, ItemNotFoundException {
         String sql = "SELECT title FROM items WHERE itemID = ?";
         String[] params = {String.valueOf(itemId)};
         QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
@@ -265,19 +292,16 @@ public class ItemHandler {
         if(queryResult.getResultSet().next()){
             return queryResult.getResultSet().getString("title");
         }else{
-            throw new SQLException("Item with ID " + itemId + " does not exist.");
+            throw new ItemNotFoundException("Item with ID " + itemId + " does not exist.");
         }
     }
 
 
-    //TODO-test ASAP
     //TODO-prio update when Item is finished
     public static boolean deleteItem(Item item) throws SQLException, ItemNotFoundException {
         //Validate the input
         if (item == null)
             throw new IllegalArgumentException("Invalid item: item is null.");
-        if (item.getItemID() <= 0)
-            throw new IllegalArgumentException("Invalid item: itemID must be greater than 0.");
 
         // Check if the item exists in the database
         String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
@@ -311,7 +335,6 @@ public class ItemHandler {
             }
             return true;
         }
-
         return false;
     }
 
@@ -322,8 +345,7 @@ public class ItemHandler {
     //TODO-exception
     public static int getAllowedRentalDaysByID(int itemID) throws SQLException, ItemNotFoundException {
         Item item = getItemByID(itemID);
-        if (item != null) return item.getAllowedRentalDays();
-        else throw new IllegalArgumentException("Couldn't find item with ID: " + itemID);
+        return item.getAllowedRentalDays();
     }
 
     public static int getAvailableCopiesForItem(Item item) {

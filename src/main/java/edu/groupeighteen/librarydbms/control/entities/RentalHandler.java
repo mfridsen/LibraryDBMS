@@ -211,9 +211,6 @@ public class RentalHandler {
 
             //Get item by ID
             Item item = ItemHandler.getItemByID(itemID);
-            if (item == null) {
-                throw new ItemNotFoundException(itemID);
-            }
 
             //Create Rental object and set all fields
             Rental rental = new Rental(userID, itemID);
