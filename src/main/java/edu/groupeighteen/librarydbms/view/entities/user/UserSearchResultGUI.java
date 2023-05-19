@@ -41,7 +41,7 @@ public class UserSearchResultGUI extends GUI {
     protected void setupPanels() {
         searchPanel = new JPanel();
         JLabel resultatLabel;
-        /*
+
         if (username != null && containsIgnoreCase(username)) {
             resultatLabel = new JLabel("Resultat: " + username);
         } else {
