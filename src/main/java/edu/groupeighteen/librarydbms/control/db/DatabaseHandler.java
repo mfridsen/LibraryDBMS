@@ -282,7 +282,6 @@ public class DatabaseHandler {
         DatabaseConnection.closeConnection();
     }
 
-    /*********************************** Getters and Setters are self-explanatory. ************************************/
     public static void setConnection(Connection connection) {
         DatabaseHandler.connection = connection;
     }
@@ -298,4 +297,6 @@ public class DatabaseHandler {
     public static void setVerbose(boolean verbose) {
         DatabaseHandler.verbose = verbose;
     }
+
+
 }

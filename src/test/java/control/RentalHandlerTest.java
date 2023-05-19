@@ -1,6 +1,7 @@
 
 package control;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
@@ -50,7 +51,6 @@ public class RentalHandlerTest extends BaseHandlerTest {
     void testCreateNewRental_ValidInput() {
         System.out.println("\n1: Testing createNewRental method with valid input...");
 
-        // The valid user ID and item ID should be replaced with real IDs from your database
         int validUserID = 1;
         int validItemID = 1;
 
@@ -110,7 +110,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n2: Testing createNewRental method with invalid userID...");
 
         int invalidUserID = -1; // User IDs should be positive integers
-        int validItemID = 1; // Replace with a real item ID from your database
+        int validItemID = 1;
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             RentalHandler.createNewRental(invalidUserID, validItemID);
@@ -125,124 +125,85 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-
+    /**
+     * Test case for createNewRental method with an invalid itemID.
+     *
+     * This test attempts to create a new rental using an invalid item ID. The itemID is invalid if it is not a positive integer.
+     * An IllegalArgumentException should be thrown with an appropriate error message.
+     */
     @Test
     @Order(3)
     void testCreateNewRental_InvalidItemID() {
         System.out.println("\n3: Testing createNewRental method with invalid itemID...");
-        // ... your test code here ...
+
+        int invalidItemID = 0; // Item IDs should be positive integers
+        int validUserID = 1;
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            RentalHandler.createNewRental(validUserID, invalidItemID);
+        });
+
+        String expectedMessage = "Error creating new rental: Invalid userID or itemID. userID: "
+                + validUserID + ", itemID: " + invalidItemID;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for createNewRental method with a nonexistent user.
+     *
+     * This test attempts to create a new rental using a user ID that does not exist in the database.
+     * A UserNotFoundException should be thrown with an appropriate error message.
+     */
     @Test
     @Order(4)
     void testCreateNewRental_NonexistentUser() {
         System.out.println("\n4: Testing createNewRental method with nonexistent user...");
-        // ... your test code here ...
+
+        int nonexistentUserID = 9999; // This user ID does not exist in the database
+        int validItemID = 1;
+
+        Exception exception = assertThrows(UserNotFoundException.class, () -> {
+            RentalHandler.createNewRental(nonexistentUserID, validItemID);
+        });
+
+        String expectedMessage = "Failed to find user with ID: " + nonexistentUserID;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for createNewRental method with a nonexistent item.
+     *
+     * This test attempts to create a new rental using an item ID that does not exist in the database.
+     * An ItemNotFoundException should be thrown with an appropriate error message.
+     */
     @Test
     @Order(5)
     void testCreateNewRental_NonexistentItem() {
         System.out.println("\n5: Testing createNewRental method with nonexistent item...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
 
-    @Test
-    @Order(6)
-    void testCreateNewRental_NonPositiveAllowedRentalDays() {
-        System.out.println("\n6: Testing createNewRental method with non-positive allowed rental days...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
+        int validUserID = 1;
+        int nonexistentItemID = 9999; // This item ID does not exist in the database
 
-    @Test
-    @Order(7)
-    void testCreateNewRental_DatabaseError() {
-        System.out.println("\n7: Testing createNewRental method when database error occurs...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
+        Exception exception = assertThrows(ItemNotFoundException.class, () -> {
+            RentalHandler.createNewRental(validUserID, nonexistentItemID);
+        });
 
+        String expectedMessage = "Failed to find item with ID: " + nonexistentItemID;
+        String actualMessage = exception.getMessage();
 
-
-    /*
-    @Test
-    @Order(1)
-    void testSaveRental() {
-        System.out.println("\n1: Testing saveRental method...");
-
-        Rental testRental = new Rental(1, 1, LocalDateTime.now());
-
-        //Test valid saveRental
-        int rentalID = 0;
-        try {
-            rentalID = RentalHandler.saveRental(testRental);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail("Exception occurred during test: " + e.getMessage());
-        }
-        assertTrue(rentalID > 0, "Saving a valid rental should return a valid rental ID.");
-
-        //Test invalid saveRental
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(-1, 1, LocalDateTime.now())));
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(1, -1, LocalDateTime.now())));
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(1, 1, LocalDateTime.now().plusDays(1))));
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(new Rental(1, 1, null)));
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(null));
-
-        System.out.println("\nTEST FINISHED.");
-    }*/
-
-
-    /**
-     * Tests the createNewRental method in the RentalHandler class. This test involves both valid and invalid scenarios.
-     *
-     * Test Scenarios:
-     * 1. Tests if a valid Rental object can be created successfully. The method should return a valid Rental object for a successful creation. The created Rental's ID, userID, itemID, and rentalDate should match the provided parameters.
-     * 2. Tests if an IllegalArgumentException is thrown when trying to create an invalid Rental object. Invalid scenarios include:
-     *    - Negative userID
-     *    - Negative itemID
-     *    - Future rental date
-     *    - Null rental date
-     *
-     * Each invalid scenario should throw an IllegalArgumentException. The method prints out the test status and any exceptions thrown during the test.
-     *//*
-
-    @Test
-    @Order(2)
-    void testCreateNewRental() {
-        System.out.println("\n2: Testing createNewRental method...");
-        int userID = 1;
-        int itemID = 1;
-        LocalDateTime rentalDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS); //Need to round before test
-        Rental testRental = null;
-
-        //Test valid createNewRental
-        try {
-            testRental = RentalHandler.createNewRental(userID, itemID, rentalDate);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail("Exception occurred during test: " + e.getMessage());
-        }
-        assertNotNull(testRental, "Creating a valid rental should return a valid rental object.");
-        assertTrue(testRental.getRentalID() > 0, "The new rental should have a valid rental ID.");
-        assertEquals(userID, testRental.getUserID(), "The new rental's userID should match the provided userID.");
-        assertEquals(itemID, testRental.getItemID(), "The new rental's itemID should match the provided itemID.");
-        assertEquals(rentalDate, testRental.getRentalDate(), "The new rental's rentalDate should match the provided rentalDate.");
-
-        //Test invalid createNewRental
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.createNewRental(-1, 1, LocalDateTime.now()));
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.createNewRental(1, -1, LocalDateTime.now()));
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.createNewRental(1, 1, LocalDateTime.now().plusDays(1)));
-        assertThrows(IllegalArgumentException.class, () -> RentalHandler.createNewRental(1, 1, null));
+        assertTrue(actualMessage.contains(expectedMessage));
 
         System.out.println("\nTEST FINISHED.");
     }
 
-    */
 /**
      * This test method tests the getAllRentals method in RentalHandler.
      *

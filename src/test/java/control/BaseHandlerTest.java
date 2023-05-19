@@ -28,6 +28,7 @@ public abstract class BaseHandlerTest {
      */
     @BeforeEach
     void setupAndReset() {
+        System.out.println("\nSetting up and resetting database...");
         try {
             connection = DatabaseConnection.setup();
             DatabaseHandler.setConnection(connection);
@@ -39,6 +40,7 @@ public abstract class BaseHandlerTest {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        System.out.println("Setup finished.");
     }
 
     void setupTestTablesAndData() {

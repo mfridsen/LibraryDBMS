@@ -89,12 +89,8 @@ public class RentalHandler {
             throw new ItemNotFoundException(itemID);
         newRental.setItemTitle(item.getTitle());
 
-        //Obtain and validate allowedRentalDays
+        //Obtain and set AllowedRentalDays
         int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
-        if (allowedRentalDays <= 0)
-            throw new IllegalArgumentException("Error creating new rental: Invalid allowed rental days: " + allowedRentalDays);
-
-        //Set due date to creation date + allowedRentalDays
         LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
         newRental.setRentalDueDate(dueDate);
 
@@ -151,7 +147,7 @@ public class RentalHandler {
         }
     }
 
-/*    *//**
+    /**
      * This method retrieves all rentals from the database.
      *
      * It creates a SQL SELECT statement to retrieve all rentals from the 'rentals' table. It then executes this
@@ -161,7 +157,7 @@ public class RentalHandler {
      *
      * @return An ArrayList containing all rentals in the database, each represented by a Rental object.
      * @throws SQLException If an error occurs while interacting with the database.
-     *//*
+     */
     public static List<Rental> getAllRentals() throws SQLException {
         //Prepare a SQL command to select all rentals from the 'rentals' table.
         String sql = "SELECT * FROM rentals";
@@ -192,8 +188,9 @@ public class RentalHandler {
                 throw new SQLException("Error retrieving item from database by ID: title null.");
             }
 
-            Rental rental = new Rental(userID, itemID, rentalDate);
+            Rental rental = new Rental(userID, itemID);
             rental.setRentalID(rentalID);
+            rental.setRentalDate(rentalDate);
             rental.setUsername(user.getUsername());
             rental.setItemTitle(item.getTitle());
 
@@ -208,7 +205,7 @@ public class RentalHandler {
     }
 
     //TODO-prio update when Rental class is finished
-    *//**
+    /**
      * Prints all data of rentals in a list.
      * @param rentals the list of rentals.
      *//*

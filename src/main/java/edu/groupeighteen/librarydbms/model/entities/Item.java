@@ -23,13 +23,25 @@ public class Item extends Entity {
     private int allowedRentalDays;
 
     /**
-     * Regular Constructor.
+     * Creation Constructor. Takes the needed values to construct a new Item as arguments.
      * @param title
      */
     public Item(String title) {
         this.itemID = 0;
         this.allowedRentalDays = 14; //TODO-prio for now
         setTitle(title);
+    }
+
+    /**
+     * Retrieval Constructor.
+     * @param itemID
+     * @param title
+     * @param allowedRentalDays
+     */
+    public Item(int itemID, String title, int allowedRentalDays) {
+        this.itemID = itemID;
+        this.title = title;
+        this.allowedRentalDays = allowedRentalDays;
     }
 
     /**
