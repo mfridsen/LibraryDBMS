@@ -1,8 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
-import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
-
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -20,14 +17,10 @@ import java.time.temporal.ChronoUnit;
  *      UserIDs have to be positive integers.
  *      ItemIDs have to be positive integers.
  *      RentalDates cannot be null, and must be equal or less than LocalDateTime.now().
- *      Usernames cannot be null or empty. //TODO-future add min and max length in User
- *      Titles cannot be null or empty. //TODO-future add min and max length in Title
+ *      Usernames cannot be null or empty.
+ *      Titles cannot be null or empty.
  */
 public class Rental extends Entity {
-
-    //TODO-future add more fields and methods
-    //TODO-comment everything
-
     /**
      * The rental ID, which serves as the primary key for the rental.
      */
@@ -115,15 +108,15 @@ public class Rental extends Entity {
      */
     public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, String username, String itemTitle,
                   LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee) {
-        this.rentalID = rentalID;
-        this.userID = userID;
-        this.itemID = itemID;
-        this.rentalDate = rentalDate;
-        this.username = username;
-        this.itemTitle = itemTitle;
-        this.rentalDueDate = rentalDueDate;
-        this.rentalReturnDate = rentalReturnDate;
-        this.lateFee = lateFee;
+        setRentalID(rentalID);
+        setUserID(userID);
+        setItemID(itemID);
+        setRentalDate(rentalDate);
+        setUsername(username);
+        setItemTitle(itemTitle);
+        setRentalDueDate(rentalDueDate);
+        setRentalReturnDate(rentalReturnDate);
+        setLateFee(lateFee);
     }
 
     /**
@@ -268,28 +261,66 @@ public class Rental extends Entity {
         this.itemTitle = itemTitle;
     }
 
-    //TODO-prio complete
+    /**
+     * Returns the rental due date, truncated to days.
+     *
+     * @return the rental due date
+     */
     public LocalDateTime getRentalDueDate() {
         return rentalDueDate;
     }
 
+    /**
+     * Sets the rental due date.
+     *
+     * @param rentalDueDate the rental due date to set
+     * @throws IllegalArgumentException if the rental due date is null or is before the current time
+     */
     public void setRentalDueDate(LocalDateTime rentalDueDate) {
-        this.rentalDueDate = rentalDueDate;
+        if (rentalDueDate == null || rentalDueDate.isBefore(LocalDateTime.now()))
+            throw new IllegalArgumentException("Rental due date cannot be null or in the past. Received: " + rentalDueDate);
+        this.rentalDueDate = rentalDueDate.withHour(16).withMinute(0).truncatedTo(ChronoUnit.SECONDS);
     }
 
+    /**
+     * Returns the rental return date.
+     *
+     * @return the rental return date
+     */
     public LocalDateTime getRentalReturnDate() {
         return rentalReturnDate;
     }
 
+    /**
+     * Sets the rental return date.
+     *
+     * @param rentalReturnDate the rental return date to set
+     * @throws IllegalArgumentException if the rental return date is not null and is before the rental date
+     */
     public void setRentalReturnDate(LocalDateTime rentalReturnDate) {
-        this.rentalReturnDate = rentalReturnDate;
+        if (rentalReturnDate != null && rentalReturnDate.isBefore(this.getRentalDate()))
+            throw new IllegalArgumentException("Rental return date cannot be before the rental date. Received: " + rentalReturnDate);
+        this.rentalReturnDate = (rentalReturnDate == null) ? null : rentalReturnDate.truncatedTo(ChronoUnit.SECONDS);
     }
-
+    /**
+     * Returns the late fee.
+     *
+     * @return the late fee
+     */
     public double getLateFee() {
         return lateFee;
     }
 
+    /**
+     * Sets the late fee.
+     *
+     * @param lateFee the late fee to set
+     * @throws IllegalArgumentException if the late fee is negative
+     */
     public void setLateFee(double lateFee) {
+        if (lateFee < 0.0)
+            throw new IllegalArgumentException("Late fee cannot be negative. Received: " + lateFee);
         this.lateFee = lateFee;
     }
+
 }

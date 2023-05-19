@@ -76,7 +76,93 @@ public class RentalHandlerTest extends BaseHandlerTest {
      */
 
 
+    @Test
+    @Order(1)
+    void testSaveRental_ValidInput() {
+        System.out.println("\n1: Testing saveRental method with valid input...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
 
+    @Test
+    @Order(2)
+    void testSaveRental_NullInput() {
+        System.out.println("\n2: Testing saveRental method with null input...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(3)
+    void testSaveRental_InvalidUserID() {
+        System.out.println("\n3: Testing saveRental method with invalid userID...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(4)
+    void testSaveRental_InvalidItemID() {
+        System.out.println("\n4: Testing saveRental method with invalid itemID...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(5)
+    void testSaveRental_InvalidRentalDate() {
+        System.out.println("\n5: Testing saveRental method with invalid rentalDate...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(6)
+    void testSaveRental_InvalidUsername() {
+        System.out.println("\n6: Testing saveRental method with invalid username...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(7)
+    void testSaveRental_InvalidItemTitle() {
+        System.out.println("\n7: Testing saveRental method with invalid itemTitle...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(8)
+    void testSaveRental_InvalidRentalDueDate() {
+        System.out.println("\n8: Testing saveRental method with invalid rentalDueDate...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(9)
+    void testSaveRental_NullRentalReturnDate() {
+        System.out.println("\n9: Testing saveRental method with null rentalReturnDate...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(10)
+    void testSaveRental_NegativeLateFee() {
+        System.out.println("\n10: Testing saveRental method with negative lateFee...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(11)
+    void testSaveRental_ValidLateFee() {
+        System.out.println("\n11: Testing saveRental method with valid lateFee...");
+        // ... your test code here ...
+        System.out.println("\nTEST FINISHED.");
+    }
 
     /*
     @Test

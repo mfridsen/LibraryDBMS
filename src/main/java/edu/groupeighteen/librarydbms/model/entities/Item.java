@@ -28,6 +28,7 @@ public class Item extends Entity {
      */
     public Item(String title) {
         this.itemID = 0;
+        this.allowedRentalDays = 14; //TODO-prio for now
         setTitle(title);
     }
 
