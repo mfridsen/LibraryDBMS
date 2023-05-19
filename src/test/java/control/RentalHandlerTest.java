@@ -7,13 +7,13 @@ import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,136 +33,140 @@ public class RentalHandlerTest extends BaseHandlerTest {
     //TODO-future make all tests more verbose
     //TODO-prio change order of tests to match order of methods
 
+    /**
+     * Test case for createNewRental method with valid input.
+     *
+     * For valid inputs (existing userID and itemID), the test should confirm:
+     * 
+     *     The returned Rental is not null.
+     *     Each field of the returned Rental object matches expected value.
+     *     rentalDate is set to the current time (to the nearest second).
+     *     rentalDueDate is set to rentalDate plus allowed rental days at 20:00.
+     *     rentalReturnDate is null.
+     *     lateFee is 0.0.
+     */
+    @Test
+    @Order(1)
+    void testCreateNewRental_ValidInput() {
+        System.out.println("\n1: Testing createNewRental method with valid input...");
 
-    @Override
-    void setupAndReset() {
-        super.setupAndReset();
-    }
+        // The valid user ID and item ID should be replaced with real IDs from your database
+        int validUserID = 1;
+        int validItemID = 1;
 
-    @Override
-    void setupTestTablesAndData() {
-        super.setupTestTablesAndData();
+        Rental rental;
+        try {
+            rental = RentalHandler.createNewRental(validUserID, validItemID);
+            // Check that the Rental object is not null and that it has a correct rentalID
+            assertNotNull(rental, "The returned Rental object should not be null");
+            assertTrue(rental.getRentalID() > 0);
+
+            // Check that each field has been set correctly
+            assertEquals(validUserID, rental.getUserID(), "UserID should match the input userID");
+            assertEquals(validItemID, rental.getItemID(), "ItemID should match the input itemID");
+
+            // Check that the username and itemTitle match the expected values
+            User user = UserHandler.getUserByID(validUserID);
+            Item item = ItemHandler.getItemByID(validItemID);
+
+            assertNotNull(user);
+            assertNotNull(item);
+            assertEquals(user.getUsername(), rental.getUsername(), "Username should match the username of the user with the input userID");
+            assertEquals(item.getTitle(), rental.getItemTitle(), "Item title should match the title of the item with the input itemID");
+
+            // Check that rentalDate has been set to the current time (to the nearest second)
+            LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+            assertEquals(now, rental.getRentalDate().truncatedTo(ChronoUnit.SECONDS), "rentalDate should be set to the current time (to the nearest second)");
+
+            // Check that rentalDueDate has been set to rentalDate plus allowed rental days at 20:00
+            int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(validItemID);
+            LocalDateTime dueDate = rental.getRentalDate().plusDays(allowedRentalDays).withHour(Rental.RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0).withNano(0);
+            assertEquals(dueDate, rental.getRentalDueDate(), "rentalDueDate should be set to rentalDate plus allowed rental days at 20:00");
+
+            // Check that rentalReturnDate is null and lateFee is 0.0
+            assertNull(rental.getRentalReturnDate(), "rentalReturnDate should be null for a new rental");
+            assertEquals(0.0, rental.getLateFee(), "lateFee should be 0.0 for a new rental");
+
+            System.out.println("\nTEST FINISHED.");
+
+        } catch (UserNotFoundException | ItemNotFoundException e) {
+            e.printStackTrace();
+            fail("Test should be able to retrieve user or item with correct IDs. userID: " + validUserID + ", itemID: " + validItemID);
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            fail("Exception occurred during interaction with database: : " + sqle.getMessage());
+        }
     }
 
     /**
-     * Valid Input Test: This is the most straightforward test, where you provide a fully formed and valid Rental object.
-     * The test should assert that the method returns a valid rentalID and that the rental is correctly inserted into
-     * the database.
+     * Test case for createNewRental method with an invalid userID.
      *
-     * Null Input Test: Test what happens if a null Rental object is passed. The method is expected to throw an
-     * IllegalArgumentException.
-     *
-     * Invalid Input Test: Pass a Rental object with invalid data in its fields. This can include:
-     *
-     * Rental object with userID or itemID as zero or negative.
-     * Rental object with null or invalid format for the rentalDate or rentalDueDate.
-     * Rental object with null for username or itemTitle.
-     * Rental object with negative lateFee.
-     * Each of these scenarios should be tested separately to ensure that each case is handled correctly.
-     *
-     * Database Failure Test: This test involves inducing a database error to ensure that the method handles it
-     * correctly. This could be achieved by manipulating the connection, making it impossible for the method to
-     * connect to the database. The method is expected to throw an SQLException.
-     *
-     * Generated Rental ID Test: After successful insertion, verify that the returned rental ID matches the ID in
-     * the database and it's not zero or negative.
-     *
-     * Data Consistency Test: After a successful insert, fetch the same rental from the database and verify that
-     * all its fields match those of the Rental object you inserted.
-     *
-     * Concurrency Test: Execute multiple threads calling the saveRental method simultaneously to check how it behaves
-     * under concurrent conditions. This is important in a multi-user environment to ensure that the method correctly
-     * handles multiple simultaneous calls, and that it doesn't mix up the data or generate wrong rental IDs.
+     * This test attempts to create a new rental using an invalid user ID. The userID is invalid if it is not a positive integer.
+     * An IllegalArgumentException should be thrown with an appropriate error message.
      */
-
-
-    @Test
-    @Order(1)
-    void testSaveRental_ValidInput() {
-        System.out.println("\n1: Testing saveRental method with valid input...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
-
     @Test
     @Order(2)
-    void testSaveRental_NullInput() {
-        System.out.println("\n2: Testing saveRental method with null input...");
-        // ... your test code here ...
+    void testCreateNewRental_InvalidUserID() {
+        System.out.println("\n2: Testing createNewRental method with invalid userID...");
+
+        int invalidUserID = -1; // User IDs should be positive integers
+        int validItemID = 1; // Replace with a real item ID from your database
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            RentalHandler.createNewRental(invalidUserID, validItemID);
+        });
+
+        String expectedMessage = "Error creating new rental: Invalid userID or itemID. userID: "
+                + invalidUserID + ", itemID: " + validItemID;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
         System.out.println("\nTEST FINISHED.");
     }
+
 
     @Test
     @Order(3)
-    void testSaveRental_InvalidUserID() {
-        System.out.println("\n3: Testing saveRental method with invalid userID...");
+    void testCreateNewRental_InvalidItemID() {
+        System.out.println("\n3: Testing createNewRental method with invalid itemID...");
         // ... your test code here ...
         System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(4)
-    void testSaveRental_InvalidItemID() {
-        System.out.println("\n4: Testing saveRental method with invalid itemID...");
+    void testCreateNewRental_NonexistentUser() {
+        System.out.println("\n4: Testing createNewRental method with nonexistent user...");
         // ... your test code here ...
         System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(5)
-    void testSaveRental_InvalidRentalDate() {
-        System.out.println("\n5: Testing saveRental method with invalid rentalDate...");
+    void testCreateNewRental_NonexistentItem() {
+        System.out.println("\n5: Testing createNewRental method with nonexistent item...");
         // ... your test code here ...
         System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(6)
-    void testSaveRental_InvalidUsername() {
-        System.out.println("\n6: Testing saveRental method with invalid username...");
+    void testCreateNewRental_NonPositiveAllowedRentalDays() {
+        System.out.println("\n6: Testing createNewRental method with non-positive allowed rental days...");
         // ... your test code here ...
         System.out.println("\nTEST FINISHED.");
     }
 
     @Test
     @Order(7)
-    void testSaveRental_InvalidItemTitle() {
-        System.out.println("\n7: Testing saveRental method with invalid itemTitle...");
+    void testCreateNewRental_DatabaseError() {
+        System.out.println("\n7: Testing createNewRental method when database error occurs...");
         // ... your test code here ...
         System.out.println("\nTEST FINISHED.");
     }
 
-    @Test
-    @Order(8)
-    void testSaveRental_InvalidRentalDueDate() {
-        System.out.println("\n8: Testing saveRental method with invalid rentalDueDate...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
 
-    @Test
-    @Order(9)
-    void testSaveRental_NullRentalReturnDate() {
-        System.out.println("\n9: Testing saveRental method with null rentalReturnDate...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(10)
-    void testSaveRental_NegativeLateFee() {
-        System.out.println("\n10: Testing saveRental method with negative lateFee...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(11)
-    void testSaveRental_ValidLateFee() {
-        System.out.println("\n11: Testing saveRental method with valid lateFee...");
-        // ... your test code here ...
-        System.out.println("\nTEST FINISHED.");
-    }
 
     /*
     @Test

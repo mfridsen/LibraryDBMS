@@ -21,6 +21,7 @@ import java.time.temporal.ChronoUnit;
  *      Titles cannot be null or empty.
  */
 public class Rental extends Entity {
+    public static final int RENTAL_DUE_DATE_HOURS = 20;
     /**
      * The rental ID, which serves as the primary key for the rental.
      */
@@ -279,7 +280,7 @@ public class Rental extends Entity {
     public void setRentalDueDate(LocalDateTime rentalDueDate) {
         if (rentalDueDate == null || rentalDueDate.isBefore(LocalDateTime.now()))
             throw new IllegalArgumentException("Rental due date cannot be null or in the past. Received: " + rentalDueDate);
-        this.rentalDueDate = rentalDueDate.withHour(16).withMinute(0).truncatedTo(ChronoUnit.SECONDS);
+        this.rentalDueDate = rentalDueDate.withHour(RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS);
     }
 
     /**

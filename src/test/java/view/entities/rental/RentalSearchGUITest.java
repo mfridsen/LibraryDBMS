@@ -2,6 +2,8 @@ package view.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalSearchGUI;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -30,8 +32,10 @@ public class RentalSearchGUITest {
             RentalHandler.createNewRental(3, 3);
             RentalHandler.createNewRental(4, 4);
             RentalHandler.createNewRental(5, 5);
-        } catch (SQLException sqle) {
+        } catch (SQLException | UserNotFoundException sqle) {
             sqle.printStackTrace();
+        } catch (ItemNotFoundException e) {
+            e.printStackTrace();
         }
         new RentalSearchGUI(null);
     }

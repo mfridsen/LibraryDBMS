@@ -5,6 +5,8 @@ import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -66,7 +68,7 @@ public class RentalHandler {
      * @throws SQLException if there is an error fetching the user or item from their handlers, 
      *                      or if there is an error saving the new rental in the database.
      */
-    public static Rental createNewRental(int userID, int itemID) throws SQLException {
+    public static Rental createNewRental(int userID, int itemID) throws SQLException, UserNotFoundException, ItemNotFoundException {
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
             throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: "
@@ -75,16 +77,16 @@ public class RentalHandler {
         //Create and save the new rental
         Rental newRental = new Rental(userID, itemID);
 
-        //Set username
+        //Set username (ONLY IN OBJECT, NOT IN TABLE)
         User user = UserHandler.getUserByID(userID);
         if (user == null)
-            throw new SQLException("Failed to find user with ID: " + userID);
+            throw new UserNotFoundException(userID);
         newRental.setUsername(user.getUsername());
 
-        //Set title
+        //Set title (ONLY IN OBJECT, NOT IN TABLE)
         Item item = ItemHandler.getItemByID(itemID);
         if (item == null)
-            throw new SQLException("Failed to find item with ID: " + itemID);
+            throw new ItemNotFoundException(itemID);
         newRental.setItemTitle(item.getTitle());
 
         //Obtain and validate allowedRentalDays
@@ -101,13 +103,12 @@ public class RentalHandler {
         return newRental;
     }
 
-    //TODO-test
     /**
      * Saves a new rental in the database.
      *
      * The method accepts a Rental object, validates it, and then attempts to insert it 
      * into the 'rentals' table in the database. The rental's user ID, item ID, rental date, 
-     * username, item title, rental due date, and late fee are required and must be set in the 
+     * rental due date, and late fee are required and must be set in the
      * Rental object before calling this method. The rental return date can be null, 
      * indicating that the item has not been returned yet.
      *
@@ -119,15 +120,15 @@ public class RentalHandler {
      * @throws SQLException if there is an error executing the INSERT operation or if the 
      *                      newly inserted rental's ID could not be obtained.
      */
-    public static int saveRental(Rental rental) throws SQLException {
+    private static int saveRental(Rental rental) throws SQLException {
         //Validate input
         if (rental == null)
             throw new IllegalArgumentException("Error saving rental: rental is null.");
 
         //Prepare query
         String query = "INSERT INTO rentals " +
-                "(userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "(userID, itemID, rentalDate, rentalDueDate, rentalReturnDate, lateFee) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         //Set parameters for query
         //We check if rental.getRentalReturnDate() is null. If it is, we set the corresponding parameter to null.
@@ -137,8 +138,6 @@ public class RentalHandler {
                 String.valueOf(rental.getUserID()),
                 String.valueOf(rental.getItemID()),
                 rental.getRentalDate().toString(),
-                rental.getUsername(),
-                rental.getItemTitle(),
                 rental.getRentalDueDate().toString(),
                 (rental.getRentalReturnDate() == null) ? null : rental.getRentalReturnDate().toString(),
                 String.valueOf(rental.getLateFee())

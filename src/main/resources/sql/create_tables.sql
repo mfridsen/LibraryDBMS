@@ -29,8 +29,6 @@ CREATE TABLE Rentals (
     userID INT NOT NULL,
     itemID INT NOT NULL,
     rentalDate DATETIME NOT NULL,
-    username VARCHAR(20) NOT NULL,
-    itemTitle VARCHAR(255) NOT NULL,
     rentalDueDate DATETIME NOT NULL,
     rentalReturnDate DATETIME,
     lateFee DOUBLE NOT NULL,

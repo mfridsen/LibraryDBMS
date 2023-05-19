@@ -102,7 +102,7 @@ public class RentalTest {
         LocalDateTime rentalDate = LocalDateTime.now().minusDays(5).truncatedTo(ChronoUnit.SECONDS);
         String username = "TestUser";
         String itemTitle = "TestItem";
-        LocalDateTime rentalDueDate = LocalDateTime.now().plusDays(5).withHour(16).withMinute(0).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime rentalDueDate = LocalDateTime.now().plusDays(5).withHour(Rental.RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS);
         LocalDateTime rentalReturnDate = null;
         double lateFee = 0.0;
 
@@ -285,7 +285,7 @@ public class RentalTest {
         assertThrows(IllegalArgumentException.class, () -> rental.setRentalDueDate(null));
         assertThrows(IllegalArgumentException.class, () -> rental.setRentalDueDate(LocalDateTime.now().minusSeconds(1)));
         rental.setRentalDueDate(LocalDateTime.now().plusDays(1));
-        assertEquals(LocalDateTime.now().plusDays(1).withHour(16).withMinute(0).truncatedTo(ChronoUnit.SECONDS), rental.getRentalDueDate());
+        assertEquals(LocalDateTime.now().plusDays(1).withHour(Rental.RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS), rental.getRentalDueDate());
         System.out.println("\nTEST FINISHED.");
     }
 
