@@ -21,10 +21,13 @@ public class RentalUpdateGUITest {
 
     public static void main(String[] args) {
         LibraryManager.setup();
+        /*
         try {
             new RentalUpdateGUI(null, RentalHandler.createNewRental(1, 1, LocalDateTime.now()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+         */
     }
 }

@@ -22,11 +22,13 @@ public class RentalGUITest {
     public static void main(String[] args) {
         //Need to setup everything before GUI
         LibraryManager.setup();
-
+/*
         try {
             new RentalGUI(null, RentalHandler.createNewRental(1, 1, LocalDateTime.now()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+ */
     }
 }

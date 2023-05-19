@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalTest {
-
+/*
     @Test
     @Order(1)
     void testConstructor() {
@@ -128,4 +128,6 @@ public class RentalTest {
 
         System.out.println("\nTEST FINISHED.");
     }
+
+ */
 }

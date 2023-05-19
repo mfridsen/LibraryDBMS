@@ -177,7 +177,7 @@ public class RentalUpdateGUI extends GUI {
             }
 
             //Now call the update method
-            try {
+            /*try {
                 RentalHandler.updateRental(oldRental, newRental);
                 dispose();
                 new RentalGUI(this, newRental);
@@ -187,7 +187,7 @@ public class RentalUpdateGUI extends GUI {
             } catch (IllegalArgumentException ile) {
                 System.err.println(ile.getMessage()); //TODO-test //TODO-exception handle better
                 resetCells();
-            }
+            }*/
         });
         return confirmUpdateButton;
     }

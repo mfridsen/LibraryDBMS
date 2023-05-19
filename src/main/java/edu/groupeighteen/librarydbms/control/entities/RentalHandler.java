@@ -47,31 +47,33 @@ public class RentalHandler {
     //TODO-prio UPDATE ALL METHODS AND TEST METHODS WHEN THE REST OF THE FIELDS ARE ADDED
     //TODO-prio ADD GET METHODS FOR ALL NEW FIELDS AS WELL AS TEST METHODS FOR THEM
 
+    //TODO-test
     /**
-     * Creates a new Rental with the specified userID, itemID and rentalDate, and saves it to the database.
-     * If the Rental creation fails, this method returns null.
+     * Creates a new rental, saves it in the database, and returns it.
      *
-     * @param userID the ID of the User who rented an Item.
-     * @param itemID the ID of the Item being rented by a User.
-     * @param rentalDate the LocalDateTime that the Rental is created.
-     * @return the created Rental object on success, null on failure.
-     * @throws SQLException If an error occurs while interacting with the database.
+     * This method validates the input user and item IDs, creates a new Rental object, 
+     * sets its properties (including retrieving the user's username and item's title from 
+     * their respective handlers), and saves it in the database using saveRental.
+     *
+     * The rental due date is calculated as the rental date (current date/time) plus the 
+     * number of allowed rental days for the item.
+     *
+     * @param userID the ID of the user renting the item.
+     * @param itemID the ID of the item being rented.
+     * @return the newly created and saved Rental object.
+     * @throws IllegalArgumentException if either userID or itemID is not a positive integer, 
+     *                                  or if the number of allowed rental days is not a positive integer.
+     * @throws SQLException if there is an error fetching the user or item from their handlers, 
+     *                      or if there is an error saving the new rental in the database.
      */
-    public static Rental createNewRental(int userID, int itemID, LocalDateTime rentalDate) throws SQLException {
+    public static Rental createNewRental(int userID, int itemID) throws SQLException {
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
-            throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: " + userID + ", itemID: " + itemID);
-        if (rentalDate == null)
-            throw new IllegalArgumentException("Error creating new rental: rentalDate is null.");
-        if (rentalDate.compareTo(LocalDateTime.now()) > 0)
-            throw new IllegalArgumentException("Error creating new rental: rentalDate is in the future: " + rentalDate.toString());
-
-        //Round the rentalDate to seconds or else we get lots of annoying problems when inserting and retrieving
-        rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
+            throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: "
+                    + userID + ", itemID: " + itemID);
 
         //Create and save the new rental
-        Rental newRental = new Rental(userID, itemID, rentalDate);
-        newRental.setRentalID(saveRental(newRental));
+        Rental newRental = new Rental(userID, itemID);
 
         //Set username
         User user = UserHandler.getUserByID(userID);
@@ -85,26 +87,37 @@ public class RentalHandler {
             throw new SQLException("Failed to find item with ID: " + itemID);
         newRental.setItemTitle(item.getTitle());
 
+        //Obtain and validate allowedRentalDays
+        int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
+        if (allowedRentalDays <= 0)
+            throw new IllegalArgumentException("Error creating new rental: Invalid allowed rental days: " + allowedRentalDays);
+
+        //Set due date to creation date + allowedRentalDays
+        LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
+        newRental.setRentalDueDate(dueDate);
+
+        //Save to database, retrieve and set rentalID, and return newRental
+        newRental.setRentalID(saveRental(newRental));
         return newRental;
     }
 
     //TODO-test
-    //TODO-comment
-    public static Rental createNewRental(int userID, int itemID) throws SQLException {
-        return createNewRental(userID, itemID, LocalDateTime.now());
-    }
-
     /**
-     * Saves a Rental object to the database.
+     * Saves a new rental in the database.
      *
-     * This method attempts to insert a new rental into the 'rentals' table. It uses the userID, itemID and
-     * rentalDate properties of the provided Rental object to populate the new record. The database is expected
-     * to generate a unique ID for each new rental, which is retrieved and returned by this method.
+     * The method accepts a Rental object, validates it, and then attempts to insert it 
+     * into the 'rentals' table in the database. The rental's user ID, item ID, rental date, 
+     * username, item title, rental due date, and late fee are required and must be set in the 
+     * Rental object before calling this method. The rental return date can be null, 
+     * indicating that the item has not been returned yet.
      *
-     * @param rental The Rental object to be saved. This object should have a userID, itemID and rentalDate set.
-     * @return The unique ID generated by the database for the new rental record.
-     * @throws SQLException If an error occurs while interacting with the database, or if the database does not
-     *         generate a new unique ID for the inserted rental.
+     * The method returns the ID of the newly inserted rental as generated by the database.
+     *
+     * @param rental The Rental object to be saved. It must have all required fields set.
+     * @return The ID of the newly inserted rental as generated by the database.
+     * @throws IllegalArgumentException if the provided Rental object is null.
+     * @throws SQLException if there is an error executing the INSERT operation or if the 
+     *                      newly inserted rental's ID could not be obtained.
      */
     public static int saveRental(Rental rental) throws SQLException {
         //Validate input
@@ -112,8 +125,24 @@ public class RentalHandler {
             throw new IllegalArgumentException("Error saving rental: rental is null.");
 
         //Prepare query
-        String query = "INSERT INTO rentals (userID, itemID, rentalDate) VALUES (?, ?, ?)";
-        String[] params = {String.valueOf(rental.getUserID()), String.valueOf(rental.getItemID()), rental.getRentalDate().toString()};
+        String query = "INSERT INTO rentals " +
+                "(userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        //Set parameters for query
+        //We check if rental.getRentalReturnDate() is null. If it is, we set the corresponding parameter to null.
+        //If it's not, we convert it to a string using toString().
+        //This should prevent any NullPointerExceptions when handling the return date.
+        String[] params = {
+                String.valueOf(rental.getUserID()),
+                String.valueOf(rental.getItemID()),
+                rental.getRentalDate().toString(),
+                rental.getUsername(),
+                rental.getItemTitle(),
+                rental.getRentalDueDate().toString(),
+                (rental.getRentalReturnDate() == null) ? null : rental.getRentalReturnDate().toString(),
+                String.valueOf(rental.getLateFee())
+        };
 
         //Execute query and get the generated rentalID, using try-with-resources
         try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
@@ -123,7 +152,7 @@ public class RentalHandler {
         }
     }
 
-    /**
+/*    *//**
      * This method retrieves all rentals from the database.
      *
      * It creates a SQL SELECT statement to retrieve all rentals from the 'rentals' table. It then executes this
@@ -133,7 +162,7 @@ public class RentalHandler {
      *
      * @return An ArrayList containing all rentals in the database, each represented by a Rental object.
      * @throws SQLException If an error occurs while interacting with the database.
-     */
+     *//*
     public static List<Rental> getAllRentals() throws SQLException {
         //Prepare a SQL command to select all rentals from the 'rentals' table.
         String sql = "SELECT * FROM rentals";
@@ -180,10 +209,10 @@ public class RentalHandler {
     }
 
     //TODO-prio update when Rental class is finished
-    /**
+    *//**
      * Prints all data of rentals in a list.
      * @param rentals the list of rentals.
-     */
+     *//*
     public static void printRentalList(List<Rental> rentals) {
         System.out.println("Rentals:");
         int count = 1;
@@ -197,7 +226,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * Retrieves a Rental object from the database based on the provided rental ID.
      *
      * This method attempts to retrieve the rental details from the 'rentals' table in the database
@@ -207,7 +236,7 @@ public class RentalHandler {
      * @param rentalID The unique ID of the rental to be retrieved.
      * @return The Rental object corresponding to the provided ID, or null if no such rental is found.
      * @throws SQLException If an error occurs while interacting with the database.
-     */
+     *//*
     public static Rental getRentalByID(int rentalID) throws SQLException {
         //No point getting invalid rentals
         if (rentalID <= 0) throw new IllegalArgumentException("Invalid rentalID. rentalID: " + rentalID);
@@ -253,17 +282,17 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method retrieves all rentals that have the specified rental date, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals with the specified date are found,
      * an empty list is returned.
      *
      * Usage: check if returned list is not empty.
-     * 
+     *
      * @param rentalDate the date of the rentals.
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
-     */
+     *//*
     public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate) throws SQLException {
         //No point getting invalid rentals
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
@@ -315,7 +344,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * Retrieves all rentals that occurred on the specified rental day, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals on the specified day are found,
      * an empty list is returned.
@@ -332,7 +361,7 @@ public class RentalHandler {
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the provided rentalDay is null or in the future.
-     */
+     *//*
     public static List<Rental> getRentalsByRentalDay(LocalDate rentalDay) throws SQLException {
         //Validate the input
         if (rentalDay == null || rentalDay.isAfter(LocalDate.now()))
@@ -388,7 +417,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method retrieves all rentals that fall within the specified start and end dates, inclusive. It creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals within the specified time period are found,
      * an empty list is returned.
@@ -408,7 +437,7 @@ public class RentalHandler {
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the input dates are invalid.
-     */
+     *//*
     public static List<Rental> getRentalsByTimePeriod(LocalDate startDate, LocalDate endDate) throws SQLException {
         //Validate the inputs
         if (startDate == null ||  startDate.isAfter(LocalDate.now()))
@@ -467,7 +496,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method retrieves all rentals that are associated with a specific user, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals are found for the specified user,
      * an empty list is returned.
@@ -477,7 +506,7 @@ public class RentalHandler {
      * @param userID the ID of the user whose rentals are to be retrieved.
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
-     */
+     *//*
     public static List<Rental> getRentalsByUserID(int userID) throws SQLException {
         //Validate the input
         if (userID <= 0)
@@ -527,7 +556,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method retrieves all rentals that have the specified item ID, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals with the specified item ID are found,
      * an empty list is returned.
@@ -538,7 +567,7 @@ public class RentalHandler {
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the itemID is less than or equal to 0.
-     */
+     *//*
     public static List<Rental> getRentalsByItemID(int itemID) throws SQLException {
         //Validate the input
         if (itemID <= 0)
@@ -588,7 +617,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method retrieves all rentals for the specified username, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals for the specified username are found,
      * an empty list is returned.
@@ -599,7 +628,7 @@ public class RentalHandler {
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the provided username is null or empty.
-     */
+     *//*
     public static List<Rental> getRentalsByUsername(String username) throws SQLException {
         //Validate the input
         if (username == null || username.isEmpty())
@@ -650,7 +679,7 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method retrieves all rentals for the specified item title, creates a Rental object for each one,
      * and adds it to a list. The list of rentals is then returned. If no rentals for the specified item title are found,
      * an empty list is returned.
@@ -661,7 +690,7 @@ public class RentalHandler {
      * @return The list of rentals if found, otherwise an empty list.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the provided title is null or empty.
-     */
+     *//*
     public static List<Rental> getRentalsByItemTitle(String title) throws SQLException {
         //Validate the input
         if (title == null || title.isEmpty())
@@ -712,14 +741,14 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method updates the details of a given rental in the database.
      *
      * @param newRental The rental object containing the updated details.
      * @return true if the update was successful, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
-     */
+     *//*
     public static boolean updateRental(Rental oldRental, Rental newRental) throws SQLException {
         //Validate the input
         if (oldRental == null)
@@ -746,7 +775,7 @@ public class RentalHandler {
         return rowsAffected > 0;
     }
 
-    /**
+    *//**
      * Compares two Rental objects, typically an old and a new version of the same rental, and validates/updates user and item data.
      * This method is used to ensure the consistency and correctness of user and item data when updating a rental.
      *
@@ -763,7 +792,7 @@ public class RentalHandler {
      *
      * @throws SQLException If a user or item associated with the provided IDs cannot be fetched.
      * @throws IllegalArgumentException If the updated user or item data are inconsistent (usernames and userIDs or titles and itemIDs do not match).
-     */
+     *//*
     private static void compareRentals(Rental oldRental, Rental newRental) throws SQLException {
         //1: If userIDs are different and usernames are the same, update newRental's username
         if (oldRental.getUserID() != newRental.getUserID() && oldRental.getUsername().equals(newRental.getUsername())) {
@@ -818,14 +847,14 @@ public class RentalHandler {
 
     //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
     //to make error handling more consistent
-    /**
+    *//**
      * This method deletes the details of a given rental in the database.
      *
      * @param rental The rental object containing the deleted details.
      * @return true if the delete was successful, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
-     */
+     *//*
     public static boolean deleteRental(Rental rental) throws SQLException {
         //Validate the input
         if (rental == null)
@@ -840,5 +869,5 @@ public class RentalHandler {
         //Execute the update and return whether it was successful
         int rowsAffected = DatabaseHandler.executePreparedUpdate(query, params);
         return rowsAffected > 0;
-    }
+    }*/
 }

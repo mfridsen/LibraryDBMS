@@ -108,7 +108,7 @@ public class RentalCreateGUI extends GUI {
         }
 
         //If successful, dispose, create a new rental and open a new RentalGUI for that rental
-        try {
+        /*try {
             dispose();
             Rental newRental = RentalHandler.createNewRental(userID, itemID, LocalDateTime.now());
             new RentalGUI(this, newRental);
@@ -116,7 +116,7 @@ public class RentalCreateGUI extends GUI {
             System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
             sqle.printStackTrace();
             LibraryManager.exit(1);
-        }
+        }*/
     }
 
     /**

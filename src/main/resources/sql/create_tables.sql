@@ -19,17 +19,21 @@ CREATE TABLE `Users` (
 CREATE TABLE Items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
+    allowedRentalDays INT NOT NULL,
     PRIMARY KEY (itemID)
 );
 
--- Checkout
+-- Rental
 CREATE TABLE Rentals (
     rentalID INT AUTO_INCREMENT UNIQUE NOT NULL,
     userID INT NOT NULL,
     itemID INT NOT NULL,
-    username VARCHAR(20),
-    title VARCHAR(255),
     rentalDate DATETIME NOT NULL,
+    username VARCHAR(20) NOT NULL,
+    itemTitle VARCHAR(255) NOT NULL,
+    rentalDueDate DATETIME NOT NULL,
+    rentalReturnDate DATETIME,
+    lateFee DOUBLE NOT NULL,
     PRIMARY KEY (rentalID),
     FOREIGN KEY (userID) REFERENCES users (userID),
     FOREIGN KEY (itemID) REFERENCES items (itemID)

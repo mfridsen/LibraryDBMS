@@ -130,14 +130,14 @@ public class RentalSearchGUI extends GUI {
             //Perform the search
             List<Rental> searchResultList = performSearch();
             //If the search doesn't generate a result, we stay
-            if (!searchResultList.isEmpty()) {
+            /*if (!searchResultList.isEmpty()) {
                 dispose();
                 new RentalSearchResultGUI(this, searchResultList);
                 RentalHandler.printRentalList(searchResultList);
             } else {
                 System.err.println("No results found for search.");
                 resetCells();
-            }
+            }*/
         });
         return searchButton;
     }
@@ -170,7 +170,7 @@ public class RentalSearchGUI extends GUI {
             }
 
             //Attempt to parse the cell data and perform the search
-            try {
+            /*try {
                 switch (row) {
                     //Rental ID
                     case 0 -> {
@@ -228,7 +228,7 @@ public class RentalSearchGUI extends GUI {
             catch (SQLException sqle) {
                 sqle.printStackTrace();
                 LibraryManager.exit(1);
-            }
+            }*/
         }
 
         return searchResultList;

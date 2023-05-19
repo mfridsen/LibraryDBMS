@@ -46,13 +46,13 @@ public class RentalDeleteGUI extends GUI {
             if (LibraryManager.getCurrentUser() != null) {
                 if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
                         Arrays.toString(passwordField.getPassword()))) {
-                    try {
+                    /*try {
                         RentalHandler.deleteRental(rentalToDelete);
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     } catch (SQLException sqle) {
                         sqle.printStackTrace();
-                    }
+                    }*/
                 }
             }
         });

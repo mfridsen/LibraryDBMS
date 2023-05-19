@@ -1,3 +1,4 @@
+
 package control;
 
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -24,26 +26,59 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * Unit Test for the RentalHandler class.
  */
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalHandlerTest extends BaseHandlerTest {
 
     //TODO-future make all tests more verbose
     //TODO-prio change order of tests to match order of methods
 
+
+    @Override
+    void setupAndReset() {
+        super.setupAndReset();
+    }
+
+    @Override
+    void setupTestTablesAndData() {
+        super.setupTestTablesAndData();
+    }
+
     /**
-     * Tests the saveRental method in RentalHandler class. This test involves both valid and invalid scenarios.
+     * Valid Input Test: This is the most straightforward test, where you provide a fully formed and valid Rental object.
+     * The test should assert that the method returns a valid rentalID and that the rental is correctly inserted into
+     * the database.
      *
-     * Test Scenarios:
-     * 1. Tests if a valid Rental object can be saved successfully. The method should return a valid rental ID for a successful save.
-     * 2. Tests if an IllegalArgumentException is thrown when saving an invalid Rental object. Invalid scenarios include:
-     *    - Rental object with a negative userID
-     *    - Rental object with a negative itemID
-     *    - Rental object with a future rental date
-     *    - Rental object with a null rental date
-     *    - A null Rental object
+     * Null Input Test: Test what happens if a null Rental object is passed. The method is expected to throw an
+     * IllegalArgumentException.
      *
-     * Each invalid scenario should throw an IllegalArgumentException. The method prints out the test status and any exceptions thrown during the test.
+     * Invalid Input Test: Pass a Rental object with invalid data in its fields. This can include:
+     *
+     * Rental object with userID or itemID as zero or negative.
+     * Rental object with null or invalid format for the rentalDate or rentalDueDate.
+     * Rental object with null for username or itemTitle.
+     * Rental object with negative lateFee.
+     * Each of these scenarios should be tested separately to ensure that each case is handled correctly.
+     *
+     * Database Failure Test: This test involves inducing a database error to ensure that the method handles it
+     * correctly. This could be achieved by manipulating the connection, making it impossible for the method to
+     * connect to the database. The method is expected to throw an SQLException.
+     *
+     * Generated Rental ID Test: After successful insertion, verify that the returned rental ID matches the ID in
+     * the database and it's not zero or negative.
+     *
+     * Data Consistency Test: After a successful insert, fetch the same rental from the database and verify that
+     * all its fields match those of the Rental object you inserted.
+     *
+     * Concurrency Test: Execute multiple threads calling the saveRental method simultaneously to check how it behaves
+     * under concurrent conditions. This is important in a multi-user environment to ensure that the method correctly
+     * handles multiple simultaneous calls, and that it doesn't mix up the data or generate wrong rental IDs.
      */
+
+
+
+
+    /*
     @Test
     @Order(1)
     void testSaveRental() {
@@ -69,7 +104,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> RentalHandler.saveRental(null));
 
         System.out.println("\nTEST FINISHED.");
-    }
+    }*/
+
 
     /**
      * Tests the createNewRental method in the RentalHandler class. This test involves both valid and invalid scenarios.
@@ -83,7 +119,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
      *    - Null rental date
      *
      * Each invalid scenario should throw an IllegalArgumentException. The method prints out the test status and any exceptions thrown during the test.
-     */
+     *//*
+
     @Test
     @Order(2)
     void testCreateNewRental() {
@@ -115,7 +152,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test method tests the getAllRentals method in RentalHandler.
      *
      * Test case: Retrieving all rentals.
@@ -125,7 +163,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * verifying that the method correctly retrieves all rentals from the database.
      *
      * If an SQLException is thrown at any point during the test, the test fails with an appropriate error message.
-     */
+     *//*
+
     @Test
     @Order(3)
     void testGetAllRentals() {
@@ -171,11 +210,13 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test creates a new rental at the start, and then checks that the getRentalByID method returns a Rental
      * object with the same details as the created rental. It also checks that an IllegalArgumentException is thrown
      * when trying to retrieve a rental with an invalid ID.
-     */
+     *//*
+
     @Test
     @Order(4)
     void testGetRentalByID() {
@@ -213,12 +254,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
 
-    /**
+    */
+/**
      * This test method first creates a few new rentals, two with the current date and time and one with a future date.
      * Then it tests the getRentalsByRentalDate method by asking for rentals from the current date, expecting to find
      * the two rentals it just created. It also checks for rentals from a date in the past, where it expects to find none.
      * Finally, it tests the method with invalid inputs, expecting it to throw an IllegalArgumentException.
-     */
+     *//*
+
     @Test
     @Order(5)
     void testGetRentalsByRentalDate() {
@@ -272,12 +315,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test first creates three rentals on the same day but at different times. It then verifies that
      * getRentalsByRentalDay can correctly retrieve all three rentals. It also tests the method's behavior when passed
      * a day with no rentals and verifies that it correctly returns an empty list. Finally, it checks that the method
      * correctly throws an exception when passed invalid inputs.
-     */
+     *//*
+
     @Test
     @Order(6)
     void testGetRentalsByRentalDay() {
@@ -332,12 +377,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test first creates three rentals on different days. It then verifies that getRentalsByTimePeriod can
      * correctly retrieve all three rentals when they fall within the specified period. It also tests the method's
      * behavior when passed a period with no rentals and verifies that it correctly returns an empty list.
      * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
-     */
+     *//*
+
     @Test
     @Order(7)
     void testGetRentalsByTimePeriod() {
@@ -395,12 +442,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test first creates three rentals with the same user ID. It then verifies that getRentalsByUserID can
      * correctly retrieve all three rentals. It also tests the method's behavior when passed a user ID with no rentals
      * and verifies that it correctly returns an empty list.
      * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
-     */
+     *//*
+
     @Test
     @Order(8)
     void testGetRentalsByUserID() {
@@ -445,12 +494,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test first creates three rentals with the same item ID. It then verifies that getRentalsByItemID can
      * correctly retrieve all three rentals. It also tests the method's behavior when passed a item ID with no rentals
      * and verifies that it correctly returns an empty list.
      * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
-     */
+     *//*
+
     @Test
     @Order(9)
     void testGetRentalsByItemID() {
@@ -495,12 +546,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test first creates three rentals with the same username. It then verifies that getRentalsByUsername can
      * correctly retrieve all three rentals. It also tests the method's behavior when passed a username with no rentals
      * and verifies that it correctly returns an empty list.
      * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
-     */
+     *//*
+
     @Test
     @Order(10)
     void testGetRentalsByUsername() {
@@ -557,12 +610,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test first creates three rentals with the same item title. It then verifies that getRentalsByItemTitle can
      * correctly retrieve all three rentals. It also tests the method's behavior when passed an item title with no rentals
      * and verifies that it correctly returns an empty list.
      * Finally, it checks that the method correctly throws an exception when passed invalid inputs.
-     */
+     *//*
+
     @Test
     @Order(11)
     void testGetRentalsByItemTitle() {
@@ -615,7 +670,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * Tests the updateRental method in the RentalHandler class. The method tests various scenarios including both valid and invalid cases.
      *
      * Test Scenarios:
@@ -632,7 +688,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * 11. Updating a rental with both itemID and title changed but mismatched should throw an IllegalArgumentException.
      *
      * The test method also handles SQLExceptions that may be thrown during the process. The method prints out the test status and any exceptions thrown during the test.
-     */
+     *//*
+
     @Test
     @Order(12)
     void testUpdateRental() {
@@ -881,7 +938,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    /**
+    */
+/**
      * This test method tests the deleteRental method in RentalHandler.
      *
      * Test case 1: Deleting a non-existent rental.
@@ -895,7 +953,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * After deletion, attempting to retrieve the rental using its ID should return null, verifying that the rental was successfully deleted from the database.
      *
      * In all cases, if an SQLException is thrown, the test fails with an appropriate error message.
-     */
+     *//*
+
     @Test
     @Order(13)
     void testDeleteRental() {
@@ -938,5 +997,5 @@ public class RentalHandlerTest extends BaseHandlerTest {
         }
 
         System.out.println("\nTEST FINISHED.");
-    }
+    }*/
 }

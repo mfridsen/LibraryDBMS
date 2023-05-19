@@ -20,8 +20,8 @@ import java.time.temporal.ChronoUnit;
  *      UserIDs have to be positive integers.
  *      ItemIDs have to be positive integers.
  *      RentalDates cannot be null, and must be equal or less than LocalDateTime.now().
- *      Usernames cannot be null or empty. //TODO-future add min and max length
- *      Titles cannot be null or empty. //TODO-future add min and max length
+ *      Usernames cannot be null or empty. //TODO-future add min and max length in User
+ *      Titles cannot be null or empty. //TODO-future add min and max length in Title
  */
 public class Rental extends Entity {
 
@@ -74,46 +74,75 @@ public class Rental extends Entity {
     private double lateFee;
 
     /**
-     * Main constructor.
-     * @param userID
-     * @param itemID
-     * @param rentalDate
+     * Constructs a new Rental object for creation and insertion into the rentals database table.
+     * The constructor sets the userID and itemID based on the provided arguments and assigns the current time
+     * to rentalDate.
+     * The rentalReturnDate and lateFee are initialized to null and 0.0 respectively, as these values are expected
+     * to be null and 0.0 when the Rental has just been created.
+     * The username, itemTitle, and rentalDueDate are initialized to null but are expected to be set by the
+     * createNewRental method of the RentalHandler before saving the Rental to the database.
+     * The rentalID will be set after the rental object is saved in the database.
+     *
+     * @param userID The ID of the user who is renting the item.
+     * @param itemID The ID of the item being rented.
      */
-    public Rental(int userID, int itemID, LocalDateTime rentalDate, int allowedRentalDays) {
-        this.rentalID = 0;
+    public Rental(int userID, int itemID) {
+        this.rentalID = 0; //Set after initial INSERT
         setUserID(userID);
         setItemID(itemID);
-        setRentalDate(rentalDate);
-        this.username = null;
-        this.itemTitle = null;
-        this.rentalDueDate = rentalDate.plusDays(allowedRentalDays);
-        this.rentalReturnDate = null;
-        this.lateFee = 0.0;
-        this.username = null;
-        this.itemTitle = null;
+        setRentalDate(LocalDateTime.now());
+        this.username = null; //Set by createNewRental
+        this.itemTitle = null; //Set by createNewRental
+        this.rentalDueDate = null; //Set by createNewRental
+        this.rentalReturnDate = null; //Should be null since the Rental has just been created
+        this.lateFee = 0.0; //Should be 0.0 since the Rental has just been created
     }
 
     /**
-     * Quick constructor, only needs userID and itemID and calls the main constructor with these and
-     * LocalDateTime.now() as arguments.
-     * @param userID
-     * @param itemID
+     * Constructs a Rental object with data retrieved from the rentals database table.
+     * This constructor is typically used when loading a Rental from the database.
+     * All fields are initialized based on the values provided as arguments.
+     *
+     * @param rentalID The unique ID of the rental, as stored in the database.
+     * @param userID The ID of the user who is renting the item.
+     * @param itemID The ID of the item being rented.
+     * @param rentalDate The date and time the item was rented.
+     * @param username The username of the user who is renting the item.
+     * @param itemTitle The title of the item being rented.
+     * @param rentalDueDate The due date for the rental.
+     * @param rentalReturnDate The date the rental was returned. This is null if the item hasn't been returned yet.
+     * @param lateFee The late fee for the rental, if any.
      */
-    public Rental(int userID, int itemID) throws SQLException {
-        this(userID, itemID, LocalDateTime.now(), ItemHandler.getAllowedRentalDaysByID(itemID));
+    public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, String username, String itemTitle,
+                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee) {
+        this.rentalID = rentalID;
+        this.userID = userID;
+        this.itemID = itemID;
+        this.rentalDate = rentalDate;
+        this.username = username;
+        this.itemTitle = itemTitle;
+        this.rentalDueDate = rentalDueDate;
+        this.rentalReturnDate = rentalReturnDate;
+        this.lateFee = lateFee;
     }
 
     /**
-     * Copy constructor.
-     * @param other
+     * Constructs a new Rental object by copying the fields of an existing Rental object.
+     * This constructor is typically used when updating a Rental in the database.
+     * All fields are copied directly from the provided Rental object.
+     *
+     * @param other The Rental object to copy from.
      */
     public Rental(Rental other) {
         this.rentalID = other.rentalID;
         this.userID = other.userID;
-        this.username = other.username;
         this.itemID = other.itemID;
-        this.itemTitle = other.itemTitle;
         this.rentalDate = other.rentalDate;  // Assuming LocalDateTime is immutable
+        this.username = other.username;
+        this.itemTitle = other.itemTitle;
+        this.rentalDueDate = other.rentalDueDate;
+        this.rentalReturnDate = other.rentalReturnDate;
+        this.lateFee = other.lateFee;
     }
 
     /**
@@ -239,4 +268,28 @@ public class Rental extends Entity {
         this.itemTitle = itemTitle;
     }
 
+    //TODO-prio complete
+    public LocalDateTime getRentalDueDate() {
+        return rentalDueDate;
+    }
+
+    public void setRentalDueDate(LocalDateTime rentalDueDate) {
+        this.rentalDueDate = rentalDueDate;
+    }
+
+    public LocalDateTime getRentalReturnDate() {
+        return rentalReturnDate;
+    }
+
+    public void setRentalReturnDate(LocalDateTime rentalReturnDate) {
+        this.rentalReturnDate = rentalReturnDate;
+    }
+
+    public double getLateFee() {
+        return lateFee;
+    }
+
+    public void setLateFee(double lateFee) {
+        this.lateFee = lateFee;
+    }
 }
