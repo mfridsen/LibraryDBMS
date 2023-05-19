@@ -17,4 +17,8 @@ public class ItemNotFoundException extends Exception {
     public ItemNotFoundException(int itemId) {
         super("Failed to find item with ID: " + itemId);
     }
+
+    public ItemNotFoundException(String title) {
+        super("Failed to find item with title: " + title);
+    }
 }

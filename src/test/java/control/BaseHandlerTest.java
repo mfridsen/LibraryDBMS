@@ -30,22 +30,26 @@ public abstract class BaseHandlerTest {
     void setupAndReset() {
         System.out.println("\nSetting up and resetting database...");
         try {
-            connection = DatabaseConnection.setup();
-            DatabaseHandler.setConnection(connection);
-            DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
-            DatabaseHandler.executeCommand("drop database if exists " + testDatabaseName);
-            DatabaseHandler.executeCommand("create database " + testDatabaseName);
-            DatabaseHandler.executeCommand("use " + testDatabaseName);
-            setupTestTablesAndData();
+            setupConnectionAndTables();
+            setupTestData();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         System.out.println("Setup finished.");
     }
 
-    void setupTestTablesAndData() {
+    void setupConnectionAndTables() throws SQLException, ClassNotFoundException {
+        connection = DatabaseConnection.setup();
+        DatabaseHandler.setConnection(connection);
+        DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
+        DatabaseHandler.executeCommand("drop database if exists " + testDatabaseName);
+        DatabaseHandler.executeCommand("create database " + testDatabaseName);
+        DatabaseHandler.executeCommand("use " + testDatabaseName);
         DatabaseHandler.setVerbose(false);
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
+    }
+
+    void setupTestData() {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         DatabaseHandler.setVerbose(true);
     }
