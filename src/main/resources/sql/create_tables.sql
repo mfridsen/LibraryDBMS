@@ -12,6 +12,9 @@ CREATE TABLE `Users` (
     userID INT AUTO_INCREMENT UNIQUE NOT NULL,
     username VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(50) NOT NULL,
+    allowedRentals INT NOT NULL,
+    currentRentals INT NOT NULL,
+    lateFee DOUBLE NOT NULL,
     PRIMARY KEY (userID)
 );
 
