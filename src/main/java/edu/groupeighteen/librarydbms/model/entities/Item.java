@@ -22,6 +22,7 @@ public class Item extends Entity {
     private int itemID; //Primary key
     private String title;
     private int allowedRentalDays;
+    private boolean available;
 
     /**
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
@@ -31,6 +32,7 @@ public class Item extends Entity {
         this.itemID = 0;
         this.allowedRentalDays = ITEM_DEFAULT_ALLOWED_DAYS; //TODO-prio for now
         setTitle(title);
+        this.available = true;
     }
 
     /**
@@ -39,10 +41,11 @@ public class Item extends Entity {
      * @param title
      * @param allowedRentalDays
      */
-    public Item(int itemID, String title, int allowedRentalDays) {
+    public Item(int itemID, String title, int allowedRentalDays, boolean availabe) {
         this.itemID = itemID;
         this.title = title;
         this.allowedRentalDays = allowedRentalDays;
+        this.available = true;
     }
 
     /**
@@ -53,6 +56,7 @@ public class Item extends Entity {
         this.itemID = other.itemID;
         this.title = other.title;
         this.allowedRentalDays = other.allowedRentalDays;
+        this.available = other.available;
     }
 
     /*********************************** Getters and Setters are self-explanatory. ************************************/
@@ -85,5 +89,13 @@ public class Item extends Entity {
 
     public void setAllowedRentalDays(int allowedRentalDays) {
         this.allowedRentalDays = allowedRentalDays;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }

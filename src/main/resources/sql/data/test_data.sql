@@ -14,26 +14,26 @@ INSERT INTO users (username, password) VALUES
 ('uname', 'pword');
 
 -- //TODO add Item test data here
-INSERT INTO items (title, allowedRentalDays) VALUES
-('item1', 14),
-('item2', 14),
-('item3', 14),
-('item4', 14),
-('item5', 14),
-('item6', 14),
-('item7', 14),
-('item8', 14),
-('item9', 14),
-('item10', 14),
-('The Blade Itself', 14),
-('Before They Are Hanged', 14),
-('Last Argument Of Kings', 14),
-('Best Served Cold', 14),
-('The Heroes', 14),
-('Red Country', 14),
-('Sharp Ends', 14),
-('A Little Hatred', 14),
-('The Trouble With Peace', 14),
-('The Wisdom Of Crowds', 14);
+INSERT INTO items (title, allowedRentalDays, available) VALUES
+('item1', 14, 1),
+('item2', 14, 1),
+('item3', 14, 1),
+('item4', 14, 1),
+('item5', 14, 1),
+('item6', 14, 1),
+('item7', 14, 1),
+('item8', 14, 1),
+('item9', 14, 1),
+('item10', 14, 1),
+('The Blade Itself', 14, 1),
+('Before They Are Hanged', 14, 1),
+('Last Argument Of Kings', 14, 1),
+('Best Served Cold', 14, 1),
+('The Heroes', 14, 1),
+('Red Country', 14, 1),
+('Sharp Ends', 14, 1),
+('A Little Hatred', 14, 1),
+('The Trouble With Peace', 14, 1),
+('The Wisdom Of Crowds', 14, 1);
 
 -- //TODO add Rental test data here

@@ -20,6 +20,7 @@ CREATE TABLE Items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     allowedRentalDays INT NOT NULL,
+    available TINYINT(1) NOT NULL,
     PRIMARY KEY (itemID)
 );
 
