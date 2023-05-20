@@ -81,13 +81,13 @@ public class Rental extends Entity {
      * @param itemID The ID of the item being rented.
      */
     public Rental(int userID, int itemID) {
-        this.rentalID = 0; //Set after initial INSERT
+        this.rentalID = 0; //Set AFTER initial INSERT by createNewRental
         setUserID(userID);
         setItemID(itemID);
         setRentalDate(LocalDateTime.now());
-        this.username = null; //Set by createNewRental
-        this.itemTitle = null; //Set by createNewRental
-        this.rentalDueDate = null; //Set by createNewRental
+        this.username = null; //Set BEFORE initial INSERT by createNewRental
+        this.itemTitle = null; //Set BEFORE initial INSERT by createNewRental
+        this.rentalDueDate = null; //Set BEFORE initial INSERT by createNewRental
         this.rentalReturnDate = null; //Should be null since the Rental has just been created
         this.lateFee = 0.0; //Should be 0.0 since the Rental has just been created
     }
@@ -95,7 +95,7 @@ public class Rental extends Entity {
     /**
      * Constructs a Rental object with data retrieved from the rentals database table.
      * This constructor is typically used when loading a Rental from the database.
-     * All fields are initialized based on the values provided as arguments.
+     * All fields are initialized based on the values retrieved as arguments.
      *
      * @param rentalID The unique ID of the rental, as stored in the database.
      * @param userID The ID of the user who is renting the item.

@@ -17,7 +17,7 @@ public class Item extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
-    public static final int ITEM_DEFAULT_ALLOWED_DAYS = 14;
+    public static final int DEFAULT_ALLOWED_DAYS = 14;
 
     private int itemID; //Primary key
     private String title;
@@ -29,8 +29,8 @@ public class Item extends Entity {
      * @param title
      */
     public Item(String title) {
-        this.itemID = 0;
-        this.allowedRentalDays = ITEM_DEFAULT_ALLOWED_DAYS; //TODO-prio for now
+        this.itemID = 0; //Set AFTER initial INSERT by createNewItem
+        this.allowedRentalDays = DEFAULT_ALLOWED_DAYS; //TODO-prio for now
         setTitle(title);
         this.available = true;
     }
@@ -45,7 +45,7 @@ public class Item extends Entity {
         this.itemID = itemID;
         this.title = title;
         this.allowedRentalDays = allowedRentalDays;
-        this.available = true;
+        this.available = availabe;
     }
 
     /**

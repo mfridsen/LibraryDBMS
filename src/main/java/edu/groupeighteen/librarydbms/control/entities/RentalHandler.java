@@ -117,9 +117,14 @@ public class RentalHandler {
         LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
         newRental.setRentalDueDate(dueDate);
 
-        //Save to database, retrieve and set rentalID, and return newRental
+        //Save to database, retrieve and set rentalID, update item's availability and return newRental
         newRental.setRentalID(saveRental(newRental));
         return newRental;
+    }
+
+    private static Item getAvailableItem(String itemTitle) {
+        //List<Item> = ItemHandler.getItemsByTitle(itemTitle);
+        return null;
     }
 
     /**

@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.control.entities;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
@@ -22,6 +23,9 @@ import java.util.Map;
  * It contains a list of all Item titles for quicker validation.
  */
 public class ItemHandler {
+
+    //TODO-exceptions redirect SQL exceptions and revise all tests
+
     /**
      * Used to speed up searching. Contains a HashMap with the titles of all items in the database and how many
      * copies there are of each.
@@ -92,13 +96,13 @@ public class ItemHandler {
     }
 
 
-    public static void setup() throws SQLException {
+    public static void setup()  {
         reset();
         syncTitles();
     }
 
 
-    public static void syncTitles() throws SQLException {
+    public static void syncTitles()  {
         if (!storedTitles.isEmpty()) {
             storedTitles.clear();
         }
@@ -110,26 +114,30 @@ public class ItemHandler {
 
     /**
      * Retrieves titles from the items table and returns them as a map with title-count pairs.
-     *
-     * @throws SQLException if there's an error executing the SQL query
      */
-    private static void retrieveTitlesFromTable() throws SQLException {
+    private static void retrieveTitlesFromTable() {
         // Execute the query to retrieve all items
         QueryResult result = DatabaseHandler.executeQuery("SELECT title, available FROM items ORDER BY title ASC");
 
-        // Add the retrieved items to the maps
-        while (result.getResultSet().next()) {
-            String title = result.getResultSet().getString("title");
-            boolean available = result.getResultSet().getBoolean("available");
+        try {
+            // Add the retrieved items to the maps
+            while (result.getResultSet().next()) {
+                String title = result.getResultSet().getString("title");
+                boolean available = result.getResultSet().getBoolean("available");
 
-            incrementStoredTitles(title);
-            if (available) {
-                incrementAvailableTitles(title);
+                incrementStoredTitles(title);
+                if (available) {
+                    incrementAvailableTitles(title);
+                }
             }
+        } catch (SQLException sqle) {
+            ExceptionHandler.HandleSQLException(sqle);
         }
 
         // Close the resources
         result.close();
+
+        if (storedTitles.isEmpty()) System.err.println("No titles retrieved from table!");
     }
 
     public static void reset() {
@@ -162,7 +170,7 @@ public class ItemHandler {
 
 
     //TODO-prio update method and test when Item is finished
-    public static Item createNewItem(String title) throws SQLException {
+    public static Item createNewItem(String title)  {
         //Validate input
         if (title == null || title.isEmpty())
             throw new IllegalArgumentException("Empty title.");
@@ -178,13 +186,20 @@ public class ItemHandler {
     }
 
 
+    /**
+     * Note that the -1 return statement is technically unreachable because System.exit(1) is called if any
+     * SQLException occurs. However, the Java compiler doesn't understand that System.exit() terminates the program,
+     * so a return statement is required to avoid a compile error.
+     * @param item
+     * @return
+     */
     //TODO-prio update method and test when Item is finished
-    private static int saveItem(Item item) throws SQLException {
+    private static int saveItem(Item item) {
         //Validate input
         if (item == null)
             throw new IllegalArgumentException("Invalid item: item is null.");
 
-        //Prepare query  //Update these two when more fields are added, as well as javadoc
+        //Prepare query
         String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
         String[] params = {
                 item.getTitle(),
@@ -195,13 +210,22 @@ public class ItemHandler {
         //Execute query and get the generated itemID, using try-with-resources
         try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
             ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-            if (generatedKeys.next()) return generatedKeys.getInt(1);
-            else throw new SQLException("Failed to insert the item, no ID obtained.");
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1);
+            } else {
+                ExceptionHandler.HandleSQLException(new SQLException("Failed to insert the item, no ID obtained."));
+            }
+        } catch (SQLException e) {
+            ExceptionHandler.HandleSQLException(e);
         }
+
+        // The method must return an integer. If an SQLException occurs, the method will exit before reaching this point.
+        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
+        return -1;
     }
 
     //TODO-prio update method and test when Item is finished
-    public static Item getItemByID(int itemID) throws SQLException, ItemNotFoundException {
+    public static Item getItemByID(int itemID) throws ItemNotFoundException {
         //No point getting impossible items
         if (itemID <= 0)
             throw new IllegalArgumentException("Error retrieving item by itemID: invalid itemID " + itemID);
@@ -211,30 +235,40 @@ public class ItemHandler {
         String[] params = {String.valueOf(itemID)};
 
         //Execute the query and store the result in a ResultSet.
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
+        try {
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
 
-        try (queryResult) {
-            ResultSet resultSet = queryResult.getResultSet();
-            //If the ResultSet contains data, create a new Item object using the retrieved title
-            //and set the item's itemID.
-            if (resultSet.next()) {
-                String title = resultSet.getString("title");
-                int allowedRentalDays = resultSet.getInt("allowedRentalDays");
-                boolean available = resultSet.getBoolean("available");
-                Item item = new Item(title);
-                item.setItemID(itemID);
-                item.setAllowedRentalDays(allowedRentalDays);
-                item.setAvailable(available);
-                return item;
-            } else
-                throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
+            try (queryResult) {
+                ResultSet resultSet = queryResult.getResultSet();
+                //If the ResultSet contains data, create a new Item object using the retrieved title
+                //and set the item's itemID.
+                if (resultSet.next()) {
+                    String title = resultSet.getString("title");
+                    int allowedRentalDays = resultSet.getInt("allowedRentalDays");
+                    boolean available = resultSet.getBoolean("available");
+                    Item item = new Item(title);
+                    item.setItemID(itemID);
+                    item.setAllowedRentalDays(allowedRentalDays);
+                    item.setAvailable(available);
+                    return item;
+                } else {
+                    throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
+                }
+            }
+        } catch (SQLException e) {
+            ExceptionHandler.HandleSQLException(e);
         }
+
+        // The method must return an Item. If an SQLException occurs, the method will exit before reaching this point.
+        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
+        // Here, we return null as a dummy value.
+        return null;
     }
 
 
     //TODO-test ASAP
     //TODO-prio update method and test when Item is finished
-    public static List<Item> getItemsByTitle(String title) throws SQLException, ItemNotFoundException {
+    public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException {
         //No point getting invalid items
         if (title == null || title.isEmpty())
             throw new IllegalArgumentException("Error retrieving item by title: empty title.");
@@ -247,24 +281,34 @@ public class ItemHandler {
         List<Item> items = new ArrayList<>();
 
         //Execute the query and store the result in a ResultSet.
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-            ResultSet resultSet = queryResult.getResultSet();
+        try {
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
 
-            //Loop through the ResultSet. For each record, create a new Item object and add it to the list.
-            while (resultSet.next()) {
-                Item item = new Item(title);
-                item.setItemID(resultSet.getInt("itemID"));
-                int allowedRentalDays = resultSet.getInt("allowedRentalDays");
-                boolean available = resultSet.getBoolean("available");
-                item.setAllowedRentalDays(allowedRentalDays);
-                item.setAvailable(available);
-                items.add(item);
+            try (queryResult) {
+                ResultSet resultSet = queryResult.getResultSet();
+
+                //Loop through the ResultSet. For each record, create a new Item object and add it to the list.
+                while (resultSet.next()) {
+                    Item item = new Item(title);
+                    item.setItemID(resultSet.getInt("itemID"));
+                    int allowedRentalDays = resultSet.getInt("allowedRentalDays");
+                    boolean available = resultSet.getBoolean("available");
+                    item.setAllowedRentalDays(allowedRentalDays);
+                    item.setAvailable(available);
+                    items.add(item);
+                }
+                if (items.isEmpty()) {
+                    throw new ItemNotFoundException(title);
+                }
             }
-            if (items.isEmpty()) {
-                throw new ItemNotFoundException(title);
-            }
+        } catch (SQLException e) {
+            ExceptionHandler.HandleSQLException(e);
         }
-        return items;
+
+        // The method must return a List<Item>. If an SQLException occurs, the method will exit before reaching this point.
+        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
+        // Here, we return a dummy value.
+        return items.isEmpty() ? null : items;
     }
 
 
@@ -328,7 +372,7 @@ public class ItemHandler {
     // == 27 test cases
 
     //TODO-prio update when Item is finished
-    public static boolean updateItem(Item item) throws SQLException, ItemNotFoundException {
+    public static boolean updateItem(Item item) throws ItemNotFoundException {
         // Validate the input
         if (item == null)
             throw new IllegalArgumentException("Invalid item: item is null.");
@@ -341,36 +385,50 @@ public class ItemHandler {
         String[] params = {item.getTitle(), String.valueOf(item.getItemID())};
 
         // Execute the update.
-        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
+        try {
+            int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
-        // If the update was successful, update the storedTitles and availableTitles
-        if (rowsAffected == 1 && !oldTitle.equals(item.getTitle())) {
-            // Decrement the count of the old title
-            decrementStoredTitles(oldTitle);
-            decrementAvailableTitles(oldTitle);
+            // If the update was successful, update the storedTitles and availableTitles
+            if (rowsAffected == 1 && !item.getTitle().equals(oldTitle)) {
+                // Decrement the count of the old title
+                decrementStoredTitles(oldTitle);
+                decrementAvailableTitles(oldTitle);
 
-            // Increment the count of the new title
-            incrementStoredTitles(item.getTitle());
-            incrementAvailableTitles(item.getTitle());
+                // Increment the count of the new title
+                incrementStoredTitles(item.getTitle());
+                incrementAvailableTitles(item.getTitle());
+            }
+            return rowsAffected == 1;
+        } catch (SQLException e) {
+            ExceptionHandler.HandleSQLException(e);
+            return false;
         }
-        return rowsAffected == 1;
     }
 
-    private static String getItemTitleByID(int itemId) throws SQLException, ItemNotFoundException {
+    private static String getItemTitleByID(int itemId) throws ItemNotFoundException {
         String sql = "SELECT title FROM items WHERE itemID = ?";
         String[] params = {String.valueOf(itemId)};
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
 
-        if(queryResult.getResultSet().next()){
-            return queryResult.getResultSet().getString("title");
-        }else{
-            throw new ItemNotFoundException("Item with ID " + itemId + " does not exist.");
+        try {
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+
+            try (queryResult) {
+                if(queryResult.getResultSet().next()){
+                    return queryResult.getResultSet().getString("title");
+                }else{
+                    throw new ItemNotFoundException("Item with ID " + itemId + " does not exist.");
+                }
+            }
+        } catch (SQLException e) {
+            ExceptionHandler.HandleSQLException(e);
+            return null;
         }
     }
+
 
 
     //TODO-prio update when Item is finished
-    public static boolean deleteItem(Item item) throws SQLException, ItemNotFoundException {
+    public static boolean deleteItem(Item item) throws ItemNotFoundException {
         //Validate the input
         if (item == null)
             throw new IllegalArgumentException("Invalid item: item is null.");
@@ -382,24 +440,29 @@ public class ItemHandler {
         String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
         String[] params = {String.valueOf(item.getItemID())};
 
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
-        ResultSet resultSet = queryResult.getResultSet();
-        resultSet.next(); // Move to the first row
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+            resultSet.next(); // Move to the first row
 
-        // If the item does not exist, throw an exception
-        if (resultSet.getInt(1) == 0) {
-            queryResult.close();
-            throw new ItemNotFoundException(item.getItemID());
+            // If the item does not exist, throw an exception
+            if (resultSet.getInt(1) == 0) {
+                throw new ItemNotFoundException(item.getItemID());
+            }
+        } catch (SQLException e) {
+            ExceptionHandler.HandleSQLException(e);
         }
-
-        queryResult.close();
 
         //Prepare a SQL command to delete an item by itemID.
         sql = "DELETE FROM items WHERE itemID = ?";
         params = new String[]{String.valueOf(item.getItemID())};
 
         //Execute the update.
-        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
+        int rowsAffected = 0;
+        try {
+            rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
+        } catch (SQLException e) {
+            ExceptionHandler.HandleSQLException(e);
+        }
 
         //Check if the delete was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
@@ -421,13 +484,17 @@ public class ItemHandler {
 
 
 
+
     //TODO-test
     //TODO-comment
     //TODO-implement
     //TODO-exception
-    public static int getAllowedRentalDaysByID(int itemID) throws SQLException, ItemNotFoundException {
+    public static int getAllowedRentalDaysByID(int itemID) throws ItemNotFoundException {
         Item item = getItemByID(itemID);
-        return item.getAllowedRentalDays();
+        if (item != null)
+            return item.getAllowedRentalDays();
+        else
+            throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
     }
 
     public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException {

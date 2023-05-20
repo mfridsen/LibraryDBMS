@@ -107,30 +107,25 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testCreateNewItem_ValidTitle() {
         System.out.println("\n3: Testing createNewItem with a valid title...");
 
-        try {
-            //Create a valid Item
-            String validTitle = "Valid Title";
-            Item validItem = ItemHandler.createNewItem(validTitle);
+        //Create a valid Item
+        String validTitle = "Valid Title";
+        Item validItem = ItemHandler.createNewItem(validTitle);
 
-            //Item should not be null
-            assertNotNull(validItem);
+        //Item should not be null
+        assertNotNull(validItem);
 
-            //Item ID should be greater than 0
-            assertTrue(validItem.getItemID() > 0);
+        //Item ID should be greater than 0
+        assertTrue(validItem.getItemID() > 0);
 
-            //Item allowedRentalDays should be greater than 0
-            assertTrue(validItem.getAllowedRentalDays() > 0);
+        //Item allowedRentalDays should be greater than 0
+        assertTrue(validItem.getAllowedRentalDays() > 0);
 
-            //Item should have correct title
-            assertEquals(validTitle, validItem.getTitle());
+        //Item should have correct title
+        assertEquals(validTitle, validItem.getTitle());
 
-            //storedTitles and availableTitles should contain 1 element
-            assertEquals(1, ItemHandler.getStoredTitles().size());
-            assertEquals(1, ItemHandler.getAvailableTitles().size());
-        } catch (SQLException sqle) { //No exceptions should be thrown
-            fail("Error while creating valid item: " + sqle.getMessage());
-            sqle.printStackTrace();
-        }
+        //storedTitles and availableTitles should contain 1 element
+        assertEquals(1, ItemHandler.getStoredTitles().size());
+        assertEquals(1, ItemHandler.getAvailableTitles().size());
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -145,39 +140,34 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testCreateNewItem_ExistingTitle() {
         System.out.println("\n4: Testing createNewItem with an existing title...");
 
-        try {
-            //Create valid Items
-            String validTitle = "ValidTitle";
-            Item validItem = ItemHandler.createNewItem(validTitle);
-            Item validItem2 = ItemHandler.createNewItem(validTitle);
+        //Create valid Items
+        String validTitle = "ValidTitle";
+        Item validItem = ItemHandler.createNewItem(validTitle);
+        Item validItem2 = ItemHandler.createNewItem(validTitle);
 
-            //Items should not be null
-            assertNotNull(validItem);
-            assertNotNull(validItem2);
+        //Items should not be null
+        assertNotNull(validItem);
+        assertNotNull(validItem2);
 
-            //Item IDs should be greater than 0
-            assertTrue(validItem.getItemID() > 0);
-            assertTrue(validItem2.getItemID() > 0);
+        //Item IDs should be greater than 0
+        assertTrue(validItem.getItemID() > 0);
+        assertTrue(validItem2.getItemID() > 0);
 
-            //Items allowedRentalDays should be greater than 0
-            assertTrue(validItem.getAllowedRentalDays() > 0);
-            assertTrue(validItem2.getAllowedRentalDays() > 0);
+        //Items allowedRentalDays should be greater than 0
+        assertTrue(validItem.getAllowedRentalDays() > 0);
+        assertTrue(validItem2.getAllowedRentalDays() > 0);
 
-            //Items should have correct title
-            assertEquals(validTitle, validItem.getTitle());
-            assertEquals(validTitle, validItem2.getTitle());
+        //Items should have correct title
+        assertEquals(validTitle, validItem.getTitle());
+        assertEquals(validTitle, validItem2.getTitle());
 
-            //storedTitles should contain 1 title with 2 counts
-            assertEquals(1, ItemHandler.getStoredTitles().size());
-            assertEquals(2, ItemHandler.getStoredTitles().get(validTitle).intValue(), "'ValidTitle' count does not match.");
+        //storedTitles should contain 1 title with 2 counts
+        assertEquals(1, ItemHandler.getStoredTitles().size());
+        assertEquals(2, ItemHandler.getStoredTitles().get(validTitle).intValue(), "'ValidTitle' count does not match.");
 
-            //availableTitles should contain 1 title with 2 counts
-            assertEquals(1, ItemHandler.getAvailableTitles().size());
-            assertEquals(2, ItemHandler.getAvailableTitles().get(validTitle).intValue(), "'ValidTitle' count does not match.");
-        } catch (SQLException sqle) { //No exceptions should be thrown
-            fail("Error while creating valid item: " + sqle.getMessage());
-            sqle.printStackTrace();
-        }
+        //availableTitles should contain 1 title with 2 counts
+        assertEquals(1, ItemHandler.getAvailableTitles().size());
+        assertEquals(2, ItemHandler.getAvailableTitles().get(validTitle).intValue(), "'ValidTitle' count does not match.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -193,11 +183,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\n5: Testing setup method with an empty database...");
 
         // Call the setup method
-        try {
-            ItemHandler.setup();
-        } catch (SQLException e) {
-            fail("ItemHandler.setup() method threw an SQLException: " + e.getMessage());
-        }
+        ItemHandler.setup();
 
         // Verify that the storedTitles and availableTitles maps are empty
         assertEquals(0, ItemHandler.getStoredTitles().size(), "storedTitles map should be empty after setup with an empty database");
@@ -231,12 +217,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         }
 
         // Call the setup method
-        try {
-            ItemHandler.setup();
-        } catch (SQLException e) {
-            System.out.println("Error while setting up ItemHandler: " + e.getMessage());
-            fail("Error while setting up ItemHandler.");
-        }
+        ItemHandler.setup();
 
         // Check that the correct titles have been stored
         assertEquals(2, ItemHandler.getStoredTitles().size(), "Stored titles size does not match.");
@@ -298,9 +279,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The retrieved item should have the same allowed rental days as the created item
             assertEquals(createdItem.getAllowedRentalDays(), retrievedItem.getAllowedRentalDays(), "Retrieved item allowed rental days does not match created item allowed rental days.");
-        } catch (SQLException sqle) { // No exceptions should be thrown
-            fail("Unexpected error occurred: " + sqle.getMessage());
-            sqle.printStackTrace();
         } catch (ItemNotFoundException infe) {
             fail("Valid, existing itemID should not throw a ItemNotFoundException: " + infe.getMessage());
             infe.printStackTrace();
@@ -358,7 +336,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertEquals(1, items.size());
             // Check the title of the item
             assertEquals(singleItemTitle, items.get(0).getTitle());
-        } catch (SQLException | ItemNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             // No exceptions should be thrown
             fail("Error while getting item by title: " + e.getMessage());
         }
@@ -435,7 +413,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An IllegalArgumentException was expected.");
         } catch (IllegalArgumentException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
-        } catch (SQLException | ItemNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -457,7 +435,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
             assertEquals("Item with ID 99999 does not exist.", inf.getMessage());
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -496,7 +474,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertEquals(1, ItemHandler.getStoredTitles().get(updatedTitle).intValue());
             assertEquals(1, ItemHandler.getAvailableTitles().get(updatedTitle).intValue());
 
-        } catch (SQLException | ItemNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -517,7 +495,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An IllegalArgumentException was expected.");
         } catch (IllegalArgumentException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
-        } catch (SQLException | ItemNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -539,7 +517,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
             assertEquals("Item with ID 99999 does not exist.", inf.getMessage());
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -586,7 +564,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
                 assertNull(ItemHandler.getAvailableTitles().get(validItem.getTitle()));
             }
 
-        } catch (SQLException | ItemNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -609,7 +587,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The allowed rental days should be equal to the allowed rental days of the created item
             assertEquals(validItem.getAllowedRentalDays(), allowedRentalDays);
-        } catch (SQLException | ItemNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -650,8 +628,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The number of available copies should be 1
             assertEquals(1, availableCopies);
-        } catch (SQLException e) {
-            fail("Unexpected exception: " + e.getMessage());
         } catch (ItemNotFoundException e) {
             fail("Item should exist in availableTitles.");
             e.printStackTrace();
