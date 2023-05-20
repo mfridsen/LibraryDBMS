@@ -37,19 +37,11 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         System.out.println("\n1: Testing executeSingleSQLCommand method...");
         //1. Create a temporary table in the test database
         String createTempTable = "CREATE TABLE temp_table (id INT PRIMARY KEY, name VARCHAR(255));";
-        try {
-            DatabaseHandler.executeCommand(createTempTable);
-        } catch (SQLException e) {
-            fail("Failed to create temp_table: " + e.getMessage());
-        }
+        DatabaseHandler.executeCommand(createTempTable);
 
         //2. Insert some data into the temporary table
         String insertData = "INSERT INTO temp_table (id, name) VALUES (1, 'Test User');";
-        try {
-            DatabaseHandler.executeCommand(insertData);
-        } catch (SQLException e) {
-            fail("Failed to insert data into temp_table: " + e.getMessage());
-        }
+        DatabaseHandler.executeCommand(insertData);
 
         //3. Check if the data was inserted correctly
         String queryData = "SELECT * FROM temp_table WHERE id = 1;";
@@ -64,11 +56,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
 
         //Clean up: Drop the temporary table
         String dropTempTable = "DROP TABLE IF EXISTS temp_table;";
-        try {
-            DatabaseHandler.executeCommand(dropTempTable);
-        } catch (SQLException e) {
-            fail("Failed to drop temp_table: " + e.getMessage());
-        }
+        DatabaseHandler.executeCommand(dropTempTable);
         System.out.println("\nTEST FINISHED.");
     }
 
@@ -136,12 +124,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         } finally {
             //Clean up by dropping the test table
             String dropCommand = "DROP TABLE test_table";
-            try {
-                DatabaseHandler.executeCommand(dropCommand);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Could not drop test_table.");
-            }
+            DatabaseHandler.executeCommand(dropCommand);
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -177,11 +160,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         } finally {
             //Drop the test table and close resources
-            try {
-                DatabaseHandler.executeCommand("DROP TABLE IF EXISTS " + tableName);
-            } catch (SQLException e) {
-                fail("Exception occurred while closing resources: " + e.getMessage());
-            }
+            DatabaseHandler.executeCommand("DROP TABLE IF EXISTS " + tableName);
         }
         System.out.println("\nTEST FINISHED.");
     }
@@ -220,11 +199,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
 
         finally {
             //Drop the test table and close resources
-            try {
-                DatabaseHandler.executeCommand("DROP TABLE IF EXISTS " + tableName);
-            } catch (SQLException e) {
-                fail("Exception occurred while closing resources: " + e.getMessage());
-            }
+            DatabaseHandler.executeCommand("DROP TABLE IF EXISTS " + tableName);
         }
         System.out.println("\nTEST FINISHED.");
     }
@@ -303,17 +278,12 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     @Order(6)
     void testDatabaseExistsAndCreateDatabase() {
         System.out.println("\n6: Testing databaseExists and createDatabase methods...");
-        try {
-            DatabaseHandler.executeCommand("drop database if exists " + LibraryManager.databaseName);
-            assertFalse(DatabaseHandler.databaseExists(LibraryManager.databaseName));
-            DatabaseHandler.setVerbose(false);
-            DatabaseHandler.createDatabase(LibraryManager.databaseName);
-            DatabaseHandler.setVerbose(true);
-            assertTrue(DatabaseHandler.databaseExists(LibraryManager.databaseName));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            fail("Failed to execute SQL command.");
-        }
+        DatabaseHandler.executeCommand("drop database if exists " + LibraryManager.databaseName);
+        assertFalse(DatabaseHandler.databaseExists(LibraryManager.databaseName));
+        DatabaseHandler.setVerbose(false);
+        DatabaseHandler.createDatabase(LibraryManager.databaseName);
+        DatabaseHandler.setVerbose(true);
+        assertTrue(DatabaseHandler.databaseExists(LibraryManager.databaseName));
         System.out.println("\nTEST FINISHED.");
     }
 

@@ -42,10 +42,10 @@ public class Item extends Entity {
      * @param allowedRentalDays
      */
     public Item(int itemID, String title, int allowedRentalDays, boolean availabe) {
-        this.itemID = itemID;
-        this.title = title;
-        this.allowedRentalDays = allowedRentalDays;
-        this.available = availabe;
+        setItemID(itemID);
+        setTitle(title);
+        setAllowedRentalDays(allowedRentalDays);
+        setAvailable(availabe);
     }
 
     /**
@@ -59,7 +59,6 @@ public class Item extends Entity {
         this.available = other.available;
     }
 
-    /*********************************** Getters and Setters are self-explanatory. ************************************/
     public int getItemID() {
         return itemID;
     }

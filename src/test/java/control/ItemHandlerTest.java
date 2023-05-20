@@ -31,7 +31,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
     @BeforeEach
     @Override
     void setupAndReset() {
-        super.setupAndReset();
         try {
             setupConnectionAndTables();
         } catch (SQLException | ClassNotFoundException e) {
@@ -203,18 +202,13 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\n6: Testing setup method with some items in the database...");
 
         // Insert some items into the database, with one available single and two duplicates of which one is available
-        try {
-            String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
-            String[] params1 = {"Harry Potter", "14", "1"};
-            String[] params2 = {"The Lord of the Rings", "14", "1"};
-            String[] params3 = {"Harry Potter", "14", "0"};
-            DatabaseHandler.executePreparedQuery(query, params1);
-            DatabaseHandler.executePreparedQuery(query, params2);
-            DatabaseHandler.executePreparedQuery(query, params3);
-        } catch (SQLException e) {
-            System.out.println("Error while creating items: " + e.getMessage());
-            fail("Error while creating items.");
-        }
+        String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
+        String[] params1 = {"Harry Potter", "14", "1"};
+        String[] params2 = {"The Lord of the Rings", "14", "1"};
+        String[] params3 = {"Harry Potter", "14", "0"};
+        DatabaseHandler.executePreparedQuery(query, params1);
+        DatabaseHandler.executePreparedQuery(query, params2);
+        DatabaseHandler.executePreparedQuery(query, params3);
 
         // Call the setup method
         ItemHandler.setup();
@@ -375,7 +369,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertTrue(items.get(0).isAvailable());
             assertFalse(items.get(1).isAvailable());
 
-        } catch (SQLException | ItemNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             // No exceptions should be thrown
             fail("Error while getting items by title: " + e.getMessage());
         }

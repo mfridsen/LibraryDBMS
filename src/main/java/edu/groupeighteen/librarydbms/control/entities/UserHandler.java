@@ -94,60 +94,6 @@ public class UserHandler {
         }
     }
 
-    /**
-     * Basic login method. Checks whether username exists in storedUsernames. If it does, check whether password
-     * matches that user's password.
-     * @param username the username attempting to login
-     * @param password the password attempting to login
-     * @return true if successful, otherwise false
-     * @throws SQLException If an error occurs while interacting with the database
-     */
-    public static boolean login(String username, String password) throws SQLException {
-        //No point verifying empty strings
-        if (username == null ||username.isEmpty() || password == null || password.isEmpty()) {
-            System.err.println("Login failed: Empty username or password."); //TODO-log
-            return false;
-        }
-
-        boolean isAuthenticated = false;
-
-        if (!storedUsernames.contains(username)) {
-            //TODO-future log or otherwise present the problem to the user
-            //TODO-future if user is staff, will still check against database just in case
-            System.err.println(username + ": no such user in list of usernames.");
-        }
-
-        String query = "SELECT password FROM users WHERE username = ?";
-        String[] params = {username};
-
-        //Execute the query and check if the input password matches the retrieved password
-        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
-        try (queryResult) {
-            ResultSet resultSet = queryResult.getResultSet();
-            if (resultSet.next()) {
-                String storedPassword = resultSet.getString("password");
-                if (password.equals(storedPassword)) {
-                    isAuthenticated = true;
-                }
-            }
-        }
-
-        return isAuthenticated;
-    }
-
-    /**
-     * Validates the user's password.
-     *
-     * This method compares the password provided as an argument with the password stored in the User object.
-     * If the provided password matches the stored password, the method returns true. Otherwise, it returns false.
-     *
-     * @param user The User object whose password is to be validated.
-     * @param password The password to validate.
-     * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
-     */
-    public static boolean validateUser(User user, String password) {
-        return user.getPassword().equals(password);
-    }
 
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
@@ -331,4 +277,63 @@ public class UserHandler {
         } else {
         }
     }
+
+
+    /**
+     * Basic login method. Checks whether username exists in storedUsernames. If it does, check whether password
+     * matches that user's password.
+     * @param username the username attempting to login
+     * @param password the password attempting to login
+     * @return true if successful, otherwise false
+     * @throws SQLException If an error occurs while interacting with the database
+     */
+    public static boolean login(String username, String password) throws SQLException {
+        //No point verifying empty strings
+        if (username == null ||username.isEmpty() || password == null || password.isEmpty()) {
+            System.err.println("Login failed: Empty username or password."); //TODO-log
+            return false;
+        }
+
+        boolean isAuthenticated = false;
+
+        if (!storedUsernames.contains(username)) {
+            //TODO-future log or otherwise present the problem to the user
+            //TODO-future if user is staff, will still check against database just in case
+            System.err.println(username + ": no such user in list of usernames.");
+        }
+
+        String query = "SELECT password FROM users WHERE username = ?";
+        String[] params = {username};
+
+        //Execute the query and check if the input password matches the retrieved password
+        QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params);
+        try (queryResult) {
+            ResultSet resultSet = queryResult.getResultSet();
+            if (resultSet.next()) {
+                String storedPassword = resultSet.getString("password");
+                if (password.equals(storedPassword)) {
+                    isAuthenticated = true;
+                }
+            }
+        }
+
+        return isAuthenticated;
+    }
+
+    // VALIDATION STUFF -----------------------------------------------------------------------------------------------
+
+    /**
+     * Validates the user's password.
+     *
+     * This method compares the password provided as an argument with the password stored in the User object.
+     * If the provided password matches the stored password, the method returns true. Otherwise, it returns false.
+     *
+     * @param user The User object whose password is to be validated.
+     * @param password The password to validate.
+     * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
+     */
+    public static boolean validateUser(User user, String password) {
+        return user.getPassword().equals(password);
+    }
+
 }

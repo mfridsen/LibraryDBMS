@@ -80,15 +80,9 @@ public class UserCreateGUI extends GUI {
             return;
         }
         //If successful, dispose, create a new user and open a new UserGUI for that user
-        try{
-            dispose();
-            User newUser = UserHandler.createNewUser(usernameStr, passwordStr);
-            new UserGUI(this, newUser);
-        } catch (SQLException sqle) {
-            System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
-            sqle.printStackTrace();
-            LibraryManager.exit(1);
-        }
+        dispose();
+        User newUser = UserHandler.createNewUser(usernameStr, passwordStr);
+        new UserGUI(this, newUser);
     }
 }
 

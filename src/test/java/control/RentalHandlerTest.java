@@ -264,11 +264,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n9: Testing getAllRentals method with an empty database...");
 
         // Clear the rentals table in the database
-        try {
-            DatabaseHandler.executeCommand("DELETE FROM Rentals");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DatabaseHandler.executeCommand("DELETE FROM Rentals");
 
         List<Rental> expectedRentals = Collections.emptyList();
         List<Rental> actualRentals;

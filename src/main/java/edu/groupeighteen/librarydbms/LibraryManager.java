@@ -40,7 +40,7 @@ public class LibraryManager {
             ItemHandler.setup();
             //RentalHandler.setup() //Might not be needed
             //EveryOtherHandler.setup()
-        } catch (SQLException | ClassNotFoundException e) { //TODO-exceptions handle
+        } catch (SQLException e) { //TODO-exceptions handle
             e.printStackTrace();
         }
     }

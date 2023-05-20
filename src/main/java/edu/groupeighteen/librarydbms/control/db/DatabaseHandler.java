@@ -37,20 +37,24 @@ public class DatabaseHandler {
      * Sets up the DatabaseConnection, then checks if the database exists. If not, calls createDatabase to
      * create it.
      */
-    public static void setup(boolean verbose) throws SQLException, ClassNotFoundException {
+    public static void setup(boolean verbose) {
         //Set verbosity
         DatabaseHandler.verbose = verbose;
-        //Connect to database
-        connection = DatabaseConnection.setup();
+        try {
+            //Connect to database
+            connection = DatabaseConnection.setup();
 
-        executeCommand("drop database if exists " + LibraryManager.databaseName);
-        createDatabase(LibraryManager.databaseName);
+            executeCommand("drop database if exists " + LibraryManager.databaseName);
+            createDatabase(LibraryManager.databaseName);
 
         /*
         if (!databaseExists(LibraryManager.databaseName)) {
             createDatabase(LibraryManager.databaseName);
         } else executeCommand("use " + LibraryManager.databaseName);
         */
+        } catch (SQLException | ClassNotFoundException e) {
+            ExceptionHandler.HandleFatalException(e);
+        }
     }
 
     /**
@@ -69,7 +73,7 @@ public class DatabaseHandler {
             queryResult.close();
             return exists;
         } catch (SQLException e) {
-            System.err.println("Error checking if database exists: " + e.getMessage());
+            ExceptionHandler.HandleFatalException(e);
             return false;
         }
     }
@@ -77,9 +81,8 @@ public class DatabaseHandler {
     /**
      * Creates a new database with a given name and fills it with tables and data.
      * @param databaseName the name of the database.
-     * @throws SQLException if an error occurs while executing the commands.
      */
-    public static void createDatabase(String databaseName) throws SQLException {
+    public static void createDatabase(String databaseName) {
         //Create DB
         executeCommand("create database " + databaseName);
         //Use DB
@@ -95,18 +98,21 @@ public class DatabaseHandler {
      * are used with executeUpdate. Prints number of rows affected if command was successfully executed.
      *
      * @param command the SQL command to execute.
-     * @throws SQLException if an error occurs while executing the command.
      */
-    public static void executeCommand(String command) throws SQLException {
+    public static void executeCommand(String command) {
         if (verbose) {
             System.out.println("\nExecuting command:");
             SQLFormatter.printFormattedSQL(command);
         }
 
-        Statement statement = connection.createStatement();
-        int rows = statement.executeUpdate(command);
-        System.out.println("Command executed; rows affected: " + rows);
-        statement.close(); //Always close Statements after we're done with them
+        try {
+            Statement statement = connection.createStatement();
+            int rows = statement.executeUpdate(command);
+            System.out.println("Command executed; rows affected: " + rows);
+            statement.close(); //Always close Statements after we're done with them
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException(e);
+        }
     }
 
     //TODO-exception
@@ -117,9 +123,8 @@ public class DatabaseHandler {
      * @param command The SQL statement to execute.
      * @param parameters An array of values to be bound to the SQL statement.
      * @return The number of rows affected by the update.
-     * @throws SQLException If an error occurs while interacting with the database.
      */
-    public static int executePreparedUpdate(String command, String[] parameters) throws SQLException {
+    public static int executePreparedUpdate(String command, String[] parameters) {
         if (verbose) {
             System.out.println("\nExecuting command:");
             SQLFormatter.printFormattedSQL(command);
@@ -136,7 +141,13 @@ public class DatabaseHandler {
 
             //Execute the update and return the number of affected rows
             return stmt.executeUpdate();
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException(e);
         }
+
+        // The method must return an integer. If an SQLException occurs, the method will exit before reaching this point.
+        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
+        return -1;
     }
 
     //TODO-exception
@@ -159,8 +170,7 @@ public class DatabaseHandler {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
         } catch (SQLException e) {
-            System.err.println("Error executing SQL query: " + e.getMessage());
-            e.printStackTrace();
+            ExceptionHandler.HandleFatalException(e);
         }
         return new QueryResult(resultSet, statement);
     }
@@ -173,7 +183,7 @@ public class DatabaseHandler {
      * @param params
      * @return
      */
-    public static QueryResult executePreparedQuery(String query, String[] params, int... settings) throws SQLException {
+    public static QueryResult executePreparedQuery(String query, String[] params, int... settings) {
         if (verbose) {
             System.out.println("\nExecuting prepared query:");
             SQLFormatter.printFormattedSQL(query);
@@ -194,8 +204,7 @@ public class DatabaseHandler {
             //Get the result set, if available
             resultSet = preparedStatement.getResultSet();
         } catch (SQLException e) {
-            System.err.println("Error executing prepared SQL query: " + e.getMessage());
-            e.printStackTrace();
+            ExceptionHandler.HandleFatalException(e);
         }
         return new QueryResult(resultSet, preparedStatement);
     }
@@ -207,9 +216,8 @@ public class DatabaseHandler {
      * @param sql The SQL command to be executed. This command should be a SQL UPDATE, INSERT, or DELETE command, and can include placeholders (?) for parameters.
      * @param params The parameters to be used in the SQL command. The parameters will be inserted into the command in the order they appear in the array.
      * @return The number of rows affected by the update.
-     * @throws SQLException If an SQL error occurs while executing the command.
      */
-    public static int executeUpdate(String sql, String[] params) throws SQLException {
+    public static int executeUpdate(String sql, String[] params) {
         if (verbose) System.out.println("\nExecuting update: " + sql);
 
         int rowsAffected = 0;
@@ -222,8 +230,7 @@ public class DatabaseHandler {
             //The method executeUpdate() returns the number of affected rows.
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error executing SQL update: " + e.getMessage());
-            throw e;
+            ExceptionHandler.HandleFatalException(e);
         }
 
         return rowsAffected;
@@ -270,18 +277,12 @@ public class DatabaseHandler {
             ExceptionHandler.HandleFatalException(new FileNotFoundException("Couldn't find file at path " + filePath));
         } catch (IOException e) {
             ExceptionHandler.HandleFatalException(new IOException("Couldn't read file at path " + filePath));
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(new SQLException());
         }
     }
 
     public static int[] getUserMetaData() {
         if (connection == null) {
-            try {
-                setup(false);
-            } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            setup(false);
         }
 
         try {
@@ -334,6 +335,4 @@ public class DatabaseHandler {
     public static void setVerbose(boolean verbose) {
         DatabaseHandler.verbose = verbose;
     }
-
-
 }

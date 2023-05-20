@@ -385,24 +385,19 @@ public class ItemHandler {
         String[] params = {item.getTitle(), String.valueOf(item.getItemID())};
 
         // Execute the update.
-        try {
-            int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
+        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
-            // If the update was successful, update the storedTitles and availableTitles
-            if (rowsAffected == 1 && !item.getTitle().equals(oldTitle)) {
-                // Decrement the count of the old title
-                decrementStoredTitles(oldTitle);
-                decrementAvailableTitles(oldTitle);
+        // If the update was successful, update the storedTitles and availableTitles
+        if (rowsAffected == 1 && !item.getTitle().equals(oldTitle)) {
+            // Decrement the count of the old title
+            decrementStoredTitles(oldTitle);
+            decrementAvailableTitles(oldTitle);
 
-                // Increment the count of the new title
-                incrementStoredTitles(item.getTitle());
-                incrementAvailableTitles(item.getTitle());
-            }
-            return rowsAffected == 1;
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
-            return false;
+            // Increment the count of the new title
+            incrementStoredTitles(item.getTitle());
+            incrementAvailableTitles(item.getTitle());
         }
+        return rowsAffected == 1;
     }
 
     private static String getItemTitleByID(int itemId) throws ItemNotFoundException {
@@ -458,11 +453,7 @@ public class ItemHandler {
 
         //Execute the update.
         int rowsAffected = 0;
-        try {
-            rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
-        }
+        rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 
         //Check if the delete was successful (i.e., if any rows were affected)
         if (rowsAffected > 0) {
