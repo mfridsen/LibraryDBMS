@@ -325,7 +325,12 @@ public class UserHandlerTest extends BaseHandlerTest {
         assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
 
         //Update newUser
-        UserHandler.updateUser(newUser, "user1");
+        try {
+            UserHandler.updateUser(newUser, "user1");
+        } catch (UserNotFoundException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         //Verify only one username exists in storedUsernames, and it's the same
         assertEquals(1, UserHandler.getStoredUsernames().size());
@@ -403,20 +408,26 @@ public class UserHandlerTest extends BaseHandlerTest {
         // Create a new User
         User newUser = UserHandler.createNewUser("user1", "password1");
 
-        // Change password
-        newUser.setPassword("newPassword");
-        UserHandler.updateUser(newUser, "user1");
-        assertEquals("newPassword", newUser.getPassword(), "Password should be updated to 'newPassword'.");
+        try {
+            // Change password
+            newUser.setPassword("newPassword");
+            UserHandler.updateUser(newUser, "user1");
+            assertEquals("newPassword", newUser.getPassword(), "Password should be updated to 'newPassword'.");
 
-        // Change currentRentals
-        newUser.setCurrentRentals(3);
-        UserHandler.updateUser(newUser, "user1");
-        assertEquals(3, newUser.getCurrentRentals(), "Current rentals should be updated to 3.");
+            // Change currentRentals
+            newUser.setCurrentRentals(3);
+            UserHandler.updateUser(newUser, "user1");
+            assertEquals(3, newUser.getCurrentRentals(), "Current rentals should be updated to 3.");
 
-        // Change lateFee
-        newUser.setLateFee(15.5);
-        UserHandler.updateUser(newUser, "user1");
-        assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
+            // Change lateFee
+            newUser.setLateFee(15.5);
+            UserHandler.updateUser(newUser, "user1");
+            assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
+        } catch (UserNotFoundException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
+
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -434,7 +445,12 @@ public class UserHandlerTest extends BaseHandlerTest {
         assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
 
         // Delete the user
-        UserHandler.deleteUser(newUser);
+        try {
+            UserHandler.deleteUser(newUser);
+        } catch (UserNotFoundException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         //Assert that no username exists in storedUsernames
         assertEquals(0, UserHandler.getStoredUsernames().size());
@@ -456,4 +472,21 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    @Test
+    @Order(23)
+    void testDeleteUser_NonExistingUser() {
+        System.out.println("\n23: Testing deleteUser method with a non-existing user...");
+
+        // Create a User object with an ID that does not exist in the database
+        User nonExistingUser = new User("nonExistingUsername", "password");
+        nonExistingUser.setUserID(1);
+
+        //Assert User doesn't exist in database
+        assertThrows(UserNotFoundException.class, () -> UserHandler.getUserByID(1), "getUserByID should throw UserNotFoundException when the user does not exist.");
+
+        // Call deleteUser and expect a UserNotFoundException to be thrown
+        assertThrows(UserNotFoundException.class, () -> UserHandler.deleteUser(nonExistingUser), "deleteUser should throw UserNotFoundException when the user does not exist.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
 }

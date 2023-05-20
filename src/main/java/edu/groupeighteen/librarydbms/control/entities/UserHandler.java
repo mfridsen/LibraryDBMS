@@ -222,13 +222,20 @@ public class UserHandler {
     }
 
 
-    public static void updateUser(User newUser, String oldUsername) {
+    public static void updateUser(User newUser, String oldUsername) throws UserNotFoundException {
         //We can't create user objects with invalid usernames, so only need to validate user itself
         if (newUser == null)
             throw new IllegalArgumentException("Invalid newUser: newUser is null.");
         //Old username could be empty or null though
         if (oldUsername == null || oldUsername.isEmpty())
             throw new IllegalArgumentException("Old username is empty.");
+
+        //Let's check if the user exists in the database before we go on
+        try {
+            UserHandler.getUserByID(newUser.getUserID());
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException("Unable to update User: " + newUser.getUserID() + " not found.");
+        }
 
         //If username has been changed
         if (!newUser.getUsername().equals(oldUsername)) {
@@ -259,11 +266,17 @@ public class UserHandler {
      *
      * @param user The user to delete.
      */
-    public static void deleteUser(User user) {
+    public static void deleteUser(User user) throws UserNotFoundException {
         //Validate the input
         if (user == null)
             throw new IllegalArgumentException("Invalid user: user is null.");
-        //Validate user exists in database
+
+        //Let's check if the user exists in the database before we go on
+        try {
+            UserHandler.getUserByID(user.getUserID());
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException("Unable to delete User: " + user.getUserID() + " not found.");
+        }
 
 
         //Prepare a SQL command to delete a user by userID.
