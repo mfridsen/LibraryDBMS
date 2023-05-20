@@ -104,10 +104,6 @@ public class UserSearchGUI extends GUI {
                 //The cell data could not be parsed to an int or a date, do nothing
                 System.err.println("Wrong data type for field: " + userSearchTable.getValueAt(row, 0));
             }
-            catch (SQLException sqle) {
-                sqle.printStackTrace();
-                LibraryManager.exit(1);
-            }
         }
 
         return searchResultList;

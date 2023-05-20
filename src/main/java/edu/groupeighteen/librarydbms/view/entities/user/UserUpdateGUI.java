@@ -86,12 +86,9 @@ public class UserUpdateGUI extends GUI {
 
             //Now call the update method
             try {
-                UserHandler.updateUser(newUser);
+                //UserHandler.updateUser(newUser);
                 dispose();
                 new UserGUI(this, newUser);
-            } catch (SQLException sqle) {
-                sqle.printStackTrace();
-                LibraryManager.exit(1);
             } catch (IllegalArgumentException ile) {
                 System.err.println(ile.getMessage()); //TODO-test //TODO-exception handle better
                 resetCells();

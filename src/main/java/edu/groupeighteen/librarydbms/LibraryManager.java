@@ -34,15 +34,11 @@ public class LibraryManager {
      * Calls the setup methods in all other classes (Handlers) that contain one.
      */
     public static void setup() {
-        try {
-            DatabaseHandler.setup(false);
-            UserHandler.setup();
-            ItemHandler.setup();
-            //RentalHandler.setup() //Might not be needed
-            //EveryOtherHandler.setup()
-        } catch (SQLException e) { //TODO-exceptions handle
-            e.printStackTrace();
-        }
+        DatabaseHandler.setup(false);
+        UserHandler.setup();
+        ItemHandler.setup();
+        //RentalHandler.setup() //Might not be needed
+        //EveryOtherHandler.setup()
     }
 
     /**

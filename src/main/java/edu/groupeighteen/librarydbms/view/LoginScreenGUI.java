@@ -38,17 +38,13 @@ public class LoginScreenGUI extends GUI {
             dispose();
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
-            try {
-                if (UserHandler.login(username, password)) {
-                    LibraryManager.setCurrentUser(UserHandler.getUserByUsername(username));
-                    //new MenuPageGUI(LibraryManager.getCurrentUser(), this);
-                } else {
-                    // show error message or do nothing
-                    new LoginErrorGUI(this);// TODO-prio change from null to this
+            if (UserHandler.login(username, password)) {
+                LibraryManager.setCurrentUser(UserHandler.getUserByUsername(username));
+                //new MenuPageGUI(LibraryManager.getCurrentUser(), this);
+            } else {
+                // show error message or do nothing
+                new LoginErrorGUI(this);// TODO-prio change from null to this
 
-                }
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);// TODO-Exception
             }
 
         });

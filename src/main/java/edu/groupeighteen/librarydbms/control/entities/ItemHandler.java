@@ -97,8 +97,12 @@ public class ItemHandler {
 
 
     public static void setup()  {
-        reset();
         syncTitles();
+    }
+
+    public static void reset() {
+        storedTitles.clear();
+        availableTitles.clear();
     }
 
 
@@ -138,11 +142,6 @@ public class ItemHandler {
         result.close();
 
         if (storedTitles.isEmpty()) System.err.println("No titles retrieved from table!");
-    }
-
-    public static void reset() {
-        storedTitles.clear();
-        availableTitles.clear();
     }
 
     /**

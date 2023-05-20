@@ -36,13 +36,9 @@ public class UserDeleteGUI extends GUI {
             if (LibraryManager.getCurrentUser() != null) {
                 if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
                         Arrays.toString(passwordField.getPassword()))) {
-                    try {
-                        UserHandler.deleteUser(usertoDelete);
-                        //dispose();
-                        //TODO-prio return to some other GUI, probably the LoginGUI
-                    } catch (SQLException sqle) {
-                        sqle.printStackTrace();
-                    }
+                    UserHandler.deleteUser(usertoDelete);
+                    //dispose();
+                    //TODO-prio return to some other GUI, probably the LoginGUI
                 }
             }
             //delete user
