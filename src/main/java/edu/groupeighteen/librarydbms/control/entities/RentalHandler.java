@@ -81,7 +81,7 @@ public class RentalHandler {
         //Create and save the new rental
         Rental newRental = new Rental(userID, itemID);
 
-        //Retrieve item based on ID
+        //Retrieve item based on ID, this is where ItemNotFoundException can be generated
         Item item = ItemHandler.getItemByID(itemID);
 
         //Retrieve all items based on title

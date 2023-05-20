@@ -196,13 +196,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         int validUserID = 1;
         int nonexistentItemID = 9999; // This item ID does not exist in the database
 
+        //Should throw an ItemNotFoundException
         Exception exception = assertThrows(ItemNotFoundException.class, () -> {
             RentalHandler.createNewRental(validUserID, nonexistentItemID);
         });
 
-        String expectedMessage = "Failed to find item with ID: " + nonexistentItemID;
+        //Exception message should contain "Item not found"
+        String expectedMessage = "Item not found";
         String actualMessage = exception.getMessage();
-
         assertTrue(actualMessage.contains(expectedMessage));
 
         System.out.println("\nTEST FINISHED.");

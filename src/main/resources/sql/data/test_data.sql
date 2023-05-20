@@ -1,7 +1,7 @@
 -- (''),
 
 -- //TODO Add user test data here
-INSERT INTO users (username, passwordword, allowedRentals, currentRentals, lateFee) VALUES
+INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee) VALUES
 ('user1', 'password1', 5, 0, 0.0),
 ('user2', 'password2', 5, 0, 0.0),
 ('user3', 'password3', 5, 0, 0.0),
