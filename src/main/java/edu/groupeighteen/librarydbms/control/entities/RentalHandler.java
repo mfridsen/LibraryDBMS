@@ -83,10 +83,15 @@ public class RentalHandler {
 
         //Retrieve item based on ID
         Item item = ItemHandler.getItemByID(itemID);
-        //Couldn't retrieve item
-        if (item == null)
-            throw new ItemNotFoundException(itemID);
-        //No copies are available
+
+        //Retrieve all items based on title
+
+        //Check if any are available via the Map in ItemHandler
+
+        //If copy available: loop through items until available copy found, and rent it
+
+        //If No copies are available: exception
+
         //TODO-prio add checking if there are available copies and test
         //Set title (ONLY IN OBJECT, NOT IN TABLE)
         newRental.setItemTitle(item.getTitle());
