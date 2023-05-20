@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -11,14 +13,24 @@ package edu.groupeighteen.librarydbms.model.entities;
  *
  * Invariants, enforced by setters:
  *      UserIDs have to be positive integers.
- *      Usernames cannot be null or empty. //TODO-future add min and max length 3-20
- *      Passwords cannot be null or empty. //TODO-future add min and max length 8-50
+ *      Usernames cannot be null or empty.
+ *      Passwords cannot be null or empty.
  */
 public class User extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
     public static final int DEFAULT_ALLOWED_RENTALS = 5;
+    public static final int MIN_USERNAME_LENGTH = 3;
+    public static final int MAX_USERNAME_LENGTH;
+    public static final int MIN_PASSWORD_LENGTH = 8;
+    public static final int MAX_PASSWORD_LENGTH;
+
+    static { //Now we don't have to update both create_tables.sql AND this file when we want to change the allowed size of usernames and passwords :)
+        int[] metaData = DatabaseHandler.getUserMetaData();
+        MAX_USERNAME_LENGTH = metaData[0];
+        MAX_PASSWORD_LENGTH = metaData[1];
+    }
 
     private int userID; //Primary key
     private String username;
@@ -28,7 +40,7 @@ public class User extends Entity {
     private double lateFee; //TODO-test
 
     /**
-     * Regular Constructor.
+     * Creation Constructor.
      * @param username
      * @param password
      */
@@ -39,6 +51,18 @@ public class User extends Entity {
         this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
         this.currentRentals = 0;
         this.lateFee = 0.0;
+    }
+
+    /**
+     * Retrieval Constructor.
+     */
+    public User(int userID, String username, String password, int allowedRentals, int currentRentals, double lateFee) {
+        setUserID(userID);
+        setUsername(username);
+        setPassword(password);
+        this.allowedRentals = allowedRentals;
+        setCurrentRentals(currentRentals);
+        setLateFee(lateFee);
     }
 
     /**
@@ -60,9 +84,8 @@ public class User extends Entity {
     }
 
     public void setUserID(int userID) {
-        if (userID <= 0) {
+        if (userID <= 0)
             throw new IllegalArgumentException("UserID must be greater than zero. Received: " + userID);
-        }
         this.userID = userID;
     }
 
@@ -71,9 +94,12 @@ public class User extends Entity {
     }
 
     public void setUsername(String username) {
-        if (username == null || username.isEmpty()) {
+        if (username == null || username.isEmpty())
             throw new IllegalArgumentException("Username cannot be null or empty. Received: " + username);
-        }
+        if (username.length() < MIN_USERNAME_LENGTH)
+            throw new IllegalArgumentException("Username too short, must be at least " + MIN_USERNAME_LENGTH + " characters. Received: " + username);
+        if (username.length() > MAX_USERNAME_LENGTH)
+            throw new IllegalArgumentException("Username too long, must be at most " + MAX_USERNAME_LENGTH + " characters. Received: " + username);
         this.username = username;
     }
 
@@ -82,9 +108,12 @@ public class User extends Entity {
     }
 
     public void setPassword(String password) {
-        if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty. Received: " + password);
-        }
+        if (password == null || password.isEmpty())
+            throw new IllegalArgumentException("Password cannot be null or empty.");
+        if (password.length() < MIN_PASSWORD_LENGTH)
+            throw new IllegalArgumentException("Password too short, must be at least " + MIN_PASSWORD_LENGTH + " characters. Received: " + password.length());
+        if (password.length() > 50)
+            throw new IllegalArgumentException("Password too long, must be at most " + MAX_PASSWORD_LENGTH + " characters. Received: " + password.length());
         this.password = password;
     }
 
@@ -97,6 +126,8 @@ public class User extends Entity {
     }
 
     public void setCurrentRentals(int currentRentals) {
+        if (currentRentals > allowedRentals)
+            throw new IllegalArgumentException("Current rentals can't be greater than allowed rentals. Received: " + currentRentals + ", allowed: " + allowedRentals);
         this.currentRentals = currentRentals;
     }
 

@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.control.exceptions;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,14 +20,28 @@ import java.util.logging.Logger;
  * Brought to you by enough nicotine to kill a large horse.
  */
 public class ExceptionHandler {
-    public static void HandleSQLException(SQLException sqle) { {
+    public static void HandleFatalException(Exception e) { {
             // Log the error
             Logger logger = Logger.getLogger("DatabaseErrorLogger");
-            logger.log(Level.SEVERE, "Fatal database error occurred", sqle);
-            System.out.println("A fatal error occurred. Please check the log file for more details.");
+            if (e instanceof SQLException)
+                logger.log(Level.SEVERE, "Fatal database error occurred", e);
+            if (e instanceof FileNotFoundException)
+                logger.log(Level.SEVERE, "Fata file not found error occurred", e);
+            if (e instanceof IOException)
+                logger.log(Level.SEVERE, "Fatal IOException occurred", e);
 
             // Exit the program
+            System.err.println("A fatal error occurred. Please check the log file for more details.");
             System.exit(1);
         }
     }
 }
+
+//TODO-future  consider expanding the log messages to include more context-specific information. For instance,
+// for SQLExceptions, you could include details about the database operation that failed.
+// For FileNotFoundException, the file path would be useful. Including as much contextual information as possible
+// in your log messages can help speed up the debugging process.
+
+//TODO-future In the future, you might also want to consider adding more types of exceptions to the list, or even
+// have a general catch-all for exceptions that you did not explicitly account for. This way, you ensure that any
+// unanticipated exception is also logged and causes the application to fail fast, which is the behavior you want.

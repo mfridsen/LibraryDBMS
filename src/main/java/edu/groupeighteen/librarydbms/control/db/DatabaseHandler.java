@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.control.db;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.db.SQLFormatter;
@@ -266,16 +267,48 @@ public class DatabaseHandler {
                 }
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("Couldn't find file at path " + filePath);
-            LibraryManager.exit(1);
+            ExceptionHandler.HandleFatalException(new FileNotFoundException("Couldn't find file at path " + filePath));
         } catch (IOException e) {
-            System.out.println("Couldn't read file at path " + filePath);
-            e.printStackTrace();
-            LibraryManager.exit(1);
+            ExceptionHandler.HandleFatalException(new IOException("Couldn't read file at path " + filePath));
         } catch (SQLException e) {
-            e.printStackTrace(); //TODO-exception
+            ExceptionHandler.HandleFatalException(new SQLException());
         }
+    }
+
+    public static int[] getUserMetaData() {
+        if (connection == null) {
+            try {
+                setup(false);
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            // Get metadata for username column
+            ResultSet resultSet = metaData.getColumns(null, null, "Users", "username");
+            int usernameColumnSize = 0;
+            if (resultSet.next()) {
+                usernameColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            // Get metadata for password column
+            resultSet = metaData.getColumns(null, null, "Users", "password");
+            int passwordColumnSize = 0;
+            if (resultSet.next()) {
+                passwordColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{usernameColumnSize, passwordColumnSize};
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException(e);
+        }
+
+        // The method must return an integer[]. If an SQLException occurs, the method will exit before reaching this point.
+        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
+        return new int[0];
     }
 
     /**

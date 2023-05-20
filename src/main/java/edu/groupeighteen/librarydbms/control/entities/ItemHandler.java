@@ -30,12 +30,12 @@ public class ItemHandler {
      * Used to speed up searching. Contains a HashMap with the titles of all items in the database and how many
      * copies there are of each.
      */
-    private static Map<String, Integer> storedTitles = new HashMap<>();
+    private static final Map<String, Integer> storedTitles = new HashMap<>();
 
     /**
      * Used to keep track of how many available copies there are of items in the database.
      */
-    private static Map<String, Integer> availableTitles = new HashMap<>();
+    private static final Map<String, Integer> availableTitles = new HashMap<>();
 
     /**
      * Returns the storedTitles map.
@@ -131,7 +131,7 @@ public class ItemHandler {
                 }
             }
         } catch (SQLException sqle) {
-            ExceptionHandler.HandleSQLException(sqle);
+            ExceptionHandler.HandleFatalException(sqle);
         }
 
         // Close the resources
@@ -213,10 +213,10 @@ public class ItemHandler {
             if (generatedKeys.next()) {
                 return generatedKeys.getInt(1);
             } else {
-                ExceptionHandler.HandleSQLException(new SQLException("Failed to insert the item, no ID obtained."));
+                ExceptionHandler.HandleFatalException(new SQLException("Failed to insert the item, no ID obtained."));
             }
         } catch (SQLException e) {
-            ExceptionHandler.HandleSQLException(e);
+            ExceptionHandler.HandleFatalException(e);
         }
 
         // The method must return an integer. If an SQLException occurs, the method will exit before reaching this point.
@@ -256,7 +256,7 @@ public class ItemHandler {
                 }
             }
         } catch (SQLException e) {
-            ExceptionHandler.HandleSQLException(e);
+            ExceptionHandler.HandleFatalException(e);
         }
 
         // The method must return an Item. If an SQLException occurs, the method will exit before reaching this point.
@@ -302,7 +302,7 @@ public class ItemHandler {
                 }
             }
         } catch (SQLException e) {
-            ExceptionHandler.HandleSQLException(e);
+            ExceptionHandler.HandleFatalException(e);
         }
 
         // The method must return a List<Item>. If an SQLException occurs, the method will exit before reaching this point.
@@ -400,7 +400,7 @@ public class ItemHandler {
             }
             return rowsAffected == 1;
         } catch (SQLException e) {
-            ExceptionHandler.HandleSQLException(e);
+            ExceptionHandler.HandleFatalException(e);
             return false;
         }
     }
@@ -420,7 +420,7 @@ public class ItemHandler {
                 }
             }
         } catch (SQLException e) {
-            ExceptionHandler.HandleSQLException(e);
+            ExceptionHandler.HandleFatalException(e);
             return null;
         }
     }
@@ -449,7 +449,7 @@ public class ItemHandler {
                 throw new ItemNotFoundException(item.getItemID());
             }
         } catch (SQLException e) {
-            ExceptionHandler.HandleSQLException(e);
+            ExceptionHandler.HandleFatalException(e);
         }
 
         //Prepare a SQL command to delete an item by itemID.
@@ -461,7 +461,7 @@ public class ItemHandler {
         try {
             rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
         } catch (SQLException e) {
-            ExceptionHandler.HandleSQLException(e);
+            ExceptionHandler.HandleFatalException(e);
         }
 
         //Check if the delete was successful (i.e., if any rows were affected)
