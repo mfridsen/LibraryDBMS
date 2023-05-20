@@ -1,0 +1,24 @@
+@Test
+@Order(<Test_Number>)
+void test<MethodName>_<TestCase>() {
+    System.out.println("\n<Test_Number>: Testing <MethodName> method with <explanation of test case>...");
+
+
+    System.out.println("\nTEST FINISHED.");
+}
+
+Example:
+
+@Test
+@Order(7)
+void testSetup_EmptyDatabase() {
+    System.out.println("\n7: Testing setup method with an empty database...");
+
+    // Call the setup method
+    UserHandler.setup();
+
+    // Verify that the storedTitles and availableTitles maps are empty
+    assertEquals(0, UserHandler.getStoredUsernames().size(), "storedUsernames list should be empty after setup with an empty database");
+
+    System.out.println("\nTEST FINISHED.");
+}

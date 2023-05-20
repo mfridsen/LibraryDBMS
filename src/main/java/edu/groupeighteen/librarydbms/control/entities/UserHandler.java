@@ -30,7 +30,7 @@ public class UserHandler {
         syncUsernames();
     }
 
-    private static void reset() {
+    public static void reset() {
         storedUsernames.clear();
     }
 
@@ -145,8 +145,7 @@ public class UserHandler {
     }
 
 
-    //TODO-exception might want to throw a custom exception (like UserNotFoundException) instead of returning null,
-    // to make error handling more consistent
+
     /**
      * Retrieves a User object from the database based on the provided user ID.
      *
@@ -164,7 +163,7 @@ public class UserHandler {
         }
 
         // Prepare a SQL query to select a user by userID.
-        String query = "SELECT username, password FROM users WHERE userID = ?";
+        String query = "SELECT username, password, allowedRentals, currentRentals, lateFee FROM users WHERE userID = ?";
         String[] params = {String.valueOf(userID)};
 
         // Execute the query and store the result in a ResultSet.
@@ -175,7 +174,7 @@ public class UserHandler {
             if (resultSet.next()) {
                 User user = new User(resultSet.getString("username"), resultSet.getString("password"));
                 user.setUserID(userID);
-                user.setCurrentRentals( resultSet.getInt("currentRentals"));
+                user.setCurrentRentals(resultSet.getInt("currentRentals"));
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
             }
@@ -187,9 +186,6 @@ public class UserHandler {
         return null;
     }
 
-
-    //TODO-exception might want to throw a custom exception (like UserNotFoundException) instead of returning null,
-    // to make error handling more consistent
     /**
      * Retrieves a User object from the database based on the provided username.
      *
@@ -207,7 +203,7 @@ public class UserHandler {
         }
 
         // Prepare a SQL query to select a user by username
-        String query = "SELECT userID, password FROM users WHERE username = ?";
+        String query = "SELECT userID, password, allowedRentals, currentRentals, lateFee FROM users WHERE username = ?";
         String[] params = {username};
 
         // Execute the query and store the result in a ResultSet
@@ -230,15 +226,26 @@ public class UserHandler {
         return null;
     }
 
+    public static User getUserByEmail(String email) {
+        return null;
+    }
+
+    public static List<User> getUsersByFirstname(String firstname) {
+        return null;
+    }
+
+    public static List<User> getUsersByLastname(String lastname) {
+        return null;
+    }
+
+
     public static void updateUser(User newUser, String oldUsername) {
-        // Validate the input
+        //We can't create user objects with invalid usernames, so only need to validate user itself
         if (newUser == null)
             throw new IllegalArgumentException("Invalid newUser: newUser is null.");
+        //Old username could be empty or null though
         if (oldUsername == null || oldUsername.isEmpty())
             throw new IllegalArgumentException("Old username is empty.");
-        if (newUser.getUserID() <= 0) {
-            throw new IllegalArgumentException("Invalid newUser: userID must be greater than 0.");
-        }
 
         //If username has been changed
         if (!newUser.getUsername().equals(oldUsername)) {
@@ -251,13 +258,12 @@ public class UserHandler {
         }
 
         // Prepare a SQL command to update a newUser's data by userID.
-        String sql = "UPDATE users SET username = ?, password = ?, allowedRentals = ?, currentRentals = ?, lateFee = ? WHERE userID = ?";
+        String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, lateFee = ? WHERE userID = ?";
         String[] params = {
                 newUser.getUsername(),
                 newUser.getPassword(),
                 String.valueOf(newUser.getCurrentRentals()),
                 String.valueOf(newUser.getLateFee()),
-                String.valueOf(newUser.getAllowedRentals()),
                 String.valueOf(newUser.getUserID())
         };
 
