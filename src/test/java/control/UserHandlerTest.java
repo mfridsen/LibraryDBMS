@@ -3,6 +3,7 @@ package control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -176,7 +177,13 @@ public class UserHandlerTest extends BaseHandlerTest {
         DatabaseHandler.executePreparedQuery(insertQuery, insertParams);
 
         // Call the getUserByID method with a valid userID (replace with the ID of the inserted user)
-        User user = UserHandler.getUserByID(1); // Make sure this ID matches the one that was generated when you inserted the user
+        User user = null; // Make sure this ID matches the one that was generated when you inserted the user
+        try {
+            user = UserHandler.getUserByID(1);
+        } catch (UserNotFoundException e) {
+            fail("Should not thrown an exception when user is retrieved with valid userID.");
+            e.printStackTrace();
+        }
 
         // Verify that a User is returned and not null
         assertNotNull(user, "A User object should be returned when a valid userID is provided.");
@@ -198,11 +205,8 @@ public class UserHandlerTest extends BaseHandlerTest {
         String[] insertParams = {"user1", "pass1", "5", "0", "0.0"};
         DatabaseHandler.executePreparedQuery(insertQuery, insertParams);
 
-        // Call the getUserByID method with a valid userID that is not present in the database (replace with a non-existing userID)
-        User user = UserHandler.getUserByID(999999);
-
-        // Verify that no User is returned (should be null)
-        assertNull(user, "No User object should be returned when a valid userID not present in the database is provided.");
+        // Call the getUserByID method with a valid userID that is not present in the database
+        assertThrows(UserNotFoundException.class, () ->  UserHandler.getUserByID(999999), "No User object should be returned when a valid userID not present in the database is provided.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -230,7 +234,13 @@ public class UserHandlerTest extends BaseHandlerTest {
         DatabaseHandler.executePreparedQuery(insertQuery, insertParams);
 
         // Call the getUserByUsername method with a valid username
-        User user = UserHandler.getUserByUsername("user1");
+        User user = null;
+        try {
+            user = UserHandler.getUserByUsername("user1");
+        } catch (UserNotFoundException e) {
+            fail("No exception should be thrown when retrieving user with a valid username.");
+            e.printStackTrace();
+        }
 
         // Verify that a User is returned and not null
         assertNotNull(user, "A User object should be returned when a valid username is provided.");
@@ -247,10 +257,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n13: Testing getUserByUsername method with a valid username not present in database...");
 
         // Call the getUserByUsername method with a valid username that is not present in the database
-        User user = UserHandler.getUserByUsername("nonExistentUser");
-
-        // Verify that no User is returned (should be null)
-        assertNull(user, "No User object should be returned when a valid username not present in the database is provided.");
+        assertThrows(UserNotFoundException.class, () -> UserHandler.getUserByUsername("nonExistentUser"), "No User object should be returned when a valid username not present in the database is provided.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -410,6 +417,41 @@ public class UserHandlerTest extends BaseHandlerTest {
         newUser.setLateFee(15.5);
         UserHandler.updateUser(newUser, "user1");
         assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(22)
+    void testDeleteUser_ValidUser() {
+        System.out.println("\n22: Testing deleteUser method with valid user...");
+
+        // Create a new User
+        User newUser = UserHandler.createNewUser("user1", "password1");
+
+        //Assert that a username exists in storedUsernames
+        assertEquals(1, UserHandler.getStoredUsernames().size());
+        assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
+
+        // Delete the user
+        UserHandler.deleteUser(newUser);
+
+        //Assert that no username exists in storedUsernames
+        assertEquals(0, UserHandler.getStoredUsernames().size());
+
+        // Verify that the user has been deleted from the database
+        assertThrows(UserNotFoundException.class, () -> UserHandler.getUserByUsername("user1"), "User should have been deleted from the database.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(23)
+    void testDeleteUser_NullUser() {
+        System.out.println("\n23: Testing deleteUser method with null user...");
+
+        // Try to delete a null user
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.deleteUser(null), "An IllegalArgumentException should be thrown when the user is null.");
 
         System.out.println("\nTEST FINISHED.");
     }

@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -308,7 +309,13 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         assertTrue(rowsAffected > 0);
 
         //Now, retrieve the updated user to verify that the username and password were updated.
-        User updatedUser = UserHandler.getUserByID(userIdToUpdate);
+        User updatedUser = null;
+        try {
+            updatedUser = UserHandler.getUserByID(userIdToUpdate);
+        } catch (UserNotFoundException e) {
+            fail("Should not throw an exception when retrieving a valid user.");
+            e.printStackTrace();
+        }
         assertNotNull(updatedUser);
         assertEquals(newUsername, updatedUser.getUsername());
         assertEquals(newPassword, updatedUser.getPassword());

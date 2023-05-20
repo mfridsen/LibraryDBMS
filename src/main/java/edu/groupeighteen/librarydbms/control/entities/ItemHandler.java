@@ -450,7 +450,7 @@ public class ItemHandler {
         sql = "DELETE FROM items WHERE itemID = ?";
         params = new String[]{String.valueOf(item.getItemID())};
 
-        //Execute the update.
+        //Execute the update. //TODO-prio handle cascades in rentals
         int rowsAffected = 0;
         rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
 

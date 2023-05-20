@@ -15,6 +15,6 @@ import java.sql.SQLException;
 public class UserGUITest {
     public static void main(String[] args) {
         LibraryManager.setup();
-        new UserGUI(null, UserHandler.getUserByID(1));
+        //new UserGUI(null, UserHandler.getUserByID(1));
     }
 }

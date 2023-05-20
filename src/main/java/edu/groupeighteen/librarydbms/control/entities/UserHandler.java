@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -146,17 +147,8 @@ public class UserHandler {
 
 
 
-    /**
-     * Retrieves a User object from the database based on the provided user ID.
-     *
-     * <p>This method attempts to retrieve the user details from the 'users' table in the database
-     * that correspond to the provided user ID. If a user with the given ID exists, a new User object
-     * is created with the retrieved username and password, and the user's ID is set.</p>
-     *
-     * @param userID The unique ID of the user to be retrieved.
-     * @return The User object corresponding to the provided ID, or null if no such user is found.
-     */
-    public static User getUserByID(int userID) {
+
+    public static User getUserByID(int userID) throws UserNotFoundException {
         // No point getting invalid users
         if (userID <= 0) {
             throw new IllegalArgumentException("Invalid userID: " + userID);
@@ -177,7 +169,7 @@ public class UserHandler {
                 user.setCurrentRentals(resultSet.getInt("currentRentals"));
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
-            }
+            } else throw new UserNotFoundException(userID);
         } catch (SQLException e) {
             ExceptionHandler.HandleFatalException(e);
         }
@@ -186,17 +178,8 @@ public class UserHandler {
         return null;
     }
 
-    /**
-     * Retrieves a User object from the database based on the provided username.
-     *
-     * <p>This method attempts to retrieve the user details from the 'users' table in the database
-     * that correspond to the provided username. If a user with the given username exists, a new User
-     * object is created with the retrieved username and password.</p>
-     *
-     * @param username The username of the user to be retrieved.
-     * @return The User object corresponding to the provided username, or null if no such user is found.
-     */
-    public static User getUserByUsername(String username) {
+
+    public static User getUserByUsername(String username) throws UserNotFoundException {
         // No point in getting invalid users
         if (username == null || username.isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty.");
@@ -217,7 +200,7 @@ public class UserHandler {
                 user.setCurrentRentals( resultSet.getInt("currentRentals"));
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
-            }
+            } else throw new UserNotFoundException(username);
         } catch (SQLException e) {
             ExceptionHandler.HandleFatalException(e);
         }
@@ -280,12 +263,14 @@ public class UserHandler {
         //Validate the input
         if (user == null)
             throw new IllegalArgumentException("Invalid user: user is null.");
+        //Validate user exists in database
+
 
         //Prepare a SQL command to delete a user by userID.
         String sql = "DELETE FROM users WHERE userID = ?";
         String[] params = {String.valueOf(user.getUserID())};
 
-        //Execute the update. //TODO-prio handle cascades
+        //Execute the update. //TODO-prio handle cascades in rentals
         DatabaseHandler.executePreparedUpdate(sql, params);
 
         //Remove the deleted user's username from the usernames ArrayList.

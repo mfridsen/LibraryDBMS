@@ -81,7 +81,7 @@ public class UserSearchGUI extends GUI {
             }
 
             //Attempt to parse the cell data and perform the search
-            try {
+            /*try {
                 switch (row) {
                     //User ID
                     case 0 -> {
@@ -104,6 +104,8 @@ public class UserSearchGUI extends GUI {
                 //The cell data could not be parsed to an int or a date, do nothing
                 System.err.println("Wrong data type for field: " + userSearchTable.getValueAt(row, 0));
             }
+
+             */
         }
 
         return searchResultList;
