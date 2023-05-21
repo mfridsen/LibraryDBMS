@@ -112,6 +112,17 @@ public class UserHandler {
 
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
+    /**
+     * Creates a new user with the specified username and password. The method first checks if the provided username is
+     * already taken. If the username is unique, a new User object is created and saved to the database. The User's ID
+     * from the database is set in the User object before it is returned. The method also handles any potential
+     * InvalidPasswordException or InvalidUserIDException.
+     *
+     * @param username The username for the new user.
+     * @param password The password for the new user.
+     * @return A User object representing the newly created user.
+     * @throws InvalidUsernameException If the provided username is already taken.
+     */
     public static User createNewUser(String username, String password) throws InvalidUsernameException {
         // Usernames must be unique, throws UsernameTakenException
         checkUsernameTaken(username);
@@ -131,6 +142,16 @@ public class UserHandler {
         return newUser;
     }
 
+    /**
+     * Saves a user to the database. The method prepares an SQL insert query with the user's details such as
+     * username, password, allowed rentals, current rentals and late fee. The query is executed and the
+     * auto-generated user ID from the database is retrieved and returned. If the query execution fails, the method
+     * handles the SQLException and returns 0.
+     *
+     * @param user The user object to be saved.
+     * @return The auto-generated ID of the user from the database.
+     *          Returns 0 if an SQLException occurs. This won't happen because the exception will be thrown first.
+     */
     private static int saveUser(User user) {
         try {
             // Prepare query
@@ -157,6 +178,15 @@ public class UserHandler {
         return 0; // This should never happen
     }
 
+    /**
+     * Retrieves a User object from the database using the provided userID. The method first validates the provided
+     * userID. It then prepares and executes an SQL query to select the user's details from the database. If a user
+     * with the provided userID exists, a new User object is created with the retrieved details and returned.
+     *
+     * @param userID The userID of the user to be retrieved.
+     * @return A User object representing the user with the provided userID. Returns null if the user does not exist.
+     * @throws InvalidUserIDException If the provided userID is invalid.
+     */
     public static User getUserByID(int userID) throws InvalidUserIDException {
         // No point getting invalid users, throws InvalidUserIDException
         checkValidUserID(userID);
@@ -185,6 +215,15 @@ public class UserHandler {
         return null;
     }
 
+    /**
+     * Retrieves a User object from the database using the provided username. The method first validates the provided
+     * username. It then prepares and executes an SQL query to select the user's details from the database. If a user
+     * with the provided username exists, a new User object is created with the retrieved details and returned.
+     *
+     * @param username The username of the user to be retrieved.
+     * @return A User object representing the user with the provided username. Returns null if the user does not exist.
+     * @throws InvalidUsernameException If the provided username is empty.
+     */
     public static User getUserByUsername(String username) throws InvalidUsernameException {
         // No point in getting invalid users, throws InvalidUsernameException
         checkEmptyUsername(username);
@@ -242,17 +281,29 @@ public class UserHandler {
     // == 11
 
 
-    public static void updateUser(User newUser, String oldUsername) throws UserUpdateFailedException, UserNullException, InvalidUsernameException {
+    /**
+     * Updates the data of an existing user in the database with the data of the provided User object. Before updating,
+     * the method validates that the provided User object is not null and the old username is not empty. If the username of
+     * the provided User object differs from the old username, the method checks if the new username is taken and updates
+     * the username in the storedUsernames list if it isn't. The method then prepares an SQL command to update the user's
+     * data in the database and executes the update.
+     *
+     * @param newUser The User object containing the updated user data.
+     * @param oldUsername The old username of the user before the update.
+     * @throws UserNullException If the provided User object is null.
+     * @throws InvalidUsernameException If the provided oldUsername is empty.
+     */
+    public static void updateUser(User newUser, String oldUsername) throws UserNullException, InvalidUsernameException {
         //We can't create user objects with invalid usernames, so only need to validate user itself. Throws UserNullException
         checkNullUser(newUser);
         //Old username could be empty or null though. Throws InvalidUsernameException
         checkEmptyUsername(oldUsername);
 
-        //Let's check if the user exists in the database before we go on
+        //Let's check if the user exists in the database before we go on, this is fatal
         try {
             UserHandler.getUserByID(newUser.getUserID());
         } catch (InvalidUserIDException e) {
-            throw new UserUpdateFailedException("Unable to update User: User with ID " + newUser.getUserID() + " not found.");
+            ExceptionHandler.HandleFatalException(new UserNotFoundException("Unable to update User: User with ID " + newUser.getUserID() + " not found."));
         }
 
         //If username has been changed...
@@ -278,21 +329,26 @@ public class UserHandler {
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
+
     /**
-     * Deletes a user from the database.
+     * Deletes a user from the database. Before deleting, the method checks if the provided User object is not null and if the
+     * user with the ID of the provided User object exists in the database. If the user exists, the method prepares an SQL
+     * command to delete the user from the database and executes the command. The username of the deleted user is then removed
+     * from the storedUsernames list.
      *
-     * @param user The user to delete.
-     * @throws
+     * @param user The User object representing the user to be deleted.
+     * @throws UserNullException If the provided User object is null.
+     * @throws UserNotFoundException If the user with the ID of the provided User object doesn't exist in the database.
      */
     public static void deleteUser(User user) throws UserNotFoundException, UserNullException {
         //Validate the input. Throws UserNullException
         checkNullUser(user);
 
-        //Let's check if the user exists in the database before we go on
+        //Let's check if the user exists in the database before we go on, this is fatal
         try {
             UserHandler.getUserByID(user.getUserID());
         } catch (InvalidUserIDException e) {
-            throw new UserNotFoundException("Unable to delete User: User with ID " + user.getUserID() + " not found.");
+            ExceptionHandler.HandleFatalException(new UserNotFoundException("Unable to update User: User with ID " + user.getUserID() + " not found."));
         }
 
         //Prepare a SQL command to delete a user by userID.
@@ -314,7 +370,8 @@ public class UserHandler {
      * @param username the username attempting to login
      * @param password the password attempting to login
      * @return true if successful, otherwise false
-     * @throws
+     * @throws InvalidUsernameException if the provided password is empty.
+     * @throws InvalidUsernameException if the provided password is empty.
      */
     public static boolean login(String username, String password) throws InvalidUsernameException, InvalidPasswordException, UserNotFoundException {
         // No point verifying empty strings, throws UsernameEmptyException
@@ -358,7 +415,8 @@ public class UserHandler {
      * @param user The User object whose password is to be validated.
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
-     * @throws
+     * @throws UserNullException if the provided User is null.
+     * @throws InvalidPasswordException if the provided password is empty.
      */
     public static boolean validateUser(User user, String password) throws UserNullException, InvalidPasswordException {
         checkNullUser(user);

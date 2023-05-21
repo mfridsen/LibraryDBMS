@@ -340,10 +340,10 @@ public class UserHandlerTest extends BaseHandlerTest {
         }
 
         // Verify that a UsernameEmptyException is thrown when oldUsername is null
-        assertThrows(UsernameEmptyException.class, () -> UserHandler.updateUser(newUser.get(), null), "A UserUpdateFailedException should be thrown when oldUsername is null.");
+        assertThrows(InvalidUsernameException.class, () -> UserHandler.updateUser(newUser.get(), null), "A InvalidUsernameException should be thrown when oldUsername is null.");
 
         // Verify that a UsernameEmptyException is thrown when oldUsername is empty
-        assertThrows(UsernameEmptyException.class, () -> UserHandler.updateUser(newUser.get(), ""), "A UserUpdateFailedException should be thrown when oldUsername is empty.");
+        assertThrows(InvalidUsernameException.class, () -> UserHandler.updateUser(newUser.get(), ""), "A InvalidUsernameException should be thrown when oldUsername is empty.");
 
         System.out.println("\nTEST FINISHED.");
     }
