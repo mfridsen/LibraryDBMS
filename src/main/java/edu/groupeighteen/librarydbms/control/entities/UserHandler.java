@@ -210,16 +210,32 @@ public class UserHandler {
     }
 
     public static User getUserByEmail(String email) {
+        //Invalid email
+        //No such user
+        //Valid user
+        // == 3
         return null;
     }
 
     public static List<User> getUsersByFirstname(String firstname) {
+        //Invalid firstname
+        //No such users
+        //One valid user
+        //Multiple valid users
+        // == 4
         return null;
     }
 
     public static List<User> getUsersByLastname(String lastname) {
+        //Invalid lastname
+        //No such users
+        //One valid user
+        //Multiple valid users
+        // == 4
         return null;
     }
+
+    // == 11
 
 
     public static void updateUser(User newUser, String oldUsername) throws UserNotFoundException {
@@ -301,14 +317,21 @@ public class UserHandler {
      */
     public static boolean login(String username, String password) {
         // No point verifying empty strings
-        if (username == null ||username.isEmpty())
-            throw new IllegalArgumentException("Login failed: Empty username.");
-        if (password == null || password.isEmpty())
-            throw new IllegalArgumentException("Login failed: Empty password.");
-        if (!storedUsernames.contains(username)) {
-            //TODO-future if user is staff, will still check against database just in case
-            throw new IllegalArgumentException("Login failed: User " + username + " does not exist.");
+        if (username == null ||username.isEmpty()) {
+            System.err.println("Login failed: Empty username.");
+            return false;
         }
+        if (password == null || password.isEmpty()) {
+            System.err.println("Login failed: Empty password.");
+            return false;
+        }
+        //First check list
+        if (!storedUsernames.contains(username)) {
+            System.err.println("Login failed: User " + username + " does not exist.");
+            return false;
+        }
+
+        //TODO-future add checking against database
 
         boolean isAuthenticated = false;
 
@@ -344,6 +367,13 @@ public class UserHandler {
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
     public static boolean validateUser(User user, String password) {
+        if (user == null) {
+            System.err.println("Validation failed: User is null");
+            return false;
+        }
+        if (password == null) {
+            System.err.println("Validation failed: provided password is null.");
+        }
         return user.getPassword().equals(password);
     }
 

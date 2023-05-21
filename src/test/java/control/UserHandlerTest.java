@@ -6,6 +6,8 @@ import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -121,6 +123,8 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    //SETUP-------------------------------------------------------------------------------------------------------------
+
     @Test
     @Order(7)
     void testSetup_EmptyDatabase() {
@@ -166,6 +170,8 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    //GET BY ID---------------------------------------------------------------------------------------------------------
+
     @Test
     @Order(9)
     void testGetUserByID_ValidUserPresent() {
@@ -194,7 +200,6 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-
     @Test
     @Order(10)
     void testGetUserByID_ValidUserNotPresent() {
@@ -222,6 +227,8 @@ public class UserHandlerTest extends BaseHandlerTest {
 
         System.out.println("\nTEST FINISHED.");
     }
+
+    //GET BY USERNAME---------------------------------------------------------------------------------------------------
 
     @Test
     @Order(12)
@@ -284,10 +291,23 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+
+    //TODO-test getUserByEmail x 3
+
+
+    //TODO-test getUsersByFirstname x 4
+
+
+    //TODO-test getUsersByLastname x 4
+
+    //TODO 11
+
+    //UPDATE------------------------------------------------------------------------------------------------------------
+
     @Test
-    @Order(16)
+    @Order(27)
     void testUpdateUser_NullNewUser() {
-        System.out.println("\n16: Testing updateUser method with null newUser...");
+        System.out.println("\n27: Testing updateUser method with null newUser...");
 
         // Verify that an IllegalArgumentException is thrown when newUser is null
         assertThrows(IllegalArgumentException.class, () -> UserHandler.updateUser(null, "oldUsername"), "An IllegalArgumentException should be thrown when newUser is null.");
@@ -296,9 +316,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(17)
+    @Order(28)
     void testUpdateUser_NullOrEmptyOldUsername() {
-        System.out.println("\n17: Testing updateUser method with null or empty oldUsername...");
+        System.out.println("\n28: Testing updateUser method with null or empty oldUsername...");
 
         // Create a newUser object
         User newUser = UserHandler.createNewUser("user1", "password1");
@@ -313,9 +333,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(18)
+    @Order(29)
     void testUpdateUser_SameUsername() {
-        System.out.println("\n18: Testing updateUser method with same new and old usernames...");
+        System.out.println("\n29: Testing updateUser method with same new and old usernames...");
 
         // Create a newUser object
         User newUser = UserHandler.createNewUser("user1", "password1");
@@ -340,9 +360,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(19)
+    @Order(30)
     void testUpdateUser_NewUsernameNotTaken() {
-        System.out.println("\n19: Testing updateUser method with a new username not taken...");
+        System.out.println("\n30: Testing updateUser method with a new username not taken...");
 
         //Create our first user, 'taking' that username
         String firstUsername = "user1";
@@ -374,9 +394,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(20)
+    @Order(31)
     void testUpdateUser_NewUsernameTaken() {
-        System.out.println("\n20: Testing updateUser method with a new username already taken...");
+        System.out.println("\n31: Testing updateUser method with a new username already taken...");
 
         // Create our first user, 'taking' that username
         String firstUsername = "user1";
@@ -401,9 +421,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(21)
+    @Order(32)
     void testUpdateUser_ChangeFields() {
-        System.out.println("\n21: Testing updateUser method by changing fields...");
+        System.out.println("\n32: Testing updateUser method by changing fields...");
 
         // Create a new User
         User newUser = UserHandler.createNewUser("user1", "password1");
@@ -432,10 +452,41 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    //DELETE------------------------------------------------------------------------------------------------------------
+
     @Test
-    @Order(22)
+    @Order(33)
+    void testDeleteUser_NullUser() {
+        System.out.println("\n33: Testing deleteUser method with null user...");
+
+        // Try to delete a null user
+        assertThrows(IllegalArgumentException.class, () -> UserHandler.deleteUser(null), "An IllegalArgumentException should be thrown when the user is null.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(34)
+    void testDeleteUser_NonExistingUser() {
+        System.out.println("\n34: Testing deleteUser method with a non-existing user...");
+
+        // Create a User object with an ID that does not exist in the database
+        User nonExistingUser = new User("nonExistingUsername", "password");
+        nonExistingUser.setUserID(1);
+
+        //Assert User doesn't exist in database
+        assertThrows(UserNotFoundException.class, () -> UserHandler.getUserByID(1), "getUserByID should throw UserNotFoundException when the user does not exist.");
+
+        // Call deleteUser and expect a UserNotFoundException to be thrown
+        assertThrows(UserNotFoundException.class, () -> UserHandler.deleteUser(nonExistingUser), "deleteUser should throw UserNotFoundException when the user does not exist.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(35)
     void testDeleteUser_ValidUser() {
-        System.out.println("\n22: Testing deleteUser method with valid user...");
+        System.out.println("\n35: Testing deleteUser method with valid user...");
 
         // Create a new User
         User newUser = UserHandler.createNewUser("user1", "password1");
@@ -461,31 +512,223 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    @Test
-    @Order(23)
-    void testDeleteUser_NullUser() {
-        System.out.println("\n23: Testing deleteUser method with null user...");
+    //LOGIN------------------------------------------------------------------------------------------------------------
 
-        // Try to delete a null user
-        assertThrows(IllegalArgumentException.class, () -> UserHandler.deleteUser(null), "An IllegalArgumentException should be thrown when the user is null.");
+    @Test
+    @Order(36)
+    void testLogin_EmptyUsername() {
+        System.out.println("\n36: Testing login method with an empty username...");
+
+        // Save the original System.err
+        PrintStream originalErr = System.err;
+
+        // Redirect System.err
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContent));
+
+        // Call login with empty username and expect false to be returned
+        assertFalse(UserHandler.login("", "password"), "Login should return false when username is empty.");
+        assertTrue(errContent.toString().contains("Login failed: Empty username."), "Expected error message not found.");
+
+        // Restore original System.err
+        System.setErr(originalErr);
 
         System.out.println("\nTEST FINISHED.");
     }
 
     @Test
-    @Order(23)
-    void testDeleteUser_NonExistingUser() {
-        System.out.println("\n23: Testing deleteUser method with a non-existing user...");
+    @Order(37)
+    void testLogin_NullUsername() {
+        System.out.println("\n37: Testing login method with null username...");
 
-        // Create a User object with an ID that does not exist in the database
-        User nonExistingUser = new User("nonExistingUsername", "password");
-        nonExistingUser.setUserID(1);
+        // Save the original System.err
+        PrintStream originalErr = System.err;
 
-        //Assert User doesn't exist in database
-        assertThrows(UserNotFoundException.class, () -> UserHandler.getUserByID(1), "getUserByID should throw UserNotFoundException when the user does not exist.");
+        // Redirect System.err
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContent));
 
-        // Call deleteUser and expect a UserNotFoundException to be thrown
-        assertThrows(UserNotFoundException.class, () -> UserHandler.deleteUser(nonExistingUser), "deleteUser should throw UserNotFoundException when the user does not exist.");
+        // Call login with null username and expect false to be returned
+        assertFalse(UserHandler.login(null, "password"), "Login should return false when username is null.");
+        assertTrue(errContent.toString().contains("Login failed: Empty username."), "Expected error message not found.");
+
+        // Restore original System.err
+        System.setErr(originalErr);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(38)
+    void testLogin_EmptyPassword() {
+        System.out.println("\n38: Testing login method with an empty password...");
+
+        // Save the original System.err
+        PrintStream originalErr = System.err;
+
+        // Redirect System.err
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContent));
+
+        // Call login with empty password and expect false to be returned
+        assertFalse(UserHandler.login("username", ""), "Login should return false when password is empty.");
+        assertTrue(errContent.toString().contains("Login failed: Empty password."), "Expected error message not found.");
+
+        // Restore original System.err
+        System.setErr(originalErr);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(39)
+    void testLogin_NullPassword() {
+        System.out.println("\n39: Testing login method with null password...");
+
+        // Save the original System.err
+        PrintStream originalErr = System.err;
+
+        // Redirect System.err
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContent));
+
+        // Call login with null password and expect false to be returned
+        assertFalse(UserHandler.login("username", null), "Login should return false when password is null.");
+        assertTrue(errContent.toString().contains("Login failed: Empty password."), "Expected error message not found.");
+
+        // Restore original System.err
+        System.setErr(originalErr);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(40)
+    void testLogin_NonexistentUsername() {
+        System.out.println("\n40: Testing login method with nonexistent username...");
+
+        // Save the original System.err
+        PrintStream originalErr = System.err;
+
+        // Redirect System.err
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContent));
+
+        // Call login with a nonexistent username and expect false to be returned
+        assertFalse(UserHandler.login("nonexistentUser", "password"), "Login should return false when username does not exist.");
+        assertTrue(errContent.toString().contains("Login failed: User nonexistentUser does not exist."), "Expected error message not found.");
+
+        // Restore original System.err
+        System.setErr(originalErr);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+
+    @Test
+    @Order(41)
+    void testLogin_IncorrectPassword() {
+        System.out.println("\n41: Testing login method with incorrect password...");
+
+        // Create a new user
+        UserHandler.createNewUser("user1", "password1");
+
+        // Attempt to login with the correct username but incorrect password
+        assertFalse(UserHandler.login("user1", "incorrectPassword"), "Login should return false when password is incorrect.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(42)
+    void testLogin_CorrectUsernamePassword() {
+        System.out.println("\n42: Testing login method with correct username and password...");
+
+        // Create a new user
+        UserHandler.createNewUser("user2", "password2");
+
+        // Attempt to login with the correct username and password
+        assertTrue(UserHandler.login("user2", "password2"), "Login should return true when username and password are correct.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    //VALIDATE----------------------------------------------------------------------------------------------------------
+
+    @Test
+    @Order(43)
+    void testValidateUser_NullUser() {
+        System.out.println("\n43: Testing validateUser method with null user...");
+
+        // Redirect System.err.
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        PrintStream originalErr = System.err;
+        System.setErr(new PrintStream(errContent));
+
+        // Call validateUser with null user
+        boolean result = UserHandler.validateUser(null, "password");
+
+        // Restore System.err
+        System.setErr(originalErr);
+
+        // Check output and result
+        assertFalse(result, "ValidateUser should return false when user is null.");
+        assertEquals("Validation failed: User is null\r\n", errContent.toString(), "Expected error message is not correct.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(44)
+    void testValidateUser_NullPassword() {
+        System.out.println("\n44: Testing validateUser method with null password...");
+
+        // Create a new User
+        User user = UserHandler.createNewUser("user1", "password1");
+
+        // Redirect System.err.
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        PrintStream originalErr = System.err;
+        System.setErr(new PrintStream(errContent));
+
+        // Call validateUser with null password
+        boolean result = UserHandler.validateUser(user, null);
+
+        // Restore System.err
+        System.setErr(originalErr);
+
+        // Check output and result
+        assertFalse(result, "ValidateUser should return false when password is null.");
+        assertEquals("Validation failed: provided password is null.\r\n", errContent.toString(), "Expected error message is not correct.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+
+    @Test
+    @Order(45)
+    void testValidateUser_CorrectPassword() {
+        System.out.println("\n45: Testing validateUser method with correct password...");
+
+        // Create a new user
+        User user = new User("user1", "password1");
+
+        // Call validateUser with correct password and expect true to be returned
+        assertTrue(UserHandler.validateUser(user, "password1"), "ValidateUser should return true when the password is correct.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(46)
+    void testValidateUser_IncorrectPassword() {
+        System.out.println("\n46: Testing validateUser method with incorrect password...");
+
+        // Create a new user
+        User user = new User("user1", "password1");
+
+        // Call validateUser with incorrect password and expect false to be returned
+        assertFalse(UserHandler.validateUser(user, "password2"), "ValidateUser should return false when the password is incorrect.");
 
         System.out.println("\nTEST FINISHED.");
     }
