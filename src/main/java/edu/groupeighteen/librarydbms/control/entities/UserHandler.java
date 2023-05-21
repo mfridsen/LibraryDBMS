@@ -116,7 +116,7 @@ public class UserHandler {
      * Creates a new user with the specified username and password. The method first checks if the provided username is
      * already taken. If the username is unique, a new User object is created and saved to the database. The User's ID
      * from the database is set in the User object before it is returned. The method also handles any potential
-     * InvalidPasswordException or InvalidUserIDException.
+     * InvalidPasswordException or InvalidIDException.
      *
      * @param username The username for the new user.
      * @param password The password for the new user.
@@ -136,7 +136,7 @@ public class UserHandler {
 
             // Need to remember to add to the list
             storedUsernames.add(newUser.getUsername());
-        } catch (InvalidUserIDException e) {
+        } catch (InvalidIDException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -187,10 +187,10 @@ public class UserHandler {
      *
      * @param userID The userID of the user to be retrieved.
      * @return A User object representing the user with the provided userID. Returns null if the user does not exist.
-     * @throws InvalidUserIDException If the provided userID is invalid.
+     * @throws InvalidIDException If the provided userID is invalid.
      */
-    public static User getUserByID(int userID) throws InvalidUserIDException {
-        // No point getting invalid users, throws InvalidUserIDException
+    public static User getUserByID(int userID) throws InvalidIDException {
+        // No point getting invalid users, throws InvalidIDException
         checkValidUserID(userID);
 
         // Prepare a SQL query to select a user by userID.
@@ -246,7 +246,7 @@ public class UserHandler {
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
             }
-        } catch (SQLException | InvalidUsernameException | InvalidPasswordException | InvalidUserIDException | InvalidRentalException | InvalidLateFeeException e) {
+        } catch (SQLException | InvalidUsernameException | InvalidPasswordException | InvalidIDException | InvalidRentalException | InvalidLateFeeException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -304,7 +304,7 @@ public class UserHandler {
         //Let's check if the user exists in the database before we go on, this is fatal
         try {
             UserHandler.getUserByID(newUser.getUserID());
-        } catch (InvalidUserIDException e) {
+        } catch (InvalidIDException e) {
             ExceptionHandler.HandleFatalException(new UserNotFoundException("Unable to update User: User with ID " + newUser.getUserID() + " not found."));
         }
 
@@ -349,7 +349,7 @@ public class UserHandler {
         try {
             if (UserHandler.getUserByID(user.getUserID()) == null)
                 throw new UserNotFoundException("Unable to update User: User with ID " + user.getUserID() + " not found.");
-        } catch (InvalidUserIDException e) {
+        } catch (InvalidIDException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -450,14 +450,14 @@ public class UserHandler {
     }
 
     /**
-     * Checks whether a given userID is invalid (<= 0). If so, throws an InvalidUserIDException
+     * Checks whether a given userID is invalid (<= 0). If so, throws an InvalidIDException
      * which must be handled by the caller.
      * @param userID the userID to validate.
-     * @throws InvalidUserIDException if userID <= 0.
+     * @throws InvalidIDException if userID <= 0.
      */
-    private static void checkValidUserID(int userID) throws InvalidUserIDException {
+    private static void checkValidUserID(int userID) throws InvalidIDException {
         if (userID <= 0) {
-            throw new InvalidUserIDException("Invalid userID: " + userID);
+            throw new InvalidIDException("Invalid userID: " + userID);
         }
     }
 

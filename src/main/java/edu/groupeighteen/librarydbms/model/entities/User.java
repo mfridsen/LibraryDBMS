@@ -52,18 +52,20 @@ public class User extends Entity {
         this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
         this.currentRentals = 0;
         this.lateFee = 0.0;
+        this.deleted = false;
     }
 
     /**
      * Retrieval Constructor.
      */
-    public User(int userID, String username, String password, int allowedRentals, int currentRentals, double lateFee) throws InvalidUserIDException, InvalidUsernameException, InvalidPasswordException, InvalidRentalException, InvalidLateFeeException {
-        setUserID(userID); //Throws InvalidUserIDException
+    public User(int userID, String username, String password, int allowedRentals, int currentRentals, double lateFee, boolean deleted) throws InvalidIDException, InvalidUsernameException, InvalidPasswordException, InvalidRentalException, InvalidLateFeeException {
+        setUserID(userID); //Throws InvalidIDException
         setUsername(username); //Throws InvalidUsernameException
         setPassword(password); //Throws InvalidPasswordException
         this.allowedRentals = allowedRentals;
         setCurrentRentals(currentRentals); //Throws InvalidRentalException
         setLateFee(lateFee); //Throws InvalidLateFeeException
+        this.deleted = deleted;
     }
 
     /**
@@ -77,15 +79,16 @@ public class User extends Entity {
         this.allowedRentals = other.allowedRentals;
         this.currentRentals = other.currentRentals;
         this.lateFee = other.lateFee;
+        this.deleted = other.deleted;
     }
 
     public int getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) throws InvalidUserIDException {
+    public void setUserID(int userID) throws InvalidIDException {
         if (userID <= 0)
-            throw new InvalidUserIDException("UserID must be greater than zero. Received: " + userID);
+            throw new InvalidIDException("UserID must be greater than zero. Received: " + userID);
         this.userID = userID;
     }
 

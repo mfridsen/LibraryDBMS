@@ -15,11 +15,7 @@ package edu.groupeighteen.librarydbms.model.entities;
  */
 public class Entity {
 
-    private boolean deleted;
-
-    public Entity() {
-        this.deleted = false;
-    }
+    protected boolean deleted;
 
     public boolean isDeleted() {
         return deleted;

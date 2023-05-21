@@ -2,7 +2,7 @@ package model.entities;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,7 @@ public class ItemTest {
             assertEquals(title, testItem.getTitle());
             assertEquals(allowedRentalDays, testItem.getAllowedRentalDays());
             assertTrue(testItem.isAvailable());
-        } catch (InvalidItemIDException | InvalidTitleException e) {
+        } catch (InvalidIDException | InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -92,7 +92,7 @@ public class ItemTest {
     void testItemRetrievalConstructor_InvalidInput() {
         System.out.println("\n4: Testing Item retrieval constructor with invalid input...");
 
-        assertThrows(InvalidItemIDException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
+        assertThrows(InvalidIDException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
         assertThrows(InvalidTitleException.class, () -> new Item(1, "", 7, true));  // Empty title
         assertThrows(InvalidTitleException.class, () -> new Item(1, null, 7, true));  // Null title
 
@@ -131,7 +131,7 @@ public class ItemTest {
             assertEquals(2, testItem.getItemID());
 
             System.out.println("\nTEST FINISHED.");
-        } catch (InvalidTitleException | InvalidItemIDException e) {
+        } catch (InvalidTitleException | InvalidIDException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -144,8 +144,8 @@ public class ItemTest {
 
         try {
             Item testItem = new Item("validTitle");
-            assertThrows(InvalidItemIDException.class, () -> testItem.setItemID(0));  // ItemID less than or equal to 0
-            assertThrows(InvalidItemIDException.class, () -> testItem.setItemID(-1));  // ItemID less than or equal to 0
+            assertThrows(InvalidIDException.class, () -> testItem.setItemID(0));  // ItemID less than or equal to 0
+            assertThrows(InvalidIDException.class, () -> testItem.setItemID(-1));  // ItemID less than or equal to 0
         } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

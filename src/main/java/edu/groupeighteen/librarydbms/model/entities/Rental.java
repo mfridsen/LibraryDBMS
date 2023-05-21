@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.model.exceptions.*;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -67,57 +69,35 @@ public class Rental extends Entity {
      */
     private double lateFee;
 
-    /**
-     * Constructs a new Rental object for creation and insertion into the rentals database table.
-     * The constructor sets the userID and itemID based on the provided arguments and assigns the current time
-     * to rentalDate.
-     * The rentalReturnDate and lateFee are initialized to null and 0.0 respectively, as these values are expected
-     * to be null and 0.0 when the Rental has just been created.
-     * The username, itemTitle, and rentalDueDate are initialized to null but are expected to be set by the
-     * createNewRental method of the RentalHandler before saving the Rental to the database.
-     * The rentalID will be set after the rental object is saved in the database.
-     *
-     * @param userID The ID of the user who is renting the item.
-     * @param itemID The ID of the item being rented.
-     */
-    public Rental(int userID, int itemID) {
+
+    //creation constructor
+    public Rental(int userID, int itemID) throws InvalidIDException, InvalidDateException {
         this.rentalID = 0; //Set AFTER initial INSERT by createNewRental
-        setUserID(userID);
-        setItemID(itemID);
-        setRentalDate(LocalDateTime.now());
+        setUserID(userID); //Throws InvalidIDException
+        setItemID(itemID); //Throws InvalidIDException
+        setRentalDate(LocalDateTime.now()); //Throws InvalidDateException
         this.username = null; //Set BEFORE initial INSERT by createNewRental
         this.itemTitle = null; //Set BEFORE initial INSERT by createNewRental
         this.rentalDueDate = null; //Set BEFORE initial INSERT by createNewRental
         this.rentalReturnDate = null; //Should be null since the Rental has just been created
         this.lateFee = 0.0; //Should be 0.0 since the Rental has just been created
+        this.deleted = false;
     }
 
-    /**
-     * Constructs a Rental object with data retrieved from the rentals database table.
-     * This constructor is typically used when loading a Rental from the database.
-     * All fields are initialized based on the values retrieved as arguments.
-     *
-     * @param rentalID The unique ID of the rental, as stored in the database.
-     * @param userID The ID of the user who is renting the item.
-     * @param itemID The ID of the item being rented.
-     * @param rentalDate The date and time the item was rented.
-     * @param username The username of the user who is renting the item.
-     * @param itemTitle The title of the item being rented.
-     * @param rentalDueDate The due date for the rental.
-     * @param rentalReturnDate The date the rental was returned. This is null if the item hasn't been returned yet.
-     * @param lateFee The late fee for the rental, if any.
-     */
+    //retrieval constructor
     public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, String username, String itemTitle,
-                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee) {
-        setRentalID(rentalID);
-        setUserID(userID);
-        setItemID(itemID);
-        setRentalDate(rentalDate);
-        setUsername(username);
-        setItemTitle(itemTitle);
-        setRentalDueDate(rentalDueDate);
-        setRentalReturnDate(rentalReturnDate);
-        setLateFee(lateFee);
+                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee, boolean deleted)
+            throws InvalidIDException, InvalidDateException, InvalidUsernameException, InvalidTitleException, InvalidLateFeeException {
+        setRentalID(rentalID); //Throws InvalidIDException
+        setUserID(userID); //Throws InvalidIDException
+        setItemID(itemID); //Throws InvalidIDException
+        setRentalDate(rentalDate); //Throws InvalidDateException
+        setUsername(username); //Throws InvalidUsernameException
+        setItemTitle(itemTitle); //Throws InvalidTitleException
+        setRentalDueDate(rentalDueDate); //Throws InvalidDateException
+        setRentalReturnDate(rentalReturnDate); //Throws InvalidDateException
+        setLateFee(lateFee); //Throws InvalidLateFeeException
+        this.deleted = deleted;
     }
 
     /**
@@ -137,6 +117,7 @@ public class Rental extends Entity {
         this.rentalDueDate = other.rentalDueDate;
         this.rentalReturnDate = other.rentalReturnDate;
         this.lateFee = other.lateFee;
+        this.deleted = other.deleted;
     }
 
     /**
@@ -152,10 +133,10 @@ public class Rental extends Entity {
      * Sets the rental ID.
      *
      * @param rentalID the rental ID to set
-     * @throws IllegalArgumentException if the rental ID is less than or equal to zero
+     * @throws InvalidIDException if the rental ID is less than or equal to zero
      */
-    public void setRentalID(int rentalID) {
-        if (rentalID <= 0) throw new IllegalArgumentException("RentalID must be greater than zero. Received: " + rentalID);
+    public void setRentalID(int rentalID) throws InvalidIDException {
+        if (rentalID <= 0) throw new InvalidIDException("RentalID must be greater than zero. Received: " + rentalID);
         this.rentalID = rentalID;
     }
 
@@ -172,10 +153,10 @@ public class Rental extends Entity {
      * Sets the user ID.
      *
      * @param userID the user ID to set
-     * @throws IllegalArgumentException if the user ID is less than or equal to zero
+     * @throws InvalidIDException if the user ID is less than or equal to zero
      */
-    public void setUserID(int userID) {
-        if (userID <= 0) throw new IllegalArgumentException("UserID must be greater than zero. Received: " + userID);
+    public void setUserID(int userID) throws InvalidIDException {
+        if (userID <= 0) throw new InvalidIDException("UserID must be greater than zero. Received: " + userID);
         this.userID = userID;
     }
 
@@ -192,10 +173,10 @@ public class Rental extends Entity {
      * Sets the item ID.
      *
      * @param itemID the item ID to set
-     * @throws IllegalArgumentException if the item ID is less than or equal to zero
+     * @throws InvalidIDException if the item ID is less than or equal to zero
      */
-    public void setItemID(int itemID) {
-        if (itemID <= 0) throw new IllegalArgumentException("ItemID must be greater than zero. Received: " + itemID);
+    public void setItemID(int itemID) throws InvalidIDException {
+        if (itemID <= 0) throw new InvalidIDException("ItemID must be greater than zero. Received: " + itemID);
         this.itemID = itemID;
     }
 
@@ -214,9 +195,9 @@ public class Rental extends Entity {
      * @param rentalDate the rental date to set
      * @throws IllegalArgumentException if the rental date is null or in the future
      */
-    public void setRentalDate(LocalDateTime rentalDate) {
+    public void setRentalDate(LocalDateTime rentalDate) throws InvalidDateException {
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
-            throw new IllegalArgumentException("RentalDate cannot be null or in the future. Received: " + rentalDate);
+            throw new InvalidDateException("RentalDate cannot be null or in the future. Received: " + rentalDate);
         this.rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
     }
 
@@ -235,9 +216,9 @@ public class Rental extends Entity {
      * @param username the username to set
      * @throws IllegalArgumentException if the username is null or empty
      */
-    public void setUsername(String username) {
+    public void setUsername(String username) throws InvalidUsernameException {
         if (username == null || username.isEmpty())
-            throw new IllegalArgumentException("Username cannot be null or empty. Received: " + username);
+            throw new InvalidUsernameException("Username cannot be null or empty. Received: " + username);
         this.username = username;
     }
 
@@ -256,9 +237,9 @@ public class Rental extends Entity {
      * @param itemTitle the item title to set
      * @throws IllegalArgumentException if the item title is null or empty
      */
-    public void setItemTitle(String itemTitle) {
+    public void setItemTitle(String itemTitle) throws InvalidTitleException {
         if (itemTitle == null || itemTitle.isEmpty())
-            throw new IllegalArgumentException("Title cannot be null or empty. Received: " + itemTitle);
+            throw new InvalidTitleException("Title cannot be null or empty. Received: " + itemTitle);
         this.itemTitle = itemTitle;
     }
 
@@ -277,9 +258,9 @@ public class Rental extends Entity {
      * @param rentalDueDate the rental due date to set
      * @throws IllegalArgumentException if the rental due date is null or is before the current time
      */
-    public void setRentalDueDate(LocalDateTime rentalDueDate) {
+    public void setRentalDueDate(LocalDateTime rentalDueDate) throws InvalidDateException {
         if (rentalDueDate == null || rentalDueDate.isBefore(LocalDateTime.now()))
-            throw new IllegalArgumentException("Rental due date cannot be null or in the past. Received: " + rentalDueDate);
+            throw new InvalidDateException("Rental due date cannot be null or in the past. Received: " + rentalDueDate);
         this.rentalDueDate = rentalDueDate.withHour(RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS);
     }
 
@@ -298,9 +279,9 @@ public class Rental extends Entity {
      * @param rentalReturnDate the rental return date to set
      * @throws IllegalArgumentException if the rental return date is not null and is before the rental date
      */
-    public void setRentalReturnDate(LocalDateTime rentalReturnDate) {
+    public void setRentalReturnDate(LocalDateTime rentalReturnDate) throws InvalidDateException {
         if (rentalReturnDate != null && rentalReturnDate.isBefore(this.getRentalDate()))
-            throw new IllegalArgumentException("Rental return date cannot be before the rental date. Received: " + rentalReturnDate);
+            throw new InvalidDateException("Rental return date cannot be before the rental date. Received: " + rentalReturnDate);
         this.rentalReturnDate = (rentalReturnDate == null) ? null : rentalReturnDate.truncatedTo(ChronoUnit.SECONDS);
     }
     /**
@@ -318,9 +299,9 @@ public class Rental extends Entity {
      * @param lateFee the late fee to set
      * @throws IllegalArgumentException if the late fee is negative
      */
-    public void setLateFee(double lateFee) {
+    public void setLateFee(double lateFee) throws InvalidLateFeeException {
         if (lateFee < 0.0)
-            throw new IllegalArgumentException("Late fee cannot be negative. Received: " + lateFee);
+            throw new InvalidLateFeeException("Late fee cannot be negative. Received: " + lateFee);
         this.lateFee = lateFee;
     }
 

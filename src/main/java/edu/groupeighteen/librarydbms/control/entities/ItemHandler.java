@@ -4,8 +4,8 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNullException;
 
@@ -221,7 +221,7 @@ public class ItemHandler {
         Item newItem = new Item(title);
         try {
             newItem.setItemID(saveItem(newItem)); //If this throws an exception, something is seriously wrong
-        } catch (InvalidItemIDException e) {
+        } catch (InvalidIDException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -269,11 +269,11 @@ public class ItemHandler {
      * @param itemID The ID of the item to be retrieved.
      * @return The retrieved Item.
      * @throws ItemNotFoundException If no item with the provided ID exists in the database.
-     * @throws InvalidItemIDException If the provided ID is invalid (e.g., negative or zero).
+     * @throws InvalidIDException If the provided ID is invalid (e.g., negative or zero).
      */
-    public static Item getItemByID(int itemID) throws ItemNotFoundException, InvalidItemIDException {
+    public static Item getItemByID(int itemID) throws ItemNotFoundException, InvalidIDException {
         //TODO-prio update method and test when Item is finished
-        //No point getting impossible items, throws InvalidItemIDException
+        //No point getting impossible items, throws InvalidIDException
         checkValidItemID(itemID);
 
         //Prepare a SQL query to select an item by itemID.
@@ -355,7 +355,7 @@ public class ItemHandler {
                     throw new ItemNotFoundException(title);
                 }
             }
-        } catch (SQLException | InvalidItemIDException e) {
+        } catch (SQLException | InvalidIDException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -432,7 +432,7 @@ public class ItemHandler {
      * @throws ItemNotFoundException If the item does not exist in the database.
      * @throws ItemNullException If the provided Item object is null.
      */
-    public static void updateItem(Item item) throws ItemNotFoundException, ItemNullException, InvalidItemIDException {
+    public static void updateItem(Item item) throws ItemNotFoundException, ItemNullException, InvalidIDException {
         //TODO-prio update when Item is finished
         //Validate the input, throws ItemNullException
         checkNullItem(item);
@@ -528,9 +528,9 @@ public class ItemHandler {
      * @param itemID The ID of the item.
      * @return The allowed rental days for the item.
      * @throws ItemNotFoundException If no item with the provided ID exists in the database.
-     * @throws InvalidItemIDException If the provided ID is invalid (e.g., negative or zero).
+     * @throws InvalidIDException If the provided ID is invalid (e.g., negative or zero).
      */
-    public static int getAllowedRentalDaysByID(int itemID) throws ItemNotFoundException, InvalidItemIDException {
+    public static int getAllowedRentalDaysByID(int itemID) throws ItemNotFoundException, InvalidIDException {
         Item item = getItemByID(itemID);
         if (item != null) return item.getAllowedRentalDays();
         else throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
@@ -594,14 +594,14 @@ public class ItemHandler {
     }
 
     /**
-     * Checks whether a given itemID is invalid (<= 0). If so, throws an InvalidItemIDException,
+     * Checks whether a given itemID is invalid (<= 0). If so, throws an InvalidIDException,
      * which must be handled.
      * @param itemID the ID to check.
-     * @throws InvalidItemIDException if itemID <= 0.
+     * @throws InvalidIDException if itemID <= 0.
      */
-    private static void checkValidItemID(int itemID) throws InvalidItemIDException {
+    private static void checkValidItemID(int itemID) throws InvalidIDException {
         if (itemID <= 0)
-            throw new InvalidItemIDException("Error retrieving item by itemID: invalid itemID " + itemID);
+            throw new InvalidIDException("Error retrieving item by itemID: invalid itemID " + itemID);
     }
 
     /**

@@ -95,7 +95,7 @@ public class UserTest {
             assertEquals(allowedRentals, testUser.getAllowedRentals());
             assertEquals(currentRentals, testUser.getCurrentRentals());
             assertEquals(lateFee, testUser.getLateFee());
-        } catch (InvalidUserIDException | InvalidRentalException | InvalidLateFeeException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (InvalidIDException | InvalidRentalException | InvalidLateFeeException | InvalidUsernameException | InvalidPasswordException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -134,7 +134,7 @@ public class UserTest {
         assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, longPassword, allowedRentals, currentRentals, lateFee));
 
         //Invalid userID
-        assertThrows(InvalidUserIDException.class, () -> new User(0, validUsername, validPassword, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidIDException.class, () -> new User(0, validUsername, validPassword, allowedRentals, currentRentals, lateFee));
 
         //Invalid currentRentals
         assertThrows(InvalidRentalException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, allowedRentals + 1, lateFee));
@@ -160,7 +160,7 @@ public class UserTest {
             assertEquals(originalUser.getAllowedRentals(), copiedUser.getAllowedRentals());
             assertEquals(originalUser.getCurrentRentals(), copiedUser.getCurrentRentals());
             assertEquals(originalUser.getLateFee(), copiedUser.getLateFee());
-        } catch (InvalidUserIDException | InvalidUsernameException | InvalidPasswordException | InvalidRentalException | InvalidLateFeeException e) {
+        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException | InvalidRentalException | InvalidLateFeeException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -179,7 +179,7 @@ public class UserTest {
             int userID = 1;
             testUser.setUserID(userID);
             assertEquals(userID, testUser.getUserID());
-        } catch (InvalidUsernameException | InvalidPasswordException | InvalidUserIDException e) {
+        } catch (InvalidUsernameException | InvalidPasswordException | InvalidIDException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -195,7 +195,7 @@ public class UserTest {
         try {
             User testUser = new User("username", "password123");
             int userID = 0;
-            assertThrows(InvalidUserIDException.class, () -> testUser.setUserID(userID));
+            assertThrows(InvalidIDException.class, () -> testUser.setUserID(userID));
         } catch (InvalidUsernameException | InvalidPasswordException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

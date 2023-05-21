@@ -209,7 +209,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertEquals(0.0, user2.getLateFee(), "Late fee should be zero");
             assertFalse(user2.isDeleted());
 
-        } catch (InvalidUserIDException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException e) {
             fail("Should not thrown an exception when user is retrieved with valid userID.");
             e.printStackTrace();
         }
@@ -234,7 +234,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Call the getUserByID method with a valid userID that is not present in the database
             assertNull(UserHandler.getUserByID(nonExistentID));
-        } catch (InvalidUserIDException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException e) {
             fail("Should not thrown an exception when user is retrieved with valid userID.");
             e.printStackTrace();
         }
@@ -249,7 +249,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n11: Testing getUserByID method with an invalid userID...");
 
         // Verify that an IllegalArgumentException is thrown when an invalid userID is provided
-        assertThrows(InvalidUserIDException.class, () -> UserHandler.getUserByID(-1), "An IllegalArgumentException should be thrown when the userID is less than or equal to 0.");
+        assertThrows(InvalidIDException.class, () -> UserHandler.getUserByID(-1), "An IllegalArgumentException should be thrown when the userID is less than or equal to 0.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -529,7 +529,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Call deleteUser and expect a UserNotFoundException to be thrown
             assertThrows(UserNotFoundException.class, () -> UserHandler.deleteUser(nonExistingUser), "deleteUser should throw UserNotFoundException when the user does not exist.");
-        } catch (InvalidUsernameException | InvalidPasswordException | InvalidUserIDException e) {
+        } catch (InvalidUsernameException | InvalidPasswordException | InvalidIDException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

@@ -8,9 +8,7 @@ import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +81,8 @@ public class RentalHandler {
      *                      or if the user has rented to their capacity,
      *                      or if the user has a late fee.
      */
-    public static Rental createNewRental(int userID, int itemID) throws SQLException, UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidUserIDException {
+
+    public static Rental createNewRental(int userID, int itemID) throws UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidIDException {
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
             throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: "
@@ -96,7 +95,7 @@ public class RentalHandler {
         Item item = null;
         try {
             item = ItemHandler.getItemByID(itemID);
-        } catch (InvalidItemIDException e) {
+        } catch (InvalidIDException e) {
             e.printStackTrace();
         }
 
@@ -132,7 +131,7 @@ public class RentalHandler {
         int allowedRentalDays = 0;
         try {
             allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
-        } catch (InvalidItemIDException e) {
+        } catch (InvalidIDException e) {
             e.printStackTrace();
         }
         LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
@@ -208,7 +207,7 @@ public class RentalHandler {
      * @throws UserNotFoundException if a user associated with a rental is not found
      * @throws ItemNotFoundException if an item associated with a rental is not found
      */
-    public static List<Rental> getAllRentals() throws SQLException, UserNotFoundException, ItemNotFoundException, InvalidUserIDException {
+    public static List<Rental> getAllRentals() throws SQLException, UserNotFoundException, ItemNotFoundException, InvalidIDException {
         //Prepare a SQL command to select all rentals from the 'rentals' table.
         String sql = "SELECT * FROM rentals";
 
@@ -242,7 +241,7 @@ public class RentalHandler {
             Item item = null;
             try {
                 item = ItemHandler.getItemByID(itemID);
-            } catch (InvalidItemIDException e) {
+            } catch (InvalidIDException e) {
                 e.printStackTrace();
             }
 

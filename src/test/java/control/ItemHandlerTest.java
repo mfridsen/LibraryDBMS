@@ -3,8 +3,8 @@ package control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNullException;
 import org.junit.jupiter.api.*;
@@ -247,7 +247,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\n7: Testing getItemByID with an invalid itemID...");
 
         int invalidItemID = -1;
-        assertThrows(InvalidItemIDException.class, () -> ItemHandler.getItemByID(invalidItemID), "Exception not thrown for invalid itemID");
+        assertThrows(InvalidIDException.class, () -> ItemHandler.getItemByID(invalidItemID), "Exception not thrown for invalid itemID");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -288,7 +288,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The retrieved item should have the same allowed rental days as the created item
             assertEquals(createdItem.getAllowedRentalDays(), retrievedItem.getAllowedRentalDays(), "Retrieved item allowed rental days does not match created item allowed rental days.");
-        } catch (ItemNotFoundException | InvalidTitleException | InvalidItemIDException infe) {
+        } catch (ItemNotFoundException | InvalidTitleException | InvalidIDException infe) {
             fail("Valid operations should not throw exceptions.");
             infe.printStackTrace();
         }
@@ -436,7 +436,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An IllegalArgumentException was expected.");
         } catch (ItemNullException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
-        } catch (ItemNotFoundException | InvalidItemIDException e) {
+        } catch (ItemNotFoundException | InvalidIDException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -458,7 +458,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
             assertEquals("Item not found. Item ID: 99999", inf.getMessage());
-        } catch (IllegalArgumentException | ItemNullException | InvalidItemIDException | InvalidTitleException e) {
+        } catch (IllegalArgumentException | ItemNullException | InvalidIDException | InvalidTitleException e) {
             fail("Unexpected exception: " + e.getMessage());
             e.printStackTrace();
         }
@@ -502,7 +502,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertEquals(1, ItemHandler.getStoredTitles().get(updatedTitle).intValue());
             assertEquals(0, ItemHandler.getAvailableTitles().getOrDefault(updatedTitle, 0).intValue());
 
-        } catch (InvalidItemIDException | ItemNotFoundException | InvalidTitleException e) {
+        } catch (InvalidIDException | ItemNotFoundException | InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -545,7 +545,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
             assertEquals("Item with ID 99999 does not exist.", inf.getMessage());
-        } catch (ItemNullException | InvalidTitleException | InvalidItemIDException e) {
+        } catch (ItemNullException | InvalidTitleException | InvalidIDException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -574,7 +574,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
                 fail("An ItemNotFoundException was expected.");
             } catch (ItemNotFoundException inf) {
                 assertEquals("Item not found. Item ID: " + validItem.getItemID(), inf.getMessage());
-            } catch (InvalidItemIDException e) {
+            } catch (InvalidIDException e) {
                 fail("Unexpected exception: " + e.getMessage());
             }
 
@@ -614,7 +614,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The allowed rental days should be equal to the allowed rental days of the created item
             assertEquals(validItem.getAllowedRentalDays(), allowedRentalDays);
-        } catch (ItemNotFoundException | InvalidTitleException | InvalidItemIDException e) {
+        } catch (ItemNotFoundException | InvalidTitleException | InvalidIDException e) {
             fail("Unexpected exception: " + e.getMessage());
             e.printStackTrace();
         }

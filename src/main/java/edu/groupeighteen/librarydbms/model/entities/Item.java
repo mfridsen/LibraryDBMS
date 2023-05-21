@@ -1,7 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 
 /**
  * @author Mattias Fridsén
@@ -44,8 +44,8 @@ public class Item extends Entity {
      * @param title
      * @param allowedRentalDays
      */
-    public Item(int itemID, String title, int allowedRentalDays, boolean available) throws InvalidItemIDException, InvalidTitleException {
-        setItemID(itemID); //Throws InvalidItemIDException
+    public Item(int itemID, String title, int allowedRentalDays, boolean available) throws InvalidIDException, InvalidTitleException {
+        setItemID(itemID); //Throws InvalidIDException
         setTitle(title); //Throws InvalidTitleException
         setAllowedRentalDays(allowedRentalDays);
         setAvailable(available);
@@ -66,9 +66,9 @@ public class Item extends Entity {
         return itemID;
     }
 
-    public void setItemID(int itemID) throws InvalidItemIDException {
+    public void setItemID(int itemID) throws InvalidIDException {
         if (itemID <= 0)
-            throw new InvalidItemIDException("ItemID must be greater than zero. Received: " + itemID);
+            throw new InvalidIDException("ItemID must be greater than zero. Received: " + itemID);
         this.itemID = itemID;
     }
 
