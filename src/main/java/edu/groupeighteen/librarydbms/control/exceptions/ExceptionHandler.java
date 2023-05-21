@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  */
 public class ExceptionHandler {
     public static void HandleFatalException(Exception e) { {
+        //TODO-future fix the logging
             // Log the error
             Logger logger = Logger.getLogger("DatabaseErrorLogger");
             if (e instanceof SQLException) {

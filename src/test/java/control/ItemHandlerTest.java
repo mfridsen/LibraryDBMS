@@ -423,7 +423,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An IllegalArgumentException was expected.");
         } catch (NullItemException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
-        } catch (ItemNotFoundException e) {
+        } catch (ItemNotFoundException | InvalidItemIDException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -444,8 +444,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
             ItemHandler.updateItem(nonexistentItem);
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
-            assertEquals("Item with ID 99999 does not exist.", inf.getMessage());
-        } catch (IllegalArgumentException | NullItemException e) {
+            assertEquals("Item not found. Item ID: 99999", inf.getMessage());
+        } catch (IllegalArgumentException | NullItemException | InvalidItemIDException e) {
             fail("Unexpected exception: " + e.getMessage());
             e.printStackTrace();
         }
@@ -467,24 +467,27 @@ public class ItemHandlerTest extends BaseHandlerTest {
             String updatedTitle = "Updated Title";
             newItem.setTitle(updatedTitle);
 
-            // Update the item and check if the update was successful
-            assertDoesNotThrow(() -> ItemHandler.updateItem(newItem));
+            // Update the item's availability
+            newItem.setAvailable(false);
 
+            // Update the item in the database
+            assertDoesNotThrow(() -> ItemHandler.updateItem(newItem));
 
             // Retrieve the updated item
             Item updatedItem = ItemHandler.getItemByID(newItem.getItemID());
 
-            // The updated item should not be null and should have the updated title
+            // The updated item should not be null, should have the updated title and should be unavailable
             assertNotNull(updatedItem);
             assertEquals(updatedTitle, updatedItem.getTitle());
+            assertFalse(updatedItem.isAvailable());
 
             // Verify that the original title is no longer in the maps
             assertEquals(0, ItemHandler.getStoredTitles().getOrDefault(originalTitle, 0).intValue());
             assertEquals(0, ItemHandler.getAvailableTitles().getOrDefault(originalTitle, 0).intValue());
 
-            // Verify that the updated title is in the maps with a count of 1
+            // Verify that the updated title is in the maps with a count of 1 in storedTitles, but 0 in availableTitles as it's not available
             assertEquals(1, ItemHandler.getStoredTitles().get(updatedTitle).intValue());
-            assertEquals(1, ItemHandler.getAvailableTitles().get(updatedTitle).intValue());
+            assertEquals(0, ItemHandler.getAvailableTitles().getOrDefault(updatedTitle, 0).intValue());
 
         } catch (InvalidItemIDException | ItemNotFoundException | EmptyTitleException e) {
             fail("Valid operations should not throw exceptions.");
@@ -493,6 +496,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         System.out.println("\nTEST FINISHED.");
     }
+
 
 
 

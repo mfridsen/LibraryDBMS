@@ -40,8 +40,6 @@ import java.util.Map;
  */
 public class ItemHandler {
 
-    //TODO-exceptions redirect SQL exceptions and revise all tests
-
     /**
      * Used to speed up searching. Contains a HashMap with the titles of all items in the database and how many
      * copies there are of each.
@@ -71,11 +69,19 @@ public class ItemHandler {
         return availableTitles;
     }
 
+    /**
+     * Increments the count of a title in both the stored and available titles maps.
+     * @param title The title to be incremented.
+     */
     public static void incrementBothTitles(String title) {
         incrementStoredTitles(title);
         incrementAvailableTitles(title);
     }
 
+    /**
+     * Increments the count of a title in both the stored and available titles maps.
+     * @param title The title to be incremented.
+     */
     public static void incrementStoredTitles(String title) {
         storedTitles.put(title, storedTitles.getOrDefault(title, 0) + 1);
         if (!availableTitles.containsKey(title)) {
@@ -83,12 +89,20 @@ public class ItemHandler {
         }
     }
 
-
+    /**
+     * Increments the count of a title in the available titles map. If the title is not present in the map,
+     * it is added with a count of 1.
+     * @param title The title to be incremented.
+     */
     public static void incrementAvailableTitles(String title) {
         availableTitles.put(title, availableTitles.getOrDefault(title, 0) + 1);
     }
 
 
+    /**
+     * Decrements the count of a title in the stored titles map. If the count reaches 0, the title is removed from both stored and available titles maps.
+     * @param title The title to be decremented.
+     */
     public static void decrementStoredTitles(String title) {
         int storedCount = storedTitles.get(title) - 1;
         if (storedCount == 0) {
@@ -99,6 +113,10 @@ public class ItemHandler {
         }
     }
 
+    /**
+     * Decrements the count of a title in the available titles map, if it exists. If the count reaches 0 or less, the title is removed from the map.
+     * @param title The title to be decremented.
+     */
     public static void decrementAvailableTitles(String title) {
         // Only decrement if title exists in the map
         if (availableTitles.containsKey(title)) {
@@ -111,17 +129,24 @@ public class ItemHandler {
         }
     }
 
-
+    /**
+     * Prepares the handler by syncing titles from the database.
+     */
     public static void setup()  {
         syncTitles();
     }
 
+    /**
+     * Clears both stored and available titles maps.
+     */
     public static void reset() {
         storedTitles.clear();
         availableTitles.clear();
     }
 
-
+    /**
+     * Syncs the handler with the database by clearing existing data and retrieving current titles from the database.
+     */
     public static void syncTitles()  {
         if (!storedTitles.isEmpty()) {
             storedTitles.clear();
@@ -168,8 +193,6 @@ public class ItemHandler {
         storedTitles.forEach((title, count) -> System.out.println("Title: " + title + " Copies: " + count));
     }
 
-
-
     /**
      * Prints the list of items with their IDs and titles.
      *
@@ -183,16 +206,14 @@ public class ItemHandler {
         }
     }
 
-
-    //TODO-prio update method and test when Item is finished
-
     /**
-     *
-     * @param title
-     * @return
-     * @throws EmptyTitleException
+     * Creates a new item with a given title, stores it in the database, and increments the title count.
+     * @param title The title of the item to be created.
+     * @return The created Item.
+     * @throws EmptyTitleException If the title is null or an empty string.
      */
     public static Item createNewItem(String title) throws EmptyTitleException {
+        //TODO-prio update method and test when Item is finished
         //Validate input, throws EmptyTitleException
         checkEmptyTitle(title);
 
@@ -206,18 +227,13 @@ public class ItemHandler {
         return newItem;
     }
 
-
-
-
     /**
-     * Note that the -1 return statement is technically unreachable because System.exit(1) is called if any
-     * SQLException occurs. However, the Java compiler doesn't understand that System.exit() terminates the program,
-     * so a return statement is required to avoid a compile error.
-     * @param item
-     * @return
+     * Saves an item to the database, retrieving and returning the generated item ID.
+     * @param item The Item object to be saved.
+     * @return The generated ID of the saved item.
      */
-    //TODO-prio update method and test when Item is finished
     private static int saveItem(Item item) {
+        //TODO-prio update method and test when Item is finished
         //Prepare query
         String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
         String[] params = {
@@ -243,18 +259,15 @@ public class ItemHandler {
         return -1;
     }
 
-
-
-    //TODO-prio update method and test when Item is finished
-
     /**
-     *
-     * @param itemID
-     * @return
-     * @throws ItemNotFoundException
-     * @throws InvalidItemIDException
+     * Retrieves an item by its ID from the database.
+     * @param itemID The ID of the item to be retrieved.
+     * @return The retrieved Item.
+     * @throws ItemNotFoundException If no item with the provided ID exists in the database.
+     * @throws InvalidItemIDException If the provided ID is invalid (e.g., negative or zero).
      */
     public static Item getItemByID(int itemID) throws ItemNotFoundException, InvalidItemIDException {
+        //TODO-prio update method and test when Item is finished
         //No point getting impossible items, throws InvalidItemIDException
         checkValidItemID(itemID);
 
@@ -293,19 +306,15 @@ public class ItemHandler {
         return null;
     }
 
-
-
-    //TODO-test ASAP
-    //TODO-prio update method and test when Item is finished
-
     /**
-     *
-     * @param title
-     * @return
-     * @throws ItemNotFoundException
-     * @throws EmptyTitleException
+     * Retrieves all items with a given title from the database.
+     * @param title The title of the items to be retrieved.
+     * @return A list of Item objects with the provided title.
+     * @throws ItemNotFoundException If no items with the provided title exist in the database.
+     * @throws EmptyTitleException If the provided title is null or an empty string.
      */
     public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException, EmptyTitleException {
+        //TODO-prio update method and test when Item is finished
         //No point getting invalid items, throws EmptyTitleException
         checkEmptyTitle(title);
 
@@ -407,61 +416,66 @@ public class ItemHandler {
 
     // == 27 test cases
 
-    //TODO-prio update when Item is finished
-    public static void updateItem(Item item) throws ItemNotFoundException, NullItemException {
-        // Validate the input, throws NullItemException
+
+    /**
+     * Updates an existing item in the database and adjusts the count of the old and new titles.
+     * @param item The Item object containing the updated information.
+     * @throws ItemNotFoundException If the item does not exist in the database.
+     * @throws NullItemException If the provided Item object is null.
+     */
+    public static void updateItem(Item item) throws ItemNotFoundException, NullItemException, InvalidItemIDException {
+        //TODO-prio update when Item is finished
+        //Validate the input, throws NullItemException
         checkNullItem(item);
 
-        // Get the old title, throws ItemNotFoundException
-        String oldTitle = getItemTitleByID(item.getItemID());
+        // Get the old Item instance, throws ItemNotFoundException
+        Item oldItem = getItemByID(item.getItemID());
+        if (oldItem == null) {
+            throw new ItemNotFoundException("Item with id: " + item.getItemID() + " not found.");
+        }
 
-        // Prepare a SQL command to update an item's title by itemID.
-        String sql = "UPDATE items SET title = ? WHERE itemID = ?";
-        String[] params = {item.getTitle(), String.valueOf(item.getItemID())};
+        // Get the old title
+        String oldTitle = oldItem.getTitle();
+
+        // Get the old availability status
+        boolean oldAvailability = oldItem.isAvailable();
+
+        // Prepare a SQL command to update an item's title and availability by itemID.
+        String sql = "UPDATE items SET title = ?, available = ? WHERE itemID = ?";
+        String[] params = {
+                item.getTitle(),
+                item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
+                String.valueOf(item.getItemID())
+        };
 
         // Execute the update.
         DatabaseHandler.executePreparedUpdate(sql, params);
 
-        // Decrement the count of the old title
-        decrementStoredTitles(oldTitle);
-        decrementAvailableTitles(oldTitle);
+        // If the title has changed, adjust the counts in the maps
+        if (!oldTitle.equals(item.getTitle())) {
+            decrementStoredTitles(oldTitle);
+            incrementStoredTitles(item.getTitle());
+        }
 
-        // Increment the count of the new title
-        incrementStoredTitles(item.getTitle());
-        incrementAvailableTitles(item.getTitle());
-    }
-
-    private static String getItemTitleByID(int itemId) throws ItemNotFoundException {
-        String sql = "SELECT title FROM items WHERE itemID = ?";
-        String[] params = {String.valueOf(itemId)};
-
-        try {
-            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
-
-            try (queryResult) {
-                if(queryResult.getResultSet().next()){
-                    return queryResult.getResultSet().getString("title");
-                }else{
-                    throw new ItemNotFoundException("Item with ID " + itemId + " does not exist.");
-                }
+        // If the availability status has changed, adjust the counts in the availableTitles map
+        if (oldAvailability != item.isAvailable()) {
+            if (oldAvailability) {
+                decrementAvailableTitles(oldTitle);
             }
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
-            return null;
+            if (item.isAvailable()) {
+                incrementAvailableTitles(item.getTitle());
+            }
         }
     }
 
-
-
-    //TODO-prio update when Item is finished
-
     /**
-     *
-     * @param item
-     * @throws ItemNotFoundException
-     * @throws NullItemException
+     * Deletes an item from the database and decrements the count of the item's title.
+     * @param item The Item object to be deleted.
+     * @throws ItemNotFoundException If the item does not exist in the database.
+     * @throws NullItemException If the provided Item object is null.
      */
     public static void deleteItem(Item item) throws ItemNotFoundException, NullItemException {
+        //TODO-prio update when Item is finished
         //Validate the input, NullItemException
         checkNullItem(item);
 
@@ -493,31 +507,17 @@ public class ItemHandler {
 
         // Decrement the count of the old title. Remove the entry if the count reaches 0.
         if(storedTitles.get(oldTitle) != null) {
-            storedTitles.put(oldTitle, storedTitles.get(oldTitle) - 1);
-            if (storedTitles.get(oldTitle) == 0) {
-                storedTitles.remove(oldTitle);
-            }
-            availableTitles.put(oldTitle, availableTitles.get(oldTitle) - 1);
-            if (availableTitles.get(oldTitle) == 0) {
-                availableTitles.remove(oldTitle);
-            }
+            decrementStoredTitles(oldTitle);
+            decrementAvailableTitles(oldTitle);
         }
     }
 
-
-
-
-    //TODO-test
-    //TODO-comment
-    //TODO-implement
-    //TODO-exception
-
     /**
-     *
-     * @param itemID
-     * @return
-     * @throws ItemNotFoundException
-     * @throws InvalidItemIDException
+     * Retrieves the allowed rental days for an item by its ID.
+     * @param itemID The ID of the item.
+     * @return The allowed rental days for the item.
+     * @throws ItemNotFoundException If no item with the provided ID exists in the database.
+     * @throws InvalidItemIDException If the provided ID is invalid (e.g., negative or zero).
      */
     public static int getAllowedRentalDaysByID(int itemID) throws ItemNotFoundException, InvalidItemIDException {
         Item item = getItemByID(itemID);
@@ -526,10 +526,10 @@ public class ItemHandler {
     }
 
     /**
-     *
-     * @param item
-     * @return
-     * @throws ItemNotFoundException
+     * Retrieves the number of available copies for a specific item.
+     * @param item The Item object for which the available copies are to be retrieved.
+     * @return The number of available copies for the item.
+     * @throws ItemNotFoundException If the item does not exist in the database.
      */
     public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException {
         if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
@@ -538,6 +538,36 @@ public class ItemHandler {
     }
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
+
+    /**
+     * This method is used to retrieve the title of an item by its ID from the database. It executes a prepared
+     * SQL query to fetch the title of the item corresponding to the provided itemID. If the item exists, the title
+     * is returned. If the item does not exist, an ItemNotFoundException is thrown. In the case of a SQLException,
+     * the exception is handled and the method returns null.
+     *
+     * @param itemId The ID of the item whose title is to be fetched.
+     * @return The title of the item if it exists, null if an SQLException occurs.
+     * @throws ItemNotFoundException if no item with the provided ID exists in the database.
+     */
+    private static String getItemTitleByID(int itemId) throws ItemNotFoundException {
+        String sql = "SELECT title FROM items WHERE itemID = ?";
+        String[] params = {String.valueOf(itemId)};
+
+        try {
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+
+            try (queryResult) {
+                if(queryResult.getResultSet().next()){
+                    return queryResult.getResultSet().getString("title");
+                }else{
+                    throw new ItemNotFoundException("Item with ID " + itemId + " does not exist.");
+                }
+            }
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException(e);
+            return null;
+        }
+    }
 
     /**
      * Checks whether a given title is null or empty. If so, throws an EmptyTitleException,
