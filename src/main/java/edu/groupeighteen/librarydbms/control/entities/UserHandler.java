@@ -121,9 +121,10 @@ public class UserHandler {
      * @param username The username for the new user.
      * @param password The password for the new user.
      * @return A User object representing the newly created user.
-     * @throws InvalidUsernameException If the provided username is already taken.
+     * @throws InvalidUsernameException If the provided username is already taken or incorrect.
+     * @throws InvalidPasswordException If the provided password is incorrect.
      */
-    public static User createNewUser(String username, String password) throws InvalidUsernameException {
+    public static User createNewUser(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
         // Usernames must be unique, throws UsernameTakenException
         checkUsernameTaken(username);
         User newUser = null;
@@ -135,7 +136,7 @@ public class UserHandler {
 
             // Need to remember to add to the list
             storedUsernames.add(newUser.getUsername());
-        } catch (InvalidPasswordException | InvalidUserIDException e) {
+        } catch (InvalidUserIDException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -329,7 +330,6 @@ public class UserHandler {
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-
     /**
      * Deletes a user from the database. Before deleting, the method checks if the provided User object is not null and if the
      * user with the ID of the provided User object exists in the database. If the user exists, the method prepares an SQL
@@ -344,11 +344,12 @@ public class UserHandler {
         //Validate the input. Throws UserNullException
         checkNullUser(user);
 
-        //Let's check if the user exists in the database before we go on, this is fatal
+        //Let's check if the user exists in the database before we go on, this can be fatal
         try {
-            UserHandler.getUserByID(user.getUserID());
+            if (UserHandler.getUserByID(user.getUserID()) == null)
+                throw new UserNotFoundException("Unable to update User: User with ID " + user.getUserID() + " not found.");
         } catch (InvalidUserIDException e) {
-            ExceptionHandler.HandleFatalException(new UserNotFoundException("Unable to update User: User with ID " + user.getUserID() + " not found."));
+            ExceptionHandler.HandleFatalException(e);
         }
 
         //Prepare a SQL command to delete a user by userID.

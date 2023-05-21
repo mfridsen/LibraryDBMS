@@ -640,7 +640,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The number of available copies should be 1
             assertEquals(1, availableCopies);
-        } catch (ItemNotFoundException | InvalidTitleException e) {
+        } catch (ItemNotFoundException | InvalidTitleException | ItemNullException e) {
             fail("Item should exist in availableTitles.");
             e.printStackTrace();
         }

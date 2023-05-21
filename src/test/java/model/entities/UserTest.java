@@ -15,17 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * @package model.user
  * @date 4/18/2023
  * @contact matfir-1@student.ltu.se
- * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
- * Unit Test for the User class.
+ *
+ * Unit test for the User class.
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTest {
-
 
     @Test
     @Order(1)
@@ -35,7 +30,6 @@ public class UserTest {
         try {
             String username = "validUsername";
             String password = "validPassword1";
-
             User testUser = new User(username, password);
 
             assertEquals(username, testUser.getUsername());
@@ -114,34 +108,39 @@ public class UserTest {
     void testUserRetrievalConstructor_InvalidInput() {
         System.out.println("\n4: Testing User retrieval constructor with invalid input...");
 
-        int userID = 0;
+        int validUserID = 1;
+        String validUsername = "username";
+        String validPassword = "password";
         int allowedRentals = 5;
         int currentRentals = 2;
         double lateFee = 10.0;
 
-        String validUsername = "username";
-        String validPassword = "password";
-
         //Null username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(null, validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, null));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, null, validPassword, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, null, allowedRentals, currentRentals, lateFee));
 
         //Empty username and password
-        assertThrows(InvalidUsernameException.class, () -> new User("", validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, ""));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "", validPassword, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "", allowedRentals, currentRentals, lateFee));
 
         //Short username and password
-        assertThrows(InvalidUsernameException.class, () -> new User("us", validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, "shrt"));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "us", validPassword, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "shrt", allowedRentals, currentRentals, lateFee));
 
         //Too long username and password
         String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
         String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
-        assertThrows(InvalidUsernameException.class, () -> new User(longUsername, validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, longPassword));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, longUsername, validPassword, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, longPassword, allowedRentals, currentRentals, lateFee));
 
-        assertThrows(IllegalArgumentException.class, () -> new User(userID, username, password, allowedRentals, currentRentals, lateFee));
-        assertThrows(IllegalArgumentException.class, () -> new User(userID, username, password, allowedRentals, currentRentals, lateFee));
+        //Invalid userID
+        assertThrows(InvalidUserIDException.class, () -> new User(0, validUsername, validPassword, allowedRentals, currentRentals, lateFee));
+
+        //Invalid currentRentals
+        assertThrows(InvalidRentalException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, allowedRentals + 1, lateFee));
+
+        //Invalid lateFee
+        assertThrows(InvalidLateFeeException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, currentRentals, -1.0));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -151,19 +150,20 @@ public class UserTest {
     void testUserCopyConstructor_ValidInput() {
         System.out.println("\n5: Testing User copy constructor with valid input...");
 
-        
-        User originalUser = new User(1, "validUsername", "validPassword1", 5, 2, 10.0);
+        try {
+            User originalUser = new User(1, "validUsername", "validPassword1", 5, 2, 10.0);
+            User copiedUser = new User(originalUser);
 
-        
-        User copiedUser = new User(originalUser);
-
-        
-        assertEquals(originalUser.getUserID(), copiedUser.getUserID());
-        assertEquals(originalUser.getUsername(), copiedUser.getUsername());
-        assertEquals(originalUser.getPassword(), copiedUser.getPassword());
-        assertEquals(originalUser.getAllowedRentals(), copiedUser.getAllowedRentals());
-        assertEquals(originalUser.getCurrentRentals(), copiedUser.getCurrentRentals());
-        assertEquals(originalUser.getLateFee(), copiedUser.getLateFee());
+            assertEquals(originalUser.getUserID(), copiedUser.getUserID());
+            assertEquals(originalUser.getUsername(), copiedUser.getUsername());
+            assertEquals(originalUser.getPassword(), copiedUser.getPassword());
+            assertEquals(originalUser.getAllowedRentals(), copiedUser.getAllowedRentals());
+            assertEquals(originalUser.getCurrentRentals(), copiedUser.getCurrentRentals());
+            assertEquals(originalUser.getLateFee(), copiedUser.getLateFee());
+        } catch (InvalidUserIDException | InvalidUsernameException | InvalidPasswordException | InvalidRentalException | InvalidLateFeeException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -174,15 +174,15 @@ public class UserTest {
     void testSetUserID_ValidInput() {
         System.out.println("\n6: Testing set and get UserID with valid input...");
 
-        
-        User testUser = new User("username", "password123");
-        int userID = 1;
-
-        
-        testUser.setUserID(userID);
-
-        
-        assertEquals(userID, testUser.getUserID());
+        try {
+            User testUser = new User("username", "password123");
+            int userID = 1;
+            testUser.setUserID(userID);
+            assertEquals(userID, testUser.getUserID());
+        } catch (InvalidUsernameException | InvalidPasswordException | InvalidUserIDException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -192,12 +192,14 @@ public class UserTest {
     void testSetUserID_InvalidInput() {
         System.out.println("\n7: Testing set UserID with invalid input...");
 
-        
-        User testUser = new User("username", "password123");
-        int userID = 0;
-
-        
-        assertThrows(IllegalArgumentException.class, () -> testUser.setUserID(userID));
+        try {
+            User testUser = new User("username", "password123");
+            int userID = 0;
+            assertThrows(InvalidUserIDException.class, () -> testUser.setUserID(userID));
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -207,15 +209,15 @@ public class UserTest {
     void testSetUsername_ValidInput() {
         System.out.println("\n8: Testing set and get Username with valid input...");
 
-        
-        User testUser = new User("username", "password123");
-        String username = "newUsername";
-
-        
-        testUser.setUsername(username);
-
-        
-        assertEquals(username, testUser.getUsername());
+        try {
+            User testUser = new User("username", "password123");
+            String username = "newUsername";
+            testUser.setUsername(username);
+            assertEquals(username, testUser.getUsername());
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -225,24 +227,29 @@ public class UserTest {
     void testSetUsername_InvalidInput() {
         System.out.println("\n9: Testing set Username with invalid input...");
 
-        
-        User testUser = new User("username", "password123");
+        try {
+            //Create test user
+            User testUser = new User("username", "password123");
 
-        // Test for null input
-        String nullUsername = null;
-        assertThrows(IllegalArgumentException.class, () -> testUser.setUsername(nullUsername));
+            // Test for null input
+            String nullUsername = null;
+            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(nullUsername));
 
-        // Test for empty string
-        String emptyUsername = "";
-        assertThrows(IllegalArgumentException.class, () -> testUser.setUsername(emptyUsername));
+            // Test for empty string
+            String emptyUsername = "";
+            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(emptyUsername));
 
-        // Test for username length less than minimum length
-        String shortUsername = "ab";
-        assertThrows(IllegalArgumentException.class, () -> testUser.setUsername(shortUsername));
+            // Test for username length less than minimum length
+            String shortUsername = "ab";
+            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(shortUsername));
 
-        // Test for username length greater than maximum length
-        String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
-        assertThrows(IllegalArgumentException.class, () -> testUser.setUsername(longUsername));
+            // Test for username length greater than maximum length
+            String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
+            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(longUsername));
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -252,15 +259,15 @@ public class UserTest {
     void testSetPassword_ValidInput() {
         System.out.println("\n10: Testing set and get Password with valid input...");
 
-        
-        User testUser = new User("username", "password123");
-        String password = "newPassword123";
-
-        
-        testUser.setPassword(password);
-
-        
-        assertEquals(password, testUser.getPassword());
+        try {
+            User testUser = new User("username", "password123");
+            String password = "newPassword123";
+            testUser.setPassword(password);
+            assertEquals(password, testUser.getPassword());
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -270,24 +277,29 @@ public class UserTest {
     void testSetPassword_InvalidInput() {
         System.out.println("\n11: Testing set Password with invalid input...");
 
-        
-        User testUser = new User("username", "password123");
+        try {
+            //Create test user
+            User testUser = new User("username", "password123");
 
-        // Test for null input
-        String nullPassword = null;
-        assertThrows(IllegalArgumentException.class, () -> testUser.setPassword(nullPassword));
+            // Test for null input
+            String nullPassword = null;
+            assertThrows(InvalidPasswordException.class, () -> testUser.setPassword(nullPassword));
 
-        // Test for empty string
-        String emptyPassword = "";
-        assertThrows(IllegalArgumentException.class, () -> testUser.setPassword(emptyPassword));
+            // Test for empty string
+            String emptyPassword = "";
+            assertThrows(InvalidPasswordException.class, () -> testUser.setPassword(emptyPassword));
 
-        // Test for password length less than minimum length
-        String shortPassword = "abc1234";
-        assertThrows(IllegalArgumentException.class, () -> testUser.setPassword(shortPassword));
+            // Test for password length less than minimum length
+            String shortPassword = "abc1234";
+            assertThrows(InvalidPasswordException.class, () -> testUser.setPassword(shortPassword));
 
-        // Test for password length greater than maximum length
-        String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
-        assertThrows(IllegalArgumentException.class, () -> testUser.setPassword(longPassword));
+            // Test for password length greater than maximum length
+            String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
+            assertThrows(InvalidPasswordException.class, () -> testUser.setPassword(longPassword));
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -297,15 +309,15 @@ public class UserTest {
     void testSetCurrentRentals_ValidInput() {
         System.out.println("\n12: Testing set and get CurrentRentals with valid input...");
 
-        
-        User testUser = new User("username", "password123");
-        int currentRentals = 2;
-
-        
-        testUser.setCurrentRentals(currentRentals);
-
-        
-        assertEquals(currentRentals, testUser.getCurrentRentals());
+        try {
+            User testUser = new User("username", "password123");
+            int currentRentals = 2;
+            testUser.setCurrentRentals(currentRentals);
+            assertEquals(currentRentals, testUser.getCurrentRentals());
+        } catch (InvalidUsernameException | InvalidPasswordException | InvalidRentalException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -315,12 +327,17 @@ public class UserTest {
     void testSetCurrentRentals_InvalidInput() {
         System.out.println("\n13: Testing setCurrentRentals with invalid input...");
 
-        
-        User testUser = new User("username", "password123");
+        try {
+            //Create test user
+            User testUser = new User("username", "password123");
 
-        // Test for currentRentals greater than allowedRentals
-        int invalidRentals = testUser.getAllowedRentals() + 1;
-        assertThrows(IllegalArgumentException.class, () -> testUser.setCurrentRentals(invalidRentals));
+            // Test for currentRentals greater than allowedRentals
+            int invalidRentals = testUser.getAllowedRentals() + 1;
+            assertThrows(InvalidRentalException.class, () -> testUser.setCurrentRentals(invalidRentals));
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -330,16 +347,15 @@ public class UserTest {
     void testSetLateFee_InvalidInput() {
         System.out.println("\n14: Testing set LateFee with invalid input...");
 
-        
-        User testUser = new User("username", "password123");
-        double lateFee = -1.0;
-
-        
-        assertThrows(IllegalArgumentException.class, () -> testUser.setLateFee(lateFee));
+        try {
+            User testUser = new User("username", "password123");
+            double lateFee = -1.0;
+            assertThrows(InvalidLateFeeException.class, () -> testUser.setLateFee(lateFee));
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
-
-
-
 }

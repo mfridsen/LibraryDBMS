@@ -70,11 +70,11 @@ public class UserUpdateGUI extends GUI {
             //Update the rentalToUpdate object. Only update if new value is not null or empty
             try {
                 if (userID != null && !userID.isEmpty()) {
-                    newUser.setUserID(Integer.parseInt(userID));
+                    //newUser.setUserID(Integer.parseInt(userID));
                 }
                 //No parsing required for username, it is a string
                 if (username != null && !username.isEmpty()) {
-                    newUser.setUsername(username);
+                    //newUser.setUsername(username);
                 }
 
                 //No parsing required for itemTitle, it is a string

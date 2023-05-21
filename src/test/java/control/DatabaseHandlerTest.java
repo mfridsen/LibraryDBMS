@@ -313,7 +313,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         User updatedUser = null;
         try {
             updatedUser = UserHandler.getUserByID(userIdToUpdate);
-        } catch (UserNotFoundException | InvalidUserIDException e) {
+        } catch (InvalidUserIDException e) {
             fail("Should not throw an exception when retrieving a valid user.");
             e.printStackTrace();
         }

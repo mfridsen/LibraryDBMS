@@ -534,8 +534,10 @@ public class ItemHandler {
      * @param item The Item object for which the available copies are to be retrieved.
      * @return The number of available copies for the item.
      * @throws ItemNotFoundException If the item does not exist in the database.
+     * @throws ItemNullException If the Item is null.
      */
-    public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException {
+    public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException, ItemNullException {
+        checkNullItem(item);
         if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
             throw new ItemNotFoundException(item.getTitle() + ": Item not found.");
         return availableTitles.get(item.getTitle());
@@ -549,13 +551,13 @@ public class ItemHandler {
      * is returned. If the item does not exist, an ItemNotFoundException is thrown. In the case of a SQLException,
      * the exception is handled and the method returns null.
      *
-     * @param itemId The ID of the item whose title is to be fetched.
+     * @param itemID The ID of the item whose title is to be fetched.
      * @return The title of the item if it exists, null if an SQLException occurs.
      * @throws ItemNotFoundException if no item with the provided ID exists in the database.
      */
-    private static String getItemTitleByID(int itemId) throws ItemNotFoundException {
+    private static String getItemTitleByID(int itemID) throws ItemNotFoundException {
         String sql = "SELECT title FROM items WHERE itemID = ?";
-        String[] params = {String.valueOf(itemId)};
+        String[] params = {String.valueOf(itemID)};
 
         try {
             QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
@@ -564,7 +566,7 @@ public class ItemHandler {
                 if(queryResult.getResultSet().next()){
                     return queryResult.getResultSet().getString("title");
                 }else{
-                    throw new ItemNotFoundException("Item with ID " + itemId + " does not exist.");
+                    throw new ItemNotFoundException("Item with ID " + itemID + " does not exist.");
                 }
             }
         } catch (SQLException e) {
