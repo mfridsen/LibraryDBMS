@@ -219,7 +219,11 @@ public class ItemHandler {
 
         //Create item and retrieve and set itemID
         Item newItem = new Item(title);
-        newItem.setItemID(saveItem(newItem));
+        try {
+            newItem.setItemID(saveItem(newItem)); //If this throws an exception, something is seriously wrong
+        } catch (InvalidItemIDException e) {
+            ExceptionHandler.HandleFatalException(e);
+        }
 
         //Increment the count of the new title. Add a new entry if the title does not exist yet.
         incrementBothTitles(title);
@@ -287,7 +291,7 @@ public class ItemHandler {
                     String title = resultSet.getString("title");
                     int allowedRentalDays = resultSet.getInt("allowedRentalDays");
                     boolean available = resultSet.getBoolean("available");
-                    Item item = new Item(title);
+                    Item item = new Item(title); //If this throws an exception, something is seriously wrong
                     item.setItemID(itemID);
                     item.setAllowedRentalDays(allowedRentalDays);
                     item.setAvailable(available);
@@ -296,7 +300,7 @@ public class ItemHandler {
                     throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | EmptyTitleException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -335,7 +339,7 @@ public class ItemHandler {
                 //Loop through the ResultSet. For each record, create a new Item object and add it to the list.
                 while (resultSet.next()) {
                     Item item = new Item(title);
-                    item.setItemID(resultSet.getInt("itemID"));
+                    item.setItemID(resultSet.getInt("itemID")); //If this throws an exception, something is seriously wrong
                     int allowedRentalDays = resultSet.getInt("allowedRentalDays");
                     boolean available = resultSet.getBoolean("available");
                     item.setAllowedRentalDays(allowedRentalDays);
@@ -346,7 +350,7 @@ public class ItemHandler {
                     throw new ItemNotFoundException(title);
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | InvalidItemIDException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 

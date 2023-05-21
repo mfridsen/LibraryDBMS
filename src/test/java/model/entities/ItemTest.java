@@ -1,6 +1,8 @@
 package model.entities;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.EmptyTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -31,13 +33,18 @@ public class ItemTest {
     void testItemCreationConstructor_ValidInput() {
         System.out.println("\n1: Testing Item creation constructor with valid input...");
 
-        String title = "validTitle";
-        Item testItem = new Item(title);
+        try {
+            String title = "validTitle";
+            Item testItem = new Item(title);
 
-        assertEquals(0, testItem.getItemID());
-        assertEquals(title, testItem.getTitle());
-        assertEquals(Item.DEFAULT_ALLOWED_DAYS, testItem.getAllowedRentalDays());
-        assertTrue(testItem.isAvailable());
+            assertEquals(0, testItem.getItemID());
+            assertEquals(title, testItem.getTitle());
+            assertEquals(Item.DEFAULT_ALLOWED_DAYS, testItem.getAllowedRentalDays());
+            assertTrue(testItem.isAvailable());
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -48,10 +55,10 @@ public class ItemTest {
         System.out.println("\n2: Testing Item creation constructor with invalid input...");
 
         // Empty title
-        assertThrows(IllegalArgumentException.class, () -> new Item(""));
+        assertThrows(EmptyTitleException.class, () -> new Item(""));
 
         // Null title
-        assertThrows(IllegalArgumentException.class, () -> new Item((String) null));
+        assertThrows(EmptyTitleException.class, () -> new Item((String) null));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -61,16 +68,21 @@ public class ItemTest {
     void testItemRetrievalConstructor_ValidInput() {
         System.out.println("\n3: Testing Item retrieval constructor with valid input...");
 
-        int itemID = 1;
-        String title = "validTitle";
-        int allowedRentalDays = Item.DEFAULT_ALLOWED_DAYS;
+        try {
+            int itemID = 1;
+            String title = "validTitle";
+            int allowedRentalDays = Item.DEFAULT_ALLOWED_DAYS;
 
-        Item testItem = new Item(itemID, title, allowedRentalDays, true);
+            Item testItem = new Item(itemID, title, allowedRentalDays, true);
 
-        assertEquals(itemID, testItem.getItemID());
-        assertEquals(title, testItem.getTitle());
-        assertEquals(allowedRentalDays, testItem.getAllowedRentalDays());
-        assertTrue(testItem.isAvailable());
+            assertEquals(itemID, testItem.getItemID());
+            assertEquals(title, testItem.getTitle());
+            assertEquals(allowedRentalDays, testItem.getAllowedRentalDays());
+            assertTrue(testItem.isAvailable());
+        } catch (InvalidItemIDException | EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -80,9 +92,9 @@ public class ItemTest {
     void testItemRetrievalConstructor_InvalidInput() {
         System.out.println("\n4: Testing Item retrieval constructor with invalid input...");
 
-        assertThrows(IllegalArgumentException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
-        assertThrows(IllegalArgumentException.class, () -> new Item(1, "", 7, true));  // Empty title
-        assertThrows(IllegalArgumentException.class, () -> new Item(1, null, 7, true));  // Null title
+        assertThrows(InvalidItemIDException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
+        assertThrows(EmptyTitleException.class, () -> new Item(1, "", 7, true));  // Empty title
+        assertThrows(EmptyTitleException.class, () -> new Item(1, null, 7, true));  // Null title
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -92,13 +104,18 @@ public class ItemTest {
     void testItemCopyConstructor_ValidInput() {
         System.out.println("\n5: Testing Item copy constructor with valid input...");
 
-        Item originalItem = new Item("validTitle");
-        Item copiedItem = new Item(originalItem);
+        try {
+            Item originalItem = new Item("validTitle");
+            Item copiedItem = new Item(originalItem);
 
-        assertEquals(originalItem.getItemID(), copiedItem.getItemID());
-        assertEquals(originalItem.getTitle(), copiedItem.getTitle());
-        assertEquals(originalItem.getAllowedRentalDays(), copiedItem.getAllowedRentalDays());
-        assertEquals(originalItem.isAvailable(), copiedItem.isAvailable());
+            assertEquals(originalItem.getItemID(), copiedItem.getItemID());
+            assertEquals(originalItem.getTitle(), copiedItem.getTitle());
+            assertEquals(originalItem.getAllowedRentalDays(), copiedItem.getAllowedRentalDays());
+            assertEquals(originalItem.isAvailable(), copiedItem.isAvailable());
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -108,11 +125,16 @@ public class ItemTest {
     void testSetItemID_ValidInput() {
         System.out.println("\n6: Testing setItemID with valid input...");
 
-        Item testItem = new Item("validTitle");
-        testItem.setItemID(2);
-        assertEquals(2, testItem.getItemID());
+        try {
+            Item testItem = new Item("validTitle");
+            testItem.setItemID(2);
+            assertEquals(2, testItem.getItemID());
 
-        System.out.println("\nTEST FINISHED.");
+            System.out.println("\nTEST FINISHED.");
+        } catch (EmptyTitleException | InvalidItemIDException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -120,9 +142,14 @@ public class ItemTest {
     void testSetItemID_InvalidInput() {
         System.out.println("\n7: Testing setItemID with invalid input...");
 
-        Item testItem = new Item("validTitle");
-        assertThrows(IllegalArgumentException.class, () -> testItem.setItemID(0));  // ItemID less than or equal to 0
-        assertThrows(IllegalArgumentException.class, () -> testItem.setItemID(-1));  // ItemID less than or equal to 0
+        try {
+            Item testItem = new Item("validTitle");
+            assertThrows(InvalidItemIDException.class, () -> testItem.setItemID(0));  // ItemID less than or equal to 0
+            assertThrows(InvalidItemIDException.class, () -> testItem.setItemID(-1));  // ItemID less than or equal to 0
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -132,9 +159,14 @@ public class ItemTest {
     void testSetTitle_ValidInput() {
         System.out.println("\n8: Testing setTitle with valid input...");
 
-        Item testItem = new Item("oldTitle");
-        testItem.setTitle("newTitle");
-        assertEquals("newTitle", testItem.getTitle());
+        try {
+            Item testItem = new Item("oldTitle");
+            testItem.setTitle("newTitle");
+            assertEquals("newTitle", testItem.getTitle());
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -144,9 +176,14 @@ public class ItemTest {
     void testSetTitle_InvalidInput() {
         System.out.println("\n9: Testing setTitle with invalid input...");
 
-        Item testItem = new Item("oldTitle");
-        assertThrows(IllegalArgumentException.class, () -> testItem.setTitle(""));  // Empty title
-        assertThrows(IllegalArgumentException.class, () -> testItem.setTitle(null));  // Null title
+        try {
+            Item testItem = new Item("oldTitle");
+            assertThrows(EmptyTitleException.class, () -> testItem.setTitle(""));  // Empty title
+            assertThrows(EmptyTitleException.class, () -> testItem.setTitle(null));  // Null title
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -156,9 +193,14 @@ public class ItemTest {
     void testSetAllowedRentalDays_ValidInput() {
         System.out.println("\n10: Testing setAllowedRentalDays with valid input...");
 
-        Item testItem = new Item("validTitle");
-        testItem.setAllowedRentalDays(10);
-        assertEquals(10, testItem.getAllowedRentalDays());
+        try {
+            Item testItem = new Item("validTitle");
+            testItem.setAllowedRentalDays(10);
+            assertEquals(10, testItem.getAllowedRentalDays());
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -169,11 +211,16 @@ public class ItemTest {
     @Order(11)
     void testSetAvailable_ValidInput() {
         System.out.println("\n11: Testing setAvailable with valid input...");
-        
-        // Since there's no rule regarding invalid input for setAllowedRentalDays, we skip an invalid input test for it.
-        Item testItem = new Item("validTitle");
-        testItem.setAvailable(false);
-        assertFalse(testItem.isAvailable());
+
+        try {
+            // Since there's no rule regarding invalid input for setAllowedRentalDays, we skip an invalid input test for it.
+            Item testItem = new Item("validTitle");
+            testItem.setAvailable(false);
+            assertFalse(testItem.isAvailable());
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }

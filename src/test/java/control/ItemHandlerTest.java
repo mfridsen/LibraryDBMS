@@ -445,7 +445,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
             assertEquals("Item not found. Item ID: 99999", inf.getMessage());
-        } catch (IllegalArgumentException | NullItemException | InvalidItemIDException e) {
+        } catch (IllegalArgumentException | NullItemException | InvalidItemIDException | EmptyTitleException e) {
             fail("Unexpected exception: " + e.getMessage());
             e.printStackTrace();
         }
@@ -497,10 +497,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-
-
-
-
     @Test
     @Order(44)
     void testDeleteItem_NullItem() {
@@ -534,7 +530,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
             assertEquals("Item with ID 99999 does not exist.", inf.getMessage());
-        } catch (NullItemException e) {
+        } catch (NullItemException | EmptyTitleException | InvalidItemIDException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -587,7 +583,6 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         System.out.println("\nTEST FINISHED.");
     }
-
 
     @Test
     @Order(47)
@@ -659,20 +654,24 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testGetAvailableCopiesForItem_InvalidItem() {
         System.out.println("\n50: Testing getAvailableCopiesForItem with an invalid item...");
 
-        // Create an item with a title that does not exist in the map
-        Item invalidItem = new Item("Invalid Title");
+        try {
+            // Create an item with a title that does not exist in the map
+            Item invalidItem = new Item("Invalid Title");
 
-        // Expect an ItemNotFoundException
-        Exception exception = assertThrows(ItemNotFoundException.class, () -> {
-            ItemHandler.getAvailableCopiesForItem(invalidItem);
-        });
+            // Expect an ItemNotFoundException
+            Exception exception = assertThrows(ItemNotFoundException.class, () -> {
+                ItemHandler.getAvailableCopiesForItem(invalidItem);
+            });
 
-        // Check the exception message
-        String expectedMessage = "Item not found.";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+            // Check the exception message
+            String expectedMessage = "Item not found.";
+            String actualMessage = exception.getMessage();
+            assertTrue(actualMessage.contains(expectedMessage));
+        } catch (EmptyTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
-
 }
