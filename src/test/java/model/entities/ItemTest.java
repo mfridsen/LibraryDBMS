@@ -1,7 +1,7 @@
 package model.entities;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.TitleEmptyException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -41,7 +41,7 @@ public class ItemTest {
             assertEquals(title, testItem.getTitle());
             assertEquals(Item.DEFAULT_ALLOWED_DAYS, testItem.getAllowedRentalDays());
             assertTrue(testItem.isAvailable());
-        } catch (TitleEmptyException e) {
+        } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -55,10 +55,10 @@ public class ItemTest {
         System.out.println("\n2: Testing Item creation constructor with invalid input...");
 
         // Empty title
-        assertThrows(TitleEmptyException.class, () -> new Item(""));
+        assertThrows(InvalidTitleException.class, () -> new Item(""));
 
         // Null title
-        assertThrows(TitleEmptyException.class, () -> new Item((String) null));
+        assertThrows(InvalidTitleException.class, () -> new Item((String) null));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -79,7 +79,7 @@ public class ItemTest {
             assertEquals(title, testItem.getTitle());
             assertEquals(allowedRentalDays, testItem.getAllowedRentalDays());
             assertTrue(testItem.isAvailable());
-        } catch (InvalidItemIDException | TitleEmptyException e) {
+        } catch (InvalidItemIDException | InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -93,8 +93,8 @@ public class ItemTest {
         System.out.println("\n4: Testing Item retrieval constructor with invalid input...");
 
         assertThrows(InvalidItemIDException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
-        assertThrows(TitleEmptyException.class, () -> new Item(1, "", 7, true));  // Empty title
-        assertThrows(TitleEmptyException.class, () -> new Item(1, null, 7, true));  // Null title
+        assertThrows(InvalidTitleException.class, () -> new Item(1, "", 7, true));  // Empty title
+        assertThrows(InvalidTitleException.class, () -> new Item(1, null, 7, true));  // Null title
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -112,7 +112,7 @@ public class ItemTest {
             assertEquals(originalItem.getTitle(), copiedItem.getTitle());
             assertEquals(originalItem.getAllowedRentalDays(), copiedItem.getAllowedRentalDays());
             assertEquals(originalItem.isAvailable(), copiedItem.isAvailable());
-        } catch (TitleEmptyException e) {
+        } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -131,7 +131,7 @@ public class ItemTest {
             assertEquals(2, testItem.getItemID());
 
             System.out.println("\nTEST FINISHED.");
-        } catch (TitleEmptyException | InvalidItemIDException e) {
+        } catch (InvalidTitleException | InvalidItemIDException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -146,7 +146,7 @@ public class ItemTest {
             Item testItem = new Item("validTitle");
             assertThrows(InvalidItemIDException.class, () -> testItem.setItemID(0));  // ItemID less than or equal to 0
             assertThrows(InvalidItemIDException.class, () -> testItem.setItemID(-1));  // ItemID less than or equal to 0
-        } catch (TitleEmptyException e) {
+        } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -163,7 +163,7 @@ public class ItemTest {
             Item testItem = new Item("oldTitle");
             testItem.setTitle("newTitle");
             assertEquals("newTitle", testItem.getTitle());
-        } catch (TitleEmptyException e) {
+        } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -178,9 +178,9 @@ public class ItemTest {
 
         try {
             Item testItem = new Item("oldTitle");
-            assertThrows(TitleEmptyException.class, () -> testItem.setTitle(""));  // Empty title
-            assertThrows(TitleEmptyException.class, () -> testItem.setTitle(null));  // Null title
-        } catch (TitleEmptyException e) {
+            assertThrows(InvalidTitleException.class, () -> testItem.setTitle(""));  // Empty title
+            assertThrows(InvalidTitleException.class, () -> testItem.setTitle(null));  // Null title
+        } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -197,7 +197,7 @@ public class ItemTest {
             Item testItem = new Item("validTitle");
             testItem.setAllowedRentalDays(10);
             assertEquals(10, testItem.getAllowedRentalDays());
-        } catch (TitleEmptyException e) {
+        } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -217,7 +217,7 @@ public class ItemTest {
             Item testItem = new Item("validTitle");
             testItem.setAvailable(false);
             assertFalse(testItem.isAvailable());
-        } catch (TitleEmptyException e) {
+        } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

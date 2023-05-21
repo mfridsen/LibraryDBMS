@@ -1,6 +1,6 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
-import edu.groupeighteen.librarydbms.model.exceptions.TitleEmptyException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 
 /**
@@ -31,9 +31,9 @@ public class Item extends Entity {
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
      * @param title
      */
-    public Item(String title) throws TitleEmptyException {
+    public Item(String title) throws InvalidTitleException {
         this.itemID = 0; //Set AFTER initial INSERT by createNewItem
-        setTitle(title); //Throws TitleEmptyException
+        setTitle(title); //Throws InvalidTitleException
         this.allowedRentalDays = DEFAULT_ALLOWED_DAYS; //TODO-prio for now
         this.available = true;
     }
@@ -44,9 +44,9 @@ public class Item extends Entity {
      * @param title
      * @param allowedRentalDays
      */
-    public Item(int itemID, String title, int allowedRentalDays, boolean available) throws InvalidItemIDException, TitleEmptyException {
+    public Item(int itemID, String title, int allowedRentalDays, boolean available) throws InvalidItemIDException, InvalidTitleException {
         setItemID(itemID); //Throws InvalidItemIDException
-        setTitle(title); //Throws TitleEmptyException
+        setTitle(title); //Throws InvalidTitleException
         setAllowedRentalDays(allowedRentalDays);
         setAvailable(available);
     }
@@ -76,9 +76,9 @@ public class Item extends Entity {
         return title;
     }
 
-    public void setTitle(String title) throws TitleEmptyException {
+    public void setTitle(String title) throws InvalidTitleException {
         if (title == null || title.isEmpty())
-            throw new TitleEmptyException("Title cannot be null or empty. Received: " + title);
+            throw new InvalidTitleException("Title cannot be null or empty. Received: " + title);
         this.title = title;
     }
 

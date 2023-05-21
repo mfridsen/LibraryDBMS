@@ -4,7 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.TitleEmptyException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNullException;
@@ -210,11 +210,11 @@ public class ItemHandler {
      * Creates a new item with a given title, stores it in the database, and increments the title count.
      * @param title The title of the item to be created.
      * @return The created Item.
-     * @throws TitleEmptyException If the title is null or an empty string.
+     * @throws InvalidTitleException If the title is null or an empty string.
      */
-    public static Item createNewItem(String title) throws TitleEmptyException {
+    public static Item createNewItem(String title) throws InvalidTitleException {
         //TODO-prio update method and test when Item is finished
-        //Validate input, throws TitleEmptyException
+        //Validate input, throws InvalidTitleException
         checkEmptyTitle(title);
 
         //Create item and retrieve and set itemID
@@ -300,7 +300,7 @@ public class ItemHandler {
                     throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
                 }
             }
-        } catch (SQLException | TitleEmptyException e) {
+        } catch (SQLException | InvalidTitleException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -315,11 +315,11 @@ public class ItemHandler {
      * @param title The title of the items to be retrieved.
      * @return A list of Item objects with the provided title.
      * @throws ItemNotFoundException If no items with the provided title exist in the database.
-     * @throws TitleEmptyException If the provided title is null or an empty string.
+     * @throws InvalidTitleException If the provided title is null or an empty string.
      */
-    public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException, TitleEmptyException {
+    public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException, InvalidTitleException {
         //TODO-prio update method and test when Item is finished
-        //No point getting invalid items, throws TitleEmptyException
+        //No point getting invalid items, throws InvalidTitleException
         checkEmptyTitle(title);
 
         //Prepare a SQL query to select an item by title.
@@ -574,14 +574,14 @@ public class ItemHandler {
     }
 
     /**
-     * Checks whether a given title is null or empty. If so, throws an TitleEmptyException,
+     * Checks whether a given title is null or empty. If so, throws an InvalidTitleException,
      * which must be handled.
      * @param title the title to check.
-     * @throws TitleEmptyException if title is null or empty.
+     * @throws InvalidTitleException if title is null or empty.
      */
-    private static void checkEmptyTitle(String title) throws TitleEmptyException {
+    private static void checkEmptyTitle(String title) throws InvalidTitleException {
         if (title == null || title.isEmpty())
-            throw new TitleEmptyException("Empty title.");
+            throw new InvalidTitleException("Empty title.");
     }
 
     /**

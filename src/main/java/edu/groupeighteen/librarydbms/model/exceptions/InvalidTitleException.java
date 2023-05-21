@@ -6,10 +6,10 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
  * @date 5/21/2023
- * Custom TitleEmptyException class. Used to make Exceptions clearer.
+ * Custom InvalidTitleException class. Used to make Exceptions clearer.
  */
-public class TitleEmptyException extends Exception {
-    public TitleEmptyException(String message) {
+public class InvalidTitleException extends Exception {
+    public InvalidTitleException(String message) {
         super(message);
     }
 }

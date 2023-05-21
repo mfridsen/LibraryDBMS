@@ -45,10 +45,10 @@ public class User extends Entity {
      * @param username
      * @param password
      */
-    public User(String username, String password) throws PasswordTooLongException, PasswordEmptyException, PasswordTooShortException, UsernameEmptyException, UsernameTooLongException, UsernameTooShortException {
+    public User(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
         this.userID = 0;
-        setUsername(username); //Throws Username-related Exceptions
-        setPassword(password); //Throws Password-related Exceptions
+        setUsername(username); //InvalidUsernameException
+        setPassword(password); //InvalidPasswordException
         this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
         this.currentRentals = 0;
         this.lateFee = 0.0;
@@ -57,13 +57,13 @@ public class User extends Entity {
     /**
      * Retrieval Constructor.
      */
-    public User(int userID, String username, String password, int allowedRentals, int currentRentals, double lateFee) throws UsernameEmptyException, UsernameTooLongException, UsernameTooShortException, PasswordTooLongException, PasswordEmptyException, PasswordTooShortException, InvalidUserIDException, IllegalCurrentRentalsException, IllegalLateFeeException {
+    public User(int userID, String username, String password, int allowedRentals, int currentRentals, double lateFee) throws InvalidUserIDException, InvalidUsernameException, InvalidPasswordException, InvalidRentalException, InvalidLateFeeException {
         setUserID(userID); //Throws InvalidUserIDException
-        setUsername(username); //Throws Username-related Exceptions
-        setPassword(password); //Throws Password-related Exceptions
+        setUsername(username); //Throws InvalidUsernameException
+        setPassword(password); //Throws InvalidPasswordException
         this.allowedRentals = allowedRentals;
-        setCurrentRentals(currentRentals); //Throws IllegalCurrentRentalsException
-        setLateFee(lateFee); //Throws IllegalLateFeeException
+        setCurrentRentals(currentRentals); //Throws InvalidRentalException
+        setLateFee(lateFee); //Throws InvalidLateFeeException
     }
 
     /**
@@ -79,7 +79,6 @@ public class User extends Entity {
         this.lateFee = other.lateFee;
     }
 
-    /*********************************** Getters and Setters are self-explanatory. ************************************/
     public int getUserID() {
         return userID;
     }
@@ -94,13 +93,13 @@ public class User extends Entity {
         return username;
     }
 
-    public void setUsername(String username) throws UsernameEmptyException, UsernameTooShortException, UsernameTooLongException {
+    public void setUsername(String username) throws InvalidUsernameException {
         if (username == null || username.isEmpty())
-            throw new UsernameEmptyException("Username cannot be null or empty.");
+            throw new InvalidUsernameException("Username cannot be null or empty.");
         if (username.length() < MIN_USERNAME_LENGTH)
-            throw new UsernameTooShortException("Username too short, must be at least " + MIN_USERNAME_LENGTH + " characters. Received: " + username);
+            throw new InvalidUsernameException("Username too short, must be at least " + MIN_USERNAME_LENGTH + " characters. Received: " + username);
         if (username.length() > MAX_USERNAME_LENGTH)
-            throw new UsernameTooLongException("Username too long, must be at most " + MAX_USERNAME_LENGTH + " characters. Received: " + username);
+            throw new InvalidUsernameException("Username too long, must be at most " + MAX_USERNAME_LENGTH + " characters. Received: " + username);
         this.username = username;
     }
 
@@ -108,13 +107,13 @@ public class User extends Entity {
         return password;
     }
 
-    public void setPassword(String password) throws PasswordEmptyException, PasswordTooShortException, PasswordTooLongException {
+    public void setPassword(String password) throws InvalidPasswordException {
         if (password == null || password.isEmpty())
-            throw new PasswordEmptyException("Password cannot be null or empty.");
+            throw new InvalidPasswordException("Password cannot be null or empty.");
         if (password.length() < MIN_PASSWORD_LENGTH)
-            throw new PasswordTooShortException("Password too short, must be at least " + MIN_PASSWORD_LENGTH + " characters. Received: " + password.length());
+            throw new InvalidPasswordException("Password too short, must be at least " + MIN_PASSWORD_LENGTH + " characters. Received: " + password.length());
         if (password.length() > 50)
-            throw new PasswordTooLongException("Password too long, must be at most " + MAX_PASSWORD_LENGTH + " characters. Received: " + password.length());
+            throw new InvalidPasswordException("Password too long, must be at most " + MAX_PASSWORD_LENGTH + " characters. Received: " + password.length());
         this.password = password;
     }
 
@@ -126,9 +125,9 @@ public class User extends Entity {
         return currentRentals;
     }
 
-    public void setCurrentRentals(int currentRentals) throws IllegalCurrentRentalsException {
+    public void setCurrentRentals(int currentRentals) throws InvalidRentalException {
         if (currentRentals > allowedRentals)
-            throw new IllegalCurrentRentalsException("Current rentals can't be greater than allowed rentals. Received: " + currentRentals + ", allowed: " + allowedRentals);
+            throw new InvalidRentalException("Current rentals can't be greater than allowed rentals. Received: " + currentRentals + ", allowed: " + allowedRentals);
         this.currentRentals = currentRentals;
     }
 
@@ -136,9 +135,9 @@ public class User extends Entity {
         return lateFee;
     }
 
-    public void setLateFee(double lateFee) throws IllegalLateFeeException {
+    public void setLateFee(double lateFee) throws InvalidLateFeeException {
         if (lateFee < 0)
-            throw new IllegalLateFeeException("Late fee cannot be less than zero. Received: " + lateFee);
+            throw new InvalidLateFeeException("Late fee cannot be less than zero. Received: " + lateFee);
         this.lateFee = lateFee;
     }
 }

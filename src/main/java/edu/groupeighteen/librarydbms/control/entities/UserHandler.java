@@ -112,16 +112,22 @@ public class UserHandler {
 
     //CRUD stuff ------------------------------------------------------------------------------------------------------
 
-    public static User createNewUser(String username, String password) throws UsernameTakenException {
+    public static User createNewUser(String username, String password) throws InvalidUsernameException {
         // Usernames must be unique, throws UsernameTakenException
         checkUsernameTaken(username);
+        User newUser = null;
 
-        // Create and save the new user, retrieving the ID
-        User newUser = new User(username, password);
-        newUser.setUserID(saveUser(newUser));
+        try {
+            // Create and save the new user, retrieving the ID
+            newUser = new User(username, password);
+            newUser.setUserID(saveUser(newUser));
 
-        // Need to remember to add to the list
-        storedUsernames.add(newUser.getUsername());
+            // Need to remember to add to the list
+            storedUsernames.add(newUser.getUsername());
+        } catch (InvalidPasswordException | InvalidUserIDException e) {
+            ExceptionHandler.HandleFatalException(e);
+        }
+
         return newUser;
     }
 
@@ -151,7 +157,7 @@ public class UserHandler {
         return 0; // This should never happen
     }
 
-    public static User getUserByID(int userID) throws UserNotFoundException, InvalidUserIDException {
+    public static User getUserByID(int userID) throws InvalidUserIDException {
         // No point getting invalid users, throws InvalidUserIDException
         checkValidUserID(userID);
 
@@ -170,8 +176,8 @@ public class UserHandler {
                 user.setCurrentRentals(resultSet.getInt("currentRentals"));
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
-            } else throw new UserNotFoundException(userID);
-        } catch (SQLException e) {
+            }
+        } catch (SQLException | InvalidRentalException | InvalidLateFeeException | InvalidUsernameException | InvalidPasswordException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -179,8 +185,8 @@ public class UserHandler {
         return null;
     }
 
-    public static User getUserByUsername(String username) throws UserNotFoundException, UsernameEmptyException {
-        // No point in getting invalid users, throws UsernameEmptyException
+    public static User getUserByUsername(String username) throws InvalidUsernameException {
+        // No point in getting invalid users, throws InvalidUsernameException
         checkEmptyUsername(username);
 
         // Prepare a SQL query to select a user by username
@@ -198,8 +204,8 @@ public class UserHandler {
                 user.setCurrentRentals( resultSet.getInt("currentRentals"));
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
-            } else throw new UserNotFoundException(username);
-        } catch (SQLException e) {
+            }
+        } catch (SQLException | InvalidUsernameException | InvalidPasswordException | InvalidUserIDException | InvalidRentalException | InvalidLateFeeException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -236,16 +242,16 @@ public class UserHandler {
     // == 11
 
 
-    public static void updateUser(User newUser, String oldUsername) throws UserUpdateFailedException, UserNullException, UsernameEmptyException, UsernameTakenException {
+    public static void updateUser(User newUser, String oldUsername) throws UserUpdateFailedException, UserNullException, InvalidUsernameException {
         //We can't create user objects with invalid usernames, so only need to validate user itself. Throws UserNullException
         checkNullUser(newUser);
-        //Old username could be empty or null though. Throws UsernameEmptyException
+        //Old username could be empty or null though. Throws InvalidUsernameException
         checkEmptyUsername(oldUsername);
 
         //Let's check if the user exists in the database before we go on
         try {
             UserHandler.getUserByID(newUser.getUserID());
-        } catch (UserNotFoundException | InvalidUserIDException e) {
+        } catch (InvalidUserIDException e) {
             throw new UserUpdateFailedException("Unable to update User: User with ID " + newUser.getUserID() + " not found.");
         }
 
@@ -285,7 +291,7 @@ public class UserHandler {
         //Let's check if the user exists in the database before we go on
         try {
             UserHandler.getUserByID(user.getUserID());
-        } catch (UserNotFoundException | InvalidUserIDException e) {
+        } catch (InvalidUserIDException e) {
             throw new UserNotFoundException("Unable to delete User: User with ID " + user.getUserID() + " not found.");
         }
 
@@ -310,7 +316,7 @@ public class UserHandler {
      * @return true if successful, otherwise false
      * @throws
      */
-    public static boolean login(String username, String password) throws UsernameEmptyException, PasswordEmptyException, UserNotFoundException {
+    public static boolean login(String username, String password) throws InvalidUsernameException, InvalidPasswordException, UserNotFoundException {
         // No point verifying empty strings, throws UsernameEmptyException
         checkEmptyUsername(username);
         //Throws PasswordEmptyException
@@ -354,7 +360,7 @@ public class UserHandler {
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      * @throws
      */
-    public static boolean validateUser(User user, String password) throws UserNullException, PasswordEmptyException {
+    public static boolean validateUser(User user, String password) throws UserNullException, InvalidPasswordException {
         checkNullUser(user);
         checkEmptyPassword(password);
         return user.getPassword().equals(password);
@@ -366,11 +372,11 @@ public class UserHandler {
      * Checks if a given username exists in the list of usernames. If so, throws a UsernameTakenException
      * which must be handled.
      * @param username the username.
-     * @throws UsernameTakenException if the username already exists in storedTitles.
+     * @throws InvalidUsernameException if the username already exists in storedTitles.
      */
-    private static void checkUsernameTaken(String username) throws UsernameTakenException {
+    private static void checkUsernameTaken(String username) throws InvalidUsernameException {
         if (storedUsernames.contains(username))
-            throw new UsernameTakenException("Username " + username + " already taken.");
+            throw new InvalidUsernameException("Username " + username + " already taken.");
     }
 
     /**
@@ -399,11 +405,11 @@ public class UserHandler {
      * Checks whether a given username is null or empty. If so, throws an UsernameEmptyException
      * which must be handled.
      * @param username the username to check.
-     * @throws UsernameEmptyException if username is null or empty.
+     * @throws InvalidUsernameException if username is null or empty.
      */
-    private static void checkEmptyUsername(String username) throws UsernameEmptyException {
+    private static void checkEmptyUsername(String username) throws InvalidUsernameException {
         if (username == null || username.isEmpty()) {
-            throw new UsernameEmptyException("Username is null or empty.");
+            throw new InvalidUsernameException("Username is null or empty.");
         }
     }
 
@@ -411,10 +417,10 @@ public class UserHandler {
      * Checks whether a given password is null or empty. If so, throws an PasswordEmptyException
      * which must be handled.
      * @param password the password to check.
-     * @throws PasswordEmptyException if password is null or empty.
+     * @throws InvalidPasswordException if password is null or empty.
      */
-    private static void checkEmptyPassword(String password) throws PasswordEmptyException {
+    private static void checkEmptyPassword(String password) throws InvalidPasswordException {
         if (password == null || password.isEmpty())
-            throw new PasswordEmptyException("Password is empty.");
+            throw new InvalidPasswordException("Password is empty.");
     }
 }

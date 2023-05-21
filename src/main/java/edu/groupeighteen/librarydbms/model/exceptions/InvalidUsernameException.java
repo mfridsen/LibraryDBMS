@@ -6,10 +6,11 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
  * @date 5/21/2023
- * Custom IllegalLateFeeException class. Used to make Exceptions clearer.
+ * <p>
+ * Custom InvalidUsernameException class. Used to make Exceptions clearer.
  */
-public class IllegalLateFeeException extends Exception {
-    public IllegalLateFeeException(String message) {
+public class InvalidUsernameException extends Exception {
+    public InvalidUsernameException(String message) {
         super(message);
     }
 }

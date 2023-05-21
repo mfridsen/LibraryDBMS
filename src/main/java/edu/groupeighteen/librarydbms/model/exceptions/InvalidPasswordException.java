@@ -6,10 +6,11 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
  * @date 5/21/2023
- * Custom UsernameTooLongException class. Used to make Exceptions clearer.
+ * <p>
+ * Custom InvalidPasswordException class. Used to make Exceptions clearer.
  */
-public class UsernameTooLongException extends Exception {
-    public UsernameTooLongException(String message) {
+public class InvalidPasswordException extends Exception {
+    public InvalidPasswordException(String message) {
         super(message);
     }
 }

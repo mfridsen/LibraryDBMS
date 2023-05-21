@@ -6,10 +6,10 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
  * @date 5/21/2023
- * Custom PasswordEmptyException class. Used to make Exceptions clearer.
+ * Custom InvalidRentalException class. Used to make Exceptions clearer.
  */
-public class PasswordEmptyException extends Exception {
-    public PasswordEmptyException(String message) {
+public class InvalidRentalException extends Exception {
+    public InvalidRentalException(String message) {
         super(message);
     }
 }
