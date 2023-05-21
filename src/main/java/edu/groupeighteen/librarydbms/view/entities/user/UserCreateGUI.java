@@ -81,8 +81,8 @@ public class UserCreateGUI extends GUI {
         }
         //If successful, dispose, create a new user and open a new UserGUI for that user
         dispose();
-        User newUser = UserHandler.createNewUser(usernameStr, passwordStr);
-        new UserGUI(this, newUser);
+        //User newUser = UserHandler.createNewUser(usernameStr, passwordStr);
+        //new UserGUI(this, newUser);
     }
 }
 

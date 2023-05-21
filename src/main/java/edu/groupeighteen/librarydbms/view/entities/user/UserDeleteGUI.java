@@ -3,6 +3,8 @@ package edu.groupeighteen.librarydbms.view.entities.user;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.EmptyPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.UserIsNullException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -34,11 +36,17 @@ public class UserDeleteGUI extends GUI {
             dispose();
 
             if (LibraryManager.getCurrentUser() != null) {
-                if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
-                        Arrays.toString(passwordField.getPassword()))) {
-                    //UserHandler.deleteUser(usertoDelete);
-                    //dispose();
-                    //TODO-prio return to some other GUI, probably the LoginGUI
+                try {
+                    if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
+                            Arrays.toString(passwordField.getPassword()))) {
+                        //UserHandler.deleteUser(usertoDelete);
+                        //dispose();
+                        //TODO-prio return to some other GUI, probably the LoginGUI
+                    }
+                } catch (UserIsNullException userIsNullException) {
+                    userIsNullException.printStackTrace();
+                } catch (EmptyPasswordException emptyPasswordException) {
+                    emptyPasswordException.printStackTrace();
                 }
             }
             //delete user

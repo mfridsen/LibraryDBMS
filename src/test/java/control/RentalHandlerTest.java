@@ -8,6 +8,7 @@ import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidUserIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
@@ -93,12 +94,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             System.out.println("\nTEST FINISHED.");
 
-        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException e) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | SQLException | InvalidUserIDException e) {
             e.printStackTrace();
             fail("Test should be able to retrieve user or item with correct IDs. userID: " + validUserID + ", itemID: " + validItemID);
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            fail("Exception occurred during interaction with database: : " + sqle.getMessage());
         }
     }
 
@@ -272,7 +270,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         try {
             actualRentals = RentalHandler.getAllRentals();
             assertEquals(expectedRentals, actualRentals);
-        } catch (SQLException | UserNotFoundException | ItemNotFoundException e) {
+        } catch (SQLException | UserNotFoundException | ItemNotFoundException | InvalidUserIDException e) {
             e.printStackTrace();
         }
 
@@ -291,7 +289,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             RentalHandler.createNewRental(3, 3);
             RentalHandler.createNewRental(4, 4);
             RentalHandler.createNewRental(5, 5);
-        } catch (SQLException | ItemNotFoundException | UserNotFoundException | RentalNotAllowedException e) {
+        } catch (SQLException | ItemNotFoundException | UserNotFoundException | RentalNotAllowedException | InvalidUserIDException e) {
             e.printStackTrace();
             fail("Error while creating rentals: " + e.getMessage());
         }
@@ -300,7 +298,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         List<Rental> rentals = null;
         try {
             rentals = RentalHandler.getAllRentals();
-        } catch (SQLException | UserNotFoundException | ItemNotFoundException e) {
+        } catch (SQLException | UserNotFoundException | ItemNotFoundException | InvalidUserIDException e) {
             e.printStackTrace();
             fail("Error while retrieving rentals: " + e.getMessage());
         }

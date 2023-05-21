@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidUserIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
@@ -312,7 +313,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
         User updatedUser = null;
         try {
             updatedUser = UserHandler.getUserByID(userIdToUpdate);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | InvalidUserIDException e) {
             fail("Should not throw an exception when retrieving a valid user.");
             e.printStackTrace();
         }

@@ -4,6 +4,8 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.model.exceptions.EmptyPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.UserIsNullException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -44,15 +46,21 @@ public class RentalDeleteGUI extends GUI {
         confirmButton.addActionListener(e -> {
             //TODO-prio you shouldn't be able to access this GUI at all without being logged in (and staff)
             if (LibraryManager.getCurrentUser() != null) {
-                if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
-                        Arrays.toString(passwordField.getPassword()))) {
-                    /*try {
-                        RentalHandler.deleteRental(rentalToDelete);
-                        //dispose();
-                        //TODO-prio return to some other GUI, probably the LoginGUI
-                    } catch (SQLException sqle) {
-                        sqle.printStackTrace();
-                    }*/
+                try {
+                    if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
+                            Arrays.toString(passwordField.getPassword()))) {
+                        /*try {
+                            RentalHandler.deleteRental(rentalToDelete);
+                            //dispose();
+                            //TODO-prio return to some other GUI, probably the LoginGUI
+                        } catch (SQLException sqle) {
+                            sqle.printStackTrace();
+                        }*/
+                    }
+                } catch (UserIsNullException userIsNullException) {
+                    userIsNullException.printStackTrace();
+                } catch (EmptyPasswordException emptyPasswordException) {
+                    emptyPasswordException.printStackTrace();
                 }
             }
         });

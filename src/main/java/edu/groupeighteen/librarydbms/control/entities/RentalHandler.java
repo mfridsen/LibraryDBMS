@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidUserIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
@@ -72,7 +73,7 @@ public class RentalHandler {
      *                      or if the user has rented to their capacity,
      *                      or if the user has a late fee.
      */
-    public static Rental createNewRental(int userID, int itemID) throws SQLException, UserNotFoundException, ItemNotFoundException, RentalNotAllowedException {
+    public static Rental createNewRental(int userID, int itemID) throws SQLException, UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidUserIDException {
         //Validate inputs
         if (userID <= 0 || itemID <= 0)
             throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: "
@@ -96,7 +97,7 @@ public class RentalHandler {
         //Set title (ONLY IN OBJECT, NOT IN TABLE)
         newRental.setItemTitle(item.getTitle());
 
-        //Retrieve user based on ID
+        //Retrieve user based on ID, throws UserNotFoundException
         User user = UserHandler.getUserByID(userID);
         //Couldn't retrieve user
         if (user == null)
@@ -186,7 +187,7 @@ public class RentalHandler {
      * @throws UserNotFoundException if a user associated with a rental is not found
      * @throws ItemNotFoundException if an item associated with a rental is not found
      */
-    public static List<Rental> getAllRentals() throws SQLException, UserNotFoundException, ItemNotFoundException {
+    public static List<Rental> getAllRentals() throws SQLException, UserNotFoundException, ItemNotFoundException, InvalidUserIDException {
         //Prepare a SQL command to select all rentals from the 'rentals' table.
         String sql = "SELECT * FROM rentals";
 
@@ -213,11 +214,8 @@ public class RentalHandler {
             }
             float lateFee = resultSet.getFloat("lateFee");
 
-            //Get user by ID
+            //Get user by ID, throws UserNotFoundException
             User user = UserHandler.getUserByID(userID);
-            if (user == null) {
-                throw new UserNotFoundException(userID);
-            }
 
             //Get item by ID
             Item item = ItemHandler.getItemByID(itemID);
