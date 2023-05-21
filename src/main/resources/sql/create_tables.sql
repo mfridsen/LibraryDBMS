@@ -15,6 +15,8 @@ CREATE TABLE `Users` (
     allowedRentals INT NOT NULL,
     currentRentals INT NOT NULL,
     lateFee DOUBLE NOT NULL,
+
+    deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (userID)
 );
 
@@ -24,6 +26,8 @@ CREATE TABLE Items (
     title VARCHAR(255) NOT NULL,
     allowedRentalDays INT NOT NULL,
     available TINYINT(1) NOT NULL,
+
+    deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (itemID)
 );
 
@@ -36,6 +40,8 @@ CREATE TABLE Rentals (
     rentalDueDate DATETIME NOT NULL,
     rentalReturnDate DATETIME,
     lateFee DOUBLE NOT NULL,
+
+    deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (rentalID),
     FOREIGN KEY (userID) REFERENCES users (userID),
     FOREIGN KEY (itemID) REFERENCES items (itemID)

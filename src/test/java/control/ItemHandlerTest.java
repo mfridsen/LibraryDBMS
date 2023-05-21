@@ -183,6 +183,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    //SETUP-------------------------------------------------------------------------------------------------------------
+
     /**
      * Tests the {@link ItemHandler#setup()} method of the ItemHandler class when the database is empty.
      * The test validates the correct initialization of the {@code storedTitles} map.
@@ -214,10 +216,10 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\n6: Testing setup method with some items in the database...");
 
         // Insert some items into the database, with one available single and two duplicates of which one is available
-        String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
-        String[] params1 = {"Harry Potter", "14", "1"};
-        String[] params2 = {"The Lord of the Rings", "14", "1"};
-        String[] params3 = {"Harry Potter", "14", "0"};
+        String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
+        String[] params1 = {"Harry Potter", "14", "1", "0"};
+        String[] params2 = {"The Lord of the Rings", "14", "1", "0"};
+        String[] params3 = {"Harry Potter", "14", "0", "0"};
         DatabaseHandler.executePreparedQuery(query, params1);
         DatabaseHandler.executePreparedQuery(query, params2);
         DatabaseHandler.executePreparedQuery(query, params3);
@@ -237,6 +239,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    //GET BY ID---------------------------------------------------------------------------------------------------------
 
     @Test
     @Order(7)
@@ -293,6 +296,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    //GET BY TITLE------------------------------------------------------------------------------------------------------
 
     @Test
     @Order(10)
@@ -345,6 +349,12 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // Check the title of the item
             assertEquals(singleItemTitle, items.get(0).getTitle());
+
+            //Check available
+            assertTrue(items.get(0).isAvailable());
+
+            //Check deleted
+            assertFalse(items.get(0).isDeleted());
         } catch (ItemNotFoundException | InvalidTitleException e) {
             // No exceptions should be thrown
             fail("Error while getting item by title: " + e.getMessage());
@@ -360,20 +370,23 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         try {
             String multipleItemsTitle = "Multiple Items Title";
-            String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
-            String[] params1 = {multipleItemsTitle, "14", "1"}; //One available
-            String[] params2 = {multipleItemsTitle, "7", "0"}; //One not
+            String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
+            String[] params1 = {multipleItemsTitle, "14", "1", "0"}; //One available
+            String[] params2 = {multipleItemsTitle, "7", "0", "0"}; //One not
             DatabaseHandler.executePreparedQuery(query, params1);
             DatabaseHandler.executePreparedQuery(query, params2);
 
+            //Retrieve list and assert not null
             List<Item> items = ItemHandler.getItemsByTitle(multipleItemsTitle);
+            assertNotNull(items);
 
             // Ensure that there is more than one item in the returned list
             assertTrue(items.size() > 1);
 
-            // Check the titles of all the items
+            // Check the titles and isDeleted of all the items
             for (Item item : items) {
                 assertEquals(multipleItemsTitle, item.getTitle());
+                assertFalse(item.isDeleted());
             }
 
             //Check allowedRentalDays
@@ -410,6 +423,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     //TODO-test at least 27 more test cases in total here
 
+    //UPDATE------------------------------------------------------------------------------------------------------------
 
     @Test
     @Order(41)
@@ -496,14 +510,16 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    //DELETE------------------------------------------------------------------------------------------------------------
+
     @Test
     @Order(44)
-    void testDeleteItem_NullItem() {
-        System.out.println("\n44: Testing deleteItem with null item...");
+    void testDeleteItemFromTable_NullItem() {
+        System.out.println("\n44: Testing deleteItemFromTable with null item...");
 
         try {
             // Try to delete null item
-            ItemHandler.deleteItem(null);
+            ItemHandler.deleteItemFromTable(null);
             fail("An IllegalArgumentException was expected.");
         } catch (ItemNullException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
@@ -516,8 +532,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(45)
-    void testDeleteItem_NonexistentItem() {
-        System.out.println("\n45: Testing deleteItem with a nonexistent item...");
+    void testDeleteItemFromTable_NonexistentItem() {
+        System.out.println("\n45: Testing deleteItemFromTable with a nonexistent item...");
 
         try {
             // Create an item with nonexistent ID
@@ -525,7 +541,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             nonexistentItem.setItemID(99999);
 
             // Try to delete this nonexistent item
-            ItemHandler.deleteItem(nonexistentItem);
+            ItemHandler.deleteItemFromTable(nonexistentItem);
             fail("An ItemNotFoundException was expected.");
         } catch (ItemNotFoundException inf) {
             assertEquals("Item with ID 99999 does not exist.", inf.getMessage());
@@ -538,8 +554,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(46)
-    void testDeleteItem_ValidItem() {
-        System.out.println("\n46: Testing deleteItem with a valid item...");
+    void testDeleteItemFromTable_ValidItem() {
+        System.out.println("\n46: Testing deleteItemFromTable with a valid item...");
 
         try {
             // Create a new item
@@ -550,7 +566,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertEquals(1, ItemHandler.getAvailableTitles().get(validItem.getTitle()).intValue());
 
             // Delete the item
-            ItemHandler.deleteItem(validItem);
+            ItemHandler.deleteItemFromTable(validItem);
 
             // Try to retrieve the deleted item
             try {

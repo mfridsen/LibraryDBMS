@@ -53,6 +53,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertEquals(User.DEFAULT_ALLOWED_RENTALS, newUser.getAllowedRentals(), "Default allowed rentals should be set");
             assertEquals(0, newUser.getCurrentRentals(), "Current rentals should be zero");
             assertEquals(0.0, newUser.getLateFee(), "Late fee should be zero");
+            assertFalse(newUser.isDeleted());
         } catch (InvalidUsernameException | InvalidPasswordException e) {
             fail("Should not get exception for valid test.");
             e.printStackTrace();
@@ -158,12 +159,12 @@ public class UserHandlerTest extends BaseHandlerTest {
         //Check that storedUsernames is empty
         assertEquals(0, UserHandler.getStoredUsernames().size());
 
-        // Insert some items into the database, with one available single and two duplicates of which one is available
-        String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee) " +
-                "VALUES (?, ?, ?, ?, ?)";
-        String[] params1 = {"user1", "pass1", "5", "0", "0.0"};
-        String[] params2 = {"user2", "pass1", "5", "0", "0.0"};
-        String[] params3 = {"user3", "pass1", "5", "0", "0.0"};
+        // Insert some users into the database without using createNewUser (which automatically increments storedUsernames)
+        String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, deleted) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        String[] params1 = {"user1", "pass1", "5", "0", "0.0", "0"};
+        String[] params2 = {"user2", "pass1", "5", "0", "0.0", "0"};
+        String[] params3 = {"user3", "pass1", "5", "0", "0.0", "0"};
         DatabaseHandler.executePreparedQuery(query, params1);
         DatabaseHandler.executePreparedQuery(query, params2);
         DatabaseHandler.executePreparedQuery(query, params3);
@@ -185,19 +186,30 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n9: Testing getUserByID method with a valid userID present in database...");
 
         try {
+            String username = "username";
+            String password = "password";
             // Insert a user into the database
-            String insertQuery = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee) VALUES (?, ?, ?, ?, ?)";
-            String[] insertParams = {"user1", "password1", "5", "0", "0.0"};
-            DatabaseHandler.executePreparedQuery(insertQuery, insertParams);
+            UserHandler.createNewUser(username, password);
 
-            // Call the getUserByID method with a valid userID (replace with the ID of the inserted user)
-            User user = UserHandler.getUserByID(1); // Make sure this ID matches the one that was generated when you inserted the user
+            // Call the getUserByUsername method and get ID
+            User user1 = UserHandler.getUserByUsername(username);
+            assertNotNull(user1);
+            int existingID = user1.getUserID();
+
+            //Get user by ID
+            User user2 = UserHandler.getUserByID(existingID);
             // Verify that a User is returned and not null
-            assertNotNull(user, "A User object should be returned when a valid userID is provided.");
+            assertNotNull(user2, "A User object should be returned when a valid userID is provided.");
+            // Verify that the returned user has the expected fields set correctly
+            assertEquals(existingID, user2.getUserID(), "The returned User object should have the userID provided in the getUserByID method.");
+            assertEquals(username, user2.getUsername(), "Username should match input");
+            assertEquals(password, user2.getPassword(), "Password should match input");
+            assertEquals(User.DEFAULT_ALLOWED_RENTALS, user2.getAllowedRentals(), "Default allowed rentals should be set");
+            assertEquals(0, user2.getCurrentRentals(), "Current rentals should be zero");
+            assertEquals(0.0, user2.getLateFee(), "Late fee should be zero");
+            assertFalse(user2.isDeleted());
 
-            // Verify that the returned user has the expected userID
-            assertEquals(1, user.getUserID(), "The returned User object should have the userID provided in the getUserByID method.");
-        } catch (InvalidUserIDException e) {
+        } catch (InvalidUserIDException | InvalidUsernameException | InvalidPasswordException e) {
             fail("Should not thrown an exception when user is retrieved with valid userID.");
             e.printStackTrace();
         }
@@ -211,14 +223,18 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n10: Testing getUserByID method with a valid userID not present in database...");
 
         try {
+            int nonExistentID = 99999;
             // Insert a user into the database
-            String insertQuery = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee) VALUES (?, ?, ?, ?, ?)";
-            String[] insertParams = {"user1", "pass1", "5", "0", "0.0"};
-            DatabaseHandler.executePreparedQuery(insertQuery, insertParams);
+            UserHandler.createNewUser("username", "password");
+
+            //Verify it exists and doesn't have nonExistentID as ID
+            User existingUser = UserHandler.getUserByUsername("username");
+            assertNotNull(existingUser);
+            assertNotEquals(nonExistentID, existingUser.getUserID());
 
             // Call the getUserByID method with a valid userID that is not present in the database
-            assertNull(UserHandler.getUserByID(99999));
-        } catch (InvalidUserIDException e) {
+            assertNull(UserHandler.getUserByID(nonExistentID));
+        } catch (InvalidUserIDException | InvalidUsernameException | InvalidPasswordException e) {
             fail("Should not thrown an exception when user is retrieved with valid userID.");
             e.printStackTrace();
         }
@@ -246,21 +262,24 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n12: Testing getUserByUsername method with a valid username present in database...");
 
         try {
+            String username = "username";
+            String password = "password";
             // Insert a user into the database
-            String insertQuery = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee) VALUES (?, ?, ?, ?, ?)";
-            String[] insertParams = {"user1", "password1", "5", "0", "0.0"};
-            DatabaseHandler.executePreparedQuery(insertQuery, insertParams);
+            UserHandler.createNewUser(username, password);
 
             // Call the getUserByUsername method with a valid username
-            User user = UserHandler.getUserByUsername("user1");
+            User user = UserHandler.getUserByUsername(username);
 
-            // Verify that a User is returned and not null
+            // Verify that a User is returned and not null and has expected values
             assertNotNull(user, "A User object should be returned when a valid username is provided.");
+            assertEquals(username, user.getUsername(), "The returned User object should have the username provided in the getUserByUsername method.");
+            assertEquals(password, user.getPassword(), "Password should match input");
+            assertEquals(User.DEFAULT_ALLOWED_RENTALS, user.getAllowedRentals(), "Default allowed rentals should be set");
+            assertEquals(0, user.getCurrentRentals(), "Current rentals should be zero");
+            assertEquals(0.0, user.getLateFee(), "Late fee should be zero");
+            assertFalse(user.isDeleted());
 
-            // Verify that the returned user has the expected username
-            assertEquals("user1", user.getUsername(), "The returned User object should have the username provided in the getUserByUsername method.");
-
-        } catch (InvalidUsernameException e) {
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
             fail("No exception should be thrown when retrieving user with a valid username.");
             e.printStackTrace();
         }
@@ -480,6 +499,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     }
 
     //DELETE------------------------------------------------------------------------------------------------------------
+
+
+    //DELETE FROM TABLE-------------------------------------------------------------------------------------------------
 
     @Test
     @Order(33)

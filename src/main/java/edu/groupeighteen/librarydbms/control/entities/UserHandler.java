@@ -156,15 +156,16 @@ public class UserHandler {
     private static int saveUser(User user) {
         try {
             // Prepare query
-            String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, deleted) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
 
             String[] params = {
                     user.getUsername(),
                     user.getPassword(),
                     String.valueOf(user.getAllowedRentals()),
                     String.valueOf(user.getCurrentRentals()),
-                    String.valueOf(user.getLateFee())
+                    String.valueOf(user.getLateFee()),
+                    "0" //deleted is false by default
             };
 
             // Execute query and get the generated userID, using try-with-resources
@@ -331,10 +332,10 @@ public class UserHandler {
     }
 
     /**
-     * Deletes a user from the database. Before deleting, the method checks if the provided User object is not null and if the
-     * user with the ID of the provided User object exists in the database. If the user exists, the method prepares an SQL
-     * command to delete the user from the database and executes the command. The username of the deleted user is then removed
-     * from the storedUsernames list.
+     * Deletes a user from the database. This method first checks if the provided User object is not null and if the user with
+     * the ID of the provided User object exists in the database. If the user does not exist, a UserNotFoundException is thrown.
+     * If the user exists, an SQL command is prepared to delete the user from the database, and this command is executed.
+     * The username of the deleted user is then removed from the storedUsernames list.
      *
      * @param user The User object representing the user to be deleted.
      * @throws UserNullException If the provided User object is null.

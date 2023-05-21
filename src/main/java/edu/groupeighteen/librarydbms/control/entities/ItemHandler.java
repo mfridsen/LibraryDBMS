@@ -239,11 +239,12 @@ public class ItemHandler {
     private static int saveItem(Item item) {
         //TODO-prio update method and test when Item is finished
         //Prepare query
-        String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
+        String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
         String[] params = {
                 item.getTitle(),
                 String.valueOf(item.getAllowedRentalDays()),
-                item.isAvailable() ? "1" : "0" //If boolean is true, add the string "1", if false, "0"
+                item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
+                item.isDeleted() ? "1" : "0" //If boolean is true, add the string "1", if false, "0"
         };
 
         //Execute query and get the generated itemID, using try-with-resources
@@ -291,10 +292,12 @@ public class ItemHandler {
                     String title = resultSet.getString("title");
                     int allowedRentalDays = resultSet.getInt("allowedRentalDays");
                     boolean available = resultSet.getBoolean("available");
+                    boolean deleted = resultSet.getBoolean("deleted");
                     Item item = new Item(title); //If this throws an exception, something is seriously wrong
                     item.setItemID(itemID);
                     item.setAllowedRentalDays(allowedRentalDays);
                     item.setAvailable(available);
+                    item.setDeleted(deleted);
                     return item;
                 } else {
                     throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
@@ -342,8 +345,10 @@ public class ItemHandler {
                     item.setItemID(resultSet.getInt("itemID")); //If this throws an exception, something is seriously wrong
                     int allowedRentalDays = resultSet.getInt("allowedRentalDays");
                     boolean available = resultSet.getBoolean("available");
+                    boolean deleted = resultSet.getBoolean("deleted");
                     item.setAllowedRentalDays(allowedRentalDays);
                     item.setAvailable(available);
+                    item.setDeleted(deleted);
                     items.add(item);
                 }
                 if (items.isEmpty()) {
@@ -445,10 +450,11 @@ public class ItemHandler {
         boolean oldAvailability = oldItem.isAvailable();
 
         // Prepare a SQL command to update an item's title and availability by itemID.
-        String sql = "UPDATE items SET title = ?, available = ? WHERE itemID = ?";
+        String sql = "UPDATE items SET title = ?, available = ?, deleted = ? WHERE itemID = ?";
         String[] params = {
                 item.getTitle(),
                 item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
+                item.isDeleted() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
                 String.valueOf(item.getItemID())
         };
 
@@ -478,7 +484,8 @@ public class ItemHandler {
      * @throws ItemNotFoundException If the item does not exist in the database.
      * @throws ItemNullException If the provided Item object is null.
      */
-    public static void deleteItem(Item item) throws ItemNotFoundException, ItemNullException {
+    public static void deleteItemFromTable(Item item) throws ItemNotFoundException, ItemNullException {
+        //TODO-prio UPDATE TO CHANGE DELETED
         //TODO-prio update when Item is finished
         //Validate the input, ItemNullException
         checkNullItem(item);

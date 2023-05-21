@@ -172,8 +172,8 @@ public class RentalHandler {
 
         //Prepare query
         String query = "INSERT INTO rentals " +
-                "(userID, itemID, rentalDate, rentalDueDate, rentalReturnDate, lateFee) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+                "(userID, itemID, rentalDate, rentalDueDate, rentalReturnDate, lateFee, deleted) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         //Set parameters for query
         //We check if rental.getRentalReturnDate() is null. If it is, we set the corresponding parameter to null.
@@ -185,7 +185,8 @@ public class RentalHandler {
                 rental.getRentalDate().toString(),
                 rental.getRentalDueDate().toString(),
                 (rental.getRentalReturnDate() == null) ? null : rental.getRentalReturnDate().toString(),
-                String.valueOf(rental.getLateFee())
+                String.valueOf(rental.getLateFee()),
+                "0" //Not deleted by default
         };
 
         //Execute query and get the generated rentalID, using try-with-resources
