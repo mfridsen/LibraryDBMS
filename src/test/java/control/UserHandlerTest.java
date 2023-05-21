@@ -48,7 +48,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         User newUser = null;
         try {
             newUser = UserHandler.createNewUser(username, password);
-        } catch (UserExistsException e) {
+        } catch (UsernameTakenException e) {
             fail("Should not get exception for valid test.");
             e.printStackTrace();
         }
@@ -74,13 +74,13 @@ public class UserHandlerTest extends BaseHandlerTest {
         //Insert first user
         try {
             UserHandler.createNewUser(username, password);
-        } catch (UserExistsException e) {
+        } catch (UsernameTakenException e) {
             fail("Should not get exception for valid test.");
             e.printStackTrace();
         }
 
         //Check that attempting to create another with same name doesn't work
-        assertThrows(UserExistsException.class, () -> UserHandler.createNewUser(username, password), "Exception should be thrown for duplicate username");
+        assertThrows(UsernameTakenException.class, () -> UserHandler.createNewUser(username, password), "Exception should be thrown for duplicate username");
 
         System.out.println("TEST FINISHED.");
     }
@@ -254,7 +254,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         User user = null;
         try {
             user = UserHandler.getUserByUsername("user1");
-        } catch (UserNotFoundException | EmptyUsernameException e) {
+        } catch (UserNotFoundException | UsernameEmptyException e) {
             fail("No exception should be thrown when retrieving user with a valid username.");
             e.printStackTrace();
         }
@@ -284,8 +284,8 @@ public class UserHandlerTest extends BaseHandlerTest {
     void testGetUserByUsername_NullUsername() {
         System.out.println("\n14: Testing getUserByUsername method with a null username...");
 
-        // Verify that an EmptyUsernameException is thrown when a null username is provided
-        assertThrows(EmptyUsernameException.class, () -> UserHandler.getUserByUsername(null), "An IllegalArgumentException should be thrown when the username is null.");
+        // Verify that an UsernameEmptyException is thrown when a null username is provided
+        assertThrows(UsernameEmptyException.class, () -> UserHandler.getUserByUsername(null), "An IllegalArgumentException should be thrown when the username is null.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -295,8 +295,8 @@ public class UserHandlerTest extends BaseHandlerTest {
     void testGetUserByUsername_EmptyUsername() {
         System.out.println("\n15: Testing getUserByUsername method with an empty username...");
 
-        // Verify that an EmptyUsernameException is thrown when an empty username is provided
-        assertThrows(EmptyUsernameException.class, () -> UserHandler.getUserByUsername(""), "An IllegalArgumentException should be thrown when the username is empty.");
+        // Verify that an UsernameEmptyException is thrown when an empty username is provided
+        assertThrows(UsernameEmptyException.class, () -> UserHandler.getUserByUsername(""), "An IllegalArgumentException should be thrown when the username is empty.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -319,8 +319,8 @@ public class UserHandlerTest extends BaseHandlerTest {
     void testUpdateUser_NullNewUser() {
         System.out.println("\n27: Testing updateUser method with null newUser...");
 
-        // Verify that an NullUserException is thrown when newUser is null
-        assertThrows(NullUserException.class, () -> UserHandler.updateUser(null, "oldUsername"), "An IllegalArgumentException should be thrown when newUser is null.");
+        // Verify that an UserNullException is thrown when newUser is null
+        assertThrows(UserNullException.class, () -> UserHandler.updateUser(null, "oldUsername"), "An IllegalArgumentException should be thrown when newUser is null.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -334,16 +334,16 @@ public class UserHandlerTest extends BaseHandlerTest {
         AtomicReference<User> newUser = new AtomicReference<>();
         try {
             newUser.set(UserHandler.createNewUser("user1", "password1"));
-        } catch (UserExistsException e) {
+        } catch (UsernameTakenException e) {
             fail("Should not get exception for valid test.");
             e.printStackTrace();
         }
 
-        // Verify that a EmptyUsernameException is thrown when oldUsername is null
-        assertThrows(EmptyUsernameException.class, () -> UserHandler.updateUser(newUser.get(), null), "A UserUpdateFailedException should be thrown when oldUsername is null.");
+        // Verify that a UsernameEmptyException is thrown when oldUsername is null
+        assertThrows(UsernameEmptyException.class, () -> UserHandler.updateUser(newUser.get(), null), "A UserUpdateFailedException should be thrown when oldUsername is null.");
 
-        // Verify that a EmptyUsernameException is thrown when oldUsername is empty
-        assertThrows(EmptyUsernameException.class, () -> UserHandler.updateUser(newUser.get(), ""), "A UserUpdateFailedException should be thrown when oldUsername is empty.");
+        // Verify that a UsernameEmptyException is thrown when oldUsername is empty
+        assertThrows(UsernameEmptyException.class, () -> UserHandler.updateUser(newUser.get(), ""), "A UserUpdateFailedException should be thrown when oldUsername is empty.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -367,7 +367,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             //Verify only one username exists in storedUsernames, and it's the same
             assertEquals(1, UserHandler.getStoredUsernames().size());
             assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
-        } catch (UserExistsException | UserUpdateFailedException | NullUserException | EmptyUsernameException e) {
+        } catch (UsernameTakenException | UserUpdateFailedException | UserNullException | UsernameEmptyException e) {
             fail("Should not get exception for valid test.");
             e.printStackTrace();
         }
@@ -406,7 +406,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertEquals(firstUsername, UserHandler.getStoredUsernames().get(0));
             assertEquals(thirdUsername, UserHandler.getStoredUsernames().get(1));
             assertEquals(newUser.getUsername(), thirdUsername);
-        } catch (UserExistsException e) {
+        } catch (UsernameTakenException e) {
             fail("Should not get exception for valid test.");
             e.printStackTrace();
         }
@@ -431,14 +431,14 @@ public class UserHandlerTest extends BaseHandlerTest {
             // Set username of newUser to firstUsername (which is already taken)
             newUser.setUsername(firstUsername);
 
-            // Assert that an UserExistsException is thrown when newUser's username is changed to a username that's already taken
-            assertThrows(UserExistsException.class, () -> UserHandler.updateUser(newUser, secondUsername), "An IllegalArgumentException should be thrown when the new username is already taken.");
+            // Assert that an UsernameTakenException is thrown when newUser's username is changed to a username that's already taken
+            assertThrows(UsernameTakenException.class, () -> UserHandler.updateUser(newUser, secondUsername), "An IllegalArgumentException should be thrown when the new username is already taken.");
 
             // Assert that still only two usernames exist in storedUsernames, and that they are the correct names
             assertEquals(2, UserHandler.getStoredUsernames().size());
             assertEquals(firstUsername, UserHandler.getStoredUsernames().get(0));
             assertEquals(secondUsername, UserHandler.getStoredUsernames().get(1));
-        } catch (UserExistsException e) {
+        } catch (UsernameTakenException e) {
             e.printStackTrace();
         }
 
@@ -468,7 +468,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             newUser.setLateFee(15.5);
             UserHandler.updateUser(newUser, "user1");
             assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
-        } catch (UserUpdateFailedException | UserExistsException | NullUserException | EmptyUsernameException e) {
+        } catch (UserUpdateFailedException | UsernameTakenException | UserNullException | UsernameEmptyException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -484,7 +484,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n33: Testing deleteUser method with null user...");
 
         // Try to delete a null user
-        assertThrows(NullUserException.class, () -> UserHandler.deleteUser(null), "An NullUserException should be thrown when the user is null.");
+        assertThrows(UserNullException.class, () -> UserHandler.deleteUser(null), "An UserNullException should be thrown when the user is null.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -527,7 +527,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Verify that the user has been deleted from the database
             assertThrows(UserNotFoundException.class, () -> UserHandler.getUserByUsername("user1"), "User should have been deleted from the database.");
-        } catch (UserNotFoundException | UserExistsException | NullUserException e) {
+        } catch (UserNotFoundException | UsernameTakenException | UserNullException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -543,7 +543,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n36: Testing login method with an empty username...");
 
         // Call login with empty username and expect false to be returned
-        assertThrows(EmptyUsernameException.class, () -> UserHandler.login("", "password"), "Login should return false when username is empty.");
+        assertThrows(UsernameEmptyException.class, () -> UserHandler.login("", "password"), "Login should return false when username is empty.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -554,7 +554,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n37: Testing login method with null username...");
 
         // Call login with null username and expect false to be returned
-        assertThrows(EmptyUsernameException.class, () -> UserHandler.login(null, "password"), "Login should return false when username is null.");
+        assertThrows(UsernameEmptyException.class, () -> UserHandler.login(null, "password"), "Login should return false when username is null.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -565,7 +565,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n38: Testing login method with an empty password...");
 
         // Call login with empty password and expect false to be returned
-        assertThrows(EmptyPasswordException.class, () -> UserHandler.login("username", ""), "Login should return false when password is empty.");
+        assertThrows(PasswordEmptyException.class, () -> UserHandler.login("username", ""), "Login should return false when password is empty.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -576,7 +576,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n39: Testing login method with null password...");
 
         // Call login with null password and expect false to be returned
-        assertThrows(EmptyPasswordException.class, () -> UserHandler.login("username", null), "Login should return false when password is null.");
+        assertThrows(PasswordEmptyException.class, () -> UserHandler.login("username", null), "Login should return false when password is null.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -603,7 +603,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             UserHandler.createNewUser("user1", "password1");
             // Attempt to login with the correct username but incorrect password
             assertFalse(UserHandler.login("user1", "incorrectPassword"), "Login should return false when password is incorrect.");
-        } catch (UserExistsException | EmptyUsernameException | EmptyPasswordException | UserNotFoundException e) {
+        } catch (UsernameTakenException | UsernameEmptyException | PasswordEmptyException | UserNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -622,7 +622,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Attempt to login with the correct username and password
             assertTrue(UserHandler.login("user2", "password2"), "Login should return true when username and password are correct.");
-        } catch (UserExistsException | EmptyUsernameException | EmptyPasswordException | UserNotFoundException e) {
+        } catch (UsernameTakenException | UsernameEmptyException | PasswordEmptyException | UserNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -637,7 +637,7 @@ public class UserHandlerTest extends BaseHandlerTest {
     void testValidateUser_NullUser() {
         System.out.println("\n43: Testing validateUser method with null user...");
 
-        assertThrows(NullUserException.class, () -> UserHandler.validateUser(null, "validPassword"), "Validate should throw an exception for null users.");
+        assertThrows(UserNullException.class, () -> UserHandler.validateUser(null, "validPassword"), "Validate should throw an exception for null users.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -652,8 +652,8 @@ public class UserHandlerTest extends BaseHandlerTest {
             User user = UserHandler.createNewUser("user1", "password1");
 
             // Call validateUser with null password
-            assertThrows(EmptyPasswordException.class, () -> UserHandler.validateUser(user, null), "Validate should throw an exception for null passwords.");
-        } catch (UserExistsException e) {
+            assertThrows(PasswordEmptyException.class, () -> UserHandler.validateUser(user, null), "Validate should throw an exception for null passwords.");
+        } catch (UsernameTakenException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -674,7 +674,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Call validateUser with correct password and expect true to be returned
             assertTrue(UserHandler.validateUser(user, "password1"), "ValidateUser should return true when the password is correct.");
-        } catch (NullUserException | EmptyPasswordException e) {
+        } catch (UserNullException | PasswordEmptyException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -693,7 +693,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Call validateUser with incorrect password and expect false to be returned
             assertFalse(UserHandler.validateUser(user, "password2"), "ValidateUser should return false when the password is incorrect.");
-        } catch (NullUserException | EmptyPasswordException e) {
+        } catch (UserNullException | PasswordEmptyException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

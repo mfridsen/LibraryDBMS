@@ -4,10 +4,10 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.EmptyTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.TitleEmptyException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.ItemNullException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -210,11 +210,11 @@ public class ItemHandler {
      * Creates a new item with a given title, stores it in the database, and increments the title count.
      * @param title The title of the item to be created.
      * @return The created Item.
-     * @throws EmptyTitleException If the title is null or an empty string.
+     * @throws TitleEmptyException If the title is null or an empty string.
      */
-    public static Item createNewItem(String title) throws EmptyTitleException {
+    public static Item createNewItem(String title) throws TitleEmptyException {
         //TODO-prio update method and test when Item is finished
-        //Validate input, throws EmptyTitleException
+        //Validate input, throws TitleEmptyException
         checkEmptyTitle(title);
 
         //Create item and retrieve and set itemID
@@ -300,7 +300,7 @@ public class ItemHandler {
                     throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
                 }
             }
-        } catch (SQLException | EmptyTitleException e) {
+        } catch (SQLException | TitleEmptyException e) {
             ExceptionHandler.HandleFatalException(e);
         }
 
@@ -315,11 +315,11 @@ public class ItemHandler {
      * @param title The title of the items to be retrieved.
      * @return A list of Item objects with the provided title.
      * @throws ItemNotFoundException If no items with the provided title exist in the database.
-     * @throws EmptyTitleException If the provided title is null or an empty string.
+     * @throws TitleEmptyException If the provided title is null or an empty string.
      */
-    public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException, EmptyTitleException {
+    public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException, TitleEmptyException {
         //TODO-prio update method and test when Item is finished
-        //No point getting invalid items, throws EmptyTitleException
+        //No point getting invalid items, throws TitleEmptyException
         checkEmptyTitle(title);
 
         //Prepare a SQL query to select an item by title.
@@ -425,11 +425,11 @@ public class ItemHandler {
      * Updates an existing item in the database and adjusts the count of the old and new titles.
      * @param item The Item object containing the updated information.
      * @throws ItemNotFoundException If the item does not exist in the database.
-     * @throws NullItemException If the provided Item object is null.
+     * @throws ItemNullException If the provided Item object is null.
      */
-    public static void updateItem(Item item) throws ItemNotFoundException, NullItemException, InvalidItemIDException {
+    public static void updateItem(Item item) throws ItemNotFoundException, ItemNullException, InvalidItemIDException {
         //TODO-prio update when Item is finished
-        //Validate the input, throws NullItemException
+        //Validate the input, throws ItemNullException
         checkNullItem(item);
 
         // Get the old Item instance, throws ItemNotFoundException
@@ -476,11 +476,11 @@ public class ItemHandler {
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
      * @throws ItemNotFoundException If the item does not exist in the database.
-     * @throws NullItemException If the provided Item object is null.
+     * @throws ItemNullException If the provided Item object is null.
      */
-    public static void deleteItem(Item item) throws ItemNotFoundException, NullItemException {
+    public static void deleteItem(Item item) throws ItemNotFoundException, ItemNullException {
         //TODO-prio update when Item is finished
-        //Validate the input, NullItemException
+        //Validate the input, ItemNullException
         checkNullItem(item);
 
         // Get the old title, throws ItemNotFoundException
@@ -574,14 +574,14 @@ public class ItemHandler {
     }
 
     /**
-     * Checks whether a given title is null or empty. If so, throws an EmptyTitleException,
+     * Checks whether a given title is null or empty. If so, throws an TitleEmptyException,
      * which must be handled.
      * @param title the title to check.
-     * @throws EmptyTitleException if title is null or empty.
+     * @throws TitleEmptyException if title is null or empty.
      */
-    private static void checkEmptyTitle(String title) throws EmptyTitleException {
+    private static void checkEmptyTitle(String title) throws TitleEmptyException {
         if (title == null || title.isEmpty())
-            throw new EmptyTitleException("Empty title.");
+            throw new TitleEmptyException("Empty title.");
     }
 
     /**
@@ -596,12 +596,12 @@ public class ItemHandler {
     }
 
     /**
-     * Checks whether a given Item is null. If so, throws a NullItemException which must be handled.
+     * Checks whether a given Item is null. If so, throws a ItemNullException which must be handled.
      * @param item the item to check.
-     * @throws NullItemException if item is null.
+     * @throws ItemNullException if item is null.
      */
-    private static void checkNullItem(Item item) throws NullItemException {
+    private static void checkNullItem(Item item) throws ItemNullException {
         if (item == null)
-            throw new NullItemException("Invalid item: item is null.");
+            throw new ItemNullException("Invalid item: item is null.");
     }
 }

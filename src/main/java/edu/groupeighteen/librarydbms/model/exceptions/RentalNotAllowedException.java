@@ -6,6 +6,7 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
  * @date 5/19/2023
+ * Custom RentalNotAllowedException class. Used to make Exceptions clearer.
  *
  * In the context of this library management system, a RentalNotAllowedException could be useful in several scenarios. For instance:
  *

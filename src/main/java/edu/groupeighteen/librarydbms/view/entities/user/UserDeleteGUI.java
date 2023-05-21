@@ -3,8 +3,8 @@ package edu.groupeighteen.librarydbms.view.entities.user;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.EmptyPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.PasswordEmptyException;
+import edu.groupeighteen.librarydbms.model.exceptions.UserNullException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -42,10 +42,10 @@ public class UserDeleteGUI extends GUI {
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     }
-                } catch (NullUserException nullUserException) {
-                    nullUserException.printStackTrace();
-                } catch (EmptyPasswordException emptyPasswordException) {
-                    emptyPasswordException.printStackTrace();
+                } catch (UserNullException userNullException) {
+                    userNullException.printStackTrace();
+                } catch (PasswordEmptyException passwordEmptyException) {
+                    passwordEmptyException.printStackTrace();
                 }
             }
             //delete user

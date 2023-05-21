@@ -6,10 +6,10 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
  * @date 5/21/2023
- * Custom InvalidItemIDException class. Used to make Exceptions clearer.
+ * Custom UsernameTooShortException class. Used to make Exceptions clearer.
  */
-public class InvalidItemIDException extends Exception {
-    public InvalidItemIDException(String message) {
+public class UsernameTooShortException extends Exception {
+    public UsernameTooShortException(String message) {
         super(message);
     }
 }

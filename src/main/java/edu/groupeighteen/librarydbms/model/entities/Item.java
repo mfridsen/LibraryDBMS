@@ -1,6 +1,6 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
-import edu.groupeighteen.librarydbms.model.exceptions.EmptyTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.TitleEmptyException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 
 /**
@@ -14,7 +14,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
  *
  * Invariants, enforced by setters:
  *      ItemIDs have to be > 0.
- *      Titles cannot be null or empty. //TODO-future add min and max length
+ *      Titles cannot be null or empty. //TODO-future add max length
  */
 public class Item extends Entity {
 
@@ -31,9 +31,9 @@ public class Item extends Entity {
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
      * @param title
      */
-    public Item(String title) throws EmptyTitleException {
+    public Item(String title) throws TitleEmptyException {
         this.itemID = 0; //Set AFTER initial INSERT by createNewItem
-        setTitle(title);
+        setTitle(title); //Throws TitleEmptyException
         this.allowedRentalDays = DEFAULT_ALLOWED_DAYS; //TODO-prio for now
         this.available = true;
     }
@@ -44,9 +44,9 @@ public class Item extends Entity {
      * @param title
      * @param allowedRentalDays
      */
-    public Item(int itemID, String title, int allowedRentalDays, boolean available) throws InvalidItemIDException, EmptyTitleException {
-        setItemID(itemID);
-        setTitle(title);
+    public Item(int itemID, String title, int allowedRentalDays, boolean available) throws InvalidItemIDException, TitleEmptyException {
+        setItemID(itemID); //Throws InvalidItemIDException
+        setTitle(title); //Throws TitleEmptyException
         setAllowedRentalDays(allowedRentalDays);
         setAvailable(available);
     }
@@ -76,9 +76,9 @@ public class Item extends Entity {
         return title;
     }
 
-    public void setTitle(String title) throws EmptyTitleException {
+    public void setTitle(String title) throws TitleEmptyException {
         if (title == null || title.isEmpty())
-            throw new EmptyTitleException("Title cannot be null or empty. Received: " + title);
+            throw new TitleEmptyException("Title cannot be null or empty. Received: " + title);
         this.title = title;
     }
 
