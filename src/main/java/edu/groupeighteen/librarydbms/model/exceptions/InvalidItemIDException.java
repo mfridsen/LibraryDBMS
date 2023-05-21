@@ -13,8 +13,8 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class UserIsNullException extends Exception {
-    public UserIsNullException(String message) {
+public class InvalidItemIDException extends Exception {
+    public InvalidItemIDException(String message) {
         super(message);
     }
 }

@@ -19,6 +19,19 @@ import java.util.List;
  *
  * This class contains database CRUD operation methods as well as other methods related to the User entity class.
  * It contains a list of all usernames for quicker validation.
+ *
+ * Note on Exceptions:
+ *
+ * "Exceptions should only be thrown in exceptional circumstances, and invalid user input is not exceptional".
+ *
+ * I've battled this one for long, but if finally clicked. This class is NOT handling user input. That is going
+ * to be handled in UserCreateGUI. When I press the "Create User" button in that class, we perform an instant
+ * check on whether the title, and any other needed fields, are empty.
+ *
+ * If so, we print an error message, reset all fields in the GUI and wait for new input.
+ *
+ * Meaning, createNewUser (as an example) should NEVER be called with an empty or null String as argument.
+ * If it is, that IS exceptional.
  */
 public class UserHandler {
     //Not needed, but very practical, since usernames must be unique
@@ -223,9 +236,9 @@ public class UserHandler {
     // == 11
 
 
-    public static void updateUser(User newUser, String oldUsername) throws UserUpdateFailedException, UserIsNullException, EmptyUsernameException, UserExistsException {
-        //We can't create user objects with invalid usernames, so only need to validate user itself. Throws UserIsNullException
-        checkUserNull(newUser);
+    public static void updateUser(User newUser, String oldUsername) throws UserUpdateFailedException, NullUserException, EmptyUsernameException, UserExistsException {
+        //We can't create user objects with invalid usernames, so only need to validate user itself. Throws NullUserException
+        checkNullUser(newUser);
         //Old username could be empty or null though. Throws EmptyUsernameException
         checkEmptyUsername(oldUsername);
 
@@ -265,9 +278,9 @@ public class UserHandler {
      * @param user The user to delete.
      * @throws
      */
-    public static void deleteUser(User user) throws UserNotFoundException, UserIsNullException {
-        //Validate the input. Throws UserIsNullException
-        checkUserNull(user);
+    public static void deleteUser(User user) throws UserNotFoundException, NullUserException {
+        //Validate the input. Throws NullUserException
+        checkNullUser(user);
 
         //Let's check if the user exists in the database before we go on
         try {
@@ -341,8 +354,8 @@ public class UserHandler {
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      * @throws
      */
-    public static boolean validateUser(User user, String password) throws UserIsNullException, EmptyPasswordException {
-        checkUserNull(user);
+    public static boolean validateUser(User user, String password) throws NullUserException, EmptyPasswordException {
+        checkNullUser(user);
         checkEmptyPassword(password);
         return user.getPassword().equals(password);
     }
@@ -361,13 +374,13 @@ public class UserHandler {
     }
 
     /**
-     * Checks if a given user is null. If so, throws a UserIsNullException which must be handled.
+     * Checks if a given user is null. If so, throws a NullUserException which must be handled.
      * @param user the user.
-     * @throws UserIsNullException if the user is null.
+     * @throws NullUserException if the user is null.
      */
-    private static void checkUserNull(User user) throws UserIsNullException {
+    private static void checkNullUser(User user) throws NullUserException {
         if (user == null)
-            throw new UserIsNullException("User is null.");
+            throw new NullUserException("User is null.");
     }
 
     /**

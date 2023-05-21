@@ -8,10 +8,7 @@ import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidUserIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -94,7 +91,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             System.out.println("\nTEST FINISHED.");
 
-        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | SQLException | InvalidUserIDException e) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | SQLException | InvalidUserIDException | InvalidItemIDException e) {
             e.printStackTrace();
             fail("Test should be able to retrieve user or item with correct IDs. userID: " + validUserID + ", itemID: " + validItemID);
         }

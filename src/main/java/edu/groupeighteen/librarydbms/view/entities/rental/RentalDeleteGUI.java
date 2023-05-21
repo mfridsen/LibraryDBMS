@@ -1,15 +1,13 @@
 package edu.groupeighteen.librarydbms.view.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EmptyPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.UserIsNullException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullUserException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -57,8 +55,8 @@ public class RentalDeleteGUI extends GUI {
                             sqle.printStackTrace();
                         }*/
                     }
-                } catch (UserIsNullException userIsNullException) {
-                    userIsNullException.printStackTrace();
+                } catch (NullUserException nullUserException) {
+                    nullUserException.printStackTrace();
                 } catch (EmptyPasswordException emptyPasswordException) {
                     emptyPasswordException.printStackTrace();
                 }

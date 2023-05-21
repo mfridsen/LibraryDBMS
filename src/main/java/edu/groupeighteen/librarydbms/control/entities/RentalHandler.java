@@ -5,10 +5,7 @@ import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidUserIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -42,6 +39,19 @@ import java.util.List;
  * The RentalHandler class uses the DatabaseHandler class to interact with the database and performs data validation
  * before executing database operations. It throws SQLException if an error occurs while interacting with the database
  * and IllegalArgumentException if the provided data is not valid.
+ *
+ * Note on Exceptions:
+ *
+ * "Exceptions should only be thrown in exceptional circumstances, and invalid user input is not exceptional".
+ *
+ * I've battled this one for long, but if finally clicked. This class is NOT handling user input. That is going
+ * to be handled in RentalCreateGUI. When I press the "Create Rental" button in that class, we perform an instant
+ * check on whether the title, and any other needed fields, are empty.
+ *
+ * If so, we print an error message, reset all fields in the GUI and wait for new input.
+ *
+ * Meaning, createNewRental (as an example) should NEVER be called with an empty or null String as argument.
+ * If it is, that IS exceptional.
  *
  * TODO: The current implementation returns null or false when a rental cannot be found. This might be changed to
  *  throw a custom exception (like RentalNotFoundException) to make error handling more consistent.
@@ -83,7 +93,12 @@ public class RentalHandler {
         Rental newRental = new Rental(userID, itemID);
 
         //Retrieve item based on ID, this is where ItemNotFoundException can be generated
-        Item item = ItemHandler.getItemByID(itemID);
+        Item item = null;
+        try {
+            item = ItemHandler.getItemByID(itemID);
+        } catch (InvalidItemIDException e) {
+            e.printStackTrace();
+        }
 
         //Retrieve all items based on title
 
@@ -114,7 +129,12 @@ public class RentalHandler {
         newRental.setUsername(user.getUsername());
 
         //Obtain and set AllowedRentalDays
-        int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
+        int allowedRentalDays = 0;
+        try {
+            allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
+        } catch (InvalidItemIDException e) {
+            e.printStackTrace();
+        }
         LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
         newRental.setRentalDueDate(dueDate);
 
@@ -218,7 +238,12 @@ public class RentalHandler {
             User user = UserHandler.getUserByID(userID);
 
             //Get item by ID
-            Item item = ItemHandler.getItemByID(itemID);
+            Item item = null;
+            try {
+                item = ItemHandler.getItemByID(itemID);
+            } catch (InvalidItemIDException e) {
+                e.printStackTrace();
+            }
 
             //Create Rental object and set all fields
             Rental rental = new Rental(userID, itemID);

@@ -4,7 +4,10 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.EmptyTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidItemIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullItemException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,6 +24,19 @@ import java.util.Map;
  *
  * This class contains database CRUD operation methods as well as other methods related to the Item entity class.
  * It contains a list of all Item titles for quicker validation.
+ *
+ * Note on Exceptions:
+ *
+ * "Exceptions should only be thrown in exceptional circumstances, and invalid user input is not exceptional".
+ *
+ * I've battled this one for long, but if finally clicked. This class is NOT handling user input. That is going
+ * to be handled in ItemCreateGUI. When I press the "Create Item" button in that class, we perform an instant
+ * check on whether the title, and any other needed fields, are empty.
+ *
+ * If so, we print an error message, reset all fields in the GUI and wait for new input.
+ *
+ * Meaning, createNewItem (as an example) should NEVER be called with an empty or null String as argument.
+ * If it is, that IS exceptional.
  */
 public class ItemHandler {
 
@@ -169,10 +185,16 @@ public class ItemHandler {
 
 
     //TODO-prio update method and test when Item is finished
-    public static Item createNewItem(String title)  {
-        //Validate input
-        if (title == null || title.isEmpty())
-            throw new IllegalArgumentException("Empty title.");
+
+    /**
+     *
+     * @param title
+     * @return
+     * @throws EmptyTitleException
+     */
+    public static Item createNewItem(String title) throws EmptyTitleException {
+        //Validate input, throws EmptyTitleException
+        checkEmptyTitle(title);
 
         //Create item and retrieve and set itemID
         Item newItem = new Item(title);
@@ -185,6 +207,8 @@ public class ItemHandler {
     }
 
 
+
+
     /**
      * Note that the -1 return statement is technically unreachable because System.exit(1) is called if any
      * SQLException occurs. However, the Java compiler doesn't understand that System.exit() terminates the program,
@@ -194,10 +218,6 @@ public class ItemHandler {
      */
     //TODO-prio update method and test when Item is finished
     private static int saveItem(Item item) {
-        //Validate input
-        if (item == null)
-            throw new IllegalArgumentException("Invalid item: item is null.");
-
         //Prepare query
         String query = "INSERT INTO items (title, allowedRentalDays, available) VALUES (?, ?, ?)";
         String[] params = {
@@ -223,11 +243,20 @@ public class ItemHandler {
         return -1;
     }
 
+
+
     //TODO-prio update method and test when Item is finished
-    public static Item getItemByID(int itemID) throws ItemNotFoundException {
-        //No point getting impossible items
-        if (itemID <= 0)
-            throw new IllegalArgumentException("Error retrieving item by itemID: invalid itemID " + itemID);
+
+    /**
+     *
+     * @param itemID
+     * @return
+     * @throws ItemNotFoundException
+     * @throws InvalidItemIDException
+     */
+    public static Item getItemByID(int itemID) throws ItemNotFoundException, InvalidItemIDException {
+        //No point getting impossible items, throws InvalidItemIDException
+        checkValidItemID(itemID);
 
         //Prepare a SQL query to select an item by itemID.
         String query = "SELECT * FROM items WHERE itemID = ?";
@@ -265,12 +294,20 @@ public class ItemHandler {
     }
 
 
+
     //TODO-test ASAP
     //TODO-prio update method and test when Item is finished
-    public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException {
-        //No point getting invalid items
-        if (title == null || title.isEmpty())
-            throw new IllegalArgumentException("Error retrieving item by title: empty title.");
+
+    /**
+     *
+     * @param title
+     * @return
+     * @throws ItemNotFoundException
+     * @throws EmptyTitleException
+     */
+    public static List<Item> getItemsByTitle(String title) throws ItemNotFoundException, EmptyTitleException {
+        //No point getting invalid items, throws EmptyTitleException
+        checkEmptyTitle(title);
 
         //Prepare a SQL query to select an item by title.
         String query = "SELECT * FROM items WHERE title = ?";
@@ -371,12 +408,11 @@ public class ItemHandler {
     // == 27 test cases
 
     //TODO-prio update when Item is finished
-    public static boolean updateItem(Item item) throws ItemNotFoundException {
-        // Validate the input
-        if (item == null)
-            throw new IllegalArgumentException("Invalid item: item is null.");
+    public static void updateItem(Item item) throws ItemNotFoundException, NullItemException {
+        // Validate the input, throws NullItemException
+        checkNullItem(item);
 
-        // Get the old title
+        // Get the old title, throws ItemNotFoundException
         String oldTitle = getItemTitleByID(item.getItemID());
 
         // Prepare a SQL command to update an item's title by itemID.
@@ -384,19 +420,15 @@ public class ItemHandler {
         String[] params = {item.getTitle(), String.valueOf(item.getItemID())};
 
         // Execute the update.
-        int rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
+        DatabaseHandler.executePreparedUpdate(sql, params);
 
-        // If the update was successful, update the storedTitles and availableTitles
-        if (rowsAffected == 1 && !item.getTitle().equals(oldTitle)) {
-            // Decrement the count of the old title
-            decrementStoredTitles(oldTitle);
-            decrementAvailableTitles(oldTitle);
+        // Decrement the count of the old title
+        decrementStoredTitles(oldTitle);
+        decrementAvailableTitles(oldTitle);
 
-            // Increment the count of the new title
-            incrementStoredTitles(item.getTitle());
-            incrementAvailableTitles(item.getTitle());
-        }
-        return rowsAffected == 1;
+        // Increment the count of the new title
+        incrementStoredTitles(item.getTitle());
+        incrementAvailableTitles(item.getTitle());
     }
 
     private static String getItemTitleByID(int itemId) throws ItemNotFoundException {
@@ -422,12 +454,18 @@ public class ItemHandler {
 
 
     //TODO-prio update when Item is finished
-    public static boolean deleteItem(Item item) throws ItemNotFoundException {
-        //Validate the input
-        if (item == null)
-            throw new IllegalArgumentException("Invalid item: item is null.");
 
-        // Get the old title
+    /**
+     *
+     * @param item
+     * @throws ItemNotFoundException
+     * @throws NullItemException
+     */
+    public static void deleteItem(Item item) throws ItemNotFoundException, NullItemException {
+        //Validate the input, NullItemException
+        checkNullItem(item);
+
+        // Get the old title, throws ItemNotFoundException
         String oldTitle = getItemTitleByID(item.getItemID());
 
         // Check if the item exists in the database
@@ -438,7 +476,7 @@ public class ItemHandler {
             ResultSet resultSet = queryResult.getResultSet();
             resultSet.next(); // Move to the first row
 
-            // If the item does not exist, throw an exception
+            // If the item does not exist, throw an ItemNotFoundException
             if (resultSet.getInt(1) == 0) {
                 throw new ItemNotFoundException(item.getItemID());
             }
@@ -451,25 +489,19 @@ public class ItemHandler {
         params = new String[]{String.valueOf(item.getItemID())};
 
         //Execute the update. //TODO-prio handle cascades in rentals
-        int rowsAffected = 0;
-        rowsAffected = DatabaseHandler.executePreparedUpdate(sql, params);
+        DatabaseHandler.executePreparedUpdate(sql, params);
 
-        //Check if the delete was successful (i.e., if any rows were affected)
-        if (rowsAffected > 0) {
-            // Decrement the count of the old title. Remove the entry if the count reaches 0.
-            if(storedTitles.get(oldTitle) != null) {
-                storedTitles.put(oldTitle, storedTitles.get(oldTitle) - 1);
-                if (storedTitles.get(oldTitle) == 0) {
-                    storedTitles.remove(oldTitle);
-                }
-                availableTitles.put(oldTitle, availableTitles.get(oldTitle) - 1);
-                if (availableTitles.get(oldTitle) == 0) {
-                    availableTitles.remove(oldTitle);
-                }
+        // Decrement the count of the old title. Remove the entry if the count reaches 0.
+        if(storedTitles.get(oldTitle) != null) {
+            storedTitles.put(oldTitle, storedTitles.get(oldTitle) - 1);
+            if (storedTitles.get(oldTitle) == 0) {
+                storedTitles.remove(oldTitle);
             }
-            return true;
+            availableTitles.put(oldTitle, availableTitles.get(oldTitle) - 1);
+            if (availableTitles.get(oldTitle) == 0) {
+                availableTitles.remove(oldTitle);
+            }
         }
-        return false;
     }
 
 
@@ -479,18 +511,63 @@ public class ItemHandler {
     //TODO-comment
     //TODO-implement
     //TODO-exception
-    public static int getAllowedRentalDaysByID(int itemID) throws ItemNotFoundException {
+
+    /**
+     *
+     * @param itemID
+     * @return
+     * @throws ItemNotFoundException
+     * @throws InvalidItemIDException
+     */
+    public static int getAllowedRentalDaysByID(int itemID) throws ItemNotFoundException, InvalidItemIDException {
         Item item = getItemByID(itemID);
-        if (item != null)
-            return item.getAllowedRentalDays();
-        else
-            throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
+        if (item != null) return item.getAllowedRentalDays();
+        else throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
     }
 
+    /**
+     *
+     * @param item
+     * @return
+     * @throws ItemNotFoundException
+     */
     public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException {
-        if (!availableTitles.containsKey(item.getTitle())) {
+        if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
             throw new ItemNotFoundException(item.getTitle() + ": Item not found.");
-        }
         return availableTitles.get(item.getTitle());
+    }
+
+    //UTILITY METHODS---------------------------------------------------------------------------------------------------
+
+    /**
+     * Checks whether a given title is null or empty. If so, throws an EmptyTitleException,
+     * which must be handled.
+     * @param title the title to check.
+     * @throws EmptyTitleException if title is null or empty.
+     */
+    private static void checkEmptyTitle(String title) throws EmptyTitleException {
+        if (title == null || title.isEmpty())
+            throw new EmptyTitleException("Empty title.");
+    }
+
+    /**
+     * Checks whether a given itemID is invalid (<= 0). If so, throws an InvalidItemIDException,
+     * which must be handled.
+     * @param itemID the ID to check.
+     * @throws InvalidItemIDException if itemID <= 0.
+     */
+    private static void checkValidItemID(int itemID) throws InvalidItemIDException {
+        if (itemID <= 0)
+            throw new InvalidItemIDException("Error retrieving item by itemID: invalid itemID " + itemID);
+    }
+
+    /**
+     * Checks whether a given Item is null. If so, throws a NullItemException which must be handled.
+     * @param item the item to check.
+     * @throws NullItemException if item is null.
+     */
+    private static void checkNullItem(Item item) throws NullItemException {
+        if (item == null)
+            throw new NullItemException("Invalid item: item is null.");
     }
 }
