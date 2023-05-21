@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.UserUpdateFailedException;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayOutputStream;
@@ -310,7 +311,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n27: Testing updateUser method with null newUser...");
 
         // Verify that an IllegalArgumentException is thrown when newUser is null
-        assertThrows(IllegalArgumentException.class, () -> UserHandler.updateUser(null, "oldUsername"), "An IllegalArgumentException should be thrown when newUser is null.");
+        assertThrows(UserUpdateFailedException.class, () -> UserHandler.updateUser(null, "oldUsername"), "An IllegalArgumentException should be thrown when newUser is null.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -324,10 +325,10 @@ public class UserHandlerTest extends BaseHandlerTest {
         User newUser = UserHandler.createNewUser("user1", "password1");
 
         // Verify that an IllegalArgumentException is thrown when oldUsername is null
-        assertThrows(IllegalArgumentException.class, () -> UserHandler.updateUser(newUser, null), "An IllegalArgumentException should be thrown when oldUsername is null.");
+        assertThrows(UserUpdateFailedException.class, () -> UserHandler.updateUser(newUser, null), "An IllegalArgumentException should be thrown when oldUsername is null.");
 
         // Verify that an IllegalArgumentException is thrown when oldUsername is empty
-        assertThrows(IllegalArgumentException.class, () -> UserHandler.updateUser(newUser, ""), "An IllegalArgumentException should be thrown when oldUsername is empty.");
+        assertThrows(UserUpdateFailedException.class, () -> UserHandler.updateUser(newUser, ""), "An IllegalArgumentException should be thrown when oldUsername is empty.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -347,7 +348,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         //Update newUser
         try {
             UserHandler.updateUser(newUser, "user1");
-        } catch (UserNotFoundException e) {
+        } catch (UserUpdateFailedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -410,7 +411,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         newUser.setUsername(firstUsername);
 
         // Assert that an IllegalArgumentException is thrown when newUser's username is changed to a username that's already taken
-        assertThrows(IllegalArgumentException.class, () -> UserHandler.updateUser(newUser, secondUsername), "An IllegalArgumentException should be thrown when the new username is already taken.");
+        assertThrows(UserUpdateFailedException.class, () -> UserHandler.updateUser(newUser, secondUsername), "An IllegalArgumentException should be thrown when the new username is already taken.");
 
         // Assert that still only two usernames exist in storedUsernames, and that they are the correct names
         assertEquals(2, UserHandler.getStoredUsernames().size());
@@ -443,7 +444,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             newUser.setLateFee(15.5);
             UserHandler.updateUser(newUser, "user1");
             assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
-        } catch (UserNotFoundException e) {
+        } catch (UserUpdateFailedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
