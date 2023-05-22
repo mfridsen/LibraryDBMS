@@ -42,23 +42,17 @@ public class UserHandlerTest extends BaseHandlerTest {
     public void testCreateNewUser_ValidInput() {
         System.out.println("\n1: Testing createNewUser with valid input...");
 
-        try {
-            String username = "ValidUser";
-            String password = "validPassword123";
-            User newUser = UserHandler.createNewUser(username, password);
+        String username = "ValidUser";
+        String password = "validPassword123";
+        User newUser = UserHandler.createNewUser(username, password);
 
-            assertNotNull(newUser, "New user should be created");
-            assertEquals(username, newUser.getUsername(), "Username should match input");
-            assertEquals(password, newUser.getPassword(), "Password should match input");
-            assertEquals(User.DEFAULT_ALLOWED_RENTALS, newUser.getAllowedRentals(), "Default allowed rentals should be set");
-            assertEquals(0, newUser.getCurrentRentals(), "Current rentals should be zero");
-            assertEquals(0.0, newUser.getLateFee(), "Late fee should be zero");
-            assertFalse(newUser.isDeleted());
-        } catch (InvalidUsernameException | InvalidPasswordException e) {
-            fail("Should not get exception for valid test.");
-            e.printStackTrace();
-        }
-
+        assertNotNull(newUser, "New user should be created");
+        assertEquals(username, newUser.getUsername(), "Username should match input");
+        assertEquals(password, newUser.getPassword(), "Password should match input");
+        assertEquals(User.DEFAULT_ALLOWED_RENTALS, newUser.getAllowedRentals(), "Default allowed rentals should be set");
+        assertEquals(0, newUser.getCurrentRentals(), "Current rentals should be zero");
+        assertEquals(0.0, newUser.getLateFee(), "Late fee should be zero");
+        assertFalse(newUser.isDeleted());
 
         System.out.println("TEST FINISHED.");
     }

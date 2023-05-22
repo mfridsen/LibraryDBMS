@@ -58,7 +58,7 @@ public class RentalTest {
             assertNull(rental.getRentalDueDate(), "Rental due date should be null for a newly created rental.");
             assertNull(rental.getRentalReturnDate(), "Rental return date should be null for a newly created rental.");
             assertEquals(0.0, rental.getLateFee(), "Late fee should be 0.0 for a newly created rental.");
-        } catch (InvalidIDException | InvalidDateException e) {
+        } catch (ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -124,7 +124,7 @@ public class RentalTest {
             assertEquals(rentalDueDate, rental.getRentalDueDate(), "RentalDueDate not set correctly.");
             assertEquals(rentalReturnDate, rental.getRentalReturnDate(), "RentalReturnDate should be null.");
             assertEquals(lateFee, rental.getLateFee(), "LateFee not set correctly.");
-        } catch (InvalidLateFeeException | InvalidTitleException | InvalidIDException | InvalidDateException | InvalidUsernameException e) {
+        } catch (ConstructionException e) {
             e.printStackTrace();
             fail("Valid tests should not throw exceptions.");
         }
@@ -216,7 +216,7 @@ public class RentalTest {
             assertEquals(originalRental.getRentalDueDate(), copyRental.getRentalDueDate());
             assertEquals(originalRental.getRentalReturnDate(), copyRental.getRentalReturnDate());
             assertEquals(originalRental.getLateFee(), copyRental.getLateFee());
-        } catch (InvalidIDException | InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException e) {
+        } catch (ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -235,7 +235,7 @@ public class RentalTest {
             assertThrows(InvalidIDException.class, () -> rental.setRentalID(0));
             rental.setRentalID(1);
             assertEquals(1, rental.getRentalID());
-        } catch (InvalidIDException | InvalidDateException e) {
+        } catch (InvalidIDException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -254,7 +254,7 @@ public class RentalTest {
             assertThrows(InvalidIDException.class, () -> rental.setUserID(0));
             rental.setUserID(1);
             assertEquals(1, rental.getUserID());
-        } catch (InvalidIDException | InvalidDateException e) {
+        } catch (InvalidIDException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -273,7 +273,7 @@ public class RentalTest {
             assertThrows(InvalidIDException.class, () -> rental.setItemID(0));
             rental.setItemID(1);
             assertEquals(1, rental.getItemID());
-        } catch (InvalidIDException | InvalidDateException e) {
+        } catch (InvalidIDException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -294,7 +294,7 @@ public class RentalTest {
             rental.setRentalDate(now);
             //Assuming your test completes within a second, this should pass.
             assertEquals(now, rental.getRentalDate());
-        } catch (InvalidIDException | InvalidDateException e) {
+        } catch (InvalidDateException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -313,7 +313,7 @@ public class RentalTest {
             assertThrows(InvalidUsernameException.class, () -> rental.setUsername(""));
             rental.setUsername("testUser");
             assertEquals("testUser", rental.getUsername());
-        } catch (InvalidIDException | InvalidUsernameException | InvalidDateException e) {
+        } catch (InvalidUsernameException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -332,7 +332,7 @@ public class RentalTest {
             assertThrows(InvalidTitleException.class, () -> rental.setItemTitle(""));
             rental.setItemTitle("testTitle");
             assertEquals("testTitle", rental.getItemTitle());
-        } catch (InvalidIDException | InvalidDateException | InvalidTitleException e) {
+        } catch (InvalidTitleException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -351,7 +351,7 @@ public class RentalTest {
             assertThrows(InvalidDateException.class, () -> rental.setRentalDueDate(LocalDateTime.now().minusSeconds(1)));
             rental.setRentalDueDate(LocalDateTime.now().plusDays(1));
             assertEquals(LocalDateTime.now().plusDays(1).withHour(Rental.RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS), rental.getRentalDueDate());
-        } catch (InvalidIDException | InvalidDateException e) {
+        } catch (InvalidDateException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -370,7 +370,7 @@ public class RentalTest {
             assertThrows(InvalidDateException.class, () -> rental.setRentalReturnDate(LocalDateTime.now().minusDays(2))); //Return date before RentalDate
             rental.setRentalReturnDate(LocalDateTime.now());
             assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), rental.getRentalReturnDate());
-        } catch (InvalidIDException | InvalidDateException e) {
+        } catch (InvalidDateException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -390,7 +390,7 @@ public class RentalTest {
             assertEquals(0.0, rental.getLateFee());
             rental.setLateFee(1.0);
             assertEquals(1.0, rental.getLateFee());
-        } catch (InvalidIDException | InvalidDateException | InvalidLateFeeException e) {
+        } catch (InvalidLateFeeException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
