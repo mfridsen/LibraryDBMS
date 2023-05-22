@@ -56,7 +56,7 @@ public class RentalDeleteGUI extends GUI {
                             sqle.printStackTrace();
                         }*/
                     }
-                } catch (UserNullException | InvalidPasswordException userNullException) {
+                } catch (InvalidPasswordException | UserNullException userNullException) {
                     userNullException.printStackTrace();
                 }
             }

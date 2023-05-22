@@ -91,7 +91,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             System.out.println("\nTEST FINISHED.");
 
-        } catch (ItemNotFoundException | InvalidIDException | CreationException e) {
+        } catch (ItemNotFoundException | InvalidIDException e) {
             e.printStackTrace();
             fail("Test should be able to retrieve user or item with correct IDs. userID: " + validUserID + ", itemID: " + validItemID);
         }
@@ -256,7 +256,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
      */
     @Test
     @Order(9)
-    void testGetAllRentals_EmptyRentalsTable() {
+    void testGetAllRentals_EmptyRentalsTable() throws UserNotFoundException, InvalidIDException {
         System.out.println("\n9: Testing getAllRentals method with an empty database...");
 
         // Clear the rentals table in the database
@@ -264,12 +264,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         List<Rental> expectedRentals = Collections.emptyList();
         List<Rental> actualRentals;
-        try {
-            actualRentals = RentalHandler.getAllRentals();
-            assertEquals(expectedRentals, actualRentals);
-        } catch (SQLException | UserNotFoundException | ItemNotFoundException | InvalidIDException e) {
-            e.printStackTrace();
-        }
+        actualRentals = RentalHandler.getAllRentals();
+        assertEquals(expectedRentals, actualRentals);
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -280,25 +276,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n10: Testing getAllRentals method with some rentals in the database...");
 
         //Create some rentals
-        try {
-            RentalHandler.createNewRental(1, 1);
-            RentalHandler.createNewRental(2, 2);
-            RentalHandler.createNewRental(3, 3);
-            RentalHandler.createNewRental(4, 4);
-            RentalHandler.createNewRental(5, 5);
-        } catch (CreationException e) {
-            e.printStackTrace();
-            fail("Error while creating rentals: " + e.getMessage());
-        }
+        RentalHandler.createNewRental(1, 1);
+        RentalHandler.createNewRental(2, 2);
+        RentalHandler.createNewRental(3, 3);
+        RentalHandler.createNewRental(4, 4);
+        RentalHandler.createNewRental(5, 5);
 
         //Retrieve all rentals
-        List<Rental> rentals = null;
-        try {
-            rentals = RentalHandler.getAllRentals();
-        } catch (SQLException | UserNotFoundException | ItemNotFoundException | InvalidIDException e) {
-            e.printStackTrace();
-            fail("Error while retrieving rentals: " + e.getMessage());
-        }
+        List<Rental> rentals = RentalHandler.getAllRentals();
 
         //Check if the number of rentals retrieved matches the number of rentals created
         assertNotNull(rentals, "The retrieved rentals list should not be null.");

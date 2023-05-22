@@ -9,11 +9,7 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * Custom UserNotFoundException class. Used to make Exceptions clearer.
  */
 public class UserNotFoundException extends Exception {
-    public UserNotFoundException(int userId) {
-        super("Failed to find user with ID: " + userId);
-    }
-
-    public UserNotFoundException(String username) {
-        super("Failed to find user with username: " + username);
+    public UserNotFoundException(String message) {
+        super(message);
     }
 }

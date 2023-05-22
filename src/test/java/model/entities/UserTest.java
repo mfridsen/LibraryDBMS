@@ -54,22 +54,22 @@ public class UserTest {
         String validPassword = "password";
 
         //Null username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(null, validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, null));
+        assertThrows(ConstructionException.class, () -> new User(null, validPassword));
+        assertThrows(ConstructionException.class, () -> new User(validUsername, null));
 
         //Empty username and password
-        assertThrows(InvalidUsernameException.class, () -> new User("", validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, ""));
+        assertThrows(ConstructionException.class, () -> new User("", validPassword));
+        assertThrows(ConstructionException.class, () -> new User(validUsername, ""));
 
         //Short username and password
-        assertThrows(InvalidUsernameException.class, () -> new User("us", validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, "shrt"));
+        assertThrows(ConstructionException.class, () -> new User("us", validPassword));
+        assertThrows(ConstructionException.class, () -> new User(validUsername, "shrt"));
 
         //Too long username and password
         String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
         String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
-        assertThrows(InvalidUsernameException.class, () -> new User(longUsername, validPassword));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUsername, longPassword));
+        assertThrows(ConstructionException.class, () -> new User(longUsername, validPassword));
+        assertThrows(ConstructionException.class, () -> new User(validUsername, longPassword));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -117,31 +117,31 @@ public class UserTest {
         double lateFee = 10.0;
 
         //Null username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, null, validPassword, allowedRentals, currentRentals, lateFee, false));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, null, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, null, validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, validUsername, null, allowedRentals, currentRentals, lateFee, false));
 
         //Empty username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "", validPassword, allowedRentals, currentRentals, lateFee, false));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "", allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, "", validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, validUsername, "", allowedRentals, currentRentals, lateFee, false));
 
         //Short username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "us", validPassword, allowedRentals, currentRentals, lateFee, false));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "shrt", allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, "us", validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, validUsername, "shrt", allowedRentals, currentRentals, lateFee, false));
 
         //Too long username and password
         String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
         String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, longUsername, validPassword, allowedRentals, currentRentals, lateFee, false));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, longPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, longUsername, validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, validUsername, longPassword, allowedRentals, currentRentals, lateFee, false));
 
         //Invalid userID
-        assertThrows(InvalidIDException.class, () -> new User(0, validUsername, validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(0, validUsername, validPassword, allowedRentals, currentRentals, lateFee, false));
 
         //Invalid currentRentals
-        assertThrows(InvalidRentalException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, allowedRentals + 1, lateFee, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, allowedRentals + 1, lateFee, false));
 
         //Invalid lateFee
-        assertThrows(InvalidLateFeeException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, currentRentals, -1.0, false));
+        assertThrows(ConstructionException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, currentRentals, -1.0, false));
 
         System.out.println("\nTEST FINISHED.");
     }

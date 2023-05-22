@@ -3,10 +3,7 @@ package control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.ItemNullException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -257,8 +254,12 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testGetItemByID_IDDoesNotExist() {
         System.out.println("\n8: Testing getItemByID with an itemID that does not exist...");
 
-        int nonexistentItemID = 999; // assuming this ID does not exist in the database
-        assertThrows(ItemNotFoundException.class, () -> ItemHandler.getItemByID(nonexistentItemID), "Exception not thrown for nonexistent itemID");
+        try {
+            int nonexistentItemID = 999; // assuming this ID does not exist in the database
+            assertNull(ItemHandler.getItemByID(nonexistentItemID));
+        } catch (InvalidIDException e) {
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -288,7 +289,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The retrieved item should have the same allowed rental days as the created item
             assertEquals(createdItem.getAllowedRentalDays(), retrievedItem.getAllowedRentalDays(), "Retrieved item allowed rental days does not match created item allowed rental days.");
-        } catch (ItemNotFoundException | InvalidTitleException | InvalidIDException infe) {
+        } catch (InvalidTitleException | InvalidIDException infe) {
             fail("Valid operations should not throw exceptions.");
             infe.printStackTrace();
         }
@@ -325,9 +326,14 @@ public class ItemHandlerTest extends BaseHandlerTest {
     void testGetItemsByTitle_TitleDoesNotExist() {
         System.out.println("\n12: Testing getItemsByTitle with a title that does not exist...");
 
-        String nonexistentTitle = "Nonexistent Title";
-        // Expect an ItemNotFoundException when passing a nonexistent title
-        assertThrows(ItemNotFoundException.class, () -> ItemHandler.getItemsByTitle(nonexistentTitle));
+        try {
+            String nonexistentTitle = "Nonexistent Title";
+            // Expect an ItemNotFoundException when passing a nonexistent title
+            assertEquals(0, ItemHandler.getItemsByTitle(nonexistentTitle).size());
+        } catch (InvalidTitleException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -355,7 +361,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             //Check deleted
             assertFalse(items.get(0).isDeleted());
-        } catch (ItemNotFoundException | InvalidTitleException e) {
+        } catch (InvalidTitleException e) {
             // No exceptions should be thrown
             fail("Error while getting item by title: " + e.getMessage());
         }
@@ -397,7 +403,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertTrue(items.get(0).isAvailable());
             assertFalse(items.get(1).isAvailable());
 
-        } catch (ItemNotFoundException | InvalidTitleException e) {
+        } catch (InvalidTitleException e) {
             // No exceptions should be thrown
             fail("Error while getting items by title: " + e.getMessage());
         }
@@ -434,10 +440,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to update with null item
             ItemHandler.updateItem(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (ItemNullException iae) {
+        } catch (ItemNullException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
-        } catch (ItemNotFoundException | InvalidIDException e) {
-            fail("Unexpected exception: " + e.getMessage());
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -454,14 +458,12 @@ public class ItemHandlerTest extends BaseHandlerTest {
             nonexistentItem.setItemID(99999);
 
             // Try to update this nonexistent item
-            ItemHandler.updateItem(nonexistentItem);
-            fail("An ItemNotFoundException was expected.");
-        } catch (ItemNotFoundException inf) {
-            assertEquals("Item not found. Item ID: 99999", inf.getMessage());
-        } catch (IllegalArgumentException | ItemNullException | InvalidIDException | InvalidTitleException e) {
-            fail("Unexpected exception: " + e.getMessage());
+            assertThrows(ItemNotFoundException.class, () -> ItemHandler.updateItem(nonexistentItem));
+        } catch (ConstructionException | InvalidIDException e) {
+            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
+
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -502,7 +504,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertEquals(1, ItemHandler.getStoredTitles().get(updatedTitle).intValue());
             assertEquals(0, ItemHandler.getAvailableTitles().getOrDefault(updatedTitle, 0).intValue());
 
-        } catch (InvalidIDException | ItemNotFoundException | InvalidTitleException e) {
+        } catch (InvalidIDException | InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -521,10 +523,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to delete null item
             ItemHandler.deleteItemFromTable(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (ItemNullException iae) {
+        } catch (ItemNullException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
-        } catch (ItemNotFoundException e) {
-            fail("Unexpected exception: " + e.getMessage());
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -541,11 +541,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
             nonexistentItem.setItemID(99999);
 
             // Try to delete this nonexistent item
-            ItemHandler.deleteItemFromTable(nonexistentItem);
-            fail("An ItemNotFoundException was expected.");
-        } catch (ItemNotFoundException inf) {
-            assertEquals("Item with ID 99999 does not exist.", inf.getMessage());
-        } catch (ItemNullException | InvalidTitleException | InvalidIDException e) {
+            assertThrows(ItemNotFoundException.class, () -> ItemHandler.deleteItemFromTable(nonexistentItem));
+        } catch (InvalidIDException | ConstructionException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
 
@@ -570,10 +567,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // Try to retrieve the deleted item
             try {
-                ItemHandler.getItemByID(validItem.getItemID());
-                fail("An ItemNotFoundException was expected.");
-            } catch (ItemNotFoundException inf) {
-                assertEquals("Item not found. Item ID: " + validItem.getItemID(), inf.getMessage());
+                assertNull(ItemHandler.getItemByID(validItem.getItemID()));
             } catch (InvalidIDException e) {
                 fail("Unexpected exception: " + e.getMessage());
             }
@@ -591,7 +585,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
                 assertNull(ItemHandler.getAvailableTitles().get(validItem.getTitle()));
             }
 
-        } catch (ItemNotFoundException | InvalidTitleException | ItemNullException e) {
+        } catch (InvalidTitleException | ItemNullException | ItemNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -679,10 +673,10 @@ public class ItemHandlerTest extends BaseHandlerTest {
             });
 
             // Check the exception message
-            String expectedMessage = "Item not found.";
+            String expectedMessage = "Item not found";
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
-        } catch (InvalidTitleException e) {
+        } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

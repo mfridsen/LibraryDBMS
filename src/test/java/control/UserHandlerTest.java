@@ -42,17 +42,22 @@ public class UserHandlerTest extends BaseHandlerTest {
     public void testCreateNewUser_ValidInput() {
         System.out.println("\n1: Testing createNewUser with valid input...");
 
-        String username = "ValidUser";
-        String password = "validPassword123";
-        User newUser = UserHandler.createNewUser(username, password);
+        try {
+            String username = "ValidUser";
+            String password = "validPassword123";
+            User newUser = UserHandler.createNewUser(username, password);
 
-        assertNotNull(newUser, "New user should be created");
-        assertEquals(username, newUser.getUsername(), "Username should match input");
-        assertEquals(password, newUser.getPassword(), "Password should match input");
-        assertEquals(User.DEFAULT_ALLOWED_RENTALS, newUser.getAllowedRentals(), "Default allowed rentals should be set");
-        assertEquals(0, newUser.getCurrentRentals(), "Current rentals should be zero");
-        assertEquals(0.0, newUser.getLateFee(), "Late fee should be zero");
-        assertFalse(newUser.isDeleted());
+            assertNotNull(newUser, "New user should be created");
+            assertEquals(username, newUser.getUsername(), "Username should match input");
+            assertEquals(password, newUser.getPassword(), "Password should match input");
+            assertEquals(User.DEFAULT_ALLOWED_RENTALS, newUser.getAllowedRentals(), "Default allowed rentals should be set");
+            assertEquals(0, newUser.getCurrentRentals(), "Current rentals should be zero");
+            assertEquals(0.0, newUser.getLateFee(), "Late fee should be zero");
+            assertFalse(newUser.isDeleted());
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            fail("Should not get exception for valid test.");
+            e.printStackTrace();
+        }
 
         System.out.println("TEST FINISHED.");
     }
@@ -338,31 +343,11 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n27: Testing updateUser method with null newUser...");
 
         // Verify that an UserNullException is thrown when newUser is null
-        assertThrows(UserNullException.class, () -> UserHandler.updateUser(null, "oldUsername"), "An IllegalArgumentException should be thrown when newUser is null.");
+        assertThrows(UserNullException.class, () -> UserHandler.updateUser(null), "An IllegalArgumentException should be thrown when newUser is null.");
 
         System.out.println("\nTEST FINISHED.");
     }
 
-    @Test
-    @Order(28)
-    void testUpdateUser_NullOrEmptyOldUsername() {
-        System.out.println("\n28: Testing updateUser method with null or empty oldUsername...");
-
-        try {
-            User newUser = UserHandler.createNewUser("user1", "password1");
-
-            // Verify that a InvalidUsernameException is thrown when oldUsername is null
-            assertThrows(InvalidUsernameException.class, () -> UserHandler.updateUser(newUser, null), "A InvalidUsernameException should be thrown when oldUsername is null.");
-
-            // Verify that a InvalidUsernameException is thrown when oldUsername is empty
-            assertThrows(InvalidUsernameException.class, () -> UserHandler.updateUser(newUser, ""), "A InvalidUsernameException should be thrown when oldUsername is empty.");
-        } catch (InvalidUsernameException | InvalidPasswordException e) {
-            fail("Should not get exception for valid test.");
-            e.printStackTrace();
-        }
-
-        System.out.println("\nTEST FINISHED.");
-    }
 
     @Test
     @Order(29)
@@ -378,7 +363,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
 
             //Update newUser
-            UserHandler.updateUser(newUser, "user1");
+            UserHandler.updateUser(newUser);
 
             //Verify only one username exists in storedUsernames, and it's the same
             assertEquals(1, UserHandler.getStoredUsernames().size());
@@ -415,7 +400,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             newUser.setUsername(thirdUsername);
 
             //Assert no exception is thrown when newUser's username is changed to a third username
-            assertDoesNotThrow(() -> UserHandler.updateUser(newUser, secondUsername), "No exception should be thrown when the new username is not taken.");
+            assertDoesNotThrow(() -> UserHandler.updateUser(newUser), "No exception should be thrown when the new username is not taken.");
 
             //Assert that still only two usernames exist in storedUsernames, and that they are the correct names
             assertEquals(2, UserHandler.getStoredUsernames().size());
@@ -448,7 +433,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             newUser.setUsername(firstUsername);
 
             // Assert that an UsernameTakenException is thrown when newUser's username is changed to a username that's already taken
-            assertThrows(InvalidUsernameException.class, () -> UserHandler.updateUser(newUser, secondUsername), "An IllegalArgumentException should be thrown when the new username is already taken.");
+            assertThrows(InvalidUsernameException.class, () -> UserHandler.updateUser(newUser), "An IllegalArgumentException should be thrown when the new username is already taken.");
 
             // Assert that still only two usernames exist in storedUsernames, and that they are the correct names
             assertEquals(2, UserHandler.getStoredUsernames().size());
@@ -472,17 +457,17 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Change password
             newUser.setPassword("newPassword");
-            UserHandler.updateUser(newUser, "user1");
+            UserHandler.updateUser(newUser);
             assertEquals("newPassword", newUser.getPassword(), "Password should be updated to 'newPassword'.");
 
             // Change currentRentals
             newUser.setCurrentRentals(3);
-            UserHandler.updateUser(newUser, "user1");
+            UserHandler.updateUser(newUser);
             assertEquals(3, newUser.getCurrentRentals(), "Current rentals should be updated to 3.");
 
             // Change lateFee
             newUser.setLateFee(15.5);
-            UserHandler.updateUser(newUser, "user1");
+            UserHandler.updateUser(newUser);
             assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
         } catch (UserNullException | InvalidUsernameException | InvalidLateFeeException | InvalidRentalException | InvalidPasswordException e) {
             fail("Valid operations should not throw exceptions.");
@@ -523,7 +508,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Call deleteUser and expect a UserNotFoundException to be thrown
             assertThrows(UserNotFoundException.class, () -> UserHandler.deleteUser(nonExistingUser), "deleteUser should throw UserNotFoundException when the user does not exist.");
-        } catch (InvalidUsernameException | InvalidPasswordException | InvalidIDException e) {
+        } catch (InvalidIDException | ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -551,7 +536,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Verify that the user has been deleted from the database
             assertNull(UserHandler.getUserByUsername("user1"));
-        } catch (UserNotFoundException | UserNullException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (UserNullException | InvalidUsernameException | InvalidPasswordException | UserNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -627,7 +612,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             UserHandler.createNewUser("user1", "password1");
             // Attempt to login with the correct username but incorrect password
             assertFalse(UserHandler.login("user1", "incorrectPassword"), "Login should return false when password is incorrect.");
-        } catch (UserNotFoundException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (InvalidUsernameException | InvalidPasswordException | UserNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -646,7 +631,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Attempt to login with the correct username and password
             assertTrue(UserHandler.login("user2", "password2"), "Login should return true when username and password are correct.");
-        } catch (UserNotFoundException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (InvalidUsernameException | InvalidPasswordException | UserNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -698,7 +683,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Call validateUser with correct password and expect true to be returned
             assertTrue(UserHandler.validateUser(user, "password1"), "ValidateUser should return true when the password is correct.");
-        } catch (UserNullException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (InvalidPasswordException | ConstructionException | UserNullException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -717,7 +702,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Call validateUser with incorrect password and expect false to be returned
             assertFalse(UserHandler.validateUser(user, "password2"), "ValidateUser should return false when the password is incorrect.");
-        } catch (UserNullException | InvalidUsernameException | InvalidPasswordException e) {
+        } catch (InvalidPasswordException | ConstructionException | UserNullException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

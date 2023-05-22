@@ -57,10 +57,10 @@ public class ItemTest {
         System.out.println("\n2: Testing Item creation constructor with invalid input...");
 
         // Empty title
-        assertThrows(InvalidTitleException.class, () -> new Item(""));
+        assertThrows(ConstructionException.class, () -> new Item(""));
 
         // Null title
-        assertThrows(InvalidTitleException.class, () -> new Item((String) null));
+        assertThrows(ConstructionException.class, () -> new Item((String) null));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -94,9 +94,9 @@ public class ItemTest {
     void testItemRetrievalConstructor_InvalidInput() { //TODO-PRIO TEST TOO LONG TITLE
         System.out.println("\n4: Testing Item retrieval constructor with invalid input...");
 
-        assertThrows(InvalidIDException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
-        assertThrows(InvalidTitleException.class, () -> new Item(1, "", 7, true));  // Empty title
-        assertThrows(InvalidTitleException.class, () -> new Item(1, null, 7, true));  // Null title
+        assertThrows(ConstructionException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
+        assertThrows(ConstructionException.class, () -> new Item(1, "", 7, true));  // Empty title
+        assertThrows(ConstructionException.class, () -> new Item(1, null, 7, true));  // Null title
 
         System.out.println("\nTEST FINISHED.");
     }

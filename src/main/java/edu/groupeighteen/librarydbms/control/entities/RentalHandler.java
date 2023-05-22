@@ -116,7 +116,8 @@ public class RentalHandler {
 
             //Handle exceptions
         } catch (InvalidIDException | InvalidDateException | ItemNotFoundException | InvalidTitleException |
-                InvalidUsernameException | InvalidRentalException | ConstructionException | ValidationException e) {
+                InvalidUsernameException | InvalidRentalException | ConstructionException | ValidationException |
+                ItemNullException | UserNullException e) {
             ExceptionHandler.HandleFatalException("Failed to create Rental due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -960,14 +961,12 @@ public class RentalHandler {
                 throw new ValidationException("Item with ID " + item + " not found.");
             if (!item.isAvailable()) {
                 List<Item> items = ItemHandler.getItemsByTitle(item.getTitle());
-                if (items == null)
-                    throw new ValidationException("No item with title " + item.getTitle() + " available.");
                 for (Item availableItem : items)
                     if (availableItem.isAvailable())
                         return availableItem;
             }
             return item;
-        } catch (InvalidIDException e) {
+        } catch (InvalidIDException | InvalidTitleException e) {
             throw new ValidationException("Item validation failed for itemID " + itemID + ": " + e.getMessage(), e);
         }
     }

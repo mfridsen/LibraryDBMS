@@ -80,11 +80,11 @@ public class RentalTest {
         int invalidItemID = -1;
 
         //Test invalid user ID
-        assertThrows(InvalidIDException.class, () -> new Rental(invalidUserID, 1),
+        assertThrows(ConstructionException.class, () -> new Rental(invalidUserID, 1),
                 "Constructor should throw an IllegalArgumentException when the user ID is not valid.");
 
         //Test invalid item ID
-        assertThrows(InvalidIDException.class, () -> new Rental(1, invalidItemID),
+        assertThrows(ConstructionException.class, () -> new Rental(1, invalidItemID),
                 "Constructor should throw an IllegalArgumentException when the item ID is not valid.");
 
         System.out.println("\nTEST FINISHED.");
@@ -153,36 +153,36 @@ public class RentalTest {
         double lateFee = 1.0;
 
         //Testing invalid rentalID
-        assertThrows(InvalidIDException.class, () -> new Rental(-1, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalID was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(-1, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalID was invalid.");
 
         //Testing invalid userID
-        assertThrows(InvalidIDException.class, () -> new Rental(rentalID, -1, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when userID was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, -1, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when userID was invalid.");
 
         //Testing invalid itemID
-        assertThrows(InvalidIDException.class, () -> new Rental(rentalID, userID, -1, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when itemID was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, -1, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when itemID was invalid.");
 
         //Testing invalid rentalDate
-        assertThrows(InvalidDateException.class, () -> new Rental(rentalID, userID, itemID, rentalDate.plusDays(1), username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDate was invalid.");
-        assertThrows(InvalidDateException.class, () -> new Rental(rentalID, userID, itemID, null, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDate was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate.plusDays(1), username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDate was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, null, username, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDate was invalid.");
 
         //Testing invalid username
-        assertThrows(InvalidUsernameException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, "", itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when username was invalid.");
-        assertThrows(InvalidUsernameException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, null, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when username was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, "", itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when username was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, null, itemTitle, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when username was invalid.");
 
         //Testing invalid itemTitle
-        assertThrows(InvalidTitleException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, "", rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when itemTitle was invalid.");
-        assertThrows(InvalidTitleException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, null, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when itemTitle was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, "", rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when itemTitle was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, null, rentalDueDate, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when itemTitle was invalid.");
 
         //Testing invalid rentalDueDate
-        assertThrows(InvalidDateException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate.minusDays(3), rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDueDate was invalid.");
-        assertThrows(InvalidDateException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, null, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDueDate was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate.minusDays(3), rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDueDate was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, null, rentalReturnDate, lateFee, false), "Rental constructor did not throw exception when rentalDueDate was invalid.");
 
         //Testing invalid rentalReturnDate
-        assertThrows(InvalidDateException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate.minusDays(5), lateFee, false), "Rental constructor did not throw exception when rentalReturnDate was invalid.");
-        assertThrows(InvalidDateException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, null, lateFee, false), "Rental constructor did not throw exception when rentalReturnDate was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate.minusDays(5), lateFee, false), "Rental constructor did not throw exception when rentalReturnDate was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, null, lateFee, false), "Rental constructor did not throw exception when rentalReturnDate was invalid.");
 
         //Testing invalid lateFee
-        assertThrows(InvalidLateFeeException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, -1.0, false), "Rental constructor did not throw exception when lateFee was invalid.");
+        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, -1.0, false), "Rental constructor did not throw exception when lateFee was invalid.");
 
         System.out.println("\nTEST FINISHED.");
     }

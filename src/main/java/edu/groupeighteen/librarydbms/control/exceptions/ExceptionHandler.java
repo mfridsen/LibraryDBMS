@@ -24,13 +24,13 @@ public class ExceptionHandler {
         //TODO-future fix the logging
             // Log the error
             Logger logger = Logger.getLogger("DatabaseErrorLogger");
-            if (cause instanceof SQLException) {
+            /*if (cause instanceof SQLException) {
                 logger.log(Level.SEVERE, "Fatal database error occurred", cause);
                 System.err.println(cause.getMessage()); //TODO-future remove later
                 cause.printStackTrace();
             }
             if (cause instanceof FileNotFoundException) {
-                logger.log(Level.SEVERE, "Fata file not found error occurred", cause);
+                logger.log(Level.SEVERE, "Fatal file not found error occurred", cause);
                 System.err.println(cause.getMessage()); //TODO-future remove later
                 cause.printStackTrace();
             }
@@ -38,7 +38,10 @@ public class ExceptionHandler {
                 logger.log(Level.SEVERE, "Fatal IOException occurred", cause);
                 System.err.println(cause.getMessage()); //TODO-future remove later
                 cause.printStackTrace();
-            }
+            }*/
+
+            System.err.println(cause.getMessage());
+            cause.printStackTrace();
 
             // Exit the program
             System.err.println("A fatal error occurred. Please check the log file for more details.");

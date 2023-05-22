@@ -203,7 +203,7 @@ public class ItemHandler {
      * @param title The title of the item to be created.
      * @return The created Item.
      */
-    public static Item createNewItem(String title) {
+    public static Item createNewItem(String title) throws InvalidTitleException {
         try {
             //TODO-prio update method and test when Item is finished
             //Validate input, throws InvalidTitleException
@@ -217,7 +217,7 @@ public class ItemHandler {
             incrementBothTitles(title);
 
             return newItem;
-        } catch (InvalidTitleException | ConstructionException | InvalidIDException e) {
+        } catch (ConstructionException | InvalidIDException e) {
             ExceptionHandler.HandleFatalException("Failed to create Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -259,44 +259,40 @@ public class ItemHandler {
     }
 
 
-    /** //TODO-PRIO TEST RETUNING NULL
+    /**
      * Retrieves an item by its ID from the database.
      * @param itemID The ID of the item to be retrieved.
      * @return The retrieved Item.
      */
-    public static Item getItemByID(int itemID) {
-        try {
-            // No point getting impossible items
-            checkValidItemID(itemID);
+    public static Item getItemByID(int itemID) throws InvalidIDException {
 
-            // Prepare a SQL query to select an item by itemID
-            String query = "SELECT * FROM items WHERE itemID = ?";
-            String[] params = {String.valueOf(itemID)};
+        // No point getting impossible items
+        checkValidItemID(itemID);
 
-            // Execute the query and store the result in a ResultSet
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-                ResultSet resultSet = queryResult.getResultSet();
+        // Prepare a SQL query to select an item by itemID
+        String query = "SELECT * FROM items WHERE itemID = ?";
+        String[] params = {String.valueOf(itemID)};
 
-                // If the ResultSet contains data, create a new Item object using the retrieved title
-                // and set the item's itemID
-                if (resultSet.next()) {
-                    String title = resultSet.getString("title");
-                    int allowedRentalDays = resultSet.getInt("allowedRentalDays");
-                    boolean available = resultSet.getBoolean("available");
-                    boolean deleted = resultSet.getBoolean("deleted");
-                    Item item = new Item(title);
-                    item.setItemID(itemID);
-                    item.setAllowedRentalDays(allowedRentalDays);
-                    item.setAvailable(available);
-                    item.setDeleted(deleted);
-                    return item;
-                }
-            } catch (SQLException | ConstructionException | InvalidRentalException e) {
-                ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
-                        e.getClass().getName() + ": " + e.getMessage(), e);
+        // Execute the query and store the result in a ResultSet
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+
+            // If the ResultSet contains data, create a new Item object using the retrieved title
+            // and set the item's itemID
+            if (resultSet.next()) {
+                String title = resultSet.getString("title");
+                int allowedRentalDays = resultSet.getInt("allowedRentalDays");
+                boolean available = resultSet.getBoolean("available");
+                boolean deleted = resultSet.getBoolean("deleted");
+                Item item = new Item(title);
+                item.setItemID(itemID);
+                item.setAllowedRentalDays(allowedRentalDays);
+                item.setAvailable(available);
+                item.setDeleted(deleted);
+                return item;
             }
-        } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException("Invalid ID provided: " +
+        } catch (SQLException | ConstructionException | InvalidRentalException e) {
+            ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
@@ -306,12 +302,12 @@ public class ItemHandler {
 
 
 
-    /** //TODO-PRIO TEST RETUNING NULL
+    /**
      * Retrieves all items with a given title from the database.
      * @param title The title of the items to be retrieved.
      * @return A list of Item objects with the provided title.
      */
-    public static List<Item> getItemsByTitle(String title) {
+    public static List<Item> getItemsByTitle(String title) throws InvalidTitleException {
         List<Item> items = new ArrayList<>();
         try {
             // No point getting invalid items
@@ -338,7 +334,7 @@ public class ItemHandler {
                     items.add(item);
                 }
             }
-        } catch (SQLException | InvalidIDException | ConstructionException | InvalidRentalException | InvalidTitleException e) {
+        } catch (SQLException | InvalidIDException | ConstructionException | InvalidRentalException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve Items by title due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -410,11 +406,11 @@ public class ItemHandler {
     // == 27 test cases
 
 
-    /** //TODO-PRIO CHANGE TO THROW ONLY ONE EXCEPTION
+    /**
      * Updates an existing item in the database and adjusts the count of the old and new titles.
      * @param item The Item object containing the updated information.
      */
-    public static void updateItem(Item item) {
+    public static void updateItem(Item item) throws ItemNullException, ItemNotFoundException {
         try {
             //TODO-prio update when Item is finished
             //Validate the input, throws ItemNullException
@@ -422,6 +418,7 @@ public class ItemHandler {
 
             // Get the old Item instance (which hasn't been updated)
             Item oldItem = getItemByID(item.getItemID());
+            if (oldItem == null) throw new ItemNotFoundException("Updated failed: could not find Item with ID " + item.getItemID());
 
             // Get the old title
             String oldTitle = oldItem.getTitle();
@@ -456,17 +453,17 @@ public class ItemHandler {
                     incrementAvailableTitles(item.getTitle());
                 }
             }
-        } catch (ItemNullException e) {
+        } catch (InvalidIDException e) {
             ExceptionHandler.HandleFatalException("Failed to update Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
-    /** //TODO-PRIO CHANGE TO ONLY THROW ONE EXCEPTION
+    /**
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
      */
-    public static void deleteItemFromTable(Item item) {
+    public static void deleteItemFromTable(Item item) throws ItemNullException, ItemNotFoundException {
         try {
             //TODO-prio UPDATE TO CHANGE DELETED
             //TODO-prio update when Item is finished
@@ -474,7 +471,9 @@ public class ItemHandler {
             checkNullItem(item);
 
             // Get the old title, throws ItemNotFoundException
-            String oldTitle = getItemTitleByID(item.getItemID());
+            Item oldItem = getItemByID(item.getItemID());
+            if (oldItem == null) throw new ItemNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
+            String oldTitle = oldItem.getTitle();
 
             // Check if the item exists in the database
             String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
@@ -497,7 +496,7 @@ public class ItemHandler {
                 decrementStoredTitles(oldTitle);
                 decrementAvailableTitles(oldTitle);
             }
-        } catch (ItemNullException | SQLException e) {
+        } catch (SQLException | InvalidIDException e) {
             ExceptionHandler.HandleFatalException("Failed to delete Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -526,7 +525,7 @@ public class ItemHandler {
     public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException, ItemNullException {
         checkNullItem(item);
         if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
-            throw new ItemNotFoundException(item.getTitle() + ": Item not found.");
+            throw new ItemNotFoundException(item.getTitle() + ": Item not found in stored or available titles.");
         return availableTitles.get(item.getTitle());
     }
 
