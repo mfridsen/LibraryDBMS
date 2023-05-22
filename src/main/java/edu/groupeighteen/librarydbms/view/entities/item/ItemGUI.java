@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Jesper Truedsson
@@ -14,31 +15,45 @@ import javax.swing.*;
  */
 public class ItemGUI extends GUI {
         private Item item;
-        private JLabel itemIDLabel;
-        private JLabel itemLabel;
-        private JLabel ISBNLabel;
-        private JButton updateButton;
-        private JButton deleteButton;
-        private JPanel ItemGUIPanel;
-        private JFrame ItemGUIFrame;
+        private JPanel scrollPanePanel;
 
-    public ItemGUI(Item item, GUI preiousGUI){
+    public ItemGUI(GUI preiousGUI, Item item){
         super(preiousGUI, "ItemGUI");
         this.item = item;
-    this.itemIDLabel = new JLabel("itemID: " + item.getItemID());
-        setupButtons();
-        addButtonsToPanel(new JButton[]{updateButton, deleteButton});
         setupPanels();
-        this.displayGUI();
+        displayGUI();
     }
 
     @Override
     protected JButton[] setupButtons() {
+        //Leads to ItemGUI
         return new JButton[0];
+    }
+
+    protected void setupScrollPane(){
+        //Define column names
+        String[] columnNames = {"Property", "Value"};
+
+        //Gather data
+        Object[][] data = {
+                {"Item ID", item.getItemID()},
+                {"Item Title", item.getTitle()},
+        };
+
+        JTable userUpdateTable = setupTable(columnNames, data);
+        //Create the scroll pane
+        JScrollPane userScrollPane = new JScrollPane();
+        userScrollPane.setViewportView(userUpdateTable);
+        //Create panel and add scroll pane to it
+        scrollPanePanel = new JPanel();
+        scrollPanePanel.add(userScrollPane, BorderLayout.CENTER);
     }
 
     @Override
     protected void setupPanels() {
-
+        GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
+    }
+    public Item getItem(){
+        return item;
     }
 }
