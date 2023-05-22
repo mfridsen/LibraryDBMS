@@ -29,10 +29,14 @@ public class DatabaseConnectionTest {
      */
     @BeforeAll
     static void setup() {
-        System.out.println("BeforeAll:");
-        //TODO handle?
-        DatabaseConnection.setVerbose(true);
-        DatabaseConnection.setup();
+        try {
+            System.out.println("BeforeAll:");
+            //TODO handle?
+            DatabaseConnection.setVerbose(true);
+            DatabaseConnection.setup();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

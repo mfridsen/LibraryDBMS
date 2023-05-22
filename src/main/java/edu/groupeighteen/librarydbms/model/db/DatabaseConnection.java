@@ -2,7 +2,6 @@ package edu.groupeighteen.librarydbms.model.db;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class DatabaseConnection {
      * server: localhost
      * port: 3306
      */
-    public static Connection setup() {
+    public static Connection setup() throws SQLException, ClassNotFoundException {
         String url = "jdbc:mysql://localhost:3306";
         String user = null;
         String password = null;
@@ -61,25 +60,18 @@ public class DatabaseConnection {
      * @param password the password to use when connecting to the database
      * @return a Connection if successful
      */
-    public static Connection connectToDatabaseServer(String url, String user, String password) {
-        try {
-            // Load the JDBC driver
-            if (verbose) System.out.println("\nLoading JDBC driver...");
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            if (verbose) System.out.println("Loaded JDBC driver.");
+    public static Connection connectToDatabaseServer(String url, String user, String password)
+            throws SQLException, ClassNotFoundException {
+        // Load the JDBC driver
+        if (verbose) System.out.println("\nLoading JDBC driver...");
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        if (verbose) System.out.println("Loaded JDBC driver.");
 
-            // Establish a connection
-            if (verbose) System.out.println("Connecting to: " + user + "@" + url);
-            connection = DriverManager.getConnection(url, user, password);
-            if (verbose) System.out.println("Connected to: " + user + "@" + url);
-            return connection;
-        } catch (ClassNotFoundException | SQLException e) {
-            ExceptionHandler.HandleFatalException("Couldn't retrieve User Meta data due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        //Won't reach, but needed to compile
-        return null;
+        // Establish a connection
+        if (verbose) System.out.println("Connecting to: " + user + "@" + url);
+        connection = DriverManager.getConnection(url, user, password);
+        if (verbose) System.out.println("Connected to: " + user + "@" + url);
+        return connection;
     }
 
     /**

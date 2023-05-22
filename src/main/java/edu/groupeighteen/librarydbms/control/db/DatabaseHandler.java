@@ -38,14 +38,19 @@ public class DatabaseHandler {
      * create it.
      */
     public static void setup(boolean verbose) {
-        //Set verbosity
-        DatabaseHandler.verbose = verbose;
+        try {
+            //Set verbosity
+            DatabaseHandler.verbose = verbose;
 
-        //Connect to database
-        connection = DatabaseConnection.setup();
+            //Connect to database
+            connection = DatabaseConnection.setup();
 
-        executeCommand("drop database if exists " + LibraryManager.databaseName);
-        createDatabase(LibraryManager.databaseName);
+            executeCommand("drop database if exists " + LibraryManager.databaseName);
+            createDatabase(LibraryManager.databaseName);
+        } catch (SQLException | ClassNotFoundException e) {
+            ExceptionHandler.HandleFatalException("Failed to setup databse due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
 
         /*
         if (!databaseExists(LibraryManager.databaseName)) {
