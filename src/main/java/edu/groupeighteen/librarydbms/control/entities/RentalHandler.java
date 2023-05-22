@@ -75,17 +75,33 @@ public class RentalHandler {
      * @param itemID the ID of the item being rented.
      * @return the newly created and saved Rental object.
      */
-    public static Rental createNewRental(int userID, int itemID) {
+    public static Rental createNewRental(int userID, int itemID) throws UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidIDException {
+        //Check IDs, can throw InvalidIDException
+        if (checkUserID(userID))
+            throw new InvalidIDException("Rental creation failed: invalid userID " + userID);
+        if (checkItemID(itemID))
+            throw new InvalidIDException("Rental creation failed: invalid itemID " + itemID);
+
+        String username = ""; //Create username here so catch block is happy
+        String title = ""; //Create title here so catch block is happy
+
         try {
-            //Validate user, can throw InvalidIDException, UserNotFoundException and RentalNotAllowedException
-            User user = validateUser(userID);
+            //Retrieve user, throws UserNotFoundException if not found
+            User user = getExistingUser(userID);
+            username = user.getUsername();
 
-            //Validate itemID and retrieve item, can throw InvalidIDException and ItemNotFoundException
-            //Check if there is an available copy of the item
-            Item item = validateItem(itemID);
+            //Validate that user is allowed to rent, throws RentalNotAllowedException if not
+            validateUserAllowedToRent(user);
 
-            //Update itemID to ensure correct itemID is used to create Rental
-            itemID = item.getItemID();
+            //Retrieve item, throws ItemNotFoundException if not found
+            Item item = getExistingItem(itemID);
+            title = item.getTitle();
+
+            //Check if there is an available copy of the item, if not, try to find one
+            if (!item.isAvailable()) {
+                item = getAvailableCopy(title); //Throws ItemNotFoundException if not found
+                itemID = item.getItemID(); //Update itemID to ensure correct itemID is used to create Rental
+            }
 
             //Create rental
             Rental newRental = new Rental(userID, itemID);
@@ -93,6 +109,7 @@ public class RentalHandler {
             //Set rental fields except rentalID
             newRental.setUsername(user.getUsername());
             newRental.setItemTitle(item.getTitle());
+
             //Due date
             int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
             LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
@@ -114,20 +131,32 @@ public class RentalHandler {
             //Return rental
             return newRental;
 
-            //Handle exceptions
-        } catch (InvalidIDException | InvalidDateException | ItemNotFoundException | InvalidTitleException |
-                InvalidUsernameException | InvalidRentalException | ConstructionException | ValidationException |
-                ItemNullException | UserNullException e) {
-            ExceptionHandler.HandleFatalException("Failed to create Rental due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
+        } catch (InvalidIDException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidIDException thrown for valid ID, message: "
+                    + e.getMessage(), e);
+        } catch (InvalidTitleException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidTitleException thrown for valid title "
+                    + title + ", message: " + e.getMessage(), e);
+        } catch (InvalidUsernameException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidUsernameException thrown for valid username "
+                    + username + ", message: " + e.getMessage(), e);
+        } catch (ConstructionException e) {
+            ExceptionHandler.HandleFatalException("Rental construction failed due to " + e.getCause().getClass().getName(), e.getCause());
+        } catch (InvalidDateException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidDateException: " + e.getMessage(), e);
+        } catch (InvalidRentalException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidRentalException: " + e.getMessage(), e);
+        } catch (ItemNullException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed: ItemNullException thrown for non-null Item, message: "
+                    + e.getMessage(), e);
+        } catch (UserNullException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed: UserNullException thrown for non-null User, message: "
+                    + e.getMessage(), e);
         }
 
         //Won't reach, needed for compilation
         return null;
     }
-
-
-
 
     /**
      * Saves a new rental in the database.
@@ -914,75 +943,48 @@ public class RentalHandler {
 
     // UTILITY STUFF --------------------------------------------------------------------------------------------------
 
-    private static User validateUser(int userID) throws ValidationException {
-        try {
-            //Check ID
-            checkUserID(userID);
-            //Retrieve and check User not null
-            User user = checkUserNull(userID);
-            //Validate user is allowed to rent
-            checkUserAllowedToRent(user);
-            return user;
-        } catch (InvalidIDException e) {
-            throw new ValidationException("User validation failed for userID " + userID + ": " + e.getMessage(), e);
-        }
+    private static boolean checkUserID(int userID) {
+        return userID <= 0;
     }
 
-    private static void checkUserID(int userID) throws InvalidIDException {
-        if (userID <= 0)
-            throw new InvalidIDException("Invalid userID: " + userID);
+    private static boolean checkItemID(int itemID) {
+        return itemID <= 0;
     }
 
-    private static User checkUserNull(int userID) throws ValidationException, InvalidIDException {
+    private static User getExistingUser(int userID) throws UserNotFoundException, InvalidIDException {
         User user = UserHandler.getUserByID(userID);
         if (user == null)
-            throw new ValidationException("User with ID " + userID + " not found.");
+            throw new UserNotFoundException("User with ID " + userID + " not found.");
         return user;
     }
 
-    private static void checkUserAllowedToRent(User user) throws ValidationException {
+    private static void validateUserAllowedToRent(User user) throws RentalNotAllowedException {
         //User has too many current rentals
         if (user.getCurrentRentals() >= user.getAllowedRentals())
-            throw new ValidationException("User not allowed to rent due to already renting to capacity. " +
+            throw new RentalNotAllowedException("User not allowed to rent due to already renting to capacity. " +
                     "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
         //User has late fee
         if (user.getLateFee() > 0)
-            throw new ValidationException("User not allowed to rent due to having a late fee. " +
+            throw new RentalNotAllowedException("User not allowed to rent due to having a late fee. " +
                     "Late fee: " + user.getLateFee());
     }
 
-    private static Item validateItem(int itemID) throws ValidationException {
-        try {
-            //Check ID
-            checkItemID(itemID);
-            //Retrieve Item
-            Item item = ItemHandler.getItemByID(itemID);
-            if (item == null)
-                throw new ValidationException("Item with ID " + item + " not found.");
-            if (!item.isAvailable()) {
-                List<Item> items = ItemHandler.getItemsByTitle(item.getTitle());
-                for (Item availableItem : items)
-                    if (availableItem.isAvailable())
-                        return availableItem;
-            }
-            return item;
-        } catch (InvalidIDException | InvalidTitleException e) {
-            throw new ValidationException("Item validation failed for itemID " + itemID + ": " + e.getMessage(), e);
+    private static Item getExistingItem(int itemID) throws ItemNotFoundException, InvalidIDException {
+        Item item = ItemHandler.getItemByID(itemID);
+        if (item == null)
+            throw new ItemNotFoundException("Item with ID " + itemID + " not found.");
+        return item;
+    }
+
+    private static Item getAvailableCopy(String title) throws InvalidTitleException, ItemNotFoundException {
+        List<Item> items = ItemHandler.getItemsByTitle(title);
+        Item item = null;
+        for (Item availableItem : items) {
+            if (availableItem.isAvailable())
+                item = availableItem;
         }
+        if (item == null) throw new ItemNotFoundException("Rental creation failed: No available copy of " + title + " found.");
+        return item;
     }
 
-    private static void checkItemID(int itemID) throws InvalidIDException {
-        if (itemID <= 0)
-            throw new InvalidIDException("Invalid itemID: " + itemID);
-    }
-
-    private static void checkItemNull(Item item) {
-
-    }
-
-
-    private static Item getAvailableItem(String itemTitle) {
-        //List<Item> = ItemHandler.getItemsByTitle(itemTitle);
-        return null;
-    }
 }
