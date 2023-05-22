@@ -75,7 +75,8 @@ public class UserHandler {
                 }
             }
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to retrieve usernames from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -123,23 +124,24 @@ public class UserHandler {
      * @param username The username for the new user.
      * @param password The password for the new user.
      * @return A User object representing the newly created user.
-     * @throws InvalidUsernameException If the provided username is already taken or incorrect.
-     * @throws InvalidPasswordException If the provided password is incorrect.
+     * @throws
      */
-    public static User createNewUser(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
-        // Usernames must be unique, throws UsernameTakenException
-        checkUsernameTaken(username);
+    public static User createNewUser(String username, String password) throws CreationException {
         User newUser = null;
 
         try {
+            // Usernames must be unique, throws UsernameTakenException
+            checkUsernameTaken(username);
+
             // Create and save the new user, retrieving the ID
             newUser = new User(username, password);
             newUser.setUserID(saveUser(newUser));
 
             // Need to remember to add to the list
             storedUsernames.add(newUser.getUsername());
-        } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException(e);
+        } catch (InvalidUsernameException | ConstructionException | InvalidIDException e) {
+            throw new CreationException("Failed to retrieve usernames from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         return newUser;
@@ -156,6 +158,8 @@ public class UserHandler {
      *          Returns 0 if an SQLException occurs. This won't happen because the exception will be thrown first.
      */
     private static int saveUser(User user) {
+        int key = 0;
+
         try {
             // Prepare query
             String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, deleted) " +
@@ -171,20 +175,20 @@ public class UserHandler {
             };
 
             // Execute query and get the generated userID, using try-with-resources
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
-                ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-                if (generatedKeys.next()) return generatedKeys.getInt(1);
-                else throw new SQLException("Failed to insert the user, no ID obtained.");
-            }
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS);
+            ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
+            key = generatedKeys.getInt(1);
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to save user to database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
-        return 0; // This should never happen
+
+        return key; // This should never happen
     }
 
     // RETRIEVING STUFF -----------------------------------------------------------------------------------------------
 
-    /**
+    /** //TODO-PRIO TEST RETUNING NULL
      * Retrieves a User object from the database using the provided userID. The method first validates the provided
      * userID. It then prepares and executes an SQL query to select the user's details from the database. If a user
      * with the provided userID exists, a new User object is created with the retrieved details and returned.
@@ -194,6 +198,8 @@ public class UserHandler {
      * @throws InvalidIDException If the provided userID is invalid.
      */
     public static User getUserByID(int userID) throws InvalidIDException {
+        User user = null;
+
         // No point getting invalid users, throws InvalidIDException
         checkValidUserID(userID);
 
@@ -207,21 +213,22 @@ public class UserHandler {
             // If the ResultSet contains data, create a new User object using the retrieved username and password,
             // and set the user's userID.
             if (resultSet.next()) {
-                User user = new User(resultSet.getString("username"), resultSet.getString("password"));
+                user = new User(resultSet.getString("username"), resultSet.getString("password"));
                 user.setUserID(userID);
                 user.setCurrentRentals(resultSet.getInt("currentRentals"));
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
             }
-        } catch (SQLException | InvalidRentalException | InvalidLateFeeException | InvalidUsernameException | InvalidPasswordException e) {
-            ExceptionHandler.HandleFatalException(e);
+        } catch (SQLException | InvalidRentalException | InvalidLateFeeException | ConstructionException e) {
+            ExceptionHandler.HandleFatalException("Failed to retrieve user by ID from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         // Return null if not found.
-        return null;
+        return user;
     }
 
-    /**
+    /** //TODO-PRIO TEST RETUNING NULL
      * Retrieves a User object from the database using the provided username. The method first validates the provided
      * username. It then prepares and executes an SQL query to select the user's details from the database. If a user
      * with the provided username exists, a new User object is created with the retrieved details and returned.
@@ -231,6 +238,8 @@ public class UserHandler {
      * @throws InvalidUsernameException If the provided username is empty.
      */
     public static User getUserByUsername(String username) throws InvalidUsernameException {
+        User user = null;
+
         // No point in getting invalid users, throws InvalidUsernameException
         checkEmptyUsername(username);
 
@@ -244,18 +253,19 @@ public class UserHandler {
             // If the ResultSet contains data, create a new User object using the retrieved username and password,
             // and set the user's userID
             if (resultSet.next()) {
-                User user = new User(username, resultSet.getString("password"));
+                user = new User(username, resultSet.getString("password"));
                 user.setUserID(resultSet.getInt("userID"));
                 user.setCurrentRentals( resultSet.getInt("currentRentals"));
                 user.setLateFee(resultSet.getFloat("lateFee"));
                 return user;
             }
-        } catch (SQLException | InvalidUsernameException | InvalidPasswordException | InvalidIDException | InvalidRentalException | InvalidLateFeeException e) {
-            ExceptionHandler.HandleFatalException(e);
+        } catch (SQLException | InvalidIDException | InvalidRentalException | InvalidLateFeeException | ConstructionException e) {
+            ExceptionHandler.HandleFatalException("Failed to retrieve user by username from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         // Return null if not found
-        return null;
+        return user;
     }
 
     public static User getUserByEmail(String email) {
@@ -300,41 +310,38 @@ public class UserHandler {
      * @throws UserNullException If the provided User object is null.
      * @throws InvalidUsernameException If the provided oldUsername is empty.
      */
-    public static void updateUser(User newUser) throws UserNullException, InvalidUsernameException, InvalidIDException {
-        //We can't create user objects with invalid usernames, so only need to validate user itself. Throws UserNullException
-        checkNullUser(newUser);
-
-        //Retrieve old username
-        String oldUsername = getUserByID(newUser.getUserID()).getUsername();
-
-        //Let's check if the user exists in the database before we go on, this is fatal
+    public static void updateUser(User newUser) throws UpdateException {
         try {
-            UserHandler.getUserByID(newUser.getUserID());
-        } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException(new UserNotFoundException("Unable to update User: User with ID " + newUser.getUserID() + " not found."));
+            //Let's check if the user exists in the database before we go on, this is fatal
+            checkUser(newUser);
+
+            //Retrieve old username
+            String oldUsername = getUserByID(newUser.getUserID()).getUsername();
+
+            //If username has been changed...
+            if (!newUser.getUsername().equals(oldUsername)) {
+                //... and is taken. Throws UsernameTakenException
+                checkUsernameTaken(newUser.getUsername());
+                //... and is not taken: remove old username from and add new username to storedUsernames
+                storedUsernames.remove(oldUsername);
+                storedUsernames.add(newUser.getUsername());
+            }
+
+            // Prepare a SQL command to update a newUser's data by userID.
+            String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, lateFee = ? WHERE userID = ?";
+            String[] params = {
+                    newUser.getUsername(),
+                    newUser.getPassword(),
+                    String.valueOf(newUser.getCurrentRentals()),
+                    String.valueOf(newUser.getLateFee()),
+                    String.valueOf(newUser.getUserID())
+            };
+
+            // Execute the update.
+            DatabaseHandler.executePreparedUpdate(sql, params);
+        } catch (UserNotFoundException | InvalidIDException | UserNullException | InvalidUsernameException e) {
+            throw new UpdateException("Failed to update user due to " + e.getClass().getName() + ": " + e.getMessage(), e);
         }
-
-        //If username has been changed...
-        if (!newUser.getUsername().equals(oldUsername)) {
-            //... and is taken. Throws UsernameTakenException
-            checkUsernameTaken(newUser.getUsername());
-            //... and is not taken: remove old username from and add new username to storedUsernames
-            storedUsernames.remove(oldUsername);
-            storedUsernames.add(newUser.getUsername());
-        }
-
-        // Prepare a SQL command to update a newUser's data by userID.
-        String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, lateFee = ? WHERE userID = ?";
-        String[] params = {
-                newUser.getUsername(),
-                newUser.getPassword(),
-                String.valueOf(newUser.getCurrentRentals()),
-                String.valueOf(newUser.getLateFee()),
-                String.valueOf(newUser.getUserID())
-        };
-
-        // Execute the update.
-        DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
     /**
@@ -344,32 +351,27 @@ public class UserHandler {
      * The username of the deleted user is then removed from the storedUsernames list.
      *
      * @param user The User object representing the user to be deleted.
-     * @throws UserNullException If the provided User object is null.
-     * @throws UserNotFoundException If the user with the ID of the provided User object doesn't exist in the database.
+
      */
-    public static void deleteUser(User user) throws UserNotFoundException, UserNullException {
+    public static void deleteUser(User user) throws DeletionException {
         //TODO-prio UPDATE TO CHANGE DELETED
 
-        //Validate the input. Throws UserNullException
-        checkNullUser(user);
-
-        //Let's check if the user exists in the database before we go on, this can be fatal
         try {
-            if (UserHandler.getUserByID(user.getUserID()) == null)
-                throw new UserNotFoundException("Unable to update User: User with ID " + user.getUserID() + " not found.");
-        } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException(e);
+            //Validate the input. Throws UserNullException
+            checkUser(user);
+
+            //Prepare a SQL command to delete a user by userID.
+            String sql = "DELETE FROM users WHERE userID = ?";
+            String[] params = {String.valueOf(user.getUserID())};
+
+            //Execute the update. //TODO-prio handle cascades in rentals
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            //Remove the deleted user's username from the usernames ArrayList.
+            storedUsernames.remove(user.getUsername());
+        } catch (UserNotFoundException | InvalidIDException | UserNullException e) {
+            throw new DeletionException("Failed to delete user due to " + e.getClass().getName() + ": " + e.getMessage(), e);
         }
-
-        //Prepare a SQL command to delete a user by userID.
-        String sql = "DELETE FROM users WHERE userID = ?";
-        String[] params = {String.valueOf(user.getUserID())};
-
-        //Execute the update. //TODO-prio handle cascades in rentals
-        DatabaseHandler.executePreparedUpdate(sql, params);
-
-        //Remove the deleted user's username from the usernames ArrayList.
-        storedUsernames.remove(user.getUsername());
     }
 
     // VALIDATION STUFF -----------------------------------------------------------------------------------------------
@@ -383,34 +385,41 @@ public class UserHandler {
      * @throws InvalidUsernameException if the provided password is empty.
      * @throws InvalidUsernameException if the provided password is empty.
      */
-    public static boolean login(String username, String password) throws InvalidUsernameException, InvalidPasswordException, UserNotFoundException {
-        // No point verifying empty strings, throws UsernameEmptyException
-        checkEmptyUsername(username);
-        //Throws PasswordEmptyException
-        checkEmptyPassword(password);
-
-        //First check list
-        if (!storedUsernames.contains(username))
-            throw new UserNotFoundException("Login failed: User " + username + " does not exist.");
-
-        //TODO-future add checking against database
-
+    public static boolean login(String username, String password) throws LoginException {
         boolean isAuthenticated = false;
 
-        String query = "SELECT password FROM users WHERE username = ?";
-        String[] params = {username};
+        try {
+            // No point verifying empty strings, throws UsernameEmptyException
+            checkEmptyUsername(username);
+            //Throws PasswordEmptyException
+            checkEmptyPassword(password);
 
-        // Execute the query and check if the input password matches the retrieved password
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-            ResultSet resultSet = queryResult.getResultSet();
-            if (resultSet.next()) {
-                String storedPassword = resultSet.getString("password");
-                if (password.equals(storedPassword)) {
-                    isAuthenticated = true;
+            //First check list
+            if (!storedUsernames.contains(username))
+                throw new UserNotFoundException("Login failed: User " + username + " does not exist.");
+
+            //TODO-future add checking against database
+
+
+            String query = "SELECT password FROM users WHERE username = ?";
+            String[] params = {username};
+
+            // Execute the query and check if the input password matches the retrieved password
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+                ResultSet resultSet = queryResult.getResultSet();
+                if (resultSet.next()) {
+                    String storedPassword = resultSet.getString("password");
+                    if (password.equals(storedPassword)) {
+                        isAuthenticated = true;
+                    }
                 }
+            } catch (SQLException e) { //This one is fatal
+                ExceptionHandler.HandleFatalException("Fatally failed to login due to " +
+                        e.getClass().getName() + ": " + e.getMessage(), e);
             }
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+        } catch (InvalidUsernameException | InvalidPasswordException | UserNotFoundException e) {
+            throw new LoginException("Failed to login due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         return isAuthenticated;
@@ -425,12 +434,15 @@ public class UserHandler {
      * @param user The User object whose password is to be validated.
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
-     * @throws UserNullException if the provided User is null.
-     * @throws InvalidPasswordException if the provided password is empty.
      */
-    public static boolean validateUser(User user, String password) throws UserNullException, InvalidPasswordException {
-        checkNullUser(user);
-        checkEmptyPassword(password);
+    public static boolean validateUser(User user, String password) throws ValidationException {
+        try {
+            checkNullUser(user);
+            checkEmptyPassword(password);
+        } catch (UserNullException | InvalidPasswordException e) {
+            throw new ValidationException("Failed to validate user's password due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
         return user.getPassword().equals(password);
     }
 
@@ -445,6 +457,13 @@ public class UserHandler {
     private static void checkUsernameTaken(String username) throws InvalidUsernameException {
         if (storedUsernames.contains(username))
             throw new InvalidUsernameException("Username " + username + " already taken.");
+    }
+
+    private static void checkUser(User user) throws UserNotFoundException, InvalidIDException, UserNullException {
+        checkNullUser(user);
+        int ID = user.getUserID();
+        if (UserHandler.getUserByID(ID) == null)
+            throw new UserNotFoundException("User with ID " + user + "not found in database.");
     }
 
     /**

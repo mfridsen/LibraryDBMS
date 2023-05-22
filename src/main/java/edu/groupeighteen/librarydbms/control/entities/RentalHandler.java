@@ -74,13 +74,13 @@ public class RentalHandler {
      * @param userID the ID of the user renting the item.
      * @param itemID the ID of the item being rented.
      * @return the newly created and saved Rental object.
-     * @throws RentalCreationException if the item doesn't exist,
+     * @throws CreationException if the item doesn't exist,
      *                      or if the item isn't available,
      *                      or if the user doesn't exist,
      *                      or if the user has rented to their capacity,
      *                      or if the user has a late fee.
      */
-    public static Rental createNewRental(int userID, int itemID) throws RentalCreationException {
+    public static Rental createNewRental(int userID, int itemID) throws CreationException {
         try {
             //Validate user, can throw InvalidIDException, UserNotFoundException and RentalNotAllowedException
             User user = validateUser(userID);
@@ -123,7 +123,7 @@ public class RentalHandler {
         } catch (InvalidIDException | InvalidDateException | ItemNotFoundException | InvalidTitleException |
                 InvalidUsernameException | SQLException | InvalidRentalException | ItemNullException |
                 UserNullException | ConstructionException | ValidationException e) {
-            throw new RentalCreationException(e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new CreationException(e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 

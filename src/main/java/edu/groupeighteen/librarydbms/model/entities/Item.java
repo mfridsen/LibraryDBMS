@@ -23,6 +23,7 @@ public class Item extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
+    public static final int ITEM_TITLE_MAX_LENGHT = 255;
     public static final int DEFAULT_ALLOWED_DAYS = 14;
 
     private int itemID; //Primary key
@@ -90,8 +91,8 @@ public class Item extends Entity {
     public void setTitle(String title) throws InvalidTitleException {
         if (title == null || title.isEmpty())
             throw new InvalidTitleException("Title cannot be null or empty.");
-        if (title.length() > 255)
-            throw new InvalidTitleException("Title cannot be longer than 255 characters. Received: " + title);
+        if (title.length() > ITEM_TITLE_MAX_LENGHT)
+            throw new InvalidTitleException("Title cannot be longer than " + ITEM_TITLE_MAX_LENGHT + " characters. Received: " + title);
         this.title = title;
     }
 

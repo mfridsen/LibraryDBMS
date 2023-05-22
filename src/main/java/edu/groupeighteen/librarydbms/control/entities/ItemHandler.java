@@ -4,10 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.ItemNullException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -161,10 +158,7 @@ public class ItemHandler {
      * Retrieves titles from the items table and returns them as a map with title-count pairs.
      */
     private static void retrieveTitlesFromTable() {
-        // Execute the query to retrieve all items
-        QueryResult result = DatabaseHandler.executeQuery("SELECT title, available FROM items ORDER BY title ASC");
-
-        try {
+        try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available FROM items ORDER BY title ASC")) {
             // Add the retrieved items to the maps
             while (result.getResultSet().next()) {
                 String title = result.getResultSet().getString("title");
@@ -175,14 +169,12 @@ public class ItemHandler {
                     incrementAvailableTitles(title);
                 }
             }
-        } catch (SQLException sqle) {
-            ExceptionHandler.HandleFatalException(sqle);
+        } catch (SQLException e) { //This is fatal
+            ExceptionHandler.HandleFatalException("Failed to retrieve titles from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        } finally {
+            if (storedTitles.isEmpty()) System.err.println("No titles retrieved from table!");
         }
-
-        // Close the resources
-        result.close();
-
-        if (storedTitles.isEmpty()) System.err.println("No titles retrieved from table!");
     }
 
     /**
@@ -210,25 +202,28 @@ public class ItemHandler {
      * Creates a new item with a given title, stores it in the database, and increments the title count.
      * @param title The title of the item to be created.
      * @return The created Item.
-     * @throws InvalidTitleException If the title is null or an empty string.
      */
-    public static Item createNewItem(String title) throws InvalidTitleException {
-        //TODO-prio update method and test when Item is finished
-        //Validate input, throws InvalidTitleException
-        checkEmptyTitle(title);
-
-        //Create item and retrieve and set itemID
-        Item newItem = new Item(title);
+    public static Item createNewItem(String title) throws ConstructionException {
         try {
-            newItem.setItemID(saveItem(newItem)); //If this throws an exception, something is seriously wrong
-        } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException(e);
+            //TODO-prio update method and test when Item is finished
+            //Validate input, throws InvalidTitleException
+            checkEmptyTitle(title);
+
+            //Create item and retrieve and set itemID
+            Item newItem = new Item(title);
+            try {
+                newItem.setItemID(saveItem(newItem)); //If this throws an exception, something is seriously wrong
+            } catch (InvalidIDException e) {
+                ExceptionHandler.HandleFatalException(e);
+            }
+
+            //Increment the count of the new title. Add a new entry if the title does not exist yet.
+            incrementBothTitles(title);
+
+            return newItem;
+        } catch (InvalidTitleException | ConstructionException e) {
+            throw new ConstructionException("Failed to create new Item due to " + e.getClass().getName() + ": " + e.getMessage(), e);
         }
-
-        //Increment the count of the new title. Add a new entry if the title does not exist yet.
-        incrementBothTitles(title);
-
-        return newItem;
     }
 
     /**
@@ -237,34 +232,30 @@ public class ItemHandler {
      * @return The generated ID of the saved item.
      */
     private static int saveItem(Item item) {
-        //TODO-prio update method and test when Item is finished
-        //Prepare query
-        String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
-        String[] params = {
-                item.getTitle(),
-                String.valueOf(item.getAllowedRentalDays()),
-                item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
-                item.isDeleted() ? "1" : "0" //If boolean is true, add the string "1", if false, "0"
-        };
+        int key = -1;
+        try {
+            //TODO-prio update method and test when Item is finished
+            //Prepare query
+            String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
+            String[] params = {
+                    item.getTitle(),
+                    String.valueOf(item.getAllowedRentalDays()),
+                    item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
+                    item.isDeleted() ? "1" : "0" //If boolean is true, add the string "1", if false, "0"
+            };
 
-        //Execute query and get the generated itemID, using try-with-resources
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
+            //Execute query and get the generated itemID
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS);
             ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
-            } else {
-                ExceptionHandler.HandleFatalException(new SQLException("Failed to insert the item, no ID obtained."));
-            }
+            key = generatedKeys.getInt(1);
+            queryResult.close();
         } catch (SQLException e) {
             ExceptionHandler.HandleFatalException(e);
         }
-
-        // The method must return an integer. If an SQLException occurs, the method will exit before reaching this point.
-        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
-        return -1;
+        return key;
     }
 
-    /**
+    /** //TODO-PRIO TEST RETUNING NULL
      * Retrieves an item by its ID from the database.
      * @param itemID The ID of the item to be retrieved.
      * @return The retrieved Item.
@@ -303,8 +294,11 @@ public class ItemHandler {
                     throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
                 }
             }
-        } catch (SQLException | InvalidTitleException e) {
-            ExceptionHandler.HandleFatalException(e);
+        } catch (ConstructionException | InvalidRentalException e) {
+
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException(e); //TODO-throw instead?
+
         }
 
         // The method must return an Item. If an SQLException occurs, the method will exit before reaching this point.
@@ -313,7 +307,7 @@ public class ItemHandler {
         return null;
     }
 
-    /**
+    /** //TODO-PRIO TEST RETUNING NULL
      * Retrieves all items with a given title from the database.
      * @param title The title of the items to be retrieved.
      * @return A list of Item objects with the provided title.
@@ -355,8 +349,8 @@ public class ItemHandler {
                     throw new ItemNotFoundException(title);
                 }
             }
-        } catch (SQLException | InvalidIDException e) {
-            ExceptionHandler.HandleFatalException(e);
+        } catch (SQLException | InvalidIDException | ConstructionException | InvalidRentalException e) {
+            ExceptionHandler.HandleFatalException(e); //TODO-throw instead?
         }
 
         // The method must return a List<Item>. If an SQLException occurs, the method will exit before reaching this point.
@@ -426,7 +420,7 @@ public class ItemHandler {
     // == 27 test cases
 
 
-    /**
+    /** //TODO-PRIO CHANGE TO THROW ONLY ONE EXCEPTION
      * Updates an existing item in the database and adjusts the count of the old and new titles.
      * @param item The Item object containing the updated information.
      * @throws ItemNotFoundException If the item does not exist in the database.
@@ -478,7 +472,7 @@ public class ItemHandler {
         }
     }
 
-    /**
+    /** //TODO-PRIO CHANGE TO ONLY THROW ONE EXCEPTION
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
      * @throws ItemNotFoundException If the item does not exist in the database.

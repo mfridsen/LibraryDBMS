@@ -40,21 +40,19 @@ public class DatabaseHandler {
     public static void setup(boolean verbose) {
         //Set verbosity
         DatabaseHandler.verbose = verbose;
-        try {
-            //Connect to database
-            connection = DatabaseConnection.setup();
 
-            executeCommand("drop database if exists " + LibraryManager.databaseName);
-            createDatabase(LibraryManager.databaseName);
+        //Connect to database
+        connection = DatabaseConnection.setup();
+
+        executeCommand("drop database if exists " + LibraryManager.databaseName);
+        createDatabase(LibraryManager.databaseName);
 
         /*
         if (!databaseExists(LibraryManager.databaseName)) {
             createDatabase(LibraryManager.databaseName);
         } else executeCommand("use " + LibraryManager.databaseName);
         */
-        } catch (SQLException | ClassNotFoundException e) {
-            ExceptionHandler.HandleFatalException(e);
-        }
+
     }
 
     /**
@@ -73,7 +71,8 @@ public class DatabaseHandler {
             queryResult.close();
             return exists;
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to verify that database exists due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
             return false;
         }
     }
@@ -92,7 +91,6 @@ public class DatabaseHandler {
         executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
     }
 
-    //TODO handle exceptions
     /**
      * Executes a single SQL command on the connected database. SQL commands can affect rows and therefore
      * are used with executeUpdate. Prints number of rows affected if command was successfully executed.
@@ -111,11 +109,11 @@ public class DatabaseHandler {
             System.out.println("Command executed; rows affected: " + rows);
             statement.close(); //Always close Statements after we're done with them
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to execute command due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
-    //TODO-exception
     //TODO-TEST
     /**
      * Execute an SQL update statement using a prepared statement.
@@ -142,15 +140,14 @@ public class DatabaseHandler {
             //Execute the update and return the number of affected rows
             return stmt.executeUpdate();
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to execute prepared update due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
-        // The method must return an integer. If an SQLException occurs, the method will exit before reaching this point.
-        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
+        //Won't reach, but needed to compile
         return -1;
     }
 
-    //TODO-exception
     /**
      * Executes a single SQL query on the connected database. SQL queries, unlike SQL commands, do not affect rows,
      * but do instead produce ResultSets which are sent up the call stack in a QueryResult.
@@ -170,13 +167,13 @@ public class DatabaseHandler {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to execute query due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
         return new QueryResult(resultSet, statement);
     }
 
     //TODO-comment
-    //TODO-exception
     /**
      *
      * @param query
@@ -204,17 +201,20 @@ public class DatabaseHandler {
             //Get the result set, if available
             resultSet = preparedStatement.getResultSet();
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to execute prepared query due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
         return new QueryResult(resultSet, preparedStatement);
     }
 
-    //TODO-exception handle
     /**
-     * Executes a SQL update operation (such as UPDATE, INSERT, or DELETE) on the database, using a prepared statement with the given SQL command and parameters.
+     * Executes a SQL update operation (such as UPDATE, INSERT, or DELETE) on the database, using a prepared statement
+     * with the given SQL command and parameters.
      *
-     * @param sql The SQL command to be executed. This command should be a SQL UPDATE, INSERT, or DELETE command, and can include placeholders (?) for parameters.
-     * @param params The parameters to be used in the SQL command. The parameters will be inserted into the command in the order they appear in the array.
+     * @param sql The SQL command to be executed. This command should be a SQL UPDATE, INSERT, or DELETE command,
+     *            and can include placeholders (?) for parameters.
+     * @param params The parameters to be used in the SQL command. The parameters will be inserted into the command
+     *               in the order they appear in the array.
      * @return The number of rows affected by the update.
      */
     public static int executeUpdate(String sql, String[] params) {
@@ -230,15 +230,13 @@ public class DatabaseHandler {
             //The method executeUpdate() returns the number of affected rows.
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Failed to execute update due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         return rowsAffected;
     }
 
-
-    //TODO-Exception handling, pass on upwards and also add handling of these specific
-    //exceptions in the ExceptionHandler
     /**
      * A simple method which reads the contents of a file, and executes any SQL commands found in that file.
      * @param filePath the path of the file
@@ -274,12 +272,14 @@ public class DatabaseHandler {
                 }
             }
         } catch (FileNotFoundException e) {
-            ExceptionHandler.HandleFatalException(new FileNotFoundException("Couldn't find file at path " + filePath));
+            ExceptionHandler.HandleFatalException("Couldn't find file at path " + filePath, e);
         } catch (IOException e) {
-            ExceptionHandler.HandleFatalException(new IOException("Couldn't read file at path " + filePath));
+            ExceptionHandler.HandleFatalException("Couldn't read file at path " + filePath, e);
         }
     }
 
+    //TODO-test
+    //TODO-comment
     public static int[] getUserMetaData() {
         if (connection == null) {
             setup(false);
@@ -304,11 +304,11 @@ public class DatabaseHandler {
 
             return new int[]{usernameColumnSize, passwordColumnSize};
         } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException(e);
+            ExceptionHandler.HandleFatalException("Couldn't retrieve User Meta data due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
-        // The method must return an integer[]. If an SQLException occurs, the method will exit before reaching this point.
-        // However, the Java compiler doesn't understand that System.exit() terminates the program, so this return statement is necessary to avoid a compile error.
+        //Won't reach, but needed to compile
         return new int[0];
     }
 

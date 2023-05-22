@@ -1,6 +1,8 @@
 package model.entities;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidRentalException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import org.junit.jupiter.api.MethodOrderer;
@@ -41,7 +43,7 @@ public class ItemTest {
             assertEquals(title, testItem.getTitle());
             assertEquals(Item.DEFAULT_ALLOWED_DAYS, testItem.getAllowedRentalDays());
             assertTrue(testItem.isAvailable());
-        } catch (InvalidTitleException e) {
+        } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -51,7 +53,7 @@ public class ItemTest {
 
     @Test
     @Order(2)
-    void testItemCreationConstructor_InvalidInput() {
+    void testItemCreationConstructor_InvalidInput() { //TODO-PRIO TEST TOO LONG TITLE
         System.out.println("\n2: Testing Item creation constructor with invalid input...");
 
         // Empty title
@@ -79,7 +81,7 @@ public class ItemTest {
             assertEquals(title, testItem.getTitle());
             assertEquals(allowedRentalDays, testItem.getAllowedRentalDays());
             assertTrue(testItem.isAvailable());
-        } catch (InvalidIDException | InvalidTitleException e) {
+        } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -89,7 +91,7 @@ public class ItemTest {
 
     @Test
     @Order(4)
-    void testItemRetrievalConstructor_InvalidInput() {
+    void testItemRetrievalConstructor_InvalidInput() { //TODO-PRIO TEST TOO LONG TITLE
         System.out.println("\n4: Testing Item retrieval constructor with invalid input...");
 
         assertThrows(InvalidIDException.class, () -> new Item(0, "validTitle", 7, true));  // ItemID less than or equal to 0
@@ -112,7 +114,7 @@ public class ItemTest {
             assertEquals(originalItem.getTitle(), copiedItem.getTitle());
             assertEquals(originalItem.getAllowedRentalDays(), copiedItem.getAllowedRentalDays());
             assertEquals(originalItem.isAvailable(), copiedItem.isAvailable());
-        } catch (InvalidTitleException e) {
+        } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -131,7 +133,7 @@ public class ItemTest {
             assertEquals(2, testItem.getItemID());
 
             System.out.println("\nTEST FINISHED.");
-        } catch (InvalidTitleException | InvalidIDException e) {
+        } catch (InvalidIDException | ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -146,7 +148,7 @@ public class ItemTest {
             Item testItem = new Item("validTitle");
             assertThrows(InvalidIDException.class, () -> testItem.setItemID(0));  // ItemID less than or equal to 0
             assertThrows(InvalidIDException.class, () -> testItem.setItemID(-1));  // ItemID less than or equal to 0
-        } catch (InvalidTitleException e) {
+        } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -163,7 +165,7 @@ public class ItemTest {
             Item testItem = new Item("oldTitle");
             testItem.setTitle("newTitle");
             assertEquals("newTitle", testItem.getTitle());
-        } catch (InvalidTitleException e) {
+        } catch (InvalidTitleException | ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -173,14 +175,15 @@ public class ItemTest {
 
     @Test
     @Order(9)
-    void testSetTitle_InvalidInput() {
+    void testSetTitle_InvalidInput() { //TODO-PRIO ADD TOO LONG CHECK
         System.out.println("\n9: Testing setTitle with invalid input...");
 
         try {
             Item testItem = new Item("oldTitle");
+
             assertThrows(InvalidTitleException.class, () -> testItem.setTitle(""));  // Empty title
             assertThrows(InvalidTitleException.class, () -> testItem.setTitle(null));  // Null title
-        } catch (InvalidTitleException e) {
+        } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -190,14 +193,14 @@ public class ItemTest {
 
     @Test
     @Order(10)
-    void testSetAllowedRentalDays_ValidInput() {
+    void testSetAllowedRentalDays_ValidInput() { //TODO-prio TEST INVALID INPUT
         System.out.println("\n10: Testing setAllowedRentalDays with valid input...");
 
         try {
             Item testItem = new Item("validTitle");
             testItem.setAllowedRentalDays(10);
             assertEquals(10, testItem.getAllowedRentalDays());
-        } catch (InvalidTitleException e) {
+        } catch (ConstructionException | InvalidRentalException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -209,7 +212,7 @@ public class ItemTest {
 
     @Test
     @Order(11)
-    void testSetAvailable_ValidInput() {
+    void testSetAvailable_ValidInput() { //TEST-PRIO TEST INVALID INPUT
         System.out.println("\n11: Testing setAvailable with valid input...");
 
         try {
@@ -217,7 +220,7 @@ public class ItemTest {
             Item testItem = new Item("validTitle");
             testItem.setAvailable(false);
             assertFalse(testItem.isAvailable());
-        } catch (InvalidTitleException e) {
+        } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
