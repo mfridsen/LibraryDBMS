@@ -73,79 +73,63 @@ public class RentalHandler {
      * @param userID the ID of the user renting the item.
      * @param itemID the ID of the item being rented.
      * @return the newly created and saved Rental object.
-     * @throws IllegalArgumentException if either userID or itemID is not a positive integer, 
-     *                                  or if the number of allowed rental days is not a positive integer.
-     * @throws SQLException if there is an error fetching the user or item from their handlers, 
-     *                      or if there is an error saving the new rental in the database.
      * @throws RentalNotAllowedException if the item is already rented out,
      *                      or if the user has rented to their capacity,
      *                      or if the user has a late fee.
      */
-
-    public static Rental createNewRental(int userID, int itemID) throws UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidIDException {
-        //Validate inputs
-        if (userID <= 0 || itemID <= 0)
-            throw new IllegalArgumentException("Error creating new rental: Invalid userID or itemID. userID: "
-                    + userID + ", itemID: " + itemID);
-
-        //Create and save the new rental
-        Rental newRental = new Rental(userID, itemID);
-
-        //Retrieve item based on ID, this is where ItemNotFoundException can be generated
-        Item item = null;
+    public static Rental createNewRental(int userID, int itemID) throws RentalNotAllowedException {
         try {
-            item = ItemHandler.getItemByID(itemID);
-        } catch (InvalidIDException e) {
-            e.printStackTrace();
+            //Validate userID, can throw InvalidIDException and UserNotFoundException
+            User user = validateUser(userID);
+
+            //Check if user is allowed to rent, can throw RentalNotAllowedException
+            validateUserAllowedToRent(user);
+
+            //Validate itemID and retrieve item, can throw InvalidIDException and ItemNotFoundException
+            //Check if there is an available copy of the item
+            Item item = validateItem(itemID);
+
+            //Update itemID to ensure correct itemID is used to create Rental
+            itemID = item.getItemID();
+
+            //Create rental
+            Rental newRental = new Rental(userID, itemID);
+
+            //Set rental fields except rentalID
+            newRental.setUsername(user.getUsername());
+            newRental.setItemTitle(item.getTitle());
+            //Due date
+            int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
+            LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
+            newRental.setRentalDueDate(dueDate);
+
+            //Save rental
+            int rentalID = saveRental(newRental);
+            newRental.setRentalID(rentalID);
+
+            //Update Item to change its status to not available
+            //Also make sure to update the Maps in ItemHandler, this should be done automatically but verify this
+            item.setAvailable(false);
+            ItemHandler.updateItem(item);
+
+            //Update User to increment number of current rentals
+            user.setCurrentRentals(user.getCurrentRentals() + 1);
+            UserHandler.updateUser(user);
+
+            //Return rental
+            return newRental;
+
+            //Handle exceptions: user or item not existing is fatal, other exceptions may also well be
+
+        } catch (InvalidIDException | InvalidDateException | ItemNotFoundException | InvalidTitleException | UserNotFoundException | InvalidUsernameException | SQLException | InvalidRentalException | ItemNullException | UserNullException e) {
+            e.printStackTrace(); //TODO FATAL?
         }
 
-        //Retrieve all items based on title
-
-        //Check if any are available via the Map in ItemHandler
-
-        //If copy available: loop through items until available copy found, and rent it
-
-        //If No copies are available: exception
-
-        //TODO-prio add checking if there are available copies and test
-        //Set title (ONLY IN OBJECT, NOT IN TABLE)
-        newRental.setItemTitle(item.getTitle());
-
-        //Retrieve user based on ID, throws UserNotFoundException
-        User user = UserHandler.getUserByID(userID);
-        //Couldn't retrieve user
-        if (user == null)
-            throw new UserNotFoundException(userID);
-        //To many current rentals for user
-        if (user.getCurrentRentals() >= user.getAllowedRentals())
-            throw new RentalNotAllowedException("User not allowed to rent due to already renting to capacity. " +
-                    "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
-        //User has late fee
-        if (user.getLateFee() > 0)
-            throw new RentalNotAllowedException("User not allowed to rent due to having a late fee. " +
-                    "Late fee: " + user.getLateFee());
-        //Set username (ONLY IN OBJECT, NOT IN TABLE)
-        newRental.setUsername(user.getUsername());
-
-        //Obtain and set AllowedRentalDays
-        int allowedRentalDays = 0;
-        try {
-            allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
-        } catch (InvalidIDException e) {
-            e.printStackTrace();
-        }
-        LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
-        newRental.setRentalDueDate(dueDate);
-
-        //Save to database, retrieve and set rentalID, update item's availability and return newRental
-        newRental.setRentalID(saveRental(newRental));
-        return newRental;
-    }
-
-    private static Item getAvailableItem(String itemTitle) {
-        //List<Item> = ItemHandler.getItemsByTitle(itemTitle);
         return null;
     }
+
+
+
 
     /**
      * Saves a new rental in the database.
@@ -244,16 +228,21 @@ public class RentalHandler {
             } catch (InvalidIDException e) {
                 e.printStackTrace();
             }
+            Rental rental = null;
 
-            //Create Rental object and set all fields
-            Rental rental = new Rental(userID, itemID);
-            rental.setRentalID(rentalID);
-            rental.setRentalDate(rentalDate);
-            rental.setUsername(user.getUsername());
-            rental.setItemTitle(item.getTitle());
-            rental.setRentalDueDate(rentalDueDate);
-            rental.setRentalReturnDate(rentalReturnDate);
-            rental.setLateFee(lateFee);
+            try {
+                //Create Rental object and set all fields
+                rental = new Rental(userID, itemID);
+                rental.setRentalID(rentalID);
+                rental.setRentalDate(rentalDate);
+                rental.setUsername(user.getUsername());
+                rental.setItemTitle(item.getTitle());
+                rental.setRentalDueDate(rentalDueDate);
+                rental.setRentalReturnDate(rentalReturnDate);
+                rental.setLateFee(lateFee);
+            } catch (InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException e) {
+                e.printStackTrace();
+            }
 
             //Add to list
             rentals.add(rental);
@@ -910,7 +899,7 @@ public class RentalHandler {
     *//**
      * This method deletes the details of a given rental in the database.
      *
-     * @param rental The rental object containing the deleted details.
+     //* @param rental The rental object containing the deleted details.
      * @return true if the delete was successful, false otherwise.
      * @throws SQLException If an error occurs while interacting with the database.
      * @throws IllegalArgumentException If the rental object is null or the rentalID is not valid.
@@ -930,4 +919,52 @@ public class RentalHandler {
         int rowsAffected = DatabaseHandler.executePreparedUpdate(query, params);
         return rowsAffected > 0;
     }*/
+
+    // UTILITY STUFF --------------------------------------------------------------------------------------------------
+
+    private static User validateUser(int userID) throws InvalidIDException, UserNotFoundException {
+        User user = UserHandler.getUserByID(userID);
+        if (user == null)
+            throw new UserNotFoundException("User with ID " + userID + " not found.");
+        else
+            return user;
+    }
+
+    private static Item validateItem(int itemID) throws InvalidIDException, ItemNotFoundException {
+        Item item = ItemHandler.getItemByID(itemID);
+        if (item == null)
+            throw new ItemNotFoundException("Item with ID " + item + " not found.");
+        else if (!item.isAvailable())
+            List<Item> items = ItemHandler.getItemsByTitle(item.getTitle());
+
+
+            return item;
+    }
+
+    private static void validateUserAllowedToRent(User user) throws RentalNotAllowedException {
+        if (user.getCurrentRentals() >= user.getAllowedRentals())
+            throw new RentalNotAllowedException("User not allowed to rent due to already renting to capacity. " +
+                    "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
+        //User has late fee
+        if (user.getLateFee() > 0)
+            throw new RentalNotAllowedException("User not allowed to rent due to having a late fee. " +
+                    "Late fee: " + user.getLateFee());
+    }
+
+
+
+    private static void checkUserID(int userID) throws InvalidIDException {
+        if (userID <= 0)
+            throw new InvalidIDException("Invalid userID: " + userID);
+    }
+
+    private static void checkItemID(int itemID) throws InvalidIDException {
+        if (itemID <= 0)
+            throw new InvalidIDException("Invalid itemID: " + itemID);
+    }
+
+    private static Item getAvailableItem(String itemTitle) {
+        //List<Item> = ItemHandler.getItemsByTitle(itemTitle);
+        return null;
+    }
 }

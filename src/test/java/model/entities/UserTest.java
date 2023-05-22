@@ -87,7 +87,7 @@ public class UserTest {
             int currentRentals = 2;
             double lateFee = 10.0;
 
-            User testUser = new User(userID, username, password, allowedRentals, currentRentals, lateFee);
+            User testUser = new User(userID, username, password, allowedRentals, currentRentals, lateFee, false);
 
             assertEquals(userID, testUser.getUserID());
             assertEquals(username, testUser.getUsername());
@@ -95,6 +95,7 @@ public class UserTest {
             assertEquals(allowedRentals, testUser.getAllowedRentals());
             assertEquals(currentRentals, testUser.getCurrentRentals());
             assertEquals(lateFee, testUser.getLateFee());
+            assertFalse(testUser.isDeleted());
         } catch (InvalidIDException | InvalidRentalException | InvalidLateFeeException | InvalidUsernameException | InvalidPasswordException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -116,31 +117,31 @@ public class UserTest {
         double lateFee = 10.0;
 
         //Null username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, null, validPassword, allowedRentals, currentRentals, lateFee));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, null, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, null, validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, null, allowedRentals, currentRentals, lateFee, false));
 
         //Empty username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "", validPassword, allowedRentals, currentRentals, lateFee));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "", allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "", validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "", allowedRentals, currentRentals, lateFee, false));
 
         //Short username and password
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "us", validPassword, allowedRentals, currentRentals, lateFee));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "shrt", allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, "us", validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, "shrt", allowedRentals, currentRentals, lateFee, false));
 
         //Too long username and password
         String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
         String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
-        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, longUsername, validPassword, allowedRentals, currentRentals, lateFee));
-        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, longPassword, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidUsernameException.class, () -> new User(validUserID, longUsername, validPassword, allowedRentals, currentRentals, lateFee, false));
+        assertThrows(InvalidPasswordException.class, () -> new User(validUserID, validUsername, longPassword, allowedRentals, currentRentals, lateFee, false));
 
         //Invalid userID
-        assertThrows(InvalidIDException.class, () -> new User(0, validUsername, validPassword, allowedRentals, currentRentals, lateFee));
+        assertThrows(InvalidIDException.class, () -> new User(0, validUsername, validPassword, allowedRentals, currentRentals, lateFee, false));
 
         //Invalid currentRentals
-        assertThrows(InvalidRentalException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, allowedRentals + 1, lateFee));
+        assertThrows(InvalidRentalException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, allowedRentals + 1, lateFee, false));
 
         //Invalid lateFee
-        assertThrows(InvalidLateFeeException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, currentRentals, -1.0));
+        assertThrows(InvalidLateFeeException.class, () -> new User(validUserID, validUsername, validPassword, allowedRentals, currentRentals, -1.0, false));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -151,7 +152,7 @@ public class UserTest {
         System.out.println("\n5: Testing User copy constructor with valid input...");
 
         try {
-            User originalUser = new User(1, "validUsername", "validPassword1", 5, 2, 10.0);
+            User originalUser = new User(1, "validUsername", "validPassword1", 5, 2, 10.0, false);
             User copiedUser = new User(originalUser);
 
             assertEquals(originalUser.getUserID(), copiedUser.getUserID());

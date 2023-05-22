@@ -34,7 +34,9 @@ import java.util.List;
  * If it is, that IS exceptional.
  */
 public class UserHandler {
-    //Not needed, but very practical, since usernames must be unique
+    /**
+     * Used to make the process of verifying if a username is taken or not, faster.
+     */
     private static final ArrayList<String> storedUsernames = new ArrayList<>();
 
     /**
@@ -110,7 +112,7 @@ public class UserHandler {
         }
     }
 
-    //CRUD stuff ------------------------------------------------------------------------------------------------------
+    // CREATE stuff ---------------------------------------------------------------------------------------------------
 
     /**
      * Creates a new user with the specified username and password. The method first checks if the provided username is
@@ -179,6 +181,8 @@ public class UserHandler {
         }
         return 0; // This should never happen
     }
+
+    // RETRIEVING STUFF -----------------------------------------------------------------------------------------------
 
     /**
      * Retrieves a User object from the database using the provided userID. The method first validates the provided
@@ -282,6 +286,8 @@ public class UserHandler {
 
     // == 11
 
+    // CHANGING STUFF -------------------------------------------------------------------------------------------------
+
 
     /**
      * Updates the data of an existing user in the database with the data of the provided User object. Before updating,
@@ -291,15 +297,15 @@ public class UserHandler {
      * data in the database and executes the update.
      *
      * @param newUser The User object containing the updated user data.
-     * @param oldUsername The old username of the user before the update.
      * @throws UserNullException If the provided User object is null.
      * @throws InvalidUsernameException If the provided oldUsername is empty.
      */
-    public static void updateUser(User newUser, String oldUsername) throws UserNullException, InvalidUsernameException {
+    public static void updateUser(User newUser) throws UserNullException, InvalidUsernameException, InvalidIDException {
         //We can't create user objects with invalid usernames, so only need to validate user itself. Throws UserNullException
         checkNullUser(newUser);
-        //Old username could be empty or null though. Throws InvalidUsernameException
-        checkEmptyUsername(oldUsername);
+
+        //Retrieve old username
+        String oldUsername = getUserByID(newUser.getUserID()).getUsername();
 
         //Let's check if the user exists in the database before we go on, this is fatal
         try {
@@ -342,6 +348,8 @@ public class UserHandler {
      * @throws UserNotFoundException If the user with the ID of the provided User object doesn't exist in the database.
      */
     public static void deleteUser(User user) throws UserNotFoundException, UserNullException {
+        //TODO-prio UPDATE TO CHANGE DELETED
+
         //Validate the input. Throws UserNullException
         checkNullUser(user);
 

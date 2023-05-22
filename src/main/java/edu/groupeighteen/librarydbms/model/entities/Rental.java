@@ -196,8 +196,10 @@ public class Rental extends Entity {
      * @throws IllegalArgumentException if the rental date is null or in the future
      */
     public void setRentalDate(LocalDateTime rentalDate) throws InvalidDateException {
-        if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
-            throw new InvalidDateException("RentalDate cannot be null or in the future. Received: " + rentalDate);
+        if (rentalDate == null)
+            throw new InvalidDateException("RentalDate cannot be null.");
+        if (rentalDate.compareTo(LocalDateTime.now()) > 0)
+            throw new InvalidDateException("RentalDate cannot be in the future. Received: " + rentalDate);
         this.rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
     }
 
@@ -218,7 +220,7 @@ public class Rental extends Entity {
      */
     public void setUsername(String username) throws InvalidUsernameException {
         if (username == null || username.isEmpty())
-            throw new InvalidUsernameException("Username cannot be null or empty. Received: " + username);
+            throw new InvalidUsernameException("Username cannot be null or empty.");
         this.username = username;
     }
 
@@ -239,7 +241,7 @@ public class Rental extends Entity {
      */
     public void setItemTitle(String itemTitle) throws InvalidTitleException {
         if (itemTitle == null || itemTitle.isEmpty())
-            throw new InvalidTitleException("Title cannot be null or empty. Received: " + itemTitle);
+            throw new InvalidTitleException("Title cannot be null or empty.");
         this.itemTitle = itemTitle;
     }
 
@@ -259,8 +261,10 @@ public class Rental extends Entity {
      * @throws IllegalArgumentException if the rental due date is null or is before the current time
      */
     public void setRentalDueDate(LocalDateTime rentalDueDate) throws InvalidDateException {
-        if (rentalDueDate == null || rentalDueDate.isBefore(LocalDateTime.now()))
-            throw new InvalidDateException("Rental due date cannot be null or in the past. Received: " + rentalDueDate);
+        if (rentalDueDate == null)
+            throw new InvalidDateException("Rental due date cannot be null.");
+        if (rentalDueDate.isBefore(LocalDateTime.now()))
+            throw new InvalidDateException("Rental due date cannot be in the past. Received: " + rentalDueDate);
         this.rentalDueDate = rentalDueDate.withHour(RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS);
     }
 
@@ -280,9 +284,11 @@ public class Rental extends Entity {
      * @throws IllegalArgumentException if the rental return date is not null and is before the rental date
      */
     public void setRentalReturnDate(LocalDateTime rentalReturnDate) throws InvalidDateException {
-        if (rentalReturnDate != null && rentalReturnDate.isBefore(this.getRentalDate()))
+        if (rentalReturnDate == null)
+            throw new InvalidDateException("Rental return date cannot be null.");
+        if (rentalReturnDate.isBefore(this.getRentalDate()))
             throw new InvalidDateException("Rental return date cannot be before the rental date. Received: " + rentalReturnDate);
-        this.rentalReturnDate = (rentalReturnDate == null) ? null : rentalReturnDate.truncatedTo(ChronoUnit.SECONDS);
+        this.rentalReturnDate = rentalReturnDate.truncatedTo(ChronoUnit.SECONDS);
     }
     /**
      * Returns the late fee.

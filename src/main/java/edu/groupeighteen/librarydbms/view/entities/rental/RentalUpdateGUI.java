@@ -152,6 +152,7 @@ public class RentalUpdateGUI extends GUI {
             String rentalDate = (String) rentalUpdateTable.getValueAt(4, 2);
 
             //Update the rentalToUpdate object. Only update if new value is not null or empty
+            /*
             try {
                 if (userID != null && !userID.isEmpty()) {
                     newRental.setUserID(Integer.parseInt(userID));
@@ -174,7 +175,7 @@ public class RentalUpdateGUI extends GUI {
                 System.err.println("One of the fields that requires a number received an invalid input. User ID:" + userID + ", Item ID: " + itemID);
             } catch (DateTimeParseException dtpe) {
                 System.err.println("The date field received an invalid input. Please ensure it is in the correct format.");
-            }
+            }*/
 
             //Now call the update method
             /*try {

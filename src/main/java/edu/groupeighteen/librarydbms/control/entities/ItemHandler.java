@@ -437,7 +437,7 @@ public class ItemHandler {
         //Validate the input, throws ItemNullException
         checkNullItem(item);
 
-        // Get the old Item instance, throws ItemNotFoundException
+        // Get the old Item instance (which hasn't been updated), throws ItemNotFoundException
         Item oldItem = getItemByID(item.getItemID());
         if (oldItem == null) {
             throw new ItemNotFoundException("Item with id: " + item.getItemID() + " not found.");
