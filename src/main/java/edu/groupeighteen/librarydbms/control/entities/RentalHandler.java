@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.control.entities;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
@@ -73,17 +74,16 @@ public class RentalHandler {
      * @param userID the ID of the user renting the item.
      * @param itemID the ID of the item being rented.
      * @return the newly created and saved Rental object.
-     * @throws RentalNotAllowedException if the item is already rented out,
+     * @throws RentalCreationException if the item doesn't exist,
+     *                      or if the item isn't available,'
+     *                      or if the user doesn't exist,
      *                      or if the user has rented to their capacity,
      *                      or if the user has a late fee.
      */
-    public static Rental createNewRental(int userID, int itemID) throws RentalNotAllowedException {
+    public static Rental createNewRental(int userID, int itemID) throws RentalCreationException {
         try {
-            //Validate userID, can throw InvalidIDException and UserNotFoundException
+            //Validate user, can throw InvalidIDException, UserNotFoundException and RentalNotAllowedException
             User user = validateUser(userID);
-
-            //Check if user is allowed to rent, can throw RentalNotAllowedException
-            validateUserAllowedToRent(user);
 
             //Validate itemID and retrieve item, can throw InvalidIDException and ItemNotFoundException
             //Check if there is an available copy of the item
@@ -119,13 +119,12 @@ public class RentalHandler {
             //Return rental
             return newRental;
 
-            //Handle exceptions: user or item not existing is fatal, other exceptions may also well be
-
-        } catch (InvalidIDException | InvalidDateException | ItemNotFoundException | InvalidTitleException | UserNotFoundException | InvalidUsernameException | SQLException | InvalidRentalException | ItemNullException | UserNullException e) {
-            e.printStackTrace(); //TODO FATAL?
+            //Handle exceptions
+        } catch (InvalidIDException | InvalidDateException | ItemNotFoundException | InvalidTitleException |
+                InvalidUsernameException | SQLException | InvalidRentalException | ItemNullException |
+                UserNullException | ConstructionException | ValidationException e) {
+            throw new RentalCreationException(e.getClass().getName() + ": " + e.getMessage(), e);
         }
-
-        return null;
     }
 
 
@@ -176,8 +175,13 @@ public class RentalHandler {
         try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
             ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
             if (generatedKeys.next()) return generatedKeys.getInt(1);
-            else throw new SQLException("Failed to insert the rental, no ID obtained.");
+            else ExceptionHandler.HandleFatalException(new SQLException("Failed to insert the rental, no ID obtained."));
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException(e);
         }
+
+        //Cannot be reached, but needed for compilation
+        return 0;
     }
 
     /**
@@ -240,7 +244,7 @@ public class RentalHandler {
                 rental.setRentalDueDate(rentalDueDate);
                 rental.setRentalReturnDate(rentalReturnDate);
                 rental.setLateFee(lateFee);
-            } catch (InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException e) {
+            } catch (InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException | ConstructionException e) {
                 e.printStackTrace();
             }
 
@@ -922,35 +926,39 @@ public class RentalHandler {
 
     // UTILITY STUFF --------------------------------------------------------------------------------------------------
 
-    private static User validateUser(int userID) throws InvalidIDException, UserNotFoundException {
-        User user = UserHandler.getUserByID(userID);
-        if (user == null)
-            throw new UserNotFoundException("User with ID " + userID + " not found.");
-        else
-            return user;
+    private static User validateUser(int userID) throws ValidationException {
+        try {
+            User user = UserHandler.getUserByID(userID);
+            if (user == null)
+                throw new ValidationException("User with ID " + userID + " not found.");
+            //User has too many current rentals
+            if (user.getCurrentRentals() >= user.getAllowedRentals())
+                throw new ValidationException("User not allowed to rent due to already renting to capacity. " +
+                        "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
+            //User has late fee
+            if (user.getLateFee() > 0)
+                throw new ValidationException("User not allowed to rent due to having a late fee. " +
+                        "Late fee: " + user.getLateFee());
+            else
+                return user;
+        } catch (InvalidIDException e) {
+            throw new ValidationException("User validation failed for userID " + userID + ": " + e.getMessage(), e);
+        }
     }
 
-    private static Item validateItem(int itemID) throws InvalidIDException, ItemNotFoundException {
-        Item item = ItemHandler.getItemByID(itemID);
-        if (item == null)
-            throw new ItemNotFoundException("Item with ID " + item + " not found.");
-        else if (!item.isAvailable())
-            List<Item> items = ItemHandler.getItemsByTitle(item.getTitle());
-
-
+    private static Item validateItem(int itemID) throws ValidationException {
+        try {
+            Item item = ItemHandler.getItemByID(itemID);
+            if (item == null)
+                throw new ValidationException("Item with ID " + item + " not found.");
+            else if (!item.isAvailable()) {
+                List<Item> items = ItemHandler.getItemsByTitle(item.getTitle());
+            }
             return item;
+        } catch (ItemNotFoundException | InvalidIDException | InvalidTitleException e) {
+            throw new ValidationException("Item validation failed for itemID " + itemID + ": " + e.getMessage(), e);
+        }
     }
-
-    private static void validateUserAllowedToRent(User user) throws RentalNotAllowedException {
-        if (user.getCurrentRentals() >= user.getAllowedRentals())
-            throw new RentalNotAllowedException("User not allowed to rent due to already renting to capacity. " +
-                    "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
-        //User has late fee
-        if (user.getLateFee() > 0)
-            throw new RentalNotAllowedException("User not allowed to rent due to having a late fee. " +
-                    "Late fee: " + user.getLateFee());
-    }
-
 
 
     private static void checkUserID(int userID) throws InvalidIDException {

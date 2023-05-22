@@ -91,7 +91,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             System.out.println("\nTEST FINISHED.");
 
-        } catch (ItemNotFoundException | RentalNotAllowedException | InvalidIDException e) {
+        } catch (ItemNotFoundException | InvalidIDException | RentalCreationException e) {
             e.printStackTrace();
             fail("Test should be able to retrieve user or item with correct IDs. userID: " + validUserID + ", itemID: " + validItemID);
         }
@@ -286,7 +286,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             RentalHandler.createNewRental(3, 3);
             RentalHandler.createNewRental(4, 4);
             RentalHandler.createNewRental(5, 5);
-        } catch (RentalNotAllowedException e) {
+        } catch (RentalCreationException e) {
             e.printStackTrace();
             fail("Error while creating rentals: " + e.getMessage());
         }

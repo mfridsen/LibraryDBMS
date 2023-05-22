@@ -71,33 +71,40 @@ public class Rental extends Entity {
 
 
     //creation constructor
-    public Rental(int userID, int itemID) throws InvalidIDException, InvalidDateException {
-        this.rentalID = 0; //Set AFTER initial INSERT by createNewRental
-        setUserID(userID); //Throws InvalidIDException
-        setItemID(itemID); //Throws InvalidIDException
-        setRentalDate(LocalDateTime.now()); //Throws InvalidDateException
-        this.username = null; //Set BEFORE initial INSERT by createNewRental
-        this.itemTitle = null; //Set BEFORE initial INSERT by createNewRental
-        this.rentalDueDate = null; //Set BEFORE initial INSERT by createNewRental
-        this.rentalReturnDate = null; //Should be null since the Rental has just been created
-        this.lateFee = 0.0; //Should be 0.0 since the Rental has just been created
-        this.deleted = false;
+    public Rental(int userID, int itemID) throws ConstructionException {
+        try {
+            this.rentalID = 0; //Set AFTER initial INSERT by createNewRental
+            setUserID(userID); //Throws InvalidIDException
+            setItemID(itemID); //Throws InvalidIDException
+            setRentalDate(LocalDateTime.now()); //Throws InvalidDateException
+            this.username = null; //Set BEFORE initial INSERT by createNewRental
+            this.itemTitle = null; //Set BEFORE initial INSERT by createNewRental
+            this.rentalDueDate = null; //Set BEFORE initial INSERT by createNewRental
+            this.rentalReturnDate = null; //Should be null since the Rental has just been created
+            this.lateFee = 0.0; //Should be 0.0 since the Rental has just been created
+            this.deleted = false;
+        } catch (InvalidIDException | InvalidDateException e) {
+            throw new ConstructionException(e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     //retrieval constructor
     public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, String username, String itemTitle,
-                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee, boolean deleted)
-            throws InvalidIDException, InvalidDateException, InvalidUsernameException, InvalidTitleException, InvalidLateFeeException {
-        setRentalID(rentalID); //Throws InvalidIDException
-        setUserID(userID); //Throws InvalidIDException
-        setItemID(itemID); //Throws InvalidIDException
-        setRentalDate(rentalDate); //Throws InvalidDateException
-        setUsername(username); //Throws InvalidUsernameException
-        setItemTitle(itemTitle); //Throws InvalidTitleException
-        setRentalDueDate(rentalDueDate); //Throws InvalidDateException
-        setRentalReturnDate(rentalReturnDate); //Throws InvalidDateException
-        setLateFee(lateFee); //Throws InvalidLateFeeException
-        this.deleted = deleted;
+                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee, boolean deleted) throws ConstructionException {
+        try {
+            setRentalID(rentalID); //Throws InvalidIDException
+            setUserID(userID); //Throws InvalidIDException
+            setItemID(itemID); //Throws InvalidIDException
+            setRentalDate(rentalDate); //Throws InvalidDateException
+            setUsername(username); //Throws InvalidUsernameException
+            setItemTitle(itemTitle); //Throws InvalidTitleException
+            setRentalDueDate(rentalDueDate); //Throws InvalidDateException
+            setRentalReturnDate(rentalReturnDate); //Throws InvalidDateException
+            setLateFee(lateFee); //Throws InvalidLateFeeException
+            this.deleted = deleted;
+        } catch (InvalidIDException | InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException e) {
+            throw new ConstructionException(e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -310,5 +317,4 @@ public class Rental extends Entity {
             throw new InvalidLateFeeException("Late fee cannot be negative. Received: " + lateFee);
         this.lateFee = lateFee;
     }
-
 }
