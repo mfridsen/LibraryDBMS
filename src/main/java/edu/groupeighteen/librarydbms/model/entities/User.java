@@ -45,27 +45,36 @@ public class User extends Entity {
      * @param username
      * @param password
      */
-    public User(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
-        this.userID = 0;
-        setUsername(username); //InvalidUsernameException
-        setPassword(password); //InvalidPasswordException
-        this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
-        this.currentRentals = 0;
-        this.lateFee = 0.0;
-        this.deleted = false;
+    public User(String username, String password) throws ConstructionException {
+        try {
+            this.userID = 0;
+            setUsername(username); //InvalidUsernameException
+            setPassword(password); //InvalidPasswordException
+            this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
+            this.currentRentals = 0;
+            this.lateFee = 0.0;
+            this.deleted = false;
+        } catch (InvalidUsernameException | InvalidPasswordException e) {
+            throw new ConstructionException("Failed to construct User due to " + e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
      * Retrieval Constructor.
      */
-    public User(int userID, String username, String password, int allowedRentals, int currentRentals, double lateFee, boolean deleted) throws InvalidIDException, InvalidUsernameException, InvalidPasswordException, InvalidRentalException, InvalidLateFeeException {
-        setUserID(userID); //Throws InvalidIDException
-        setUsername(username); //Throws InvalidUsernameException
-        setPassword(password); //Throws InvalidPasswordException
-        this.allowedRentals = allowedRentals;
-        setCurrentRentals(currentRentals); //Throws InvalidRentalException
-        setLateFee(lateFee); //Throws InvalidLateFeeException
-        this.deleted = deleted;
+    public User(int userID, String username, String password, int allowedRentals, int currentRentals,
+                double lateFee, boolean deleted) throws ConstructionException {
+        try {
+            setUserID(userID); //Throws InvalidIDException
+            setUsername(username); //Throws InvalidUsernameException
+            setPassword(password); //Throws InvalidPasswordException
+            this.allowedRentals = allowedRentals;
+            setCurrentRentals(currentRentals); //Throws InvalidRentalException
+            setLateFee(lateFee); //Throws InvalidLateFeeException
+            this.deleted = deleted;
+        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException | InvalidRentalException | InvalidLateFeeException e) {
+            throw new ConstructionException("Failed to construct User due to " + e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**

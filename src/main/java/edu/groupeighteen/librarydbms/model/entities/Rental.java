@@ -84,7 +84,7 @@ public class Rental extends Entity {
             this.lateFee = 0.0; //Should be 0.0 since the Rental has just been created
             this.deleted = false;
         } catch (InvalidIDException | InvalidDateException e) {
-            throw new ConstructionException(e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new ConstructionException("Failed to construct Rental due to " + e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -103,7 +103,7 @@ public class Rental extends Entity {
             setLateFee(lateFee); //Throws InvalidLateFeeException
             this.deleted = deleted;
         } catch (InvalidIDException | InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException e) {
-            throw new ConstructionException(e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new ConstructionException("Failed to construct Rental due to " + e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 

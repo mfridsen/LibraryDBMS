@@ -75,7 +75,7 @@ public class RentalHandler {
      * @param itemID the ID of the item being rented.
      * @return the newly created and saved Rental object.
      * @throws RentalCreationException if the item doesn't exist,
-     *                      or if the item isn't available,'
+     *                      or if the item isn't available,
      *                      or if the user doesn't exist,
      *                      or if the user has rented to their capacity,
      *                      or if the user has a late fee.
@@ -928,31 +928,56 @@ public class RentalHandler {
 
     private static User validateUser(int userID) throws ValidationException {
         try {
-            User user = UserHandler.getUserByID(userID);
-            if (user == null)
-                throw new ValidationException("User with ID " + userID + " not found.");
-            //User has too many current rentals
-            if (user.getCurrentRentals() >= user.getAllowedRentals())
-                throw new ValidationException("User not allowed to rent due to already renting to capacity. " +
-                        "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
-            //User has late fee
-            if (user.getLateFee() > 0)
-                throw new ValidationException("User not allowed to rent due to having a late fee. " +
-                        "Late fee: " + user.getLateFee());
-            else
-                return user;
+            //Check ID
+            checkUserID(userID);
+            //Retrieve and check User not null
+            User user = checkUserNull(userID);
+            //Validate user is allowed to rent
+            checkUserAllowedToRent(user);
+            return user;
         } catch (InvalidIDException e) {
             throw new ValidationException("User validation failed for userID " + userID + ": " + e.getMessage(), e);
         }
     }
 
+    private static void checkUserID(int userID) throws InvalidIDException {
+        if (userID <= 0)
+            throw new InvalidIDException("Invalid userID: " + userID);
+    }
+
+    private static User checkUserNull(int userID) throws ValidationException, InvalidIDException {
+        User user = UserHandler.getUserByID(userID);
+        if (user == null)
+            throw new ValidationException("User with ID " + userID + " not found.");
+        return user;
+    }
+
+    private static void checkUserAllowedToRent(User user) throws ValidationException {
+        //User has too many current rentals
+        if (user.getCurrentRentals() >= user.getAllowedRentals())
+            throw new ValidationException("User not allowed to rent due to already renting to capacity. " +
+                    "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
+        //User has late fee
+        if (user.getLateFee() > 0)
+            throw new ValidationException("User not allowed to rent due to having a late fee. " +
+                    "Late fee: " + user.getLateFee());
+    }
+
     private static Item validateItem(int itemID) throws ValidationException {
         try {
+            //Check ID
+            checkItemID(itemID);
+            //Retrieve Item
             Item item = ItemHandler.getItemByID(itemID);
             if (item == null)
                 throw new ValidationException("Item with ID " + item + " not found.");
-            else if (!item.isAvailable()) {
+            if (!item.isAvailable()) {
                 List<Item> items = ItemHandler.getItemsByTitle(item.getTitle());
+                if (items == null)
+                    throw new ValidationException("No item with title " + item.getTitle() + " available.");
+                for (Item availableItem : items)
+                    if (availableItem.isAvailable())
+                        return availableItem;
             }
             return item;
         } catch (ItemNotFoundException | InvalidIDException | InvalidTitleException e) {
@@ -960,16 +985,15 @@ public class RentalHandler {
         }
     }
 
-
-    private static void checkUserID(int userID) throws InvalidIDException {
-        if (userID <= 0)
-            throw new InvalidIDException("Invalid userID: " + userID);
-    }
-
     private static void checkItemID(int itemID) throws InvalidIDException {
         if (itemID <= 0)
             throw new InvalidIDException("Invalid itemID: " + itemID);
     }
+
+    private static void checkItemNull(Item item) {
+
+    }
+
 
     private static Item getAvailableItem(String itemTitle) {
         //List<Item> = ItemHandler.getItemsByTitle(itemTitle);
