@@ -4,7 +4,7 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.UserNullException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullUserException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -42,7 +42,7 @@ public class UserDeleteGUI extends GUI {
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     }
-                } catch (InvalidPasswordException | UserNullException userNullException) {
+                } catch (InvalidPasswordException | NullUserException userNullException) {
                     userNullException.printStackTrace();
                 }
             }

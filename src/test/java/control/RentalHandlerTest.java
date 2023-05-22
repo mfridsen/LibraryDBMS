@@ -230,7 +230,16 @@ public class RentalHandlerTest extends BaseHandlerTest {
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | ItemNullException | ItemNotFoundException e) {
+            //Rent item 2 (should be available)
+            RentalHandler.createNewRental(validUserID, 2);
+
+            //Assert correct exception with correct message is thrown when we attempt to rent item again
+            exception = assertThrows(ItemNotFoundException.class, () -> RentalHandler.createNewRental(2, 2));
+            expectedMessage = "Rental creation failed";
+            actualMessage = exception.getMessage();
+            assertTrue(actualMessage.contains(expectedMessage));
+
+        } catch (InvalidIDException | NullItemException | ItemNotFoundException | UserNotFoundException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -262,7 +271,18 @@ public class RentalHandlerTest extends BaseHandlerTest {
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | InvalidRentalException | UserNullException | InvalidUsernameException e) {
+            //Try with user 2 and items 1-6, where 6 should fail
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 1));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 2));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 3));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 4));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 5));
+            exception = assertThrows(RentalNotAllowedException.class, () -> RentalHandler.createNewRental(2, 6));
+            expectedMessage = "User not allowed to rent due to already renting to capacity.";
+            actualMessage = exception.getMessage();
+            assertTrue(actualMessage.contains(expectedMessage));
+
+        } catch (InvalidIDException | InvalidRentalException | NullUserException | InvalidUsernameException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -282,9 +302,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
             int validUserID = 1;
             int validItemID = 1;
 
-            //Set a positive late fee for user
+            //Get ourselves a poor little user object
             User lateFeeUser = UserHandler.getUserByID(validUserID);
             assertNotNull(lateFeeUser);
+
+            //Assert user is allowed to rent before getting a late fee
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(validUserID, 2));
+
+            //Set a positive late fee for user
             lateFeeUser.setLateFee(1);
             UserHandler.updateUser(lateFeeUser);
 
@@ -294,7 +319,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | UserNullException | InvalidUsernameException | InvalidLateFeeException e) {
+        } catch (InvalidIDException | NullUserException | InvalidUsernameException | InvalidLateFeeException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -315,7 +340,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
      */
     @Test
     @Order(9)
-    void testGetAllRentals_EmptyRentalsTable() throws UserNotFoundException, InvalidIDException {
+    void testGetAllRentals_EmptyRentalsTable() {
         System.out.println("\n9: Testing getAllRentals method with an empty database...");
 
         // Clear the rentals table in the database

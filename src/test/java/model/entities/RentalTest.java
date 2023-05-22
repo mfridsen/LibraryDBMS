@@ -179,7 +179,6 @@ public class RentalTest {
 
         //Testing invalid rentalReturnDate
         assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate.minusDays(5), lateFee, false), "Rental constructor did not throw exception when rentalReturnDate was invalid.");
-        assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, null, lateFee, false), "Rental constructor did not throw exception when rentalReturnDate was invalid.");
 
         //Testing invalid lateFee
         assertThrows(ConstructionException.class, () -> new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, -1.0, false), "Rental constructor did not throw exception when lateFee was invalid.");

@@ -5,11 +5,12 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @project LibraryDBMS
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
- * @date 5/21/2023
- * Custom UserNullException class. Used to make Exceptions clearer.
+ * @date 5/22/2023
+ * <p>
+ * Custom NullRentalException class. Used to make Exceptions clearer.
  */
-public class UserNullException extends Exception {
-    public UserNullException(String message) {
+public class NullRentalException extends Exception {
+    public NullRentalException(String message) {
         super(message);
     }
 }

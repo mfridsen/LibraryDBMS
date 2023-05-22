@@ -5,7 +5,7 @@ import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.UserNullException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullUserException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -56,7 +56,7 @@ public class RentalDeleteGUI extends GUI {
                             sqle.printStackTrace();
                         }*/
                     }
-                } catch (InvalidPasswordException | UserNullException userNullException) {
+                } catch (InvalidPasswordException | NullUserException userNullException) {
                     userNullException.printStackTrace();
                 }
             }

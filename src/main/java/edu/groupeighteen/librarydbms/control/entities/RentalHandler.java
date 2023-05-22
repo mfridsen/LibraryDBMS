@@ -146,11 +146,11 @@ public class RentalHandler {
             ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidDateException: " + e.getMessage(), e);
         } catch (InvalidRentalException e) {
             ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidRentalException: " + e.getMessage(), e);
-        } catch (ItemNullException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: ItemNullException thrown for non-null Item, message: "
+        } catch (NullItemException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed: NullItemException thrown for non-null Item, message: "
                     + e.getMessage(), e);
-        } catch (UserNullException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: UserNullException thrown for non-null User, message: "
+        } catch (NullUserException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed: NullUserException thrown for non-null User, message: "
                     + e.getMessage(), e);
         }
 
@@ -202,7 +202,7 @@ public class RentalHandler {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next()) return generatedKeys.getInt(1);
             }
-        } catch (RentalNullException | SQLException e) {
+        } catch (NullRentalException | SQLException e) {
             ExceptionHandler.HandleFatalException("Failed to save Rental due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -211,10 +211,7 @@ public class RentalHandler {
         return 0;
     }
 
-    private static void checkNullRental(Rental rental) throws RentalNullException {
-        if (rental == null)
-            throw new RentalNullException("Error saving rental: rental is null.");
-    }
+
 
 
     public static List<Rental> getAllRentals() {
@@ -234,26 +231,36 @@ public class RentalHandler {
 
                 while (resultSet.next()) {
                     int rentalID = resultSet.getInt("rentalID");
+
+                    //Get user by ID, throws UserNotFoundException
                     int userID = resultSet.getInt("userID");
+                    User user = UserHandler.getUserByID(userID);
+                    if (user == null) throw new NullUserException("Rental retrieval failed: NullUserException " +
+                            "thrown for valid user with ID " + userID);
+                    String username = user.getUsername();
+
+                    //Get item by ID
                     int itemID = resultSet.getInt("itemID");
+                    Item item = ItemHandler.getItemByID(itemID);
+                    if (item == null) throw new NullItemException("Rental retrieval failed: NullItemException " +
+                            "thrown for valid item with ID " + itemID);
+                    String itemTitle = item.getTitle();
+
                     LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
                     LocalDateTime rentalDueDate = resultSet.getTimestamp("rentalDueDate").toLocalDateTime();
-                    // Get the rental return date. This can be null in the database.
+
+                    //Rental return date can be null in the table
                     Timestamp returnDateTimestamp = resultSet.getTimestamp("rentalReturnDate");
-                    LocalDateTime rentalReturnDate = null;
-                    // Convert timestamp to LocalDateTime only if it is not null.
+                    LocalDateTime rentalReturnDate = null; // Set to null by default
                     if (returnDateTimestamp != null) {
                         rentalReturnDate = returnDateTimestamp.toLocalDateTime();
                     }
+
                     float lateFee = resultSet.getFloat("lateFee");
+                    boolean deleted = resultSet.getBoolean("deleted");
 
-                    //Get user by ID, throws UserNotFoundException
-                    User user = UserHandler.getUserByID(userID);
-
-                    //Get item by ID
-                    Item item = ItemHandler.getItemByID(itemID);
-
-                    Rental rental = new Rental(userID, itemID);
+                    Rental rental = new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle,
+                            rentalDueDate, rentalReturnDate, lateFee, deleted);
                     rental.setRentalID(rentalID);
                     rental.setRentalDate(rentalDate);
                     rental.setUsername(user.getUsername());
@@ -266,7 +273,9 @@ public class RentalHandler {
                     rentals.add(rental);
                 }
             }
-        } catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException e) {
+        } catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException |
+                InvalidUsernameException | InvalidTitleException | InvalidLateFeeException | NullUserException |
+                NullItemException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve all rentals from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -949,6 +958,11 @@ public class RentalHandler {
 
     private static boolean checkItemID(int itemID) {
         return itemID <= 0;
+    }
+
+    private static void checkNullRental(Rental rental) throws NullRentalException {
+        if (rental == null)
+            throw new NullRentalException("Error saving rental: rental is null.");
     }
 
     private static User getExistingUser(int userID) throws UserNotFoundException, InvalidIDException {

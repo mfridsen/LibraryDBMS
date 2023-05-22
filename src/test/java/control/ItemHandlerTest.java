@@ -440,7 +440,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to update with null item
             ItemHandler.updateItem(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (ItemNullException | ItemNotFoundException iae) {
+        } catch (NullItemException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
         }
 
@@ -523,7 +523,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to delete null item
             ItemHandler.deleteItemFromTable(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (ItemNullException | ItemNotFoundException iae) {
+        } catch (NullItemException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
         }
 
@@ -585,7 +585,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
                 assertNull(ItemHandler.getAvailableTitles().get(validItem.getTitle()));
             }
 
-        } catch (InvalidTitleException | ItemNullException | ItemNotFoundException e) {
+        } catch (InvalidTitleException | NullItemException | ItemNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -650,7 +650,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The number of available copies should be 1
             assertEquals(1, availableCopies);
-        } catch (ItemNotFoundException | InvalidTitleException | ItemNullException e) {
+        } catch (ItemNotFoundException | InvalidTitleException | NullItemException e) {
             fail("Item should exist in availableTitles.");
             e.printStackTrace();
         }

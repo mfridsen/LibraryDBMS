@@ -291,12 +291,12 @@ public class Rental extends Entity {
      * @throws IllegalArgumentException if the rental return date is not null and is before the rental date
      */
     public void setRentalReturnDate(LocalDateTime rentalReturnDate) throws InvalidDateException {
-        if (rentalReturnDate == null)
-            throw new InvalidDateException("Rental return date cannot be null.");
-        if (rentalReturnDate.isBefore(this.getRentalDate()))
+        if (rentalReturnDate != null && rentalReturnDate.isBefore(this.getRentalDate())) {
             throw new InvalidDateException("Rental return date cannot be before the rental date. Received: " + rentalReturnDate);
-        this.rentalReturnDate = rentalReturnDate.truncatedTo(ChronoUnit.SECONDS);
+        }
+        this.rentalReturnDate = rentalReturnDate != null ? rentalReturnDate.truncatedTo(ChronoUnit.SECONDS) : null;
     }
+
     /**
      * Returns the late fee.
      *

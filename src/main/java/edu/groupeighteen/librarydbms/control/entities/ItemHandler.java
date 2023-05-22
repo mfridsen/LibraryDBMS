@@ -410,10 +410,10 @@ public class ItemHandler {
      * Updates an existing item in the database and adjusts the count of the old and new titles.
      * @param item The Item object containing the updated information.
      */
-    public static void updateItem(Item item) throws ItemNullException, ItemNotFoundException {
+    public static void updateItem(Item item) throws NullItemException, ItemNotFoundException {
         try {
             //TODO-prio update when Item is finished
-            //Validate the input, throws ItemNullException
+            //Validate the input, throws NullItemException
             checkNullItem(item);
 
             // Get the old Item instance (which hasn't been updated)
@@ -463,11 +463,11 @@ public class ItemHandler {
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
      */
-    public static void deleteItemFromTable(Item item) throws ItemNullException, ItemNotFoundException {
+    public static void deleteItemFromTable(Item item) throws NullItemException, ItemNotFoundException {
         try {
             //TODO-prio UPDATE TO CHANGE DELETED
             //TODO-prio update when Item is finished
-            //Validate the input, ItemNullException
+            //Validate the input, NullItemException
             checkNullItem(item);
 
             // Get the old title, throws ItemNotFoundException
@@ -520,9 +520,9 @@ public class ItemHandler {
      * @param item The Item object for which the available copies are to be retrieved.
      * @return The number of available copies for the item.
      * @throws ItemNotFoundException If the item does not exist in the database.
-     * @throws ItemNullException If the Item is null.
+     * @throws NullItemException If the Item is null.
      */
-    public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException, ItemNullException {
+    public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException, NullItemException {
         checkNullItem(item);
         if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
             throw new ItemNotFoundException(item.getTitle() + ": Item not found in stored or available titles.");
@@ -582,12 +582,12 @@ public class ItemHandler {
     }
 
     /**
-     * Checks whether a given Item is null. If so, throws a ItemNullException which must be handled.
+     * Checks whether a given Item is null. If so, throws a NullItemException which must be handled.
      * @param item the item to check.
-     * @throws ItemNullException if item is null.
+     * @throws NullItemException if item is null.
      */
-    private static void checkNullItem(Item item) throws ItemNullException {
+    private static void checkNullItem(Item item) throws NullItemException {
         if (item == null)
-            throw new ItemNullException("Invalid item: item is null.");
+            throw new NullItemException("Invalid item: item is null.");
     }
 }

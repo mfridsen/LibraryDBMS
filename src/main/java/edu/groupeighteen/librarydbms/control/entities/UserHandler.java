@@ -314,7 +314,7 @@ public class UserHandler {
      * @param updatedUser The User object containing the updated user data.
 
      */
-    public static void updateUser(User updatedUser) throws UserNullException, InvalidUsernameException {
+    public static void updateUser(User updatedUser) throws NullUserException, InvalidUsernameException {
         try {
             //Let's check if the user exists in the database before we go on
             checkUser(updatedUser);
@@ -358,10 +358,10 @@ public class UserHandler {
      * @param user The User object representing the user to be deleted.
 
      */
-    public static void deleteUser(User user) throws UserNullException, UserNotFoundException {
+    public static void deleteUser(User user) throws NullUserException, UserNotFoundException {
         //TODO-prio UPDATE TO CHANGE DELETED
         try {
-            //Validate the input. Throws UserNullException
+            //Validate the input. Throws NullUserException
             checkUser(user);
 
             //Prepare a SQL command to delete a user by userID.
@@ -432,7 +432,7 @@ public class UserHandler {
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
-    public static boolean validateUser(User user, String password) throws UserNullException, InvalidPasswordException {
+    public static boolean validateUser(User user, String password) throws NullUserException, InvalidPasswordException {
         checkNullUser(user);
         checkEmptyPassword(password);
         return user.getPassword().equals(password);
@@ -486,7 +486,7 @@ public class UserHandler {
             throw new InvalidUsernameException("Username " + username + " already taken.");
     }
 
-    private static void checkUser(User user) throws UserNotFoundException, InvalidIDException, UserNullException {
+    private static void checkUser(User user) throws UserNotFoundException, InvalidIDException, NullUserException {
         checkNullUser(user);
         int ID = user.getUserID();
         if (UserHandler.getUserByID(ID) == null)
@@ -494,13 +494,13 @@ public class UserHandler {
     }
 
     /**
-     * Checks if a given user is null. If so, throws a UserNullException which must be handled.
+     * Checks if a given user is null. If so, throws a NullUserException which must be handled.
      * @param user the user.
-     * @throws UserNullException if the user is null.
+     * @throws NullUserException if the user is null.
      */
-    private static void checkNullUser(User user) throws UserNullException {
+    private static void checkNullUser(User user) throws NullUserException {
         if (user == null)
-            throw new UserNullException("User is null.");
+            throw new NullUserException("User is null.");
     }
 
     /**

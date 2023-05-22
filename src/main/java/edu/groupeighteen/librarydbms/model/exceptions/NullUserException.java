@@ -6,10 +6,10 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
  * @date 5/21/2023
- * Custom ItemNullException class. Used to make Exceptions clearer.
+ * Custom NullUserException class. Used to make Exceptions clearer.
  */
-public class ItemNullException extends Exception {
-    public ItemNullException(String message) {
+public class NullUserException extends Exception {
+    public NullUserException(String message) {
         super(message);
     }
 }
