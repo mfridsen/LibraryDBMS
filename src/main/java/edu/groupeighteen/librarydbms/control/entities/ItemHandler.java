@@ -195,6 +195,8 @@ public class ItemHandler {
         }
     }
 
+    //CREATE -----------------------------------------------------------------------------------------------------------
+
     /**
      * Creates a new item with a given title, stores it in the database, and increments the title count.
      * @param title The title of the item to be created.
@@ -297,10 +299,12 @@ public class ItemHandler {
         return null;
     }
 
+    //UPDATE -----------------------------------------------------------------------------------------------------------
+
     /**
      * Updates an existing item in the database and adjusts the count of the old and new titles.
      * @param item The Item object containing the updated information.
-     */
+     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
     public static void updateItem(Item item) throws NullItemException, ItemNotFoundException {
         try {
             //TODO-prio update when Item is finished
@@ -361,7 +365,7 @@ public class ItemHandler {
     /**
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
-     */
+     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
     public static void deleteItem(Item item) throws NullItemException, ItemNotFoundException {
         try {
             //TODO-prio UPDATE TO CHANGE DELETED
@@ -401,10 +405,7 @@ public class ItemHandler {
         }
     }
 
-
-
-
-
+    //RETRIEVING -------------------------------------------------------------------------------------------------------
 
     /**
      * Retrieves all items with a given title from the database.

@@ -352,6 +352,8 @@ public class RentalHandler {
         return null;
     }
 
+    //UPDATE -----------------------------------------------------------------------------------------------------------
+
     /**
      * Updates the details of a rental record in the database.
      *
@@ -471,7 +473,7 @@ public class RentalHandler {
         DatabaseHandler.executePreparedUpdate(query, params);
     }
 
-
+    //RETRIEVING -------------------------------------------------------------------------------------------------------
 
     /**
      * Retrieves all rental instances associated with a given rental date.
