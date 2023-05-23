@@ -34,14 +34,13 @@ public class RentalHandlerTest extends BaseHandlerTest {
     //TODO-future make all tests more verbose
     //TODO-prio change order of tests to match order of methods
 
-
     @Override
     @BeforeEach
     void setupAndReset() {
         super.setupAndReset();
-        ItemHandler.setup();
-        UserHandler.setup();
-        DatabaseHandler.setVerbose(false);
+        ItemHandler.setup(); //Fills table with items
+        UserHandler.setup(); //Fills table with users
+        DatabaseHandler.setVerbose(false); //Get that thing to shut up
     }
 
     /**
@@ -105,7 +104,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Unexpected exception thrown when retrieving renting user: " + e.getMessage());
         }
         assertNotNull(rentingUser, "Renting user should not be null");
-        assertTrue(rentingUser.getCurrentRentals() > 0, "Renting user's current rentals count should be greater than 0");
+        assertTrue(rentingUser.getCurrentRentals() > 0, "Renting user's current rentals count " +
+                "should be greater than 0");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -114,7 +114,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     /**
      * Test case for createNewRental method with an invalid userID.
      *
-     * This test attempts to create a new rental using an invalid user ID. The userID is invalid if it is not a positive integer.
+     * This test attempts to create a new rental using an invalid user ID. The userID is invalid if it is
+     * not a positive integer.
+     *
      * An InvalidIDException should be thrown with an appropriate error message.
      */
     @Test
@@ -125,7 +127,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         int invalidUserID = -1; // User IDs should be positive integers
         int validItemID = 1;
 
-        Exception exception = assertThrows(InvalidIDException.class, () -> RentalHandler.createNewRental(invalidUserID, validItemID));
+        Exception exception = assertThrows(InvalidIDException.class,
+                () -> RentalHandler.createNewRental(invalidUserID, validItemID));
 
         String expectedMessage = "invalid userID";
         String actualMessage = exception.getMessage();
@@ -138,7 +141,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     /**
      * Test case for createNewRental method with an invalid itemID.
      *
-     * This test attempts to create a new rental using an invalid item ID. The itemID is invalid if it is not a positive integer.
+     * This test attempts to create a new rental using an invalid item ID. The itemID is invalid if it is not a
+     * positive integer.
+     *
      * An InvalidIDException should be thrown with an appropriate error message.
      */
     @Test
@@ -149,7 +154,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         int invalidItemID = 0; // Item IDs should be positive integers
         int validUserID = 1;
 
-        Exception exception = assertThrows(InvalidIDException.class, () -> RentalHandler.createNewRental(validUserID, invalidItemID));
+        Exception exception = assertThrows(InvalidIDException.class,
+                () -> RentalHandler.createNewRental(validUserID, invalidItemID));
 
         String expectedMessage = "invalid itemID";
         String actualMessage = exception.getMessage();
@@ -173,7 +179,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         int nonexistentUserID = 9999; // This user ID does not exist in the database
         int validItemID = 1;
 
-        Exception exception = assertThrows(UserNotFoundException.class, () -> RentalHandler.createNewRental(nonexistentUserID, validItemID));
+        Exception exception = assertThrows(UserNotFoundException.class,
+                () -> RentalHandler.createNewRental(nonexistentUserID, validItemID));
 
         String expectedMessage = "User with ID " + nonexistentUserID + " not found.";
         String actualMessage = exception.getMessage();
@@ -197,7 +204,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         int validUserID = 1;
         int nonexistentItemID = 9999; // This item ID does not exist in the database
 
-        Exception exception = assertThrows(ItemNotFoundException.class, () -> RentalHandler.createNewRental(validUserID, nonexistentItemID));
+        Exception exception = assertThrows(ItemNotFoundException.class,
+                () -> RentalHandler.createNewRental(validUserID, nonexistentItemID));
 
         String expectedMessage = "Item with ID " + nonexistentItemID + " not found.";
         String actualMessage = exception.getMessage();
@@ -226,7 +234,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             //Assert correct exception with correct message is thrown
             String title = unavailableItem.getTitle();
-            Exception exception = assertThrows(ItemNotFoundException.class, () -> RentalHandler.createNewRental(validUserID, validItemID));
+            Exception exception = assertThrows(ItemNotFoundException.class,
+                    () -> RentalHandler.createNewRental(validUserID, validItemID));
             String expectedMessage = "Rental creation failed: No available copy of " + title + " found.";
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
@@ -240,7 +249,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | NullItemException | ItemNotFoundException | UserNotFoundException | RentalNotAllowedException e) {
+        } catch (InvalidIDException | NullItemException | ItemNotFoundException
+                | UserNotFoundException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -267,7 +277,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             UserHandler.updateUser(maxRentalUser);
 
             //Assert correct exception with correct message is thrown
-            Exception exception = assertThrows(RentalNotAllowedException.class, () -> RentalHandler.createNewRental(validUserID, validItemID));
+            Exception exception = assertThrows(RentalNotAllowedException.class,
+                    () -> RentalHandler.createNewRental(validUserID, validItemID));
             String expectedMessage = "User not allowed to rent due to already renting to capacity.";
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
@@ -315,7 +326,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             UserHandler.updateUser(lateFeeUser);
 
             //Assert correct exception with correct message is thrown
-            Exception exception = assertThrows(RentalNotAllowedException.class, () -> RentalHandler.createNewRental(validUserID, validItemID));
+            Exception exception = assertThrows(RentalNotAllowedException.class,
+                    () -> RentalHandler.createNewRental(validUserID, validItemID));
             String expectedMessage = "User not allowed to rent due to having a late fee.";
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
@@ -355,6 +367,21 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * This test method validates the functionality of the getAllRentals method in the RentalHandler class when the
+     * database is populated.
+     *
+     * The method first creates 5 new rentals. Then it calls the getAllRentals method to retrieve all rentals from
+     * the database.
+     *
+     * It checks if the returned list of rentals is not null and if the number of retrieved rentals matches the number
+     * of created rentals.
+     *
+     * If the list is null or the sizes do not match, the test fails.
+     *
+     * If an exception is thrown during the process (UserNotFoundException, ItemNotFoundException,
+     * RentalNotAllowedException, or InvalidIDException), the test also fails.
+     */
     @Test
     @Order(10)
     void testGetAllRentals_PopulatedRentalsTable() {
@@ -373,7 +400,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             //Check if the number of rentals retrieved matches the number of rentals created
             assertNotNull(rentals, "The retrieved rentals list should not be null.");
-            assertEquals(5, rentals.size(), "The number of retrieved rentals does not match the number of created rentals.");
+            assertEquals(5, rentals.size(), "The number of retrieved rentals does not match the " +
+                    "number of created rentals.");
         } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException e) {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -445,7 +473,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertNull(RentalHandler.getRentalByID(9), "Expected null for non-existent rental ID 9");
             assertNull(RentalHandler.getRentalByID(10), "Expected null for non-existent rental ID 10");
 
-        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException | RentalException e) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
+                | InvalidIDException | RentalException e) {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
         }

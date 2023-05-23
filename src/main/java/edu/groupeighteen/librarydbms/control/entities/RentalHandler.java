@@ -51,31 +51,32 @@ import java.util.List;
  *
  * Meaning, createNewRental (as an example) should NEVER be called with an empty or null String as argument.
  * If it is, that IS exceptional.
- *
- * TODO: The current implementation returns null or false when a rental cannot be found. This might be changed to
- *  throw a custom exception (like RentalNotFoundException) to make error handling more consistent.
  */
 public class RentalHandler {
 
-    //TODO-prio UPDATE ALL METHODS AND TEST METHODS WHEN THE REST OF THE FIELDS ARE ADDED
-    //TODO-prio ADD GET METHODS FOR ALL NEW FIELDS AS WELL AS TEST METHODS FOR THEM
-
-    //TODO-test
     /**
-     * Creates a new rental, saves it in the database, and returns it.
+     * This method creates a new rental in the system.
      *
-     * This method validates the input user and item IDs, creates a new Rental object, 
-     * sets its properties (including retrieving the user's username and item's title from 
-     * their respective handlers), and saves it in the database using saveRental.
+     * The method will first validate the IDs and ensure the user is allowed to rent.
+     * Then, it will create a new Rental object and fill it with the appropriate information.
+     * This rental will then be saved to the system, and the item's availability and the user's rental count will be
+     * updated accordingly.
      *
-     * The rental due date is calculated as the rental date (current date/time) plus the 
-     * number of allowed rental days for the item.
+     * In case of a failure during the rental creation process, the error is logged as a fatal exception.
      *
-     * @param userID the ID of the user renting the item.
-     * @param itemID the ID of the item being rented.
-     * @return the newly created and saved Rental object.
+     * @param userID The ID of the user who is creating the rental.
+     * @param itemID The ID of the item being rented.
+     * @return A Rental object representing the new rental that was created.
+     * @throws UserNotFoundException if the user with the given ID does not exist in the system.
+     * @throws ItemNotFoundException if the item with the given ID does not exist in the system, or if there is no
+     *                              available copy of the item.
+     * @throws RentalNotAllowedException if the user is not allowed to rent an item (e.g. due to reaching the limit
+     *                              of simultaneous rentals).
+     * @throws InvalidIDException if either the userID or itemID is invalid.
      */
-    public static Rental createNewRental(int userID, int itemID) throws UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidIDException {
+
+    public static Rental createNewRental(int userID, int itemID) throws UserNotFoundException, ItemNotFoundException,
+            RentalNotAllowedException, InvalidIDException {
         //Check IDs, can throw InvalidIDException
         if (checkUserID(userID))
             throw new InvalidIDException("Rental creation failed: invalid userID " + userID);
@@ -132,26 +133,29 @@ public class RentalHandler {
             return newRental;
 
         } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidIDException thrown for valid ID, message: "
-                    + e.getMessage(), e);
+            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidIDException thrown for valid ID, " +
+                    "message: " + e.getMessage(), e);
         } catch (InvalidTitleException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidTitleException thrown for valid title "
-                    + title + ", message: " + e.getMessage(), e);
+            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidTitleException thrown for " +
+                    "valid title " + title + ", message: " + e.getMessage(), e);
         } catch (InvalidUsernameException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidUsernameException thrown for valid username "
-                    + username + ", message: " + e.getMessage(), e);
+            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidUsernameException thrown for " +
+                    "valid username " + username + ", message: " + e.getMessage(), e);
         } catch (ConstructionException e) {
-            ExceptionHandler.HandleFatalException("Rental construction failed due to " + e.getCause().getClass().getName(), e.getCause());
+            ExceptionHandler.HandleFatalException("Rental construction failed due to "
+                    + e.getCause().getClass().getName(), e.getCause());
         } catch (InvalidDateException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidDateException: " + e.getMessage(), e);
+            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidDateException: " +
+                    e.getMessage(), e);
         } catch (InvalidRentalException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidRentalException: " + e.getMessage(), e);
+            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidRentalException: " +
+                    e.getMessage(), e);
         } catch (NullItemException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: NullItemException thrown for non-null Item, message: "
-                    + e.getMessage(), e);
+            ExceptionHandler.HandleFatalException("Rental creation failed: NullItemException thrown for " +
+                    "non-null Item, message: " + e.getMessage(), e);
         } catch (NullUserException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: NullUserException thrown for non-null User, message: "
-                    + e.getMessage(), e);
+            ExceptionHandler.HandleFatalException("Rental creation failed: NullUserException thrown for " +
+                    "non-null User, message: " + e.getMessage(), e);
         }
 
         //Won't reach, needed for compilation
@@ -198,7 +202,8 @@ public class RentalHandler {
             };
 
             //Execute query and get the generated rentalID, using try-with-resources
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
+                    Statement.RETURN_GENERATED_KEYS)) {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next()) return generatedKeys.getInt(1);
             }
@@ -212,6 +217,20 @@ public class RentalHandler {
     }
 
 
+    /**
+     * This method fetches a list of rentals from the database using a given SQL suffix.
+     *
+     * The method catches and handles various exceptions internally, related to database errors,
+     * object construction, invalid IDs, invalid dates, invalid usernames, invalid titles,
+     * invalid late fees, and null users or items. In case of a failure, a fatal error is logged
+     * and an empty list is returned.
+     *
+     * @param sqlSuffix The SQL suffix used to modify the SQL SELECT command that fetches the rentals.
+     *                  For example, a WHERE clause could be added to filter the rentals.
+     *                  If null, all rentals will be fetched.
+     * @return A list of Rental objects corresponding to the rentals fetched from the database.
+     *         The list may be empty if no rentals meet the criteria specified by the SQL suffix.
+     */
     public static List<Rental> getRentals(String sqlSuffix) {
         //Convert the ResultSet into a List of Rental objects
         List<Rental> rentals = new ArrayList<>();
@@ -287,10 +306,10 @@ public class RentalHandler {
      *
      * @param rentalID The ID of the rental to fetch. This should be a valid, existing rental ID.
      * @return A Rental object corresponding to the rental with the specified ID if it exists,
-     *      or null if no such rental exists.
+     *          or null if no such rental exists.
      * @throws InvalidIDException If the provided rental ID is invalid (i.e., less than or equal to zero).
      * @throws RentalException If more than one rental with the specified ID exists, which should not happen because
-     *      rental IDs are unique.
+     *                          rental IDs are unique.
      */
     public static Rental getRentalByID(int rentalID) throws InvalidIDException, RentalException {
         checkRentalID(rentalID);
