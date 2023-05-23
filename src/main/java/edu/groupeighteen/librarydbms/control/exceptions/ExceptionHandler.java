@@ -48,6 +48,35 @@ public class ExceptionHandler {
             System.exit(1);
         }
     }
+
+    public static void HandleFatalException(Throwable cause) { {
+        //TODO-future fix the logging
+        // Log the error
+        Logger logger = Logger.getLogger("DatabaseErrorLogger");
+            /*if (cause instanceof SQLException) {
+                logger.log(Level.SEVERE, "Fatal database error occurred", cause);
+                System.err.println(cause.getMessage()); //TODO-future remove later
+                cause.printStackTrace();
+            }
+            if (cause instanceof FileNotFoundException) {
+                logger.log(Level.SEVERE, "Fatal file not found error occurred", cause);
+                System.err.println(cause.getMessage()); //TODO-future remove later
+                cause.printStackTrace();
+            }
+            if (cause instanceof IOException) {
+                logger.log(Level.SEVERE, "Fatal IOException occurred", cause);
+                System.err.println(cause.getMessage()); //TODO-future remove later
+                cause.printStackTrace();
+            }*/
+
+        System.err.println(cause.getMessage());
+        cause.printStackTrace();
+
+        // Exit the program
+        System.err.println("A fatal error occurred. Please check the log file for more details.");
+        System.exit(1);
+    }
+    }
 }
 
 //TODO-future  consider expanding the log messages to include more context-specific information. For instance,

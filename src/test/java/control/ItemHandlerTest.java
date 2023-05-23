@@ -477,6 +477,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Create a new item
             String originalTitle = "Original Title";
             Item newItem = ItemHandler.createNewItem(originalTitle);
+            assertNotNull(newItem);
 
             // Update the title of the item
             String updatedTitle = "Updated Title";

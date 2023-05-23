@@ -10,6 +10,8 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,7 +182,7 @@ public class RentalHandler {
 
         try {
             //Validate input
-            checkNullRental(rental);
+            validateRental(rental);
 
             //Prepare query
             String query = "INSERT INTO rentals " +
@@ -216,36 +218,37 @@ public class RentalHandler {
         return 0;
     }
 
-
     /**
-     * This method fetches a list of rentals from the database using a given SQL suffix.
+     * Fetches all rentals from the database matching the provided SQL suffix and parameters. This allows for the execution
+     * of complex and dynamic SQL queries, depending on the provided suffix and parameters. The ResultSet from the query
+     * is converted into a list of Rental objects. In case of an error, a fatal exception will be handled and the program
+     * will terminate.
      *
-     * The method catches and handles various exceptions internally, related to database errors,
-     * object construction, invalid IDs, invalid dates, invalid usernames, invalid titles,
-     * invalid late fees, and null users or items. In case of a failure, a fatal error is logged
-     * and an empty list is returned.
+     * @param sqlSuffix The SQL query suffix to be added after "SELECT * FROM rentals". Can be null or contain conditions,
+     *                  ordering, etc. E.g., "WHERE userID = ?".
+     * @param params    An array of Strings representing the parameters to be set in the PreparedStatement for the query.
+     *                  Each '?' character in the sqlSuffix will be replaced by a value from this array. Can be null if no
+     *                  parameters are required.
+     * @param settings  Settings to apply to the Statement, passed to the DatabaseHandler's executePreparedQuery method.
+     *                  For example, it can be used to set Statement.RETURN_GENERATED_KEYS.
      *
-     * @param sqlSuffix The SQL suffix used to modify the SQL SELECT command that fetches the rentals.
-     *                  For example, a WHERE clause could be added to filter the rentals.
-     *                  If null, all rentals will be fetched.
-     * @return A list of Rental objects corresponding to the rentals fetched from the database.
-     *         The list may be empty if no rentals meet the criteria specified by the SQL suffix.
+     * @return A list of Rental objects matching the query, or an empty list if no matching rentals are found.
      */
-    public static List<Rental> getRentals(String sqlSuffix) {
+    public static List<Rental> getRentals(String sqlSuffix, String[] params, int settings) {
         //Convert the ResultSet into a List of Rental objects
         List<Rental> rentals = new ArrayList<>();
 
-        //Prepare a SQL command to select all rentals from the 'rentals' table with given sqlSuffix
+        // Prepare a SQL command to select all rentals from the 'rentals' table with given sqlSuffix
         String sql = "SELECT * FROM rentals " + (sqlSuffix == null ? "" : sqlSuffix);
 
         try {
             //Execute the query.
-            try(QueryResult queryResult = DatabaseHandler.executeQuery(sql)) {
+            try(QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings)) {
 
                 //Retrieve the ResultSet from the QueryResult
                 ResultSet resultSet = queryResult.getResultSet();
 
-
+                //Loop through the results
                 while (resultSet.next()) {
                     int rentalID = resultSet.getInt("rentalID");
 
@@ -310,16 +313,66 @@ public class RentalHandler {
      * @throws InvalidIDException If the provided rental ID is invalid (i.e., less than or equal to zero).
      * @throws RentalException If more than one rental with the specified ID exists, which should not happen because
      *                          rental IDs are unique.
+     *                          Should be handled by caller as fatal.
      */
     public static Rental getRentalByID(int rentalID) throws InvalidIDException, RentalException {
-        checkRentalID(rentalID);
+        //Validate input
+        validateRentalID(rentalID); //Throws InvalidIDException
+
+        //Create a list to store the Rental objects (should only contain one element, but getRentals returns a list)
+        List<Rental> rentals = null; //"Redundant" my ass, never rely on automatic initialization
+
+        //Prepare suffix to select rentals by ID
         String suffix = "WHERE rentalID = " + rentalID;
-        List<Rental> rentals = getRentals(suffix);
+
+        //Executor-Class Imperial Star Destroyer
+        rentals = getRentals(suffix, null, 0);
+
+        //Check results, this first option should not happen and will be considered fatal
         if (rentals.size() > 1)
-            throw new RentalException("There should not be more than 1 rental with ID " + rentalID
-                    + ", received: " + rentals.size());
+            ExceptionHandler.HandleFatalException(new RentalException("There should not be more than 1 rental with ID " + rentalID
+                    + ", received: " + rentals.size()));
+
+        //Found something
         else if (rentals.size() == 1) return rentals.get(0);
-        else return null;
+
+        //Found nothing
+        return null;
+    }
+
+    /**
+     * Retrieves all rental instances associated with a given rental date.
+     * More than one rental can be created within one second, hence this method returns a list of rentals.
+     * The method may return an empty list if no rentals are found for the given date.
+     *
+     * @param rentalDate The rental date to retrieve rentals for.
+     *                   This date is truncated to seconds to match the precision in the database.
+     * @return A list of Rental objects that were rented at the given date.
+     *         If no rentals are found, it returns an empty list.
+     * @throws InvalidDateException If the provided rental date is invalid.
+     */
+    public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate) throws InvalidDateException {
+        //No point getting invalid rentals
+        validateDate(rentalDate); //Throws InvalidDateException
+
+        //Need to truncate to seconds
+        rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
+
+        //Create a list to store the Rental objects (more than one can be created within one second)
+        List<Rental> rentals = new ArrayList<>();
+
+        // Prepare a SQL suffix to select rentals by rentalDate
+        String suffix = " WHERE rentalDate = ?";
+
+        // Prepare parameters for query
+        String[] params = {rentalDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))};
+
+
+        //Executor-Class Imperial Star Destroyer
+        rentals = getRentals(suffix, params, 0); //No settings
+
+        //Return results (empty list if nothing found)
+        return rentals;
     }
 
 
@@ -914,7 +967,7 @@ public class RentalHandler {
         return itemID <= 0;
     }
 
-    private static void checkNullRental(Rental rental) throws NullRentalException {
+    private static void validateRental(Rental rental) throws NullRentalException {
         if (rental == null)
             throw new NullRentalException("Error saving rental: rental is null.");
     }
@@ -955,8 +1008,14 @@ public class RentalHandler {
         return item;
     }
 
-    private static void checkRentalID(int rentalID) throws InvalidIDException {
+    private static void validateRentalID(int rentalID) throws InvalidIDException {
         if (rentalID <= 0) throw new InvalidIDException("Invalid rentalID. rentalID: " + rentalID);
+    }
+
+    private static void validateDate(LocalDateTime rentalDate) throws InvalidDateException {
+        if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
+            throw new InvalidDateException("Invalid rentalDate: RentalDate cannot be null or in the future. " +
+                    "Received: " +rentalDate);
     }
 
     //TODO-prio update when Rental class is finished

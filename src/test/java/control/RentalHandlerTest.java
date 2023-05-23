@@ -107,9 +107,17 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertTrue(rentingUser.getCurrentRentals() > 0, "Renting user's current rentals count " +
                 "should be greater than 0");
 
+        // Verify that storedTitles still contains 1 count for "item1"
+        int storedTitlesCount = ItemHandler.getStoredTitles().get(expectedTitle);
+        assertEquals(1, storedTitlesCount, "Stored titles should still contain 1 count for " + expectedTitle);
+
+        // Verify that availableTitles has 0 counts for "item1", but "item1" still exists in it
+        int availableTitlesCount = ItemHandler.getAvailableTitles().get(expectedTitle);
+        assertEquals(0, availableTitlesCount, "Available titles should have 0 counts for " + expectedTitle);
+        assertTrue(ItemHandler.getAvailableTitles().containsKey(expectedTitle), "Available titles should still contain " + expectedTitle);
+
         System.out.println("\nTEST FINISHED.");
     }
-
 
     /**
      * Test case for createNewRental method with an invalid userID.
@@ -283,12 +291,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
-            //Try with user 2 and items 1-6, where 6 should fail
+            //Try with user 2 and items 1-6...
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 1));
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 2));
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 3));
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 4));
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 5));
+
+            //... where 6 should fail
             exception = assertThrows(RentalNotAllowedException.class, () -> RentalHandler.createNewRental(2, 6));
             expectedMessage = "User not allowed to rent due to already renting to capacity.";
             actualMessage = exception.getMessage();
@@ -361,7 +371,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         List<Rental> expectedRentals = Collections.emptyList();
         List<Rental> actualRentals;
-        actualRentals = RentalHandler.getRentals("");
+        actualRentals = RentalHandler.getRentals(null, null, 0);
         assertEquals(expectedRentals, actualRentals);
 
         System.out.println("\nTEST FINISHED.");
@@ -388,15 +398,12 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n10: Testing getAllRentals method with some rentals in the database...");
 
         try {
-            //Create some rentals
-            RentalHandler.createNewRental(1, 1);
-            RentalHandler.createNewRental(2, 2);
-            RentalHandler.createNewRental(3, 3);
-            RentalHandler.createNewRental(4, 4);
-            RentalHandler.createNewRental(5, 5);
+            // Create 5 rentals, should get IDs 1-5
+            for (int i = 1; i <= 5; i++)
+                RentalHandler.createNewRental(i, i);
 
             //Retrieve all rentals
-            List<Rental> rentals = RentalHandler.getRentals("");
+            List<Rental> rentals = RentalHandler.getRentals(null, null, 0);
 
             //Check if the number of rentals retrieved matches the number of rentals created
             assertNotNull(rentals, "The retrieved rentals list should not be null.");
@@ -425,12 +432,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n11: Testing getRentalByID method with an invalid rentalID...");
 
         try {
-            //Create some rentals
-            RentalHandler.createNewRental(1, 1);
-            RentalHandler.createNewRental(2, 2);
-            RentalHandler.createNewRental(3, 3);
-            RentalHandler.createNewRental(4, 4);
-            RentalHandler.createNewRental(5, 5);
+            // Create 5 rentals, should get IDs 1-5
+            for (int i = 1; i <= 5; i++)
+                RentalHandler.createNewRental(i, i);
 
             //These should result in exceptions
             assertThrows(InvalidIDException.class, () -> RentalHandler.getRentalByID(0));
@@ -459,19 +463,13 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n12: Testing getRentalByID method with non-existent rentalID...");
 
         try {
-            // Create some rentals
-            RentalHandler.createNewRental(1, 1);
-            RentalHandler.createNewRental(2, 2);
-            RentalHandler.createNewRental(3, 3);
-            RentalHandler.createNewRental(4, 4);
-            RentalHandler.createNewRental(5, 5);
+            // Create 5 rentals, should get IDs 1-5
+            for (int i = 1; i <= 5; i++)
+                RentalHandler.createNewRental(i, i);
 
             // These should return null as no rental with these IDs exist
-            assertNull(RentalHandler.getRentalByID(6), "Expected null for non-existent rental ID 6");
-            assertNull(RentalHandler.getRentalByID(7), "Expected null for non-existent rental ID 7");
-            assertNull(RentalHandler.getRentalByID(8), "Expected null for non-existent rental ID 8");
-            assertNull(RentalHandler.getRentalByID(9), "Expected null for non-existent rental ID 9");
-            assertNull(RentalHandler.getRentalByID(10), "Expected null for non-existent rental ID 10");
+            for (int i = 6; i <= 10; i++)
+                assertNull(RentalHandler.getRentalByID(i), "Expected null for non-existent rental ID " + i);
 
         } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
                 | InvalidIDException | RentalException e) {
@@ -529,6 +527,111 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Tests the getRentalsByRentalDate method when supplied with a null rental date.
+     * This test should fail with an InvalidDateException, as rental dates cannot be null.
+     */
+    @Test
+    @Order(14)
+    void testGetRentalsByRentalDate_InvalidDate() {
+        System.out.println("\n14: Testing getRentalsByRentalDate method with invalid date...");
+
+        LocalDateTime invalidDate = null;
+
+        assertThrows(InvalidDateException.class, () -> RentalHandler.getRentalsByRentalDate(invalidDate),
+                "Expected InvalidDateException to be thrown, but it didn't");
+
+        LocalDateTime futureDate = LocalDateTime.now().plusDays(1);
+
+        assertThrows(InvalidDateException.class, () -> RentalHandler.getRentalsByRentalDate(futureDate),
+                "Expected InvalidDateException to be thrown, but it didn't");
+
+        System.out.println("TEST FINISHED.");
+    }
+
+    /**
+     * Tests the getRentalsByRentalDate method when supplied with a rental date that doesn't match any existing rentals.
+     * This test should pass if the method correctly returns an empty list, indicating no rentals were found.
+     */
+    @Test
+    @Order(15)
+    void testGetRentalsByRentalDate_NoRentalsFound() {
+        System.out.println("\n15: Testing getRentalsByRentalDate method with a date that doesn't match any rentals...");
+
+        LocalDateTime dateWithNoRentals = LocalDateTime.now().minusDays(1); //Assuming no rentals are made 1 day in the past
+
+        try {
+            List<Rental> rentals = RentalHandler.getRentalsByRentalDate(dateWithNoRentals);
+
+            assertNotNull(rentals, "The returned list should not be null");
+            assertTrue(rentals.isEmpty(), "The list should be empty as no rentals should be found for the provided date.");
+        } catch (InvalidDateException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        System.out.println("TEST FINISHED.");
+    }
+
+    /**
+     * Tests the getRentalsByRentalDate method when supplied with a rental date matching one rental.
+     * This test should pass if the method correctly returns a list containing the one matching rental.
+     */
+    @Test
+    @Order(16)
+    void testGetRentalsByRentalDate_OneRentalFound() {
+        System.out.println("\n16: Testing getRentalsByRentalDate method with a date matching a single rental...");
+
+        // Assuming a rental was made today
+        LocalDateTime dateWithOneRental = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+
+        try {
+            RentalHandler.createNewRental(1, 1);
+
+            List<Rental> rentals = RentalHandler.getRentalsByRentalDate(dateWithOneRental);
+
+            assertNotNull(rentals, "The returned list should not be null");
+            assertEquals(1, rentals.size(), "The list should contain one rental.");
+        } catch (InvalidIDException | UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidDateException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        System.out.println("TEST FINISHED.");
+    }
+
+    /**
+     * Tests the getRentalsByRentalDate method when supplied with a rental date matching multiple rentals.
+     * This test should pass if the method correctly returns a list containing all the matching rentals.
+     */
+    @Test
+    @Order(17)
+    void testGetRentalsByRentalDate_MultipleRentalsFound() {
+        System.out.println("\n17: Testing getRentalsByRentalDate method with a date matching multiple rentals...");
+
+        // Assuming multiple rentals were made today
+        LocalDateTime dateWithMultipleRentals = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+
+        try {
+            // Create 5 rentals
+            for (int i = 1; i <= 5; i++)
+                RentalHandler.createNewRental(i, i);
+
+            List<Rental> rentals = RentalHandler.getRentalsByRentalDate(dateWithMultipleRentals);
+
+            assertNotNull(rentals, "The returned list should not be null");
+            assertEquals(5, rentals.size(), "The list should contain five rentals.");
+
+            // Verifying the contents of the returned list
+            for (int i = 0; i < 5; i++) {
+                Rental rental = rentals.get(i);
+                assertNotNull(rental, "The rental at index " + i + " should not be null.");
+                assertEquals(i + 1, rental.getRentalID(), "The rental ID of the rental at index " + i + " should be " + (i + 1));
+            }
+        } catch (InvalidIDException | UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidDateException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+
+        System.out.println("TEST FINISHED.");
+    }
 
 
 }

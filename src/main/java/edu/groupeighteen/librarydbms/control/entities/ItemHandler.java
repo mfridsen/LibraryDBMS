@@ -115,14 +115,11 @@ public class ItemHandler {
      * @param title The title to be decremented.
      */
     public static void decrementAvailableTitles(String title) {
-        // Only decrement if title exists in the map
-        if (availableTitles.containsKey(title)) {
-            int availableCount = availableTitles.get(title) - 1;
-            if (availableCount <= 0) {
-                availableTitles.remove(title);
-            } else {
-                availableTitles.put(title, availableCount);
-            }
+        Integer count = availableTitles.get(title);
+        if (count != null && count > 0) {
+            availableTitles.put(title, count - 1);
+        } else {
+            availableTitles.put(title, 0); // keep the item in the map with a count of 0
         }
     }
 
