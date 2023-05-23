@@ -11,6 +11,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException
 import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;

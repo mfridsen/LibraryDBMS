@@ -5,10 +5,8 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidRentalException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.*;
 
 import java.sql.*;
 import java.util.ArrayList;
