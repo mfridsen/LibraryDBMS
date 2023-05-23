@@ -339,6 +339,7 @@ public class UserTest {
             // Test for currentRentals greater than allowedRentals
             int invalidRentals = testUser.getAllowedRentals() + 1;
             assertThrows(InvalidRentalException.class, () -> testUser.setCurrentRentals(invalidRentals));
+            assertThrows(InvalidRentalException.class, () -> testUser.setCurrentRentals(-1));
         } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
