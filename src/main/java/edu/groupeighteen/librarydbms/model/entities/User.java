@@ -29,15 +29,17 @@ public class User extends Entity {
     //TODO-future add more fields and methods
     //TODO-comment everything
 
-    //TODO-PRIO TEST CURRENTRENTALS < 0 !!!
-
     public static final int DEFAULT_ALLOWED_RENTALS = 5;
     public static final int MIN_USERNAME_LENGTH = 3;
     public static final int MAX_USERNAME_LENGTH;
     public static final int MIN_PASSWORD_LENGTH = 8;
     public static final int MAX_PASSWORD_LENGTH;
 
-    static { //Now we don't have to update both create_tables.sql AND this file when we want to change the allowed size of usernames and passwords :)
+    /*
+      So we don't have to update both create_tables.sql AND this file when we want to change the allowed size
+      of usernames and passwords
+     */
+    static {
         int[] metaData = DatabaseHandler.getUserMetaData();
         MAX_USERNAME_LENGTH = metaData[0];
         MAX_PASSWORD_LENGTH = metaData[1];
@@ -46,13 +48,14 @@ public class User extends Entity {
     private int userID; //Primary key
     private String username;
     private String password; //TODO-future hash and salt
+    //ENUM TYPE
     private final int allowedRentals;
     private int currentRentals;
-    private double lateFee;
-
     //First name
     //Last name
     //E-mail
+    private double lateFee;
+    boolean allowedToRent; //TODO-PRIO UPDATE USERTEST, USERHANDLER, RENTALHANDLER AND TESTS AS WELL AS SETTERS
 
     /**
      * Constructs a new User with the specified username and password. This is

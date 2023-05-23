@@ -24,6 +24,9 @@ import java.time.temporal.ChronoUnit;
  *      RentalDates cannot be null, and must be equal or less than LocalDateTime.now().
  *      Usernames cannot be null or empty.
  *      Titles cannot be null or empty.
+ *      RentalDueDates cannot be null or before rentalDate.
+ *      RentalReturnDates cannot be before rentalDate.
+ *      LateFees cannot be negative.
  */
 public class Rental extends Entity {
     public static final int RENTAL_DUE_DATE_HOURS = 20;
@@ -72,8 +75,15 @@ public class Rental extends Entity {
      */
     private double lateFee;
 
-
-    //creation constructor
+    /**
+     * Constructs a new Rental object which represents a rental transaction between a user and an item.
+     * This constructor is used when creating a new rental, therefore some attributes are automatically set:
+     * the rental date is set to the current date and time, the return date is null as the rental has just been created,
+     * the late fee is set to 0.0, and the deleted status is set to false.
+     * @param userID The ID of the user who is renting the item.
+     * @param itemID The ID of the item being rented.
+     * @throws ConstructionException If an error occurs while setting the values of the rental attributes. The cause of the exception (InvalidIDException or InvalidDateException) is included in the thrown exception.
+     */
     public Rental(int userID, int itemID) throws ConstructionException {
         try {
             this.rentalID = 0; //Set AFTER initial INSERT by createNewRental
@@ -91,9 +101,24 @@ public class Rental extends Entity {
         }
     }
 
-    //retrieval constructor
+    /**
+     * Constructs a Rental object which represents a rental transaction between a user and an item.
+     * This constructor is used when retrieving an existing rental from the database.
+     * @param rentalID The ID of the rental.
+     * @param userID The ID of the user who is renting the item.
+     * @param itemID The ID of the item being rented.
+     * @param rentalDate The date and time when the item was rented.
+     * @param username The username of the user who is renting the item.
+     * @param itemTitle The title of the item being rented.
+     * @param rentalDueDate The due date of the rental.
+     * @param rentalReturnDate The return date of the rental. This is null if the rental is still ongoing.
+     * @param lateFee The late fee of the rental, if any. This is 0.0 if the rental is returned on time or is still ongoing.
+     * @param deleted A boolean representing whether the rental has been (soft) deleted.
+     * @throws ConstructionException If an error occurs while setting the values of the rental attributes. The cause of the exception (InvalidIDException, InvalidDateException, InvalidUsernameException, InvalidTitleException, or InvalidLateFeeException) is included in the thrown exception.
+     */
     public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, String username, String itemTitle,
-                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee, boolean deleted) throws ConstructionException {
+                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee, boolean deleted)
+            throws ConstructionException {
         try {
             setRentalID(rentalID); //Throws InvalidIDException
             setUserID(userID); //Throws InvalidIDException
@@ -105,8 +130,10 @@ public class Rental extends Entity {
             setRentalReturnDate(rentalReturnDate); //Throws InvalidDateException
             setLateFee(lateFee); //Throws InvalidLateFeeException
             this.deleted = deleted;
-        } catch (InvalidIDException | InvalidDateException | InvalidUsernameException | InvalidTitleException | InvalidLateFeeException e) {
-            throw new ConstructionException("Failed to construct Rental due to " + e.getClass().getName() + ": " + e.getMessage(), e);
+        } catch (InvalidIDException | InvalidDateException | InvalidUsernameException | InvalidTitleException
+                | InvalidLateFeeException e) {
+            throw new ConstructionException("Failed to construct Rental due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 

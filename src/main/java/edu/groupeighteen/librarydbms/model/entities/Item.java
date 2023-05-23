@@ -28,17 +28,16 @@ public class Item extends Entity {
     public static final int DEFAULT_ALLOWED_DAYS = 14;
 
     private int itemID; //Primary key
-    private String title;
-    private int allowedRentalDays;
-    private boolean available;
-
     //ENUM TYPE
+    private String title;
     //ISBN
     //Genre/Classification
     //Author ID
     //Author name
     //Publisher ID
     //Publisher name
+    private int allowedRentalDays;
+    private boolean available;
 
     /**
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
