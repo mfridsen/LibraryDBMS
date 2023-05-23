@@ -60,12 +60,12 @@ public class Rental extends Entity {
     private LocalDateTime rentalDueDate;
 
     /**
-     * The date and time when the rental item was actually returned.
+     * The date and time when the rental item was actually returned. Null by default.
      */
     private LocalDateTime rentalReturnDate;
 
     /**
-     * Any late fee that was incurred due to late return of the rental item.
+     * Any late fee that was incurred due to late return of the rental item. 0.0 by default.
      */
     private double lateFee;
 

@@ -197,9 +197,11 @@ public class DatabaseHandler {
         try {
             //Prepare the statement with the given settings
             preparedStatement = connection.prepareStatement(query, settings);
-            //Set the parameters
-            for (int i = 0; i < params.length; i++) {
-                preparedStatement.setString(i + 1, params[i]);
+            //Set the parameters if params is not null
+            if (params != null) {
+                for (int i = 0; i < params.length; i++) {
+                    preparedStatement.setString(i + 1, params[i]);
+                }
             }
             //Execute the query
             preparedStatement.execute();

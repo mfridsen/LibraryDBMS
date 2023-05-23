@@ -41,6 +41,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         super.setupAndReset();
         ItemHandler.setup();
         UserHandler.setup();
+        DatabaseHandler.setVerbose(false);
     }
 
     /**
@@ -348,7 +349,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         List<Rental> expectedRentals = Collections.emptyList();
         List<Rental> actualRentals;
-        actualRentals = RentalHandler.getAllRentals();
+        actualRentals = RentalHandler.getRentals("");
         assertEquals(expectedRentals, actualRentals);
 
         System.out.println("\nTEST FINISHED.");
@@ -368,7 +369,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             RentalHandler.createNewRental(5, 5);
 
             //Retrieve all rentals
-            List<Rental> rentals = RentalHandler.getAllRentals();
+            List<Rental> rentals = RentalHandler.getRentals("");
 
             //Check if the number of rentals retrieved matches the number of rentals created
             assertNotNull(rentals, "The retrieved rentals list should not be null.");
@@ -383,10 +384,86 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     @Test
     @Order(11)
-    void testGetAllRentals_NonexistentUserOrItem() {
-        System.out.println("\n9: Testing getAllRentals method with a non-existent user or item...");
+    void testGetRentalByID_InvalidRentalID() {
+        System.out.println("\n11: Testing getRentalByID method with an invalid rentalID...");
 
-        // Your test code here...
+        try {
+            //Create some rentals
+            RentalHandler.createNewRental(1, 1);
+            RentalHandler.createNewRental(2, 2);
+            RentalHandler.createNewRental(3, 3);
+            RentalHandler.createNewRental(4, 4);
+            RentalHandler.createNewRental(5, 5);
+
+            //These should result in exceptions
+            assertThrows(InvalidIDException.class, () -> RentalHandler.getRentalByID(0));
+            assertThrows(InvalidIDException.class, () -> RentalHandler.getRentalByID(-1));
+
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(12)
+    void testGetRentalByID_NonExistentRentalID() {
+        System.out.println("\n12: Testing getRentalByID method with non-existent rentalID...");
+
+        try {
+            // Create some rentals
+            RentalHandler.createNewRental(1, 1);
+            RentalHandler.createNewRental(2, 2);
+            RentalHandler.createNewRental(3, 3);
+            RentalHandler.createNewRental(4, 4);
+            RentalHandler.createNewRental(5, 5);
+
+            // These should return null as no rental with these IDs exist
+            assertNull(RentalHandler.getRentalByID(6), "Expected null for non-existent rental ID 6");
+            assertNull(RentalHandler.getRentalByID(7), "Expected null for non-existent rental ID 7");
+            assertNull(RentalHandler.getRentalByID(8), "Expected null for non-existent rental ID 8");
+            assertNull(RentalHandler.getRentalByID(9), "Expected null for non-existent rental ID 9");
+            assertNull(RentalHandler.getRentalByID(10), "Expected null for non-existent rental ID 10");
+
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException | RentalException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(13)
+    void testGetRentalByID_ValidRentalID() {
+        System.out.println("\n13: Testing getRentalByID method with valid rentalID...");
+
+        try {
+            for (int i = 0; i < 5; i++) {
+                // Create rental
+                RentalHandler.createNewRental(i + 1, i + 1);
+                Rental rental = RentalHandler.getRentalByID(i + 1);
+
+                // Verify non-nullness
+                assertNotNull(rental, "Expected Rental object for rental ID " + i + 1);
+
+                // Verify fields
+                assertEquals(i + 1, rental.getRentalID());
+                assertEquals(i + 1, rental.getUserID());
+                assertEquals(i + 1, rental.getItemID());
+                assertNotNull(rental.getRentalDate());
+                assertEquals("user" + (i + 1), rental.getUsername());
+                assertEquals("item" + (i + 1), rental.getItemTitle());
+                assertEquals(rental.getRentalDate().plusDays(14).truncatedTo(ChronoUnit.SECONDS).withHour(20).withMinute(0).withSecond(0), rental.getRentalDueDate());
+                assertNull(rental.getRentalReturnDate());
+                assertEquals(0.0, rental.getLateFee(), 0.001);
+            }
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException | RentalException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
