@@ -297,6 +297,113 @@ public class ItemHandler {
         return null;
     }
 
+    /**
+     * Updates an existing item in the database and adjusts the count of the old and new titles.
+     * @param item The Item object containing the updated information.
+     */
+    public static void updateItem(Item item) throws NullItemException, ItemNotFoundException {
+        try {
+            //TODO-prio update when Item is finished
+            //Validate the input, throws NullItemException
+            checkNullItem(item);
+
+            // Get the old Item instance (which hasn't been updated)
+            Item oldItem = getItemByID(item.getItemID());
+            if (oldItem == null) throw new ItemNotFoundException("Updated failed: could not find Item with ID " + item.getItemID());
+
+            // Get the old title
+            String oldTitle = oldItem.getTitle();
+
+            // Get the old availability status
+            boolean oldAvailability = oldItem.isAvailable();
+
+            // Prepare a SQL command to update an item's title and availability by itemID.
+            String sql = "UPDATE items SET title = ?, available = ?, deleted = ? WHERE itemID = ?";
+            String[] params = {
+                    item.getTitle(),
+                    item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
+                    item.isDeleted() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
+                    String.valueOf(item.getItemID())
+            };
+
+            // Execute the update.
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            // If the title has changed, adjust the counts in the maps
+            if (!oldTitle.equals(item.getTitle())) {
+                decrementStoredTitles(oldTitle);
+                incrementStoredTitles(item.getTitle());
+            }
+
+            // If the availability status has changed, adjust the counts in the availableTitles map
+            if (oldAvailability != item.isAvailable()) {
+                if (oldAvailability) {
+                    decrementAvailableTitles(oldTitle);
+                }
+                if (item.isAvailable()) {
+                    incrementAvailableTitles(item.getTitle());
+                }
+            }
+        } catch (InvalidIDException e) {
+            ExceptionHandler.HandleFatalException("Failed to update Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
+
+    public static void softDeleteItem(Item itemToDelete) {
+
+    }
+
+    public static void undoSoftDelete(Item itemToRecover) {
+
+    }
+
+    /**
+     * Deletes an item from the database and decrements the count of the item's title.
+     * @param item The Item object to be deleted.
+     */
+    public static void deleteItem(Item item) throws NullItemException, ItemNotFoundException {
+        try {
+            //TODO-prio UPDATE TO CHANGE DELETED
+            //TODO-prio update when Item is finished
+            //Validate the input, NullItemException
+            checkNullItem(item);
+
+            // Get the old title, throws ItemNotFoundException
+            Item oldItem = getItemByID(item.getItemID());
+            if (oldItem == null) throw new ItemNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
+            String oldTitle = oldItem.getTitle();
+
+            // Check if the item exists in the database
+            String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
+            String[] params = {String.valueOf(item.getItemID())};
+
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+            ResultSet resultSet = queryResult.getResultSet();
+            resultSet.next(); // Move to the first row
+
+
+            //Prepare a SQL command to delete an item by itemID.
+            sql = "DELETE FROM items WHERE itemID = ?";
+            params = new String[]{String.valueOf(item.getItemID())};
+
+            //Execute the update. //TODO-prio handle cascades in rentals
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            // Decrement the count of the old title. Remove the entry if the count reaches 0.
+            if(storedTitles.get(oldTitle) != null) {
+                decrementStoredTitles(oldTitle);
+                decrementAvailableTitles(oldTitle);
+            }
+        } catch (SQLException | InvalidIDException e) {
+            ExceptionHandler.HandleFatalException("Failed to delete Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
+
+
+
+
 
 
     /**
@@ -403,101 +510,7 @@ public class ItemHandler {
     // == 27 test cases
 
 
-    /**
-     * Updates an existing item in the database and adjusts the count of the old and new titles.
-     * @param item The Item object containing the updated information.
-     */
-    public static void updateItem(Item item) throws NullItemException, ItemNotFoundException {
-        try {
-            //TODO-prio update when Item is finished
-            //Validate the input, throws NullItemException
-            checkNullItem(item);
 
-            // Get the old Item instance (which hasn't been updated)
-            Item oldItem = getItemByID(item.getItemID());
-            if (oldItem == null) throw new ItemNotFoundException("Updated failed: could not find Item with ID " + item.getItemID());
-
-            // Get the old title
-            String oldTitle = oldItem.getTitle();
-
-            // Get the old availability status
-            boolean oldAvailability = oldItem.isAvailable();
-
-            // Prepare a SQL command to update an item's title and availability by itemID.
-            String sql = "UPDATE items SET title = ?, available = ?, deleted = ? WHERE itemID = ?";
-            String[] params = {
-                    item.getTitle(),
-                    item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
-                    item.isDeleted() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
-                    String.valueOf(item.getItemID())
-            };
-
-            // Execute the update.
-            DatabaseHandler.executePreparedUpdate(sql, params);
-
-            // If the title has changed, adjust the counts in the maps
-            if (!oldTitle.equals(item.getTitle())) {
-                decrementStoredTitles(oldTitle);
-                incrementStoredTitles(item.getTitle());
-            }
-
-            // If the availability status has changed, adjust the counts in the availableTitles map
-            if (oldAvailability != item.isAvailable()) {
-                if (oldAvailability) {
-                    decrementAvailableTitles(oldTitle);
-                }
-                if (item.isAvailable()) {
-                    incrementAvailableTitles(item.getTitle());
-                }
-            }
-        } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException("Failed to update Item due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Deletes an item from the database and decrements the count of the item's title.
-     * @param item The Item object to be deleted.
-     */
-    public static void deleteItemFromTable(Item item) throws NullItemException, ItemNotFoundException {
-        try {
-            //TODO-prio UPDATE TO CHANGE DELETED
-            //TODO-prio update when Item is finished
-            //Validate the input, NullItemException
-            checkNullItem(item);
-
-            // Get the old title, throws ItemNotFoundException
-            Item oldItem = getItemByID(item.getItemID());
-            if (oldItem == null) throw new ItemNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
-            String oldTitle = oldItem.getTitle();
-
-            // Check if the item exists in the database
-            String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
-            String[] params = {String.valueOf(item.getItemID())};
-
-            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
-            ResultSet resultSet = queryResult.getResultSet();
-            resultSet.next(); // Move to the first row
-
-
-            //Prepare a SQL command to delete an item by itemID.
-            sql = "DELETE FROM items WHERE itemID = ?";
-            params = new String[]{String.valueOf(item.getItemID())};
-
-            //Execute the update. //TODO-prio handle cascades in rentals
-            DatabaseHandler.executePreparedUpdate(sql, params);
-
-            // Decrement the count of the old title. Remove the entry if the count reaches 0.
-            if(storedTitles.get(oldTitle) != null) {
-                decrementStoredTitles(oldTitle);
-                decrementAvailableTitles(oldTitle);
-            }
-        } catch (SQLException | InvalidIDException e) {
-            ExceptionHandler.HandleFatalException("Failed to delete Item due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-    }
 
     /**
      * Retrieves the allowed rental days for an item by its ID.

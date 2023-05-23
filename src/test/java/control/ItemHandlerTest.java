@@ -25,7 +25,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     //TODO-future make all tests more verbose
     //TODO-future javadoc tests properly
-    //TODO-prio change order of tests to match order of methods
+
+    //TODO-PRIO CHANGE ORDER OF TESTS TO MATCH ORDER OF METHODS
 
     @BeforeEach
     @Override
@@ -522,7 +523,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         try {
             // Try to delete null item
-            ItemHandler.deleteItemFromTable(null);
+            ItemHandler.deleteItem(null);
             fail("An IllegalArgumentException was expected.");
         } catch (NullItemException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
@@ -542,7 +543,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             nonexistentItem.setItemID(99999);
 
             // Try to delete this nonexistent item
-            assertThrows(ItemNotFoundException.class, () -> ItemHandler.deleteItemFromTable(nonexistentItem));
+            assertThrows(ItemNotFoundException.class, () -> ItemHandler.deleteItem(nonexistentItem));
         } catch (InvalidIDException | ConstructionException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
@@ -564,7 +565,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertEquals(1, ItemHandler.getAvailableTitles().get(validItem.getTitle()).intValue());
 
             // Delete the item
-            ItemHandler.deleteItemFromTable(validItem);
+            ItemHandler.deleteItem(validItem);
 
             // Try to retrieve the deleted item
             try {

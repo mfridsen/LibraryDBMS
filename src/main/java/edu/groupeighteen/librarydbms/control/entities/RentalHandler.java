@@ -7,7 +7,9 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalDeleteException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalRecoveryException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalUpdateException;
 
 import java.sql.*;
@@ -308,13 +310,14 @@ public class RentalHandler {
         return rentals;
     }
 
-
+    /**
+     * Retrieves all rentals found in the table.
+     * @return a list of all rentals in database.
+     */
     public static List<Rental> getAllRentals() {
         //Executor-class Star Dreadnought
         return getRentals(null, null, 0);
     }
-
-
 
     /**
      * This method fetches a rental by its rental ID from the database.
@@ -349,7 +352,15 @@ public class RentalHandler {
         return null;
     }
 
-
+    /**
+     * Updates the details of a rental record in the database.
+     *
+     * The rental ID, User ID, Item ID, Username, Item Title, and Rental Date are immutable
+     * and cannot be changed. Only the Due Date, Return Date, and Late Fee can be modified.
+     *
+     * @param updatedRental the rental object with updated details.
+     * @throws RentalUpdateException if the updatedRental is null, or if a rental with the provided rentalID doesn't exist in the database.
+     */
     public static void updateRental(Rental updatedRental) throws RentalUpdateException {
         //Validate input
         try {
@@ -367,27 +378,96 @@ public class RentalHandler {
                 String.valueOf(updatedRental.getRentalID())
         };
 
-        //Execute the update and return whether it was successful
+        //Executor-class Star Dreadnought
         DatabaseHandler.executePreparedUpdate(query, params);
     }
 
+    /**
+     * Softly deletes a rental, by marking it as deleted in the database.
+     * The rental object is expected to be not null, with a valid rental ID.
+     * If the rental object is invalid, a RentalDeleteException is thrown.
+     *
+     * @param rentalToDelete the rental object to be softly deleted
+     * @throws RentalDeleteException if rental object is invalid
+     */
+    public static void softDeleteRental(Rental rentalToDelete) throws RentalDeleteException {
+        //Validate input
+        try {
+            validateRental(rentalToDelete);
+        } catch (RentalNotFoundException | InvalidIDException | NullRentalException e) {
+            throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
+        }
 
+        //Set deleted to true (doesn't need to be set before calling this method)
+        rentalToDelete.setDeleted(true);
 
+        //Prepare a SQL query to update the rental details
+        String query = "UPDATE rentals SET deleted = ? WHERE rentalID = ?";
+        String[] params = {
+                rentalToDelete.isDeleted() ? "1" : "0",
+                String.valueOf(rentalToDelete.getRentalID())
+        };
 
-    public static void softDeleteRental(Rental rentalToDelete) throws NullRentalException {
-
+        //Executor-class Star Dreadnought
+        DatabaseHandler.executePreparedUpdate(query, params);
     }
 
-    public static void deleteRental(Rental rentalToDelete) throws NullRentalException {
+    /**
+     * Reverses a soft delete of a rental, by marking it as not deleted in the database.
+     * The rental object is expected to be not null, with a valid rental ID and the deleted attribute set to true.
+     * If the rental object is invalid, a RentalRecoveryException is thrown.
+     *
+     * This method will do the reverse of softDeleteRental(), it will set the deleted attribute of rentalToRecover
+     * to false before proceeding with the update in the database.
+     *
+     * This allows the rental to be recovered from a soft delete.
+     *
+     * @param rentalToRecover the rental object to be recovered from soft delete
+     * @throws RentalRecoveryException if rental object is invalid
+     */
+    public static void undoSoftDeleteRental(Rental rentalToRecover) throws RentalRecoveryException {
         //Validate input
-        if (rentalToDelete == null)
-            throw new NullRentalException("Error updating rentalToDelete: rentalToDelete is null.");
+        try {
+            validateRental(rentalToRecover);
+        } catch (RentalNotFoundException | InvalidIDException | NullRentalException e) {
+            throw new RentalRecoveryException("Rental Recovery failed: " + e.getMessage(), e);
+        }
+
+        //Set deleted to false
+        rentalToRecover.setDeleted(false);
+
+        //Prepare a SQL query to update the rental details
+        String query = "UPDATE rentals SET deleted = ? WHERE rentalID = ?";
+        String[] params = {
+                rentalToRecover.isDeleted() ? "1" : "0",
+                String.valueOf(rentalToRecover.getRentalID())
+        };
+
+        //Executor-class Star Dreadnought
+        DatabaseHandler.executePreparedUpdate(query, params);
+    }
+
+    /**
+     * Completely removes a rental from the database.
+     * The rental object is expected to be not null, with a valid rental ID.
+     * If the rental object is invalid, a RentalDeleteException is thrown.
+     *
+     * @param rentalToDelete the rental object to be removed from the database
+     * @throws RentalDeleteException if rental object is invalid
+     */
+    public static void deleteRental(Rental rentalToDelete) throws RentalDeleteException {
+        //Validate input
+        try {
+            validateRental(rentalToDelete);
+        } catch (NullRentalException | RentalNotFoundException | InvalidIDException e) {
+            throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
+        }
 
         //Prepare a SQL query to update the rentalToDelete details
         String query = "DELETE FROM rentals WHERE rentalID = ?";
         String[] params = {String.valueOf(rentalToDelete.getRentalID())};
 
-        //Execute the update
+        //Executor-class Star Dreadnought
         DatabaseHandler.executePreparedUpdate(query, params);
     }
 
@@ -890,13 +970,21 @@ public class RentalHandler {
                     "Received: " + rentalDay);
     }
 
-
-
-    private static void validateRental(Rental updatedRental) throws NullRentalException, RentalNotFoundException, InvalidIDException {
-        if (updatedRental == null)
+    /**
+     * Validates a rental object.
+     *
+     * A rental is considered valid if it is not null and it exists in the database (has a valid ID).
+     *
+     * @param rentalToValidate the rental object to validate.
+     * @throws NullRentalException if the rental is null.
+     * @throws RentalNotFoundException if a rental with the provided rentalID doesn't exist in the database.
+     * @throws InvalidIDException if the provided rentalID is invalid (less than or equal to 0).
+     */
+    private static void validateRental(Rental rentalToValidate) throws NullRentalException, RentalNotFoundException, InvalidIDException {
+        if (rentalToValidate == null)
             throw new NullRentalException("Error validating rental: rental is null.");
-        if (getRentalByID(updatedRental.getRentalID()) == null)
-            throw new RentalNotFoundException("Error validating rental: rental with ID " + updatedRental.getRentalID() + " not found.");
+        if (getRentalByID(rentalToValidate.getRentalID()) == null)
+            throw new RentalNotFoundException("Error validating rental: rental with ID " + rentalToValidate.getRentalID() + " not found.");
     }
 
 

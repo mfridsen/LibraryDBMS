@@ -36,6 +36,9 @@ public class UserHandlerTest extends BaseHandlerTest {
     //TODO-future make all tests more verbose
     //TODO-future javadoc all tests properly
 
+    //TODO-PRIO CHANGE ORDER OF TESTS TO MATCH ORDER OF METHODS
+
+
 
     @Test
     @Order(1)

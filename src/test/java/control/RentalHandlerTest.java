@@ -9,7 +9,9 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalDeleteException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalRecoveryException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalUpdateException;
 import org.junit.jupiter.api.*;
 
@@ -36,6 +38,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     //TODO-future make all tests more verbose
     //TODO-prio change order of tests to match order of methods
+
+    //TODO-PRIO IMPLEMENT TESTS FOR CREATING A RENTAL WITH DELETED USER AND ITEM
 
     @Override
     @BeforeEach
@@ -353,6 +357,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    //TODO-PRIO IMPLEMENT TESTS FOR CREATING A RENTAL WITH DELETED USER AND ITEM (2 tests)
+
+
+
+
     //GET ALL ----------------------------------------------------------------------------------------------------------
 
     /**
@@ -367,9 +376,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * If the actual result matches the expected empty list, the test passes.
      */
     @Test
-    @Order(9)
+    @Order(11)
     void testGetAllRentals_EmptyRentalsTable() {
-        System.out.println("\n9: Testing getAllRentals method with an empty database...");
+        System.out.println("\n11: Testing getAllRentals method with an empty database...");
 
         // Clear the rentals table in the database
         DatabaseHandler.executeCommand("DELETE FROM Rentals");
@@ -398,9 +407,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * RentalNotAllowedException, or InvalidIDException), the test also fails.
      */
     @Test
-    @Order(10)
+    @Order(12)
     void testGetAllRentals_PopulatedRentalsTable_OneRental() {
-        System.out.println("\n10: Testing getAllRentals method with some rentals in the database...");
+        System.out.println("\n12: Testing getAllRentals method with some rentals in the database...");
 
         try {
             //Create 1 rental
@@ -437,9 +446,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * RentalNotAllowedException, or InvalidIDException), the test also fails.
      */
     @Test
-    @Order(11)
+    @Order(13)
     void testGetAllRentals_PopulatedRentalsTable_MultipleRentals() {
-        System.out.println("\n10: Testing getAllRentals method with some rentals in the database...");
+        System.out.println("\n13: Testing getAllRentals method with some rentals in the database...");
 
         try {
             // Create 5 rentals, should get IDs 1-5
@@ -461,7 +470,6 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-
     //GET BY ID --------------------------------------------------------------------------------------------------------
 
     /**
@@ -474,9 +482,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * rentals with IDs 0 and -1, which should trigger the 'InvalidIDException' as these IDs are not valid.
      */
     @Test
-    @Order(11)
+    @Order(14)
     void testGetRentalByID_InvalidRentalID() {
-        System.out.println("\n11: Testing getRentalByID method with an invalid rentalID...");
+        System.out.println("\n14: Testing getRentalByID method with an invalid rentalID...");
 
         try {
             // Create 5 rentals, should get IDs 1-5
@@ -505,9 +513,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * fetch rentals with IDs 6 to 10, which should return null as no rentals with these IDs exist.
      */
     @Test
-    @Order(12)
+    @Order(15)
     void testGetRentalByID_NonExistentRentalID() {
-        System.out.println("\n12: Testing getRentalByID method with non-existent rentalID...");
+        System.out.println("\n15: Testing getRentalByID method with non-existent rentalID...");
 
         try {
             // Create 5 rentals, should get IDs 1-5
@@ -540,9 +548,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * match the expected values.
      */
     @Test
-    @Order(13)
+    @Order(16)
     void testGetRentalByID_ValidRentalID() {
-        System.out.println("\n13: Testing getRentalByID method with valid rentalID...");
+        System.out.println("\n16: Testing getRentalByID method with valid rentalID...");
 
         try {
             for (int i = 0; i < 5; i++) {
@@ -576,10 +584,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Test case for updateRental method when the rental to update is null.
+     *
+     * This test checks if a NullRentalException is correctly thrown when the rental is null.
+     */
     @Test
-    @Order(14)
+    @Order(17)
     public void testUpdateRental_NullRental() {
-        System.out.println("\n14: Testing updateRental method with a null rental...");
+        System.out.println("\n17: Testing updateRental method with a null rental...");
 
         // Call the updateRental method
         Exception exception = assertThrows(RentalUpdateException.class, () -> RentalHandler.updateRental(null));
@@ -591,15 +604,20 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for updateRental method when the rental to update does not exist in the database.
+     *
+     * This test checks if a RentalNotFoundException is correctly thrown when the rental does not exist.
+     */
     @Test
-    @Order(15)
+    @Order(18)
     public void testUpdateRental_NonExistingRental() {
-        System.out.println("\n15: Testing updateRental method with a non-existing rental...");
+        System.out.println("\n18: Testing updateRental method with a non-existing rental...");
 
         try {
             // Create a non-existing rental
             Rental nonExistingRental = new Rental(1, 1);
-            nonExistingRental.setRentalID(1);
+            nonExistingRental.setRentalID(1); //Needs a valid ID (> 0)
 
             // Call the updateRental method
             Exception exception = assertThrows(RentalUpdateException.class, () -> RentalHandler.updateRental(nonExistingRental));
@@ -615,10 +633,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for updateRental method when the rental to update has an invalid rentalID.
+     *
+     * This test checks if an InvalidIDException is correctly thrown when the rentalID is invalid.
+     */
     @Test
-    @Order(16)
+    @Order(19)
     public void testUpdateRental_InvalidRentalID() {
-        System.out.println("\n16: Testing updateRental method with an invalid RentalID...");
+        System.out.println("\n19: Testing updateRental method with an invalid RentalID...");
 
         try {
             // Create a rental with an invalid ID. ID is going to be 0 by default, which is invalid
@@ -638,10 +661,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for updateRental method when only the due date of the rental is updated.
+     *
+     * This test checks if the due date is correctly updated in the database.
+     */
     @Test
-    @Order(17)
+    @Order(20)
     public void testUpdateRental_ChangeDueDate() {
-        System.out.println("\n17: Testing updateRental method by only changing the DueDate...");
+        System.out.println("\n20: Testing updateRental method by only changing the DueDate...");
 
         try {
             // Create a rental and save it
@@ -680,10 +708,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for updateRental method when only the return date of the rental is updated.
+     *
+     * This test checks if the return date is correctly updated in the database.
+     */
     @Test
-    @Order(18)
+    @Order(21)
     public void testUpdateRental_ChangeReturnDate() {
-        System.out.println("\n18: Testing updateRental method by only changing the ReturnDate...");
+        System.out.println("\n21: Testing updateRental method by only changing the ReturnDate...");
 
         try {
             // Create a rental and save it
@@ -722,10 +755,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for updateRental method when only the late fee of the rental is updated.
+     *
+     * This test checks if the late fee is correctly updated in the database.
+     */
     @Test
-    @Order(19)
+    @Order(22)
     public void testUpdateRental_ChangeLateFee() {
-        System.out.println("\n19: Testing updateRental method by only changing the LateFee...");
+        System.out.println("\n22: Testing updateRental method by only changing the LateFee...");
 
         try {
             // Create a rental and save it
@@ -763,10 +801,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test case for updateRental method when the due date, return date, and late fee of the rental are updated.
+     *
+     * This test checks if the due date, return date, and late fee are correctly updated in the database.
+     */
     @Test
-    @Order(20)
+    @Order(23)
     public void testUpdateRental_ChangeAllFields() {
-        System.out.println("\n20: Testing updateRental method by changing all mutable fields...");
+        System.out.println("\n23: Testing updateRental method by changing all mutable fields...");
 
         try {
             // Create a rental and save it
@@ -812,13 +855,307 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     //SOFT DELETE ------------------------------------------------------------------------------------------------------
 
+    @Test
+    @Order(24)
+    void testSoftDeleteRental_ValidRental() {
+        System.out.println("\n24: Testing softDeleteRental method with a valid rental...");
+
+        try {
+            // Create and save a new rental
+            Rental rentalToDelete = RentalHandler.createNewRental(1,1);
+            assertNotNull(rentalToDelete);
+
+            // Softly delete the rental
+            try {
+                RentalHandler.softDeleteRental(rentalToDelete);
+            } catch (RentalDeleteException e) {
+                fail("An unexpected exception occurred: " + e.getMessage());
+            }
+
+            // Retrieve the rental from the database
+            Rental retrievedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
+            assertNotNull(retrievedRental);
+
+            // Verify the rental is softly deleted
+            assertTrue(retrievedRental.isDeleted(), "The rental should be softly deleted.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(25)
+    void testSoftDeleteRental_NullRental() {
+        System.out.println("\n25: Testing softDeleteRental method with a null rental...");
+
+        // Attempt to softly delete a null rental
+        Exception e = assertThrows(RentalDeleteException.class, () -> RentalHandler.softDeleteRental(null), "A RentalDeleteException should be thrown when attempting to softly delete a null rental.");
+        assertTrue(e.getCause() instanceof NullRentalException, "The cause of the RentalDeleteException should be a NullRentalException.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(26)
+    void testSoftDeleteRental_NonExistentRental() {
+        System.out.println("\n26: Testing softDeleteRental method with a non-existent rental...");
+
+        try {
+            // Create a rental that doesn't exist in the database
+            Rental nonExistentRental = new Rental(1, 1);
+            nonExistentRental.setRentalID(1); //Make sure the rental has a valid ID
+
+            // Attempt to softly delete the non-existent rental
+            Exception e = assertThrows(RentalDeleteException.class, () -> RentalHandler.softDeleteRental(nonExistentRental), "A RentalDeleteException should be thrown when attempting to softly delete a non-existent rental.");
+            assertTrue(e.getCause() instanceof RentalNotFoundException, "The cause of the RentalDeleteException should be a RentalNotFoundException.");
+        } catch (ConstructionException | InvalidIDException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(27)
+    void testSoftDeleteRental_AlreadySoftDeletedRental() {
+        System.out.println("\n27: Testing softDeleteRental method with a rental that has already been softly deleted...");
+
+        try {
+            // Create a new rental, softly delete it, and then try to softly delete it again
+            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            assertNotNull(rentalToDelete);
+            RentalHandler.softDeleteRental(rentalToDelete);
+            RentalHandler.softDeleteRental(rentalToDelete);
+
+            // Verify that the rental is marked as deleted in the database
+            Rental deletedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
+            assertNotNull(deletedRental);
+            assertTrue(deletedRental.isDeleted(), "The rental should still be marked as deleted after a s" +
+                    "econd soft delete.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
+                | InvalidIDException | RentalDeleteException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    //UNDO SOFT DELETE -------------------------------------------------------------------------------------------------
+
+    @Test
+    @Order(28)
+    void testUndoSoftDeleteRental_ValidRental() {
+        System.out.println("\n28: Testing undoSoftDeleteRental method with a valid, softly deleted rental...");
+
+        try {
+            // Create a new rental, softly delete it, and then undo the soft delete
+            Rental rentalToRecover = RentalHandler.createNewRental(1, 1);
+            assertNotNull(rentalToRecover);
+            RentalHandler.softDeleteRental(rentalToRecover);
+            RentalHandler.undoSoftDeleteRental(rentalToRecover);
+
+            // Verify that the rental is not marked as deleted in the database
+            Rental recoveredRental = RentalHandler.getRentalByID(rentalToRecover.getRentalID());
+            assertNotNull(recoveredRental);
+            assertFalse(recoveredRental.isDeleted(),
+                    "The rental should not be marked as deleted after undoing the soft delete.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException
+                | RentalDeleteException | RentalRecoveryException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(29)
+    void testUndoSoftDeleteRental_NullRental() {
+        System.out.println("\n29: Testing undoSoftDeleteRental method with a null rental...");
+
+        // Attempt to undo a soft delete on a null rental
+        Exception e = assertThrows(RentalRecoveryException.class,
+                () -> RentalHandler.undoSoftDeleteRental(null),
+                "A RentalRecoveryException should be thrown when attempting to undo a soft " +
+                        "delete on a null rental.");
+        assertTrue(e.getCause() instanceof NullRentalException,
+                "The cause of the RentalRecoveryException should be a NullRentalException.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(30)
+    void testUndoSoftDeleteRental_NotSoftlyDeletedRental() {
+        System.out.println("\n30: Testing undoSoftDeleteRental method with a rental that was not softly deleted...");
+
+        try {
+            // Create a new rental and attempt to undo a soft delete on it
+            Rental rental = RentalHandler.createNewRental(1, 1);
+            assertNotNull(rental);
+            RentalHandler.undoSoftDeleteRental(rental);
+
+            // Verify that the rental is not marked as deleted in the database
+            Rental rentalInDB = RentalHandler.getRentalByID(rental.getRentalID());
+            assertNotNull(rentalInDB);
+            assertFalse(rentalInDB.isDeleted(),
+                    "The rental should not be marked as deleted if it was never softly deleted.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
+                | InvalidIDException | RentalRecoveryException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
 
 
 
-    //DELETE -----------------------------------------------------------------------------------------------------------
+    //HARD DELETE ------------------------------------------------------------------------------------------------------
+
+    @Test
+    @Order(31)
+    void testDeleteRental_ValidRental() {
+        System.out.println("\n31: Testing deleteRental method with a valid rental...");
+
+        try {
+            // Create a new rental and delete it
+            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            assertNotNull(rentalToDelete);
+            RentalHandler.deleteRental(rentalToDelete);
+
+            // Verify that the rental no longer exists in the database
+            Rental deletedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
+            assertNull(deletedRental, "The rental should be null after being deleted.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
+                | InvalidIDException | RentalDeleteException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(32)
+    void testDeleteRental_NullRental() {
+        System.out.println("\n32: Testing deleteRental method with a null rental...");
+
+        // Attempt to delete a null rental
+        Exception e = assertThrows(RentalDeleteException.class,
+                () -> RentalHandler.deleteRental(null), "A RentalDeleteException should be thrown " +
+                        "when attempting to delete a null rental.");
+        assertTrue(e.getCause() instanceof NullRentalException,
+                "The cause of the RentalDeleteException should be a NullRentalException.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(33)
+    void testDeleteRental_NotExistingRental() {
+        System.out.println("\n33: Testing deleteRental method with a rental that doesn't exist...");
+
+        try {
+            // Attempt to delete a rental that doesn't exist in the database
+            Rental nonExistentRental = new Rental(1, 1);
+            nonExistentRental.setRentalID(1); //Needs a valid ID
+            Exception e = assertThrows(RentalDeleteException.class,
+                    () -> RentalHandler.deleteRental(nonExistentRental),
+                    "A RentalDeleteException should be thrown when attempting to delete a non-existent rental.");
+            assertTrue(e.getCause() instanceof RentalNotFoundException,
+                    "The cause of the RentalDeleteException should be a RentalNotFoundException.");
+        } catch (ConstructionException | InvalidIDException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(34)
+    void testDeleteRental_SoftlyDeletedRental() {
+        System.out.println("\n34: Testing deleteRental method with a rental that was softly deleted...");
+
+        try {
+            // Create a new rental, softly delete it, and then hard delete it
+            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            assertNotNull(rentalToDelete);
+            RentalHandler.softDeleteRental(rentalToDelete);
+            RentalHandler.deleteRental(rentalToDelete);
+
+            // Verify that the rental no longer exists in the database
+            Rental deletedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
+            assertNull(deletedRental, "The rental should be null after being deleted, " +
+                    "even if it was softly deleted before.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
+                | InvalidIDException | RentalDeleteException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
 
 
 
+    @Test
+    @Order(35)
+    void testSoftDeleteRental_AlreadyHardDeletedRental() {
+        System.out.println("\n35: Testing softDeleteRental method with a rental that has already been hard deleted...");
+
+        try {
+            // Create a new rental, hard delete it, and then try to softly delete it
+            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            RentalHandler.deleteRental(rentalToDelete);
+
+            // Attempt to softly delete the hard deleted rental
+            Exception e = assertThrows(RentalDeleteException.class,
+                    () -> RentalHandler.softDeleteRental(rentalToDelete),
+                    "A RentalDeleteException should be thrown when attempting to softly delete a " +
+                            "hard deleted rental.");
+            assertTrue(e.getCause() instanceof RentalNotFoundException,
+                    "The cause of the RentalDeleteException should be a RentalNotFoundException.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException
+                | RentalDeleteException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(36)
+    void testUndoSoftDeleteRental_HardDeletedRental() {
+        System.out.println("\n36: Testing undoSoftDeleteRental method with a rental that was hard deleted...");
+
+        try {
+            // Create a new rental, hard delete it, and then try to undo a soft delete on it
+            Rental rentalToRecover = RentalHandler.createNewRental(1, 1);
+            RentalHandler.deleteRental(rentalToRecover);
+
+            // Attempt to undo a soft delete on the hard deleted rental
+            Exception e = assertThrows(RentalRecoveryException.class,
+                    () -> RentalHandler.undoSoftDeleteRental(rentalToRecover),
+                    "A RentalRecoveryException should be thrown when attempting to undo a soft delete " +
+                            "on a hard deleted rental.");
+            assertTrue(e.getCause() instanceof RentalNotFoundException,
+                    "The cause of the RentalRecoveryException should be a RentalNotFoundException.");
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
+                | InvalidIDException | RentalDeleteException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
 
     //GET BY DATE ------------------------------------------------------------------------------------------------------
 
@@ -827,9 +1164,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * This test should fail with an InvalidDateException, as rental dates cannot be null.
      */
     @Test
-    @Order(14)
+    @Order(37)
     void testGetRentalsByRentalDate_InvalidDate() {
-        System.out.println("\n14: Testing getRentalsByRentalDate method with invalid date...");
+        System.out.println("\n37: Testing getRentalsByRentalDate method with invalid date...");
 
         LocalDateTime invalidDate = null;
 
@@ -849,9 +1186,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * This test should pass if the method correctly returns an empty list, indicating no rentals were found.
      */
     @Test
-    @Order(15)
+    @Order(38)
     void testGetRentalsByRentalDate_NoRentalsFound() {
-        System.out.println("\n15: Testing getRentalsByRentalDate method with a date that doesn't match any rentals...");
+        System.out.println("\n3: Testing getRentalsByRentalDate method with a date that doesn't match any rentals...");
 
         LocalDateTime dateWithNoRentals = LocalDateTime.now().minusDays(1); //Assuming no rentals are made 1 day in the past
 
@@ -872,9 +1209,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * This test should pass if the method correctly returns a list containing the one matching rental.
      */
     @Test
-    @Order(16)
+    @Order(39)
     void testGetRentalsByRentalDate_OneRentalFound() {
-        System.out.println("\n16: Testing getRentalsByRentalDate method with a date matching a single rental...");
+        System.out.println("\n39: Testing getRentalsByRentalDate method with a date matching a single rental...");
 
         // Assuming a rental was made today
         LocalDateTime dateWithOneRental = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -886,7 +1223,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             assertNotNull(rentals, "The returned list should not be null");
             assertEquals(1, rentals.size(), "The list should contain one rental.");
-        } catch (InvalidIDException | UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidDateException e) {
+        } catch (InvalidIDException | UserNotFoundException | ItemNotFoundException
+                | RentalNotAllowedException | InvalidDateException e) {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
@@ -898,9 +1236,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * This test should pass if the method correctly returns a list containing all the matching rentals.
      */
     @Test
-    @Order(17)
+    @Order(40)
     void testGetRentalsByRentalDate_MultipleRentalsFound() {
-        System.out.println("\n17: Testing getRentalsByRentalDate method with a date matching multiple rentals...");
+        System.out.println("\n40: Testing getRentalsByRentalDate method with a date matching multiple rentals...");
 
         // Assuming multiple rentals were made today
         LocalDateTime dateWithMultipleRentals = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -931,9 +1269,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     //GET BY DAY -------------------------------------------------------------------------------------------------------
 
     @Test
-    @Order(18)
+    @Order(41)
     void testGetRentalsByRentalDay_NullRentalDay() {
-        System.out.println("\n18: Testing getRentalsByRentalDay method with null rental day...");
+        System.out.println("\n41: Testing getRentalsByRentalDay method with null rental day...");
 
         assertThrows(InvalidDateException.class, () -> RentalHandler.getRentalsByRentalDay(null),
                 "getRentalsByRentalDay should throw InvalidDateException when rentalDay is null");
@@ -942,9 +1280,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(19)
+    @Order(42)
     void testGetRentalsByRentalDay_FutureRentalDay() {
-        System.out.println("\n19: Testing getRentalsByRentalDay method with future rental day...");
+        System.out.println("\n42: Testing getRentalsByRentalDay method with future rental day...");
 
         LocalDate futureDate = LocalDate.now().plusDays(1);
 
@@ -955,9 +1293,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(20)
+    @Order(43)
     void testGetRentalsByRentalDay_NoExistingRentals() {
-        System.out.println("\n20: Testing getRentalsByRentalDay method with no existing rentals...");
+        System.out.println("\n43: Testing getRentalsByRentalDay method with no existing rentals...");
 
         LocalDate rentalDay = LocalDate.now();
 
@@ -973,9 +1311,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(21)
+    @Order(44)
     void testGetRentalsByRentalDay_NoRentalsOnDesiredDate() {
-        System.out.println("\n21: Testing getRentalsByRentalDay method with rentals existing, but none on desired date...");
+        System.out.println("\n44: Testing getRentalsByRentalDay method with rentals existing, but none on desired date...");
 
         LocalDate rentalDay = LocalDate.now();
 
@@ -994,9 +1332,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(22)
+    @Order(45)
     void testGetRentalsByRentalDay_OneRentalOnDesiredDate() {
-        System.out.println("\n22: Testing getRentalsByRentalDay method with 5 existing rentals and 1 on desired date...");
+        System.out.println("\n45: Testing getRentalsByRentalDay method with 5 existing rentals and 1 on desired date...");
 
         LocalDate rentalDay = LocalDate.now();
 
@@ -1015,9 +1353,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(23)
+    @Order(46)
     void testGetRentalsByRentalDay_ThreeRentalsOnDesiredDate() {
-        System.out.println("\n23: Testing getRentalsByRentalDay method with 5 existing rentals and 3 on desired date...");
+        System.out.println("\n46: Testing getRentalsByRentalDay method with 5 existing rentals and 3 on desired date...");
 
         LocalDate rentalDay = LocalDate.now();
 
@@ -1036,9 +1374,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(24)
+    @Order(47)
     void testGetRentalsByRentalDay_AllRentalsOnDesiredDate() {
-        System.out.println("\n24: Testing getRentalsByRentalDay method with 5 existing rentals and all on desired date...");
+        System.out.println("\n47: Testing getRentalsByRentalDay method with 5 existing rentals and all on desired date...");
 
         LocalDate rentalDay = LocalDate.now();
 
@@ -1057,9 +1395,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(25)
+    @Order(48)
     void testGetRentalsByRentalDay_SameDateDifferentTimes() {
-        System.out.println("\n25: Testing getRentalsByRentalDay method with rentals having same date but different times...");
+        System.out.println("\n48: Testing getRentalsByRentalDay method with rentals having same date but different times...");
 
         LocalDate rentalDay = LocalDate.now();
 
@@ -1078,9 +1416,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     @Test
-    @Order(26)
+    @Order(49)
     void testGetRentalsByRentalDay_BeforeExistingRentals() {
-        System.out.println("\n26: Testing getRentalsByRentalDay method with a rental day before any existing rentals...");
+        System.out.println("\n49: Testing getRentalsByRentalDay method with a rental day before any existing rentals...");
 
         LocalDate rentalDay = LocalDate.now().plusDays(1);
 
