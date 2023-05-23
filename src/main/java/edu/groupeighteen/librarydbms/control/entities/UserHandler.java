@@ -5,6 +5,10 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -126,7 +130,7 @@ public class UserHandler {
      * @return A User object representing the newly created user.
      */
     public static User createNewUser(String username, String password) throws InvalidUsernameException,
-            InvalidPasswordException{
+            InvalidPasswordException {
         User newUser = null;
 
         try {

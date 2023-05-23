@@ -1,6 +1,8 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

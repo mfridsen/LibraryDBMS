@@ -7,10 +7,13 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalDeleteException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalRecoveryException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalUpdateException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 
 import java.sql.*;
 import java.time.LocalDate;

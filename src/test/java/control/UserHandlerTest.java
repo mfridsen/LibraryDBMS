@@ -4,6 +4,10 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;

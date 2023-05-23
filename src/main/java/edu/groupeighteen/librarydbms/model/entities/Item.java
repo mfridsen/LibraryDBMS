@@ -1,9 +1,9 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidRentalException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 
 /**
  * @author Mattias Fridsén
@@ -16,20 +16,29 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
  *
  * Invariants, enforced by setters:
  *      ItemIDs have to be > 0.
- *      Titles cannot be null or empty. //TODO-future add max length
+ *      Titles cannot be null, empty or longer than ITEM_TITLE_MAX_LENGTH.
  *      Allowed rental days must not be less than 0.
  */
 public class Item extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
-    public static final int ITEM_TITLE_MAX_LENGHT = 255;
+
+    public static final int ITEM_TITLE_MAX_LENGTH = 255; //TODO-PRIO RETRIEVE METADATA
     public static final int DEFAULT_ALLOWED_DAYS = 14;
 
     private int itemID; //Primary key
     private String title;
     private int allowedRentalDays;
     private boolean available;
+
+    //ENUM TYPE
+    //ISBN
+    //Genre/Classification
+    //Author ID
+    //Author name
+    //Publisher ID
+    //Publisher name
 
     /**
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
@@ -42,7 +51,8 @@ public class Item extends Entity {
             this.allowedRentalDays = DEFAULT_ALLOWED_DAYS; //TODO-prio for now
             this.available = true;
         } catch (InvalidTitleException e) {
-            throw new ConstructionException("Failed to construct Item due to " + e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new ConstructionException("Failed to construct Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -58,8 +68,9 @@ public class Item extends Entity {
             setTitle(title); //Throws InvalidTitleException
             setAllowedRentalDays(allowedRentalDays);
             setAvailable(available);
-        } catch (InvalidIDException | InvalidTitleException | InvalidRentalException e) {
-            throw new ConstructionException("Failed to construct Item due to " + e.getClass().getName() + ": " + e.getMessage(), e);
+        } catch (InvalidIDException | InvalidTitleException | InvalidDateException e) {
+            throw new ConstructionException("Failed to construct Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -91,8 +102,9 @@ public class Item extends Entity {
     public void setTitle(String title) throws InvalidTitleException {
         if (title == null || title.isEmpty())
             throw new InvalidTitleException("Title cannot be null or empty.");
-        if (title.length() > ITEM_TITLE_MAX_LENGHT)
-            throw new InvalidTitleException("Title cannot be longer than " + ITEM_TITLE_MAX_LENGHT + " characters. Received: " + title);
+        if (title.length() > ITEM_TITLE_MAX_LENGTH)
+            throw new InvalidTitleException("Title cannot be longer than " +
+                    ITEM_TITLE_MAX_LENGTH + " characters. Received: " + title);
         this.title = title;
     }
 
@@ -101,9 +113,9 @@ public class Item extends Entity {
         return allowedRentalDays;
     }
 
-    public void setAllowedRentalDays(int allowedRentalDays) throws InvalidRentalException {
+    public void setAllowedRentalDays(int allowedRentalDays) throws InvalidDateException {
         if (allowedRentalDays < 0)
-            throw new InvalidRentalException("Allowed rental days can't be negative. Received: " + allowedRentalDays);
+            throw new InvalidDateException("Allowed rental days can't be negative. Received: " + allowedRentalDays);
         this.allowedRentalDays = allowedRentalDays;
     }
 

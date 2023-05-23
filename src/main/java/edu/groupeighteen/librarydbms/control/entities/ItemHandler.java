@@ -5,6 +5,9 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -290,7 +293,7 @@ public class ItemHandler {
                 item.setDeleted(deleted);
                 return item;
             }
-        } catch (SQLException | ConstructionException | InvalidRentalException e) {
+        } catch (SQLException | ConstructionException | InvalidDateException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -439,7 +442,7 @@ public class ItemHandler {
                     items.add(item);
                 }
             }
-        } catch (SQLException | InvalidIDException | ConstructionException | InvalidRentalException e) {
+        } catch (SQLException | InvalidIDException | ConstructionException | InvalidDateException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve Items by title due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }

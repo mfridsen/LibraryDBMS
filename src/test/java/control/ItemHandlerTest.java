@@ -4,6 +4,9 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;

@@ -2,8 +2,8 @@ package model.entities;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidRentalException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -200,7 +200,7 @@ public class ItemTest {
             Item testItem = new Item("validTitle");
             testItem.setAllowedRentalDays(10);
             assertEquals(10, testItem.getAllowedRentalDays());
-        } catch (ConstructionException | InvalidRentalException e) {
+        } catch (ConstructionException | InvalidDateException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

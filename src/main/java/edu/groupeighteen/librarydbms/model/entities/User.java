@@ -2,6 +2,8 @@ package edu.groupeighteen.librarydbms.model.entities;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
 
 /**
  * @author Mattias Fridsén
@@ -14,13 +16,19 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
  *
  * Invariants, enforced by setters:
  *      UserIDs have to be positive integers.
- *      Usernames cannot be null or empty.
- *      Passwords cannot be null or empty.
+ *      Usernames cannot be null or empty,
+ *              shorter than {@value MIN_USERNAME_LENGTH} or longer than MAX_USERNAME_LENGTH.
+ *      Passwords cannot be null or empty,
+ *              shorter than {@value MIN_PASSWORD_LENGTH} or longer than MAX_PASSWORD_LENGTH.
+ *      Current rentals cannot be negative or greater than allowedRentals.
  */
 public class User extends Entity {
 
     //TODO-future add more fields and methods
     //TODO-comment everything
+
+    //TODO-PRIO TEST CURRENTRENTALS < 0 !!!
+
     public static final int DEFAULT_ALLOWED_RENTALS = 5;
     public static final int MIN_USERNAME_LENGTH = 3;
     public static final int MAX_USERNAME_LENGTH;
@@ -39,6 +47,10 @@ public class User extends Entity {
     private final int allowedRentals;
     private int currentRentals;
     private double lateFee;
+
+    //First name
+    //Last name
+    //E-mail
 
     /**
      * Constructs a new User with the specified username and password. This is
@@ -60,7 +72,8 @@ public class User extends Entity {
             this.lateFee = 0.0;
             this.deleted = false;
         } catch (InvalidUsernameException | InvalidPasswordException e) {
-            throw new ConstructionException("Failed to construct User due to " + e.getClass().getName() + ": " + e.getMessage(), e);
+            throw new ConstructionException("Failed to construct User due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -89,8 +102,10 @@ public class User extends Entity {
             setCurrentRentals(currentRentals); //Throws InvalidRentalException
             setLateFee(lateFee); //Throws InvalidLateFeeException
             this.deleted = deleted;
-        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException | InvalidRentalException | InvalidLateFeeException e) {
-            throw new ConstructionException("Failed to construct User due to " + e.getClass().getName() + ": " + e.getMessage(), e);
+        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException
+                | InvalidRentalException | InvalidLateFeeException e) {
+            throw new ConstructionException("Failed to construct User due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -208,9 +223,12 @@ public class User extends Entity {
      * Sets the number of current rentals for this User.
      *
      * @param currentRentals The number of current rentals to set.
-     * @throws InvalidRentalException If the provided number of current rentals is greater than the allowed number of rentals.
+     * @throws InvalidRentalException If the provided number of current rentals is lower than 0 or
+     *              greater than the allowed number of rentals.
      */
     public void setCurrentRentals(int currentRentals) throws InvalidRentalException {
+        if (currentRentals < 0)
+            throw new InvalidRentalException("Current rentals can't be lower than 0. Received: " + currentRentals);
         if (currentRentals > allowedRentals)
             throw new InvalidRentalException("Current rentals can't be greater than allowed rentals. Received: " +
                     currentRentals + ", allowed: " + allowedRentals);

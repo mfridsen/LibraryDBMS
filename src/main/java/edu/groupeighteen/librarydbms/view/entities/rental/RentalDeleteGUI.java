@@ -4,8 +4,8 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;

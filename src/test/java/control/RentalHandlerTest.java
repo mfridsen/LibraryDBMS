@@ -9,10 +9,12 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalDeleteException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalRecoveryException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalUpdateException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -363,7 +365,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
 
 
-    
+
 
 
     //GET ALL ----------------------------------------------------------------------------------------------------------
@@ -859,6 +861,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     //SOFT DELETE ------------------------------------------------------------------------------------------------------
 
+    /**
+     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Case: A valid Rental object is passed as argument.
+     * The method is expected to perform successfully, and the database should no longer contain the softly deleted Rental.
+     */
     @Test
     @Order(24)
     void testSoftDeleteRental_ValidRental() {
@@ -890,6 +897,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Case: A null Rental object is passed as argument.
+     * The method is expected to throw a RentalDeleteException.
+     */
     @Test
     @Order(25)
     void testSoftDeleteRental_NullRental() {
@@ -902,6 +914,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Case: A Rental object that doesn't exist in the database is passed as argument.
+     * The method is expected to throw a RentalDeleteException.
+     */
     @Test
     @Order(26)
     void testSoftDeleteRental_NonExistentRental() {
@@ -923,6 +940,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Case: A softly deleted Rental object is passed as argument.
+     * The method is expected to perform successfully, and the database should contain the recovered Rental.
+     */
     @Test
     @Order(27)
     void testSoftDeleteRental_AlreadySoftDeletedRental() {
@@ -951,6 +973,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     //UNDO SOFT DELETE -------------------------------------------------------------------------------------------------
 
+    /**
+     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Case: A valid Rental object that was softly deleted is passed as argument.
+     * The method is expected to perform successfully, and the database should contain the recovered Rental, no longer marked as deleted.
+     */
     @Test
     @Order(28)
     void testUndoSoftDeleteRental_ValidRental() {
@@ -977,6 +1004,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Case: A null Rental object is passed as argument.
+     * The method is expected to throw a RentalUpdateException.
+     */
     @Test
     @Order(29)
     void testUndoSoftDeleteRental_NullRental() {
@@ -993,6 +1025,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Case: A Rental object that wasn't softly deleted is passed as argument.
+     * The method is expected to perform successfully without changing the Rental.
+     */
     @Test
     @Order(30)
     void testUndoSoftDeleteRental_NotSoftlyDeletedRental() {
@@ -1022,6 +1059,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     //HARD DELETE ------------------------------------------------------------------------------------------------------
 
+    /**
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Case: A valid Rental object is passed as argument.
+     * The method is expected to perform successfully, and the database should no longer contain the deleted Rental.
+     */
     @Test
     @Order(31)
     void testDeleteRental_ValidRental() {
@@ -1045,6 +1087,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Case: A null Rental object is passed as argument.
+     * The method is expected to throw a RentalDeleteException.
+     */
     @Test
     @Order(32)
     void testDeleteRental_NullRental() {
@@ -1060,6 +1107,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Case: A Rental object that doesn't exist in the database is passed as argument.
+     * The method is expected to throw a RentalDeleteException.
+     */
     @Test
     @Order(33)
     void testDeleteRental_NotExistingRental() {
@@ -1082,6 +1134,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Case: A Rental object that was softly deleted is passed as argument.
+     * The method is expected to perform successfully, and the database should no longer contain the deleted Rental.
+     */
     @Test
     @Order(34)
     void testDeleteRental_SoftlyDeletedRental() {
@@ -1107,8 +1164,12 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-
-
+    /**
+     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Case: A Rental object that was hard deleted is passed as argument.
+     * An exception of type RentalDeleteException should be thrown, with its cause being a RentalNotFoundException, since the rental
+     * has been hard deleted and doesn't exist in the database anymore.
+     */
     @Test
     @Order(35)
     void testSoftDeleteRental_AlreadyHardDeletedRental() {
@@ -1135,6 +1196,12 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Case: A Rental object that was hard deleted is passed as argument.
+     * An exception of type RentalRecoveryException should be thrown, with its cause being a RentalNotFoundException, since the rental
+     * has been hard deleted and doesn't exist in the database anymore.
+     */
     @Test
     @Order(36)
     void testUndoSoftDeleteRental_HardDeletedRental() {

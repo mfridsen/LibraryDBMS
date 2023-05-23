@@ -1,4 +1,4 @@
-package edu.groupeighteen.librarydbms.model.exceptions;
+package edu.groupeighteen.librarydbms.model.exceptions.item;
 
 /**
  * @author Mattias Fridsén

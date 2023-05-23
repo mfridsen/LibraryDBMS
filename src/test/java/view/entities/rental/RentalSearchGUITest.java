@@ -1,14 +1,8 @@
 package view.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.exceptions.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.UserNotFoundException;
-import edu.groupeighteen.librarydbms.view.entities.rental.RentalSearchGUI;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import java.sql.SQLException;
 
 /**
  * @author Mattias Fridsén
