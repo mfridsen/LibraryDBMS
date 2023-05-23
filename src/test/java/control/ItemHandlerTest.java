@@ -180,7 +180,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    //SETUP-------------------------------------------------------------------------------------------------------------
+    //SETUP ------------------------------------------------------------------------------------------------------------
 
     /**
      * Tests the {@link ItemHandler#setup()} method of the ItemHandler class when the database is empty.
@@ -236,7 +236,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    //GET BY ID---------------------------------------------------------------------------------------------------------
+    //GET BY ID --------------------------------------------------------------------------------------------------------
 
     @Test
     @Order(7)
@@ -297,7 +297,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    //GET BY TITLE------------------------------------------------------------------------------------------------------
+    //GET BY TITLE -----------------------------------------------------------------------------------------------------
 
     @Test
     @Order(10)
@@ -429,7 +429,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     //TODO-test at least 27 more test cases in total here
 
-    //UPDATE------------------------------------------------------------------------------------------------------------
+    //UPDATE -----------------------------------------------------------------------------------------------------------
 
     @Test
     @Order(41)
@@ -513,7 +513,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
-    //DELETE------------------------------------------------------------------------------------------------------------
+    //DELETE -----------------------------------------------------------------------------------------------------------
 
     @Test
     @Order(44)

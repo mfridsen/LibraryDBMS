@@ -7,14 +7,14 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @contact matfir-1@student.ltu.se
  * @date 5/23/2023
  * <p>
- * Custom RentalException class. Used to make Exceptions clearer.
+ * Custom RentalNotFoundException class. Used to make Exceptions clearer.
  */
-public class RentalException extends Exception {
-    public RentalException(String message, Throwable cause) {
+public class RentalNotFoundException extends Exception {
+    public RentalNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public RentalException(String message) {
+    public RentalNotFoundException(String message) {
         super(message);
     }
 }
