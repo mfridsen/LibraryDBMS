@@ -382,6 +382,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * This is a test for the method 'getRentalByID' in the class 'RentalHandler'.
+     *
+     * The purpose of this test is to validate that the method correctly throws an 'InvalidIDException' when given
+     * invalid rental IDs.
+     *
+     * Initially, the test creates 5 rentals with rental IDs ranging from 1 to 5. Following this, it attempts to fetch
+     * rentals with IDs 0 and -1, which should trigger the 'InvalidIDException' as these IDs are not valid.
+     */
     @Test
     @Order(11)
     void testGetRentalByID_InvalidRentalID() {
@@ -407,6 +416,15 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * This is a test for the method 'getRentalByID' in the class 'RentalHandler'.
+     *
+     * The purpose of this test is to confirm that the method correctly returns null when trying to fetch a rental
+     * with a non-existent rental ID.
+     *
+     * Initially, the test creates 5 rentals with rental IDs ranging from 1 to 5. Following this, it attempts to
+     * fetch rentals with IDs 6 to 10, which should return null as no rentals with these IDs exist.
+     */
     @Test
     @Order(12)
     void testGetRentalByID_NonExistentRentalID() {
@@ -435,6 +453,18 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * This is a test for the method 'getRentalByID' in the class 'RentalHandler'.
+     *
+     * The purpose of this test is to confirm that the method correctly retrieves rentals with valid rental IDs and all
+     * the fields of the retrieved rentals are as expected.
+     *
+     * The test creates 5 rentals with rental IDs ranging from 1 to 5 and then attempts to fetch each of them.
+     *
+     * For each fetched rental, the test asserts that the object is not null and all its fields
+     * (rentalID, userID, itemID, rentalDate, username, itemTitle, rentalDueDate, rentalReturnDate, and lateFee)
+     * match the expected values.
+     */
     @Test
     @Order(13)
     void testGetRentalByID_ValidRentalID() {
@@ -456,11 +486,13 @@ public class RentalHandlerTest extends BaseHandlerTest {
                 assertNotNull(rental.getRentalDate());
                 assertEquals("user" + (i + 1), rental.getUsername());
                 assertEquals("item" + (i + 1), rental.getItemTitle());
-                assertEquals(rental.getRentalDate().plusDays(14).truncatedTo(ChronoUnit.SECONDS).withHour(20).withMinute(0).withSecond(0), rental.getRentalDueDate());
+                assertEquals(rental.getRentalDate().plusDays(14).truncatedTo(ChronoUnit.SECONDS).withHour(20)
+                        .withMinute(0).withSecond(0), rental.getRentalDueDate());
                 assertNull(rental.getRentalReturnDate());
                 assertEquals(0.0, rental.getLateFee(), 0.001);
             }
-        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException | RentalException e) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException
+                | InvalidIDException | RentalException e) {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
         }

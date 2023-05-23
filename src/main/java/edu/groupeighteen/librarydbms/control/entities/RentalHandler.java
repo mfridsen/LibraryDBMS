@@ -282,7 +282,16 @@ public class RentalHandler {
         return rentals;
     }
 
-
+    /**
+     * This method fetches a rental by its rental ID from the database.
+     *
+     * @param rentalID The ID of the rental to fetch. This should be a valid, existing rental ID.
+     * @return A Rental object corresponding to the rental with the specified ID if it exists,
+     *      or null if no such rental exists.
+     * @throws InvalidIDException If the provided rental ID is invalid (i.e., less than or equal to zero).
+     * @throws RentalException If more than one rental with the specified ID exists, which should not happen because
+     *      rental IDs are unique.
+     */
     public static Rental getRentalByID(int rentalID) throws InvalidIDException, RentalException {
         checkRentalID(rentalID);
         String suffix = "WHERE rentalID = " + rentalID;
