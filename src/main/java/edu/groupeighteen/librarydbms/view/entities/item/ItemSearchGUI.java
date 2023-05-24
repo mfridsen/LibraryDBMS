@@ -90,7 +90,7 @@ public class ItemSearchGUI extends GUI {
                         Item item = ItemHandler.getItemByID(itemID);
                         if (!(item == null)) {
                             searchResultList.add(item);
-                        } else System.err.println("No user found for userID: " + itemID);
+                        } else System.err.println("No item found for itemID: " + itemID);
                     }
                     //Item Title
                     case 1 -> {
@@ -98,7 +98,7 @@ public class ItemSearchGUI extends GUI {
                         Item item = ItemHandler.getItemByTitle(title);
                         if (!(item == null)) {
                             searchResultList.add(item);
-                        } else System.err.println("No user found for username: " + title);
+                        } else System.err.println("No item found for title: " + title);
                     }
                 }
             } catch (NumberFormatException nfe) {

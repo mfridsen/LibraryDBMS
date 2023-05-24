@@ -125,8 +125,6 @@ public class ItemUpdateGUI extends GUI {
             String username = (String) itemUpdateTable.getValueAt(1, 2);
             String itemID = (String) itemUpdateTable.getValueAt(2, 2);
             String itemTitle = (String) itemUpdateTable.getValueAt(3, 2);
-            String itemDate = (String) itemUpdateTable.getValueAt(4, 2);
-
             //Update the itemToUpdate object. Only update if new value is not null or empty
             try {
                 if (userID != null && !userID.isEmpty()) {

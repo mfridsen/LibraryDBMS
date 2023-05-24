@@ -29,10 +29,10 @@ public class ItemSearchResultGUI extends GUI {
     private JPanel searchResultPanel;
 
     /**
-     * Constructs a new RentalSearchResultGUI.
+     * Constructs a new ItemSearchResultGUI.
      *
      * @param previousGUI      the GUI instance from which this GUI was opened.
-     * @param searchResultList the list of Rental objects to be displayed.
+     * @param searchResultList the list of Item objects to be displayed.
      */
     public ItemSearchResultGUI(GUI previousGUI, List<Item> searchResultList) {
         super(previousGUI, "ItemSearchResultGUI");
@@ -44,14 +44,14 @@ public class ItemSearchResultGUI extends GUI {
     }
 
     /**
-     * Removes any duplicate rentals from the search result list.
-     * A rental is considered duplicate if it shares the same rental ID
-     * with another rental in the list. In case of duplicates, all but one
+     * Removes any duplicate items from the search result list.
+     * An item is considered duplicate if it shares the same item ID
+     * with another item in the list. In case of duplicates, all but one
      * instance will be removed.
      */
     private void clearDuplicates() {
-        Set<Integer> seenRentalIDs = new HashSet<>();
-        searchResultList.removeIf(item -> !seenRentalIDs.add(item.getItemID()));
+        Set<Integer> seenItemIDs = new HashSet<>();
+        searchResultList.removeIf(item -> !seenItemIDs.add(item.getItemID()));
     }
 
     /**
