@@ -37,7 +37,7 @@ public class Item extends Entity {
     //Publisher ID
     //Publisher name
     private int allowedRentalDays;
-    private boolean available;
+    private boolean available; //True by default
 
     /**
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
@@ -66,7 +66,7 @@ public class Item extends Entity {
             setItemID(itemID); //Throws InvalidIDException
             setTitle(title); //Throws InvalidTitleException
             setAllowedRentalDays(allowedRentalDays);
-            setAvailable(available);
+            this.available = available;
         } catch (InvalidIDException | InvalidTitleException | InvalidDateException e) {
             throw new ConstructionException("Failed to construct Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);

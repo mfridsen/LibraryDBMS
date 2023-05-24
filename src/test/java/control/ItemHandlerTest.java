@@ -278,6 +278,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // First, create a new item
             String title = "Valid Item";
             Item createdItem = ItemHandler.createNewItem(title);
+            assertNotNull(createdItem);
 
             // Then try to retrieve it using its ID
             Item retrievedItem = ItemHandler.getItemByID(createdItem.getItemID());
@@ -293,6 +294,30 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The retrieved item should have the same allowed rental days as the created item
             assertEquals(createdItem.getAllowedRentalDays(), retrievedItem.getAllowedRentalDays(), "Retrieved item allowed rental days does not match created item allowed rental days.");
+
+            //The retrieved item, being newly created, should be available and not deleted
+            assertTrue(retrievedItem.isAvailable());
+            assertFalse(retrievedItem.isDeleted());
+
+            //A known bug causes items availability to change, let's try retrieving the same item again
+            retrievedItem = ItemHandler.getItemByID(createdItem.getItemID());
+
+            // The retrieved item should not be null
+            assertNotNull(retrievedItem, "Item retrieval by ID returned null.");
+
+            // The retrieved item should have the same ID as the created item
+            assertEquals(createdItem.getItemID(), retrievedItem.getItemID(), "Retrieved item ID does not match created item ID.");
+
+            // The retrieved item should have the same title as the created item
+            assertEquals(createdItem.getTitle(), retrievedItem.getTitle(), "Retrieved item title does not match created item title.");
+
+            // The retrieved item should have the same allowed rental days as the created item
+            assertEquals(createdItem.getAllowedRentalDays(), retrievedItem.getAllowedRentalDays(), "Retrieved item allowed rental days does not match created item allowed rental days.");
+
+            //The retrieved item, being newly created, should be available and not deleted
+            assertTrue(retrievedItem.isAvailable());
+            assertFalse(retrievedItem.isDeleted());
+
         } catch (InvalidTitleException | InvalidIDException infe) {
             fail("Valid operations should not throw exceptions.");
             infe.printStackTrace();

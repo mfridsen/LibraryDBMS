@@ -330,11 +330,18 @@ public class RentalHandlerTest extends BaseHandlerTest {
             int validUserID = 1;
             int validItemID = 1;
 
+            RentalHandler.setVerbose(true);
+
             //Change users number of rentals to maximum allowed
             User maxRentalUser = UserHandler.getUserByID(validUserID);
             assertNotNull(maxRentalUser);
             maxRentalUser.setCurrentRentals(User.DEFAULT_ALLOWED_RENTALS);
             UserHandler.updateUser(maxRentalUser);
+
+            //Tracer to find bug
+            Item item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
+            System.out.println("item1 available 1: " + item1.isAvailable());
 
             //Assert correct exception with correct message is thrown
             Exception exception = assertThrows(RentalNotAllowedException.class,
@@ -342,6 +349,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             String expectedMessage = "Current rentals can't be greater than allowed rentals.";
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
+
+            //setupAndReset();
 
             //Try with user 2 and items 1-6...
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 1));
@@ -356,6 +365,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             expectedMessage = "User not allowed to rent due to already renting to capacity.";
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
+
+            RentalHandler.setVerbose(false);
 
         } catch (InvalidIDException | NullUserException | InvalidUsernameException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
@@ -899,7 +910,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     //SOFT DELETE ------------------------------------------------------------------------------------------------------
 
     /**
-     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
      * Case: A valid Rental object is passed as argument.
      * The method is expected to perform successfully, and the database should no longer contain the softly deleted Rental.
      */
@@ -915,7 +926,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             // Softly delete the rental
             try {
-                RentalHandler.softDeleteRental(rentalToDelete);
+                RentalHandler.deleteRental(rentalToDelete);
             } catch (RentalDeleteException e) {
                 fail("An unexpected exception occurred: " + e.getMessage());
             }
@@ -935,7 +946,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
      * Case: A null Rental object is passed as argument.
      * The method is expected to throw a RentalDeleteException.
      */
@@ -945,14 +956,14 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n25: Testing softDeleteRental method with a null rental...");
 
         // Attempt to softly delete a null rental
-        Exception e = assertThrows(RentalDeleteException.class, () -> RentalHandler.softDeleteRental(null), "A RentalDeleteException should be thrown when attempting to softly delete a null rental.");
+        Exception e = assertThrows(RentalDeleteException.class, () -> RentalHandler.deleteRental(null), "A RentalDeleteException should be thrown when attempting to softly delete a null rental.");
         assertTrue(e.getCause() instanceof NullRentalException, "The cause of the RentalDeleteException should be a NullRentalException.");
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
      * Case: A Rental object that doesn't exist in the database is passed as argument.
      * The method is expected to throw a RentalDeleteException.
      */
@@ -967,7 +978,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             nonExistentRental.setRentalID(1); //Make sure the rental has a valid ID
 
             // Attempt to softly delete the non-existent rental
-            Exception e = assertThrows(RentalDeleteException.class, () -> RentalHandler.softDeleteRental(nonExistentRental), "A RentalDeleteException should be thrown when attempting to softly delete a non-existent rental.");
+            Exception e = assertThrows(RentalDeleteException.class, () -> RentalHandler.deleteRental(nonExistentRental), "A RentalDeleteException should be thrown when attempting to softly delete a non-existent rental.");
             assertTrue(e.getCause() instanceof RentalNotFoundException, "The cause of the RentalDeleteException should be a RentalNotFoundException.");
         } catch (ConstructionException | InvalidIDException e) {
             fail("Exception occurred during test: " + e.getMessage());
@@ -978,7 +989,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#undoDeleteRental(Rental)}.
      * Case: A softly deleted Rental object is passed as argument.
      * The method is expected to perform successfully, and the database should contain the recovered Rental.
      */
@@ -991,8 +1002,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             // Create a new rental, softly delete it, and then try to softly delete it again
             Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
             assertNotNull(rentalToDelete);
-            RentalHandler.softDeleteRental(rentalToDelete);
-            RentalHandler.softDeleteRental(rentalToDelete);
+            RentalHandler.deleteRental(rentalToDelete);
+            RentalHandler.deleteRental(rentalToDelete);
 
             // Verify that the rental is marked as deleted in the database
             Rental deletedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
@@ -1011,7 +1022,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     //UNDO SOFT DELETE -------------------------------------------------------------------------------------------------
 
     /**
-     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#undoDeleteRental(Rental)}.
      * Case: A valid Rental object that was softly deleted is passed as argument.
      * The method is expected to perform successfully, and the database should contain the recovered Rental, no longer marked as deleted.
      */
@@ -1024,8 +1035,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             // Create a new rental, softly delete it, and then undo the soft delete
             Rental rentalToRecover = RentalHandler.createNewRental(1, 1);
             assertNotNull(rentalToRecover);
-            RentalHandler.softDeleteRental(rentalToRecover);
-            RentalHandler.undoSoftDeleteRental(rentalToRecover);
+            RentalHandler.deleteRental(rentalToRecover);
+            RentalHandler.undoDeleteRental(rentalToRecover);
 
             // Verify that the rental is not marked as deleted in the database
             Rental recoveredRental = RentalHandler.getRentalByID(rentalToRecover.getRentalID());
@@ -1042,7 +1053,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#undoDeleteRental(Rental)}.
      * Case: A null Rental object is passed as argument.
      * The method is expected to throw a RentalUpdateException.
      */
@@ -1053,7 +1064,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         // Attempt to undo a soft delete on a null rental
         Exception e = assertThrows(RentalRecoveryException.class,
-                () -> RentalHandler.undoSoftDeleteRental(null),
+                () -> RentalHandler.undoDeleteRental(null),
                 "A RentalRecoveryException should be thrown when attempting to undo a soft " +
                         "delete on a null rental.");
         assertTrue(e.getCause() instanceof NullRentalException,
@@ -1063,7 +1074,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#undoDeleteRental(Rental)}.
      * Case: A Rental object that wasn't softly deleted is passed as argument.
      * The method is expected to perform successfully without changing the Rental.
      */
@@ -1076,7 +1087,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             // Create a new rental and attempt to undo a soft delete on it
             Rental rental = RentalHandler.createNewRental(1, 1);
             assertNotNull(rental);
-            RentalHandler.undoSoftDeleteRental(rental);
+            RentalHandler.undoDeleteRental(rental);
 
             // Verify that the rental is not marked as deleted in the database
             Rental rentalInDB = RentalHandler.getRentalByID(rental.getRentalID());
@@ -1097,7 +1108,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     //HARD DELETE ------------------------------------------------------------------------------------------------------
 
     /**
-     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Test method for {@link RentalHandler#hardDeleteRental(Rental)}.
      * Case: A valid Rental object is passed as argument.
      * The method is expected to perform successfully, and the database should no longer contain the deleted Rental.
      */
@@ -1110,7 +1121,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             // Create a new rental and delete it
             Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
             assertNotNull(rentalToDelete);
-            RentalHandler.deleteRental(rentalToDelete);
+            RentalHandler.hardDeleteRental(rentalToDelete);
 
             // Verify that the rental no longer exists in the database
             Rental deletedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
@@ -1125,7 +1136,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Test method for {@link RentalHandler#hardDeleteRental(Rental)}.
      * Case: A null Rental object is passed as argument.
      * The method is expected to throw a RentalDeleteException.
      */
@@ -1136,7 +1147,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         // Attempt to delete a null rental
         Exception e = assertThrows(RentalDeleteException.class,
-                () -> RentalHandler.deleteRental(null), "A RentalDeleteException should be thrown " +
+                () -> RentalHandler.hardDeleteRental(null), "A RentalDeleteException should be thrown " +
                         "when attempting to delete a null rental.");
         assertTrue(e.getCause() instanceof NullRentalException,
                 "The cause of the RentalDeleteException should be a NullRentalException.");
@@ -1145,7 +1156,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Test method for {@link RentalHandler#hardDeleteRental(Rental)}.
      * Case: A Rental object that doesn't exist in the database is passed as argument.
      * The method is expected to throw a RentalDeleteException.
      */
@@ -1159,7 +1170,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             Rental nonExistentRental = new Rental(1, 1);
             nonExistentRental.setRentalID(1); //Needs a valid ID
             Exception e = assertThrows(RentalDeleteException.class,
-                    () -> RentalHandler.deleteRental(nonExistentRental),
+                    () -> RentalHandler.hardDeleteRental(nonExistentRental),
                     "A RentalDeleteException should be thrown when attempting to delete a non-existent rental.");
             assertTrue(e.getCause() instanceof RentalNotFoundException,
                     "The cause of the RentalDeleteException should be a RentalNotFoundException.");
@@ -1172,7 +1183,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#deleteRental(Rental)}.
+     * Test method for {@link RentalHandler#hardDeleteRental(Rental)}.
      * Case: A Rental object that was softly deleted is passed as argument.
      * The method is expected to perform successfully, and the database should no longer contain the deleted Rental.
      */
@@ -1185,8 +1196,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             // Create a new rental, softly delete it, and then hard delete it
             Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
             assertNotNull(rentalToDelete);
-            RentalHandler.softDeleteRental(rentalToDelete);
             RentalHandler.deleteRental(rentalToDelete);
+            RentalHandler.hardDeleteRental(rentalToDelete);
 
             // Verify that the rental no longer exists in the database
             Rental deletedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
@@ -1202,7 +1213,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#softDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#deleteRental(Rental)}.
      * Case: A Rental object that was hard deleted is passed as argument.
      * An exception of type RentalDeleteException should be thrown, with its cause being a RentalNotFoundException, since the rental
      * has been hard deleted and doesn't exist in the database anymore.
@@ -1215,11 +1226,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         try {
             // Create a new rental, hard delete it, and then try to softly delete it
             Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
-            RentalHandler.deleteRental(rentalToDelete);
+            RentalHandler.hardDeleteRental(rentalToDelete);
 
             // Attempt to softly delete the hard deleted rental
             Exception e = assertThrows(RentalDeleteException.class,
-                    () -> RentalHandler.softDeleteRental(rentalToDelete),
+                    () -> RentalHandler.deleteRental(rentalToDelete),
                     "A RentalDeleteException should be thrown when attempting to softly delete a " +
                             "hard deleted rental.");
             assertTrue(e.getCause() instanceof RentalNotFoundException,
@@ -1234,7 +1245,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Test method for {@link RentalHandler#undoSoftDeleteRental(Rental)}.
+     * Test method for {@link RentalHandler#undoDeleteRental(Rental)}.
      * Case: A Rental object that was hard deleted is passed as argument.
      * An exception of type RentalRecoveryException should be thrown, with its cause being a RentalNotFoundException, since the rental
      * has been hard deleted and doesn't exist in the database anymore.
@@ -1247,11 +1258,11 @@ public class RentalHandlerTest extends BaseHandlerTest {
         try {
             // Create a new rental, hard delete it, and then try to undo a soft delete on it
             Rental rentalToRecover = RentalHandler.createNewRental(1, 1);
-            RentalHandler.deleteRental(rentalToRecover);
+            RentalHandler.hardDeleteRental(rentalToRecover);
 
             // Attempt to undo a soft delete on the hard deleted rental
             Exception e = assertThrows(RentalRecoveryException.class,
-                    () -> RentalHandler.undoSoftDeleteRental(rentalToRecover),
+                    () -> RentalHandler.undoDeleteRental(rentalToRecover),
                     "A RentalRecoveryException should be thrown when attempting to undo a soft delete " +
                             "on a hard deleted rental.");
             assertTrue(e.getCause() instanceof RentalNotFoundException,

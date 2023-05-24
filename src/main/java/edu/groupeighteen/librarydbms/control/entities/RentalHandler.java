@@ -65,6 +65,16 @@ import java.util.List;
  */
 public class RentalHandler {
 
+    private static boolean verbose = false;
+
+    public static boolean isVerbose() {
+        return verbose;
+    }
+
+    public static void setVerbose(boolean verbose) {
+        RentalHandler.verbose = verbose;
+    }
+
     /**
      * This method creates a new rental in the system.
      *
@@ -88,6 +98,9 @@ public class RentalHandler {
 
     public static Rental createNewRental(int userID, int itemID) throws UserNotFoundException, ItemNotFoundException,
             RentalNotAllowedException, InvalidIDException {
+        if (verbose)
+            System.out.println("\nCreating new rental...");
+
         //Check IDs, can throw InvalidIDException
         if (checkUserID(userID))
             throw new InvalidIDException("Rental creation failed: invalid userID " + userID);
@@ -103,9 +116,16 @@ public class RentalHandler {
             username = user.getUsername();
 
             //Retrieve item, throws ItemNotFoundException if not found
-            Item item = getAvailableItem(itemID);
-            itemID = item.getItemID();
+            Item item = getExistingItem(itemID);
             title = item.getTitle();
+
+            //Check if item is available, if not, try to find an available copy
+            if (!item.isAvailable()) {
+                if (verbose)
+                    System.out.println("Item with ID " + itemID + " was not available.");
+                item = getAvailableCopy(title);
+                itemID = item.getItemID();
+            }
 
             //Create rental
             Rental newRental = new Rental(userID, itemID);
@@ -372,7 +392,7 @@ public class RentalHandler {
      * @param rentalToDelete the rental object to be softly deleted
      * @throws RentalDeleteException if rental object is invalid
      */
-    public static void softDeleteRental(Rental rentalToDelete) throws RentalDeleteException {
+    public static void deleteRental(Rental rentalToDelete) throws RentalDeleteException {
         //Validate input
         try {
             validateRental(rentalToDelete);
@@ -407,7 +427,7 @@ public class RentalHandler {
      * @param rentalToRecover the rental object to be recovered from soft delete
      * @throws RentalRecoveryException if rental object is invalid
      */
-    public static void undoSoftDeleteRental(Rental rentalToRecover) throws RentalRecoveryException {
+    public static void undoDeleteRental(Rental rentalToRecover) throws RentalRecoveryException {
         //Validate input
         try {
             validateRental(rentalToRecover);
@@ -437,7 +457,7 @@ public class RentalHandler {
      * @param rentalToDelete the rental object to be removed from the database
      * @throws RentalDeleteException if rental object is invalid
      */
-    public static void deleteRental(Rental rentalToDelete) throws RentalDeleteException {
+    public static void hardDeleteRental(Rental rentalToDelete) throws RentalDeleteException {
         //Validate input
         try {
             validateRental(rentalToDelete);
@@ -860,20 +880,33 @@ public class RentalHandler {
      * @throws InvalidIDException if the userID is invalid
      */
     private static User getValidatedUser(int userID) throws UserNotFoundException, InvalidIDException, RentalNotAllowedException {
+        if (verbose)
+            System.out.println("\nGetting valid user with ID " + userID);
+
         User user = UserHandler.getUserByID(userID);
+
         //Not null
         if (user == null)
             throw new UserNotFoundException("User with ID " + userID + " not found.");
+        if (verbose)
+            System.out.println("Found non-null user with ID " + userID);
+
         //Not deleted
         if (user.isDeleted())
             throw new UserNotFoundException("User with ID " + userID + " found but is deleted.");
+        if (verbose)
+            System.out.println("User with ID " + userID + " is not deleted: " + !user.isDeleted());
+
         //Allowed to rent
         if (!user.isAllowedToRent())
             throw new RentalNotAllowedException("User not allowed to rent either due to already renting at " +
                     "maximum capacity or having a late fee." +
                     "\nCurrent late fee: " + user.getLateFee() + ", Current rentals: " + user.getCurrentRentals() +
                     ", Allowed rentals: " + user.getAllowedRentals());
-            return user;
+        if (verbose)
+            System.out.println("User with ID " + userID + " is allowed to rent: " + user.isAllowedToRent());
+
+        return user;
     }
 
     /**
@@ -884,14 +917,26 @@ public class RentalHandler {
      * @throws ItemNotFoundException if there's no Item with the given itemID
      * @throws InvalidIDException if the itemID is invalid
      */
-    private static Item getAvailableItem(int itemID) throws ItemNotFoundException, InvalidIDException, InvalidTitleException {
+    private static Item getExistingItem(int itemID) throws ItemNotFoundException, InvalidIDException, InvalidTitleException {
+        if (verbose)
+            System.out.println("\nGetting available item with ID " + itemID);
+
         Item item = ItemHandler.getItemByID(itemID);
         if (item == null)
             throw new ItemNotFoundException("Item with ID " + itemID + " not found.");
+        if (verbose)
+            System.out.println("Found non-null Item with ID " + itemID + " and title '" + item.getTitle() + "'");
+
         if (item.isDeleted())
             throw new ItemNotFoundException("Item with ID " + itemID + " found but is deleted.");
+        if (verbose)
+            System.out.println("Item with ID " + itemID + " is not deleted: " + !item.isDeleted());
+/*
+        if (verbose)
+            System.out.println("Item with ID " + itemID + " is available: " + item.isAvailable());
         if (!item.isAvailable())
             item = getAvailableCopy(item.getTitle());
+*/
         return item;
     }
 
@@ -904,11 +949,16 @@ public class RentalHandler {
      * @throws ItemNotFoundException if there's no available copy of the Item with the given title
      */
     private static Item getAvailableCopy(String title) throws InvalidTitleException, ItemNotFoundException {
+        if (verbose)
+            System.out.println("\nGetting another available copy of item with title '" + title + "'");
+
         List<Item> items = ItemHandler.getItemsByTitle(title);
-        for (Item availableItem : items) {
-            if (availableItem.isAvailable())
-                return availableItem;
+
+        for (Item item : items) {
+            if (item.isAvailable())
+                return item;
         }
+
         throw new ItemNotFoundException("Rental creation failed: No available copy of " + title + " found.");
     }
 
