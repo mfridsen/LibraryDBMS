@@ -370,6 +370,12 @@ public class RentalHandlerTest extends BaseHandlerTest {
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
+            //Debug
+            item1 = ItemHandler.getItemByID(1);
+            assertNotNull(item1);
+            System.out.println("item1 available 1: " + item1.isAvailable());
+            assertFalse(item1.isAvailable());
+
             RentalHandler.setVerbose(false);
 
         } catch (InvalidIDException | NullUserException | InvalidUsernameException | RentalNotAllowedException e) {

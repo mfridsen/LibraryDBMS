@@ -118,14 +118,7 @@ public class RentalHandler {
             //Retrieve item, throws ItemNotFoundException if not found
             Item item = getExistingItem(itemID);
             title = item.getTitle();
-
-            //Check if item is available, if not, try to find an available copy
-            if (!item.isAvailable()) {
-                if (verbose)
-                    System.out.println("Item with ID " + itemID + " was not available.");
-                item = getAvailableCopy(title);
-                itemID = item.getItemID();
-            }
+            itemID = item.getItemID(); //Might be changed if item wasn't available
 
             //Create rental
             Rental newRental = new Rental(userID, itemID);
@@ -931,12 +924,13 @@ public class RentalHandler {
             throw new ItemNotFoundException("Item with ID " + itemID + " found but is deleted.");
         if (verbose)
             System.out.println("Item with ID " + itemID + " is not deleted: " + !item.isDeleted());
-/*
+
         if (verbose)
             System.out.println("Item with ID " + itemID + " is available: " + item.isAvailable());
+
         if (!item.isAvailable())
             item = getAvailableCopy(item.getTitle());
-*/
+
         return item;
     }
 
