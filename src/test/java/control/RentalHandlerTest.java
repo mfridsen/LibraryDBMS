@@ -1283,7 +1283,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(InvalidDateException.class, () -> RentalHandler.getRentalsByRentalDate(futureDate),
                 "Expected InvalidDateException to be thrown, but it didn't");
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1306,7 +1306,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1333,7 +1333,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1368,7 +1368,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     //GET BY DAY -------------------------------------------------------------------------------------------------------
@@ -1385,7 +1385,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(InvalidDateException.class, () -> RentalHandler.getRentalsByRentalDay(null),
                 "getRentalsByRentalDay should throw InvalidDateException when rentalDay is null");
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1402,7 +1402,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         assertThrows(InvalidDateException.class, () -> RentalHandler.getRentalsByRentalDay(futureDate),
                 "getRentalsByRentalDay should throw InvalidDateException when rentalDay is in the future");
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1424,7 +1424,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1449,7 +1449,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1474,7 +1474,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1499,7 +1499,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1524,7 +1524,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1549,7 +1549,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     /**
@@ -1574,7 +1574,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
 

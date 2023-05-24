@@ -64,7 +64,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             e.printStackTrace();
         }
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         String password = "validPassword123";
         assertThrows(InvalidUsernameException.class, () -> UserHandler.createNewUser(username, password), "Exception should be thrown for short username");
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         String password = "validPassword123";
         assertThrows(InvalidUsernameException.class, () -> UserHandler.createNewUser(username, password), "Exception should be thrown for long username");
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -120,7 +120,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         String password = "short";
         assertThrows(InvalidPasswordException.class, () -> UserHandler.createNewUser(username, password), "Exception should be thrown for short password");
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     @Test
@@ -132,7 +132,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         String password = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
         assertThrows(InvalidPasswordException.class, () -> UserHandler.createNewUser(username, password), "Exception should be thrown for long password");
 
-        System.out.println("TEST FINISHED.");
+        System.out.println("\nTEST FINISHED.");
     }
 
     //SETUP-------------------------------------------------------------------------------------------------------------

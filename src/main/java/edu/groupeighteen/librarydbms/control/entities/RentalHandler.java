@@ -132,7 +132,6 @@ public class RentalHandler {
             newRental.setRentalID(rentalID);
 
             //Update Item to change its status to not available
-            //Also make sure to update the Maps in ItemHandler, this should be done automatically but verify this
             item.setAvailable(false);
             ItemHandler.updateItem(item);
 

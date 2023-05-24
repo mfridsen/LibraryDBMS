@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidRentalException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidRentalStatusChangeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
 
 /**
@@ -17,12 +18,24 @@ import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameExcept
  * This class represents a User of the application.
  *
  * Invariants, enforced by setters:
+ *
  *      UserIDs have to be positive integers.
+ *
  *      Usernames cannot be null or empty,
  *              shorter than {@value MIN_USERNAME_LENGTH} or longer than MAX_USERNAME_LENGTH.
+ *
  *      Passwords cannot be null or empty,
  *              shorter than {@value MIN_PASSWORD_LENGTH} or longer than MAX_PASSWORD_LENGTH.
+ *
  *      Current rentals cannot be negative or greater than allowedRentals.
+ *
+ *      If the user has less rentals than allowed, they can rent.
+ *
+ *      If the user has as many rentals as allowed, they can't rent until at least one item is returned.
+ *
+ *      If the user has no late fee, they are allowed to rent.
+ *
+ *      If the user has a late fee, they are not allowed to rent.
  */
 public class User extends Entity {
 
@@ -99,7 +112,7 @@ public class User extends Entity {
      * @throws ConstructionException If there are issues validating the provided data.
      */
     public User(int userID, String username, String password, int allowedRentals, int currentRentals,
-                double lateFee, boolean deleted) throws ConstructionException {
+                double lateFee, boolean allowedToRent, boolean deleted) throws ConstructionException {
         try {
             setUserID(userID); //Throws InvalidIDException
             setUsername(username); //Throws InvalidUsernameException
@@ -107,10 +120,10 @@ public class User extends Entity {
             this.allowedRentals = allowedRentals;
             setCurrentRentals(currentRentals); //Throws InvalidRentalException
             setLateFee(lateFee); //Throws InvalidLateFeeException
-
+            setAllowedToRent(allowedToRent);
             this.deleted = deleted;
-        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException
-                | InvalidRentalException | InvalidLateFeeException e) {
+        } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException | InvalidRentalException
+                | InvalidLateFeeException | InvalidRentalStatusChangeException e) {
             throw new ConstructionException("Failed to construct User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -230,16 +243,27 @@ public class User extends Entity {
     /**
      * Sets the number of current rentals for this User.
      *
+     * If the user has less rentals than allowed, they can rent again.
+     * If the user has as many rentals as allowed, they can't rent until at least one item is returned.
+     *
      * @param currentRentals The number of current rentals to set.
      * @throws InvalidRentalException If the provided number of current rentals is lower than 0 or
      *              greater than the allowed number of rentals.
      */
     public void setCurrentRentals(int currentRentals) throws InvalidRentalException {
+        //Can't be less than zero
         if (currentRentals < 0)
             throw new InvalidRentalException("Current rentals can't be lower than 0. Received: " + currentRentals);
+        //Current rentals can't be greater than allowed
         if (currentRentals > allowedRentals)
             throw new InvalidRentalException("Current rentals can't be greater than allowed rentals. Received: " +
                     currentRentals + ", allowed: " + allowedRentals);
+        //User is still allowed to rent
+        if (currentRentals < allowedRentals)
+            allowedToRent = true;
+        //User is no longer allowed to rent until at least one item is returned
+        if (currentRentals == allowedRentals)
+            allowedToRent = false;
         this.currentRentals = currentRentals;
     }
 
@@ -255,23 +279,51 @@ public class User extends Entity {
     /**
      * Sets the late fee for this User.
      *
+     * If the user has no late fee, they are allowed to rent again.
+     * If the user has a late fee, they are not allowed to rent.
+     *
      * @param lateFee The late fee to set.
      * @throws InvalidLateFeeException If the provided late fee is negative.
      */
     public void setLateFee(double lateFee) throws InvalidLateFeeException {
+        // Late fee can't be less than zero
         if (lateFee < 0)
             throw new InvalidLateFeeException("Late fee cannot be less than zero. Received: " + lateFee);
+        // If the late fee is paid off, the user is allowed to rent again
+        if (lateFee == 0)
+            allowedToRent = true;
+        // If there is a late fee, the user is not allowed to rent
+        if (lateFee > 0)
+            allowedToRent = false;
         this.lateFee = lateFee;
     }
 
 
 
-
+    /**
+     * Retrieves the rental status of the user.
+     *
+     * @return allowedToRent a boolean value that indicates whether the user is currently allowed to rent items or not.
+     */
     public boolean isAllowedToRent() {
         return allowedToRent;
     }
 
-    public void setAllowedToRent(boolean allowedToRent) {
+    /**
+     * Sets the rental status for the user.
+     *
+     * @param allowedToRent the new rental status to be set. If true, the user is allowed to rent items; if false,
+     *                      the user is not.
+     * @throws InvalidRentalStatusChangeException if the attempt to change the rental status contradicts the
+     *                      library's rules. The rules being, a user with no late fee and with fewer current rentals
+     *                      than permitted should be allowed to rent.
+     */
+    public void setAllowedToRent(boolean allowedToRent) throws InvalidRentalStatusChangeException {
+        if (lateFee == 0.0 && allowedRentals > currentRentals)
+            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                    "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
+                    "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
+                    ", Allowed rentals: " + allowedRentals);
         this.allowedToRent = allowedToRent;
     }
 }
