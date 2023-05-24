@@ -98,29 +98,21 @@ public class RentalHandler {
         String title = ""; //Create title here so catch block is happy
 
         try {
-            //Retrieve user, throws UserNotFoundException if not found
-            User user = getExistingUser(userID);
+            //Retrieve user, throws UserNotFoundException if not found or RentalNotAllowedException if not allowed
+            User user = getValidatedUser(userID);
             username = user.getUsername();
 
-            //Validate that user is allowed to rent, throws RentalNotAllowedException if not
-            validateUserAllowedToRent(user);
-
             //Retrieve item, throws ItemNotFoundException if not found
-            Item item = getExistingItem(itemID);
+            Item item = getAvailableItem(itemID);
+            itemID = item.getItemID();
             title = item.getTitle();
-
-            //Check if there is an available copy of the item, if not, try to find one
-            if (!item.isAvailable()) {
-                item = getAvailableCopy(title); //Throws ItemNotFoundException if not found
-                itemID = item.getItemID(); //Update itemID to ensure correct itemID is used to create Rental
-            }
 
             //Create rental
             Rental newRental = new Rental(userID, itemID);
 
             //Set rental fields except rentalID
-            newRental.setUsername(user.getUsername());
-            newRental.setItemTitle(item.getTitle());
+            newRental.setUsername(username);
+            newRental.setItemTitle(title);
 
             //Due date
             int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
@@ -143,12 +135,13 @@ public class RentalHandler {
             return newRental;
 
         } catch (InvalidIDException | NullUserException | NullItemException | InvalidDateException
-                | InvalidRentalException | InvalidUsernameException | InvalidTitleException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed due to " +
-                    e.getCause().getClass().getName() + ":" + e.getMessage(), e);
+                 | InvalidUsernameException | InvalidTitleException e) {
+            String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
+            ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
         } catch (ConstructionException e) {
-            ExceptionHandler.HandleFatalException("Rental construction failed due to "
-                    + e.getCause().getClass().getName(), e.getCause());
+            String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
+            ExceptionHandler.HandleFatalException("Rental construction failed due to " + cause, e);
+
         }
 
         //Won't reach, needed for compilation
@@ -328,8 +321,8 @@ public class RentalHandler {
 
         //Check results, this first option should not happen and will be considered fatal
         if (rentals.size() > 1)
-            ExceptionHandler.HandleFatalException(new InvalidIDException("There should not be more than 1 rental with ID " + rentalID
-                    + ", received: " + rentals.size()));
+            ExceptionHandler.HandleFatalException(new InvalidIDException("There should not be more than 1 rental " +
+                    "with ID " + rentalID + ", received: " + rentals.size()));
 
         //Found something
         else if (rentals.size() == 1) return rentals.get(0);
@@ -347,7 +340,8 @@ public class RentalHandler {
      * and cannot be changed. Only the Due Date, Return Date, and Late Fee can be modified.
      *
      * @param updatedRental the rental object with updated details.
-     * @throws RentalUpdateException if the updatedRental is null, or if a rental with the provided rentalID doesn't exist in the database.
+     * @throws RentalUpdateException if the updatedRental is null, or if a rental with the provided rentalID
+     *          doesn't exist in the database.
      */
     public static void updateRental(Rental updatedRental) throws RentalUpdateException {
         //Validate input
@@ -865,31 +859,21 @@ public class RentalHandler {
      * @throws UserNotFoundException if there's no User with the given userID
      * @throws InvalidIDException if the userID is invalid
      */
-    private static User getExistingUser(int userID) throws UserNotFoundException, InvalidIDException {
+    private static User getValidatedUser(int userID) throws UserNotFoundException, InvalidIDException, RentalNotAllowedException {
         User user = UserHandler.getUserByID(userID);
+        //Not null
         if (user == null)
             throw new UserNotFoundException("User with ID " + userID + " not found.");
+        //Not deleted
         if (user.isDeleted())
             throw new UserNotFoundException("User with ID " + userID + " found but is deleted.");
+        //Allowed to rent
+        if (!user.isAllowedToRent())
+            throw new RentalNotAllowedException("User not allowed to rent either due to already renting at " +
+                    "maximum capacity or having a late fee." +
+                    "\nCurrent late fee: " + user.getLateFee() + ", Current rentals: " + user.getCurrentRentals() +
+                    ", Allowed rentals: " + user.getAllowedRentals());
             return user;
-    }
-
-    /**
-     * Validates if a User is allowed to rent an item. The user is not allowed if they already have rented their maximum
-     * capacity of items or if they have a late fee.
-     *
-     * @param user the User to be validated
-     * @throws RentalNotAllowedException if the User is not allowed to rent an item
-     */
-    private static void validateUserAllowedToRent(User user) throws RentalNotAllowedException {
-        //User has too many current rentals
-        if (user.getCurrentRentals() >= user.getAllowedRentals())
-            throw new RentalNotAllowedException("User not allowed to rent due to already renting to capacity. " +
-                    "Current rentals: " + user.getCurrentRentals() + ", allowed rentals: " + user.getAllowedRentals());
-        //User has late fee
-        if (user.getLateFee() > 0)
-            throw new RentalNotAllowedException("User not allowed to rent due to having a late fee. " +
-                    "Late fee: " + user.getLateFee());
     }
 
     /**
@@ -900,12 +884,14 @@ public class RentalHandler {
      * @throws ItemNotFoundException if there's no Item with the given itemID
      * @throws InvalidIDException if the itemID is invalid
      */
-    private static Item getExistingItem(int itemID) throws ItemNotFoundException, InvalidIDException {
+    private static Item getAvailableItem(int itemID) throws ItemNotFoundException, InvalidIDException, InvalidTitleException {
         Item item = ItemHandler.getItemByID(itemID);
         if (item == null)
             throw new ItemNotFoundException("Item with ID " + itemID + " not found.");
         if (item.isDeleted())
             throw new ItemNotFoundException("Item with ID " + itemID + " found but is deleted.");
+        if (!item.isAvailable())
+            item = getAvailableCopy(item.getTitle());
         return item;
     }
 
@@ -919,14 +905,13 @@ public class RentalHandler {
      */
     private static Item getAvailableCopy(String title) throws InvalidTitleException, ItemNotFoundException {
         List<Item> items = ItemHandler.getItemsByTitle(title);
-        Item item = null;
         for (Item availableItem : items) {
             if (availableItem.isAvailable())
-                item = availableItem;
+                return availableItem;
         }
-        if (item == null) throw new ItemNotFoundException("Rental creation failed: No available copy of " + title + " found.");
-        return item;
+        throw new ItemNotFoundException("Rental creation failed: No available copy of " + title + " found.");
     }
+
     /**
      * Validates a rentalID, ensuring it is a positive integer.
      *

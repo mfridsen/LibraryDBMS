@@ -4,7 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidRentalException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.*;
 import org.junit.jupiter.api.*;
 
@@ -164,11 +164,11 @@ public class UserHandlerTest extends BaseHandlerTest {
         assertEquals(0, UserHandler.getStoredUsernames().size());
 
         // Insert some users into the database without using createNewUser (which automatically increments storedUsernames)
-        String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, deleted) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
-        String[] params1 = {"user1", "pass1", "5", "0", "0.0", "0"};
-        String[] params2 = {"user2", "pass1", "5", "0", "0.0", "0"};
-        String[] params3 = {"user3", "pass1", "5", "0", "0.0", "0"};
+        String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String[] params1 = {"user1", "pass1", "5", "0", "0.0", "0", "0"};
+        String[] params2 = {"user2", "pass1", "5", "0", "0.0", "0", "0"};
+        String[] params3 = {"user3", "pass1", "5", "0", "0.0", "0", "0"};
         DatabaseHandler.executePreparedQuery(query, params1);
         DatabaseHandler.executePreparedQuery(query, params2);
         DatabaseHandler.executePreparedQuery(query, params3);
@@ -474,7 +474,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             newUser.setLateFee(15.5);
             UserHandler.updateUser(newUser);
             assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
-        } catch (NullUserException | InvalidUsernameException | InvalidLateFeeException | InvalidRentalException | InvalidPasswordException e) {
+        } catch (NullUserException | InvalidUsernameException | InvalidLateFeeException | InvalidPasswordException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

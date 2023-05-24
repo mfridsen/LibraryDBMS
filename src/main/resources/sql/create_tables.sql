@@ -15,7 +15,7 @@ CREATE TABLE `Users` (
     allowedRentals INT NOT NULL,
     currentRentals INT NOT NULL,
     lateFee DOUBLE NOT NULL,
-
+    allowedToRent TINYINT(1) NOT NULL,
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (userID)
 );

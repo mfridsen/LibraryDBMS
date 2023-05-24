@@ -339,7 +339,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             //Assert correct exception with correct message is thrown
             Exception exception = assertThrows(RentalNotAllowedException.class,
                     () -> RentalHandler.createNewRental(validUserID, validItemID));
-            String expectedMessage = "User not allowed to rent due to already renting to capacity.";
+            String expectedMessage = "Current rentals can't be greater than allowed rentals.";
             String actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
@@ -351,12 +351,13 @@ public class RentalHandlerTest extends BaseHandlerTest {
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 5));
 
             //... where 6 should fail
-            exception = assertThrows(RentalNotAllowedException.class, () -> RentalHandler.createNewRental(2, 6));
+            exception = assertThrows(RentalNotAllowedException.class,
+                    () -> RentalHandler.createNewRental(2, 6));
             expectedMessage = "User not allowed to rent due to already renting to capacity.";
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | InvalidRentalException | NullUserException | InvalidUsernameException e) {
+        } catch (InvalidIDException | NullUserException | InvalidUsernameException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -390,8 +391,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
             //Assert correct exception with correct message is thrown
             Exception exception = assertThrows(RentalNotAllowedException.class,
                     () -> RentalHandler.createNewRental(validUserID, validItemID));
-            String expectedMessage = "User not allowed to rent due to having a late fee.";
+            String expectedMessage = "User not allowed to rent either due to already renting at " +
+                    "maximum capacity or having a late fee.";
             String actualMessage = exception.getMessage();
+            System.out.println(actualMessage);
             assertTrue(actualMessage.contains(expectedMessage));
 
         } catch (InvalidIDException | NullUserException | InvalidUsernameException | InvalidLateFeeException e) {

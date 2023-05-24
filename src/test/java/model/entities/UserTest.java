@@ -3,6 +3,7 @@ package model.entities;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidRentalException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidRentalStatusChangeException;
@@ -326,7 +327,7 @@ public class UserTest {
             int currentRentals = 2;
             testUser.setCurrentRentals(currentRentals);
             assertEquals(currentRentals, testUser.getCurrentRentals());
-        } catch (InvalidRentalException | ConstructionException e) {
+        } catch (ConstructionException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -345,8 +346,8 @@ public class UserTest {
 
             // Test for currentRentals greater than allowedRentals
             int invalidRentals = testUser.getAllowedRentals() + 1;
-            assertThrows(InvalidRentalException.class, () -> testUser.setCurrentRentals(invalidRentals));
-            assertThrows(InvalidRentalException.class, () -> testUser.setCurrentRentals(-1));
+            assertThrows(RentalNotAllowedException.class, () -> testUser.setCurrentRentals(invalidRentals));
+            assertThrows(RentalNotAllowedException.class, () -> testUser.setCurrentRentals(-1));
         } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -385,7 +386,7 @@ public class UserTest {
             // Check if allowedToRent is true
             assertTrue(user.isAllowedToRent(), "User should be allowed to rent when current rentals are " +
                     "less than allowed");
-        } catch (ConstructionException | InvalidRentalException e) {
+        } catch (ConstructionException | RentalNotAllowedException e) {
             fail("Unexpected exception thrown: " + e.getMessage());
         }
 
@@ -405,7 +406,7 @@ public class UserTest {
             // Check if allowedToRent is false
             assertFalse(user.isAllowedToRent(), "User should not be allowed to rent when current rentals " +
                     "equal to allowed rentals");
-        } catch (ConstructionException | InvalidRentalException e) {
+        } catch (ConstructionException | RentalNotAllowedException e) {
             fail("Unexpected exception thrown: " + e.getMessage());
             e.printStackTrace();
         }
@@ -469,7 +470,7 @@ public class UserTest {
             user.setCurrentRentals(1);
             // Attempt to disallow rentals
             assertThrows(InvalidRentalStatusChangeException.class, () -> user.setAllowedToRent(false));
-        } catch (ConstructionException | InvalidLateFeeException | InvalidRentalException e) {
+        } catch (ConstructionException | InvalidLateFeeException | RentalNotAllowedException e) {
             fail("Unexpected exception thrown: " + e.getMessage());
             e.printStackTrace();
         }

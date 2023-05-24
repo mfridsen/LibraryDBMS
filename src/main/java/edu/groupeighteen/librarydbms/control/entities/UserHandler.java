@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidRentalException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.*;
 
 import java.sql.*;
@@ -163,8 +164,9 @@ public class UserHandler {
     private static int saveUser(User user) {
         try {
             // Prepare query
-            String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, deleted) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, " +
+                    "lateFee, allowedToRent, deleted) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             String[] params = {
                     user.getUsername(),
@@ -172,6 +174,7 @@ public class UserHandler {
                     String.valueOf(user.getAllowedRentals()),
                     String.valueOf(user.getCurrentRentals()),
                     String.valueOf(user.getLateFee()),
+                    "0", //allowedToRent is false by default
                     "0" //deleted is false by default
             };
 
@@ -224,7 +227,7 @@ public class UserHandler {
                     return user;
                 }
             }
-        } catch (SQLException | InvalidRentalException | InvalidLateFeeException | ConstructionException e) {
+        } catch (SQLException | InvalidLateFeeException | ConstructionException | RentalNotAllowedException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve user by ID from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -262,13 +265,14 @@ public class UserHandler {
             }
 
             // Prepare a SQL command to update a updatedUser's data by userID.
-            String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, lateFee = ? " +
-                    "WHERE userID = ?";
+            String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, " +
+                    "lateFee = ?, allowedToRent = ? " + "WHERE userID = ?";
             String[] params = {
                     updatedUser.getUsername(),
                     updatedUser.getPassword(),
                     String.valueOf(updatedUser.getCurrentRentals()),
                     String.valueOf(updatedUser.getLateFee()),
+                    updatedUser.isAllowedToRent() ? "1" : "0",
                     String.valueOf(updatedUser.getUserID())
             };
 
@@ -356,8 +360,7 @@ public class UserHandler {
                     return user;
                 }
             }
-        } catch (SQLException | InvalidIDException | InvalidRentalException
-                | InvalidLateFeeException | ConstructionException e) {
+        } catch (SQLException | InvalidIDException | InvalidLateFeeException | ConstructionException | RentalNotAllowedException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve user by username from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
