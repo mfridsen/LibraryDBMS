@@ -209,15 +209,36 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
+     * Test the createNewRental method with a userID that doesn't exist in the database. This test should pass if
+     * a UserNotFoundException is thrown, as a rental cannot be created for a user that doesn't exist.
+     */
+    @Test
+    @Order(5)
+    void testCreateNewRental_SoftDeletedUser() {
+        System.out.println("\n5: Testing createNewRental method with a user that doesn't exist...");
+
+        int nonexistentUserID = 999; // assuming this ID does not exist in your database
+        int validItemID = 1;
+
+        Exception exception = assertThrows(UserNotFoundException.class,
+                () -> RentalHandler.createNewRental(nonexistentUserID, validItemID),
+                "A UserNotFoundException should be thrown when attempting to create a rental for a user that doesn't exist.");
+        assertTrue(exception.getMessage().contains("User with ID " + nonexistentUserID + " not found."),
+                "The exception message should indicate the nonexistence of the user.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
      * Test case for createNewRental method with a nonexistent item.
      *
      * This test attempts to create a new rental using an item ID that does not exist in the database.
      * An ItemNotFoundException should be thrown with an appropriate error message.
      */
     @Test
-    @Order(5)
+    @Order(6)
     void testCreateNewRental_NonexistentItem() {
-        System.out.println("\n5: Testing createNewRental method with nonexistent item...");
+        System.out.println("\n6: Testing createNewRental method with nonexistent item...");
 
         int validUserID = 1;
         int nonexistentItemID = 9999; // This item ID does not exist in the database
@@ -233,12 +254,33 @@ public class RentalHandlerTest extends BaseHandlerTest {
     }
 
     /**
+     * Test the createNewRental method with an itemID that doesn't exist in the database. This test should pass if
+     * an ItemNotFoundException is thrown, as a rental cannot be created for an item that doesn't exist.
+     */
+    @Test
+    @Order(7)
+    void testCreateNewRental_SoftDeletedItem() {
+        System.out.println("\n7: Testing createNewRental method with an item that doesn't exist...");
+
+        int validUserID = 1;
+        int nonexistentItemID = 999; // assuming this ID does not exist in your database
+
+        Exception exception = assertThrows(ItemNotFoundException.class,
+                () -> RentalHandler.createNewRental(validUserID, nonexistentItemID),
+                "An ItemNotFoundException should be thrown when attempting to create a rental for an item that doesn't exist.");
+        assertTrue(exception.getMessage().contains("Item with ID " + nonexistentItemID + " not found."),
+                "The exception message should indicate the nonexistence of the item.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
      * Test case for createNewRental method when user tries to rent an item that's already rented out.
      */
     @Test
-    @Order(6)
+    @Order(8)
     void testCreateNewRental_ItemAlreadyRented() {
-        System.out.println("\n6: Testing createNewRental method with an item that's already rented out...");
+        System.out.println("\n8: Testing createNewRental method with an item that's already rented out...");
 
         try {
             int validUserID = 1;
@@ -280,9 +322,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * Test case for createNewRental method when user tries to rent more items than allowed.
      */
     @Test
-    @Order(7)
+    @Order(9)
     void testCreateNewRental_MaxRentalsExceeded() {
-        System.out.println("\n7: Testing createNewRental method with more rentals than allowed...");
+        System.out.println("\n9: Testing createNewRental method with more rentals than allowed...");
 
         try {
             int validUserID = 1;
@@ -326,9 +368,9 @@ public class RentalHandlerTest extends BaseHandlerTest {
      * Test case for createNewRental method when user tries to rent an item but they have unpaid late fees.
      */
     @Test
-    @Order(8)
+    @Order(10)
     void testCreateNewRental_UnpaidLateFees() {
-        System.out.println("\n8: Testing createNewRental method when user has unpaid late fees...");
+        System.out.println("\n10: Testing createNewRental method when user has unpaid late fees...");
 
         try {
             int validUserID = 1;
@@ -359,15 +401,6 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         System.out.println("\nTEST FINISHED.");
     }
-
-    //TODO-PRIO IMPLEMENT TESTS FOR CREATING A RENTAL WITH DELETED USER AND ITEM (2 tests)
-
-
-
-
-
-
-
 
     //GET ALL ----------------------------------------------------------------------------------------------------------
 

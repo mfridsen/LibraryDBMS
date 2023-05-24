@@ -143,30 +143,13 @@ public class RentalHandler {
             //Return rental
             return newRental;
 
-        } catch (InvalidIDException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidIDException thrown for valid ID, " +
-                    "message: " + e.getMessage(), e);
-        } catch (InvalidTitleException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidTitleException thrown for " +
-                    "valid title " + title + ", message: " + e.getMessage(), e);
-        } catch (InvalidUsernameException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: InvalidUsernameException thrown for " +
-                    "valid username " + username + ", message: " + e.getMessage(), e);
+        } catch (InvalidIDException | NullUserException | NullItemException | InvalidDateException
+                | InvalidRentalException | InvalidUsernameException | InvalidTitleException e) {
+            ExceptionHandler.HandleFatalException("Rental creation failed due to " +
+                    e.getCause().getClass().getName() + ":" + e.getMessage(), e);
         } catch (ConstructionException e) {
             ExceptionHandler.HandleFatalException("Rental construction failed due to "
                     + e.getCause().getClass().getName(), e.getCause());
-        } catch (InvalidDateException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidDateException: " +
-                    e.getMessage(), e);
-        } catch (InvalidRentalException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed due to InvalidRentalException: " +
-                    e.getMessage(), e);
-        } catch (NullItemException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: NullItemException thrown for " +
-                    "non-null Item, message: " + e.getMessage(), e);
-        } catch (NullUserException e) {
-            ExceptionHandler.HandleFatalException("Rental creation failed: NullUserException thrown for " +
-                    "non-null User, message: " + e.getMessage(), e);
         }
 
         //Won't reach, needed for compilation
@@ -876,7 +859,7 @@ public class RentalHandler {
     }
 
     /**
-     * Retrieves a User object given a userID, throwing an exception if the User doesn't exist.
+     * Retrieves a User object given a userID, throwing an exception if the User doesn't exist or is (soft) deleted.
      *
      * @param userID the id of the User to be retrieved
      * @return the User object corresponding to the given userID
@@ -887,7 +870,9 @@ public class RentalHandler {
         User user = UserHandler.getUserByID(userID);
         if (user == null)
             throw new UserNotFoundException("User with ID " + userID + " not found.");
-        return user;
+        if (user.isDeleted())
+            throw new UserNotFoundException("User with ID " + userID + " found but is deleted.");
+            return user;
     }
 
     /**
@@ -909,7 +894,7 @@ public class RentalHandler {
     }
 
     /**
-     * Retrieves an Item object given an itemID, throwing an exception if the Item doesn't exist.
+     * Retrieves an Item object given an itemID, throwing an exception if the Item doesn't exist or is (soft) deleted.
      *
      * @param itemID the id of the Item to be retrieved
      * @return the Item object corresponding to the given itemID
@@ -920,6 +905,8 @@ public class RentalHandler {
         Item item = ItemHandler.getItemByID(itemID);
         if (item == null)
             throw new ItemNotFoundException("Item with ID " + itemID + " not found.");
+        if (item.isDeleted())
+            throw new ItemNotFoundException("Item with ID " + itemID + " found but is deleted.");
         return item;
     }
 

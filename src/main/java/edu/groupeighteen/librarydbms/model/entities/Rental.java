@@ -29,7 +29,12 @@ import java.time.temporal.ChronoUnit;
  *      LateFees cannot be negative.
  */
 public class Rental extends Entity {
+
+    /**
+     *
+     */
     public static final int RENTAL_DUE_DATE_HOURS = 20;
+
     /**
      * The rental ID, which serves as the primary key for the rental.
      */
@@ -74,6 +79,10 @@ public class Rental extends Entity {
      * Any late fee that was incurred due to late return of the rental item. 0.0 by default.
      */
     private double lateFee;
+
+    //TODO-future implement
+    private boolean active;
+    private boolean overdue;
 
     /**
      * Constructs a new Rental object which represents a rental transaction between a user and an item.
@@ -155,6 +164,8 @@ public class Rental extends Entity {
         this.rentalReturnDate = other.rentalReturnDate;
         this.lateFee = other.lateFee;
         this.deleted = other.deleted;
+        this.active = other.active;
+        this.overdue = other.overdue;
     }
 
     /**
@@ -346,5 +357,23 @@ public class Rental extends Entity {
         if (lateFee < 0.0)
             throw new InvalidLateFeeException("Late fee cannot be negative. Received: " + lateFee);
         this.lateFee = lateFee;
+    }
+
+
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isOverdue() {
+        return overdue;
+    }
+
+    public void setOverdue(boolean overdue) {
+        this.overdue = overdue;
     }
 }
