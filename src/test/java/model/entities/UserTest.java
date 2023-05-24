@@ -2,7 +2,6 @@ package model.entities;
 
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidRentalException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
@@ -27,6 +26,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTest {
+
+    static {
+        System.out.println("Verifying metadata...");
+        System.out.println("User.DEFAULT_ALLOWED_RENTALS = " + User.DEFAULT_ALLOWED_RENTALS);
+        System.out.println("User.MIN_USERNAME_LENGTH = " + User.MIN_USERNAME_LENGTH);
+        System.out.println("User.MAX_USERNAME_LENGTH = " + User.MAX_USERNAME_LENGTH);
+        System.out.println("User.MIN_PASSWORD_LENGTH = " + User.MIN_PASSWORD_LENGTH);
+        System.out.println("User.MAX_PASSWORD_LENGTH = " + User.MAX_PASSWORD_LENGTH);
+    }
 
     @Test
     @Order(1)
@@ -94,7 +102,7 @@ public class UserTest {
             String password = "validPassword1";
             int allowedRentals = 5;
             int currentRentals = 2;
-            double lateFee = 10.0;
+            double lateFee = 0.0;
 
             User testUser = new User(userID, username, password, allowedRentals, currentRentals,
                     lateFee, true, false);
@@ -109,8 +117,8 @@ public class UserTest {
             assertTrue(testUser.isAllowedToRent());
             assertFalse(testUser.isDeleted());
         } catch (ConstructionException e) {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
+            fail("Valid operations should not throw exceptions. " + e.getMessage());
+            e.getCause().printStackTrace();
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -164,7 +172,7 @@ public class UserTest {
         System.out.println("\n5: Testing User copy constructor with valid input...");
 
         try {
-            User originalUser = new User(1, "validUsername", "validPassword1", 5, 2, 10.0, true, false);
+            User originalUser = new User(1, "validUsername", "validPassword1", 5, 2, 10.0, false, false);
             User copiedUser = new User(originalUser);
 
             assertEquals(originalUser.getUserID(), copiedUser.getUserID());
@@ -174,8 +182,8 @@ public class UserTest {
             assertEquals(originalUser.getCurrentRentals(), copiedUser.getCurrentRentals());
             assertEquals(originalUser.getLateFee(), copiedUser.getLateFee());
         } catch (ConstructionException e) {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
+            fail("Valid operations should not throw exceptions. " + e.getMessage());
+            e.getCause().printStackTrace();
         }
 
         System.out.println("\nTEST FINISHED.");

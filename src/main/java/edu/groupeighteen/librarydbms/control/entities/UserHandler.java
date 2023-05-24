@@ -288,14 +288,13 @@ public class UserHandler {
         }
     }
 
-    public static void softDeleteUser(User user) {
+    public static void deleteUser(User user) {
 
     }
 
-    public static void undoSoftDelete(User user) {
+    public static void undoDeleteUser(User user) {
 
     }
-
 
     /**
      * Deletes a user from the database.
@@ -311,7 +310,7 @@ public class UserHandler {
      *
      * @param user The User object representing the user to be deleted.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void deleteUser(User user) throws NullUserException, UserNotFoundException {
+    public static void hardDeleteUser(User user) throws NullUserException, UserNotFoundException {
         try {
             //Validate the input. Throws NullUserException
             validateUser(user);
@@ -329,6 +328,65 @@ public class UserHandler {
             ExceptionHandler.HandleFatalException("Failed to delete user from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
+    }
+
+    // VALIDATION STUFF -----------------------------------------------------------------------------------------------
+
+    /**
+     * Basic login method. Checks whether username exists in storedUsernames. If it does, check whether password
+     * matches that user's password.
+     * @param username the username attempting to login
+     * @param password the password attempting to login
+     * @return true if successful, otherwise false
+     */
+    public static boolean login(String username, String password)
+            throws InvalidUsernameException, UserNotFoundException, InvalidPasswordException {
+        try {
+            // No point verifying empty strings, throws UsernameEmptyException
+            checkEmptyUsername(username);
+            //Throws PasswordEmptyException
+            checkEmptyPassword(password);
+
+            //First check list
+            if (!storedUsernames.contains(username))
+                throw new UserNotFoundException("Login failed: User " + username + " does not exist.");
+
+            String query = "SELECT password FROM users WHERE username = ?";
+            String[] params = {username};
+
+            // Execute the query and check if the input password matches the retrieved password
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+                ResultSet resultSet = queryResult.getResultSet();
+                if (resultSet.next()) {
+                    String storedPassword = resultSet.getString("password");
+                    if (password.equals(storedPassword)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException("Login failed due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Incorrect password
+        return false;
+    }
+
+    /**
+     * Validates the user's password.
+     *
+     * This method compares the password provided as an argument with the password stored in the User object.
+     * If the provided password matches the stored password, the method returns true. Otherwise, it returns false.
+     *
+     * @param user The User object whose password is to be validated.
+     * @param password The password to validate.
+     * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
+     */
+    public static boolean validate(User user, String password) throws NullUserException, InvalidPasswordException {
+        checkNullUser(user);
+        checkEmptyPassword(password);
+        return user.getPassword().equals(password);
     }
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
@@ -374,13 +432,7 @@ public class UserHandler {
     }
 
 
-    public static User getUserByEmail(String email) {
-        //Invalid email
-        //No such user
-        //Valid user
-        // == 3
-        return null;
-    }
+
 
     public static List<User> getUsersByFirstname(String firstname) {
         //Invalid firstname
@@ -400,67 +452,16 @@ public class UserHandler {
         return null;
     }
 
-
-    // VALIDATION STUFF -----------------------------------------------------------------------------------------------
-
-    /**
-     * Basic login method. Checks whether username exists in storedUsernames. If it does, check whether password
-     * matches that user's password.
-     * @param username the username attempting to login
-     * @param password the password attempting to login
-     * @return true if successful, otherwise false
-     */
-    public static boolean login(String username, String password)
-            throws InvalidUsernameException, UserNotFoundException, InvalidPasswordException {
-        try {
-            // No point verifying empty strings, throws UsernameEmptyException
-            checkEmptyUsername(username);
-            //Throws PasswordEmptyException
-            checkEmptyPassword(password);
-
-            //First check list
-            if (!storedUsernames.contains(username))
-                throw new UserNotFoundException("Login failed: User " + username + " does not exist.");
-
-            String query = "SELECT password FROM users WHERE username = ?";
-            String[] params = {username};
-
-            // Execute the query and check if the input password matches the retrieved password
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-                ResultSet resultSet = queryResult.getResultSet();
-                if (resultSet.next()) {
-                    String storedPassword = resultSet.getString("password");
-                    if (password.equals(storedPassword)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException("Login failed due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        //Incorrect password
-        return false;
+    public static User getUserByEmail(String email) {
+        //Invalid email
+        //No such user
+        //Valid user
+        // == 3
+        return null;
     }
 
 
 
-    /**
-     * Validates the user's password.
-     *
-     * This method compares the password provided as an argument with the password stored in the User object.
-     * If the provided password matches the stored password, the method returns true. Otherwise, it returns false.
-     *
-     * @param user The User object whose password is to be validated.
-     * @param password The password to validate.
-     * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
-     */
-    public static boolean validateUser(User user, String password) throws NullUserException, InvalidPasswordException {
-        checkNullUser(user);
-        checkEmptyPassword(password);
-        return user.getPassword().equals(password);
-    }
 
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------

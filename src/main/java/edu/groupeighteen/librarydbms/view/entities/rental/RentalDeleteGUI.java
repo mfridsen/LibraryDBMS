@@ -46,7 +46,7 @@ public class RentalDeleteGUI extends GUI {
             //TODO-prio you shouldn't be able to access this GUI at all without being logged in (and staff)
             if (LibraryManager.getCurrentUser() != null) {
                 try {
-                    if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
+                    if (UserHandler.validate(LibraryManager.getCurrentUser(),
                             Arrays.toString(passwordField.getPassword()))) {
                         /*try {
                             RentalHandler.deleteRental(rentalToDelete);

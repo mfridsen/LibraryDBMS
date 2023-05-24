@@ -551,7 +551,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         try {
             // Try to delete null item
-            ItemHandler.deleteItem(null);
+            ItemHandler.hardDeleteItem(null);
             fail("An IllegalArgumentException was expected.");
         } catch (NullItemException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
@@ -571,7 +571,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             nonexistentItem.setItemID(99999);
 
             // Try to delete this nonexistent item
-            assertThrows(ItemNotFoundException.class, () -> ItemHandler.deleteItem(nonexistentItem));
+            assertThrows(ItemNotFoundException.class, () -> ItemHandler.hardDeleteItem(nonexistentItem));
         } catch (InvalidIDException | ConstructionException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
@@ -593,7 +593,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertEquals(1, ItemHandler.getAvailableTitles().get(validItem.getTitle()).intValue());
 
             // Delete the item
-            ItemHandler.deleteItem(validItem);
+            ItemHandler.hardDeleteItem(validItem);
 
             // Try to retrieve the deleted item
             try {

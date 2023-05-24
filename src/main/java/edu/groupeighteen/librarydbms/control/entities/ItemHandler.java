@@ -325,11 +325,10 @@ public class ItemHandler {
             boolean oldAvailability = oldItem.isAvailable();
 
             // Prepare a SQL command to update an item's title and availability by itemID.
-            String sql = "UPDATE items SET title = ?, available = ?, deleted = ? WHERE itemID = ?";
+            String sql = "UPDATE items SET title = ?, available = ? WHERE itemID = ?";
             String[] params = {
                     item.getTitle(),
                     item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
-                    item.isDeleted() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
                     String.valueOf(item.getItemID())
             };
 
@@ -357,11 +356,11 @@ public class ItemHandler {
         }
     }
 
-    public static void softDeleteItem(Item itemToDelete) {
+    public static void deleteItem(Item itemToDelete) {
 
     }
 
-    public static void undoSoftDelete(Item itemToRecover) {
+    public static void undoDeleteItem(Item itemToRecover) {
 
     }
 
@@ -369,7 +368,7 @@ public class ItemHandler {
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void deleteItem(Item item) throws NullItemException, ItemNotFoundException {
+    public static void hardDeleteItem(Item item) throws NullItemException, ItemNotFoundException {
         try {
             //TODO-prio UPDATE TO CHANGE DELETED
             //TODO-prio update when Item is finished

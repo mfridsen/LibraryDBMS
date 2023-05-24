@@ -37,6 +37,8 @@ import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameExcept
  *      If the user has no late fee, they are allowed to rent.
  *
  *      If the user has a late fee, they are not allowed to rent.
+ *
+ *      If the user is deleted, they are not allowed to rent.
  */
 public class User extends Entity {
 
@@ -318,11 +320,28 @@ public class User extends Entity {
      *                      than permitted should be allowed to rent.
      */
     public void setAllowedToRent(boolean allowedToRent) throws InvalidRentalStatusChangeException {
+        //No late fee and not maximum allowed rentals means user should be allowed to rent
         if (lateFee == 0.0 && allowedRentals > currentRentals && !allowedToRent)
             throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
                     "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
                     "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
                     ", Allowed rentals: " + allowedRentals);
+
+        //Not allowed to rent with late fee
+        if (lateFee > 0.0 && allowedToRent)
+            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                    "User has late fee: " + lateFee);
+
+        //Not allowed to rent when at max rentals
+        if (currentRentals >= allowedRentals && allowedToRent)
+            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                    "User has already rented to capacity.");
+
+        //Being deleted makes it hard to rent
+        if (deleted && allowedToRent)
+            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                    "User who is deleted cannot be allowed to rent.");
+
         this.allowedToRent = allowedToRent;
     }
 }

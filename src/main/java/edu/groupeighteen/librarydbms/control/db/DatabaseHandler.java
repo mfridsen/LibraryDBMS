@@ -111,7 +111,8 @@ public class DatabaseHandler {
         try {
             Statement statement = connection.createStatement();
             int rows = statement.executeUpdate(command);
-            System.out.println("Command executed; rows affected: " + rows);
+            if (verbose)
+                System.out.println("Command executed; rows affected: " + rows);
             statement.close(); //Always close Statements after we're done with them
         } catch (SQLException e) {
             ExceptionHandler.HandleFatalException("Failed to execute command due to " +
@@ -296,22 +297,52 @@ public class DatabaseHandler {
             DatabaseMetaData metaData = connection.getMetaData();
 
             // Get metadata for username column
-            ResultSet resultSet = metaData.getColumns(null, null, "Users", "username");
+            ResultSet resultSet = metaData.getColumns(null, null,
+                    "Users", "username");
             int usernameColumnSize = 0;
             if (resultSet.next()) {
                 usernameColumnSize = resultSet.getInt("COLUMN_SIZE");
             }
 
             // Get metadata for password column
-            resultSet = metaData.getColumns(null, null, "Users", "password");
+            resultSet = metaData.getColumns(null, null,
+                    "Users", "password");
             int passwordColumnSize = 0;
             if (resultSet.next()) {
                 passwordColumnSize = resultSet.getInt("COLUMN_SIZE");
             }
 
             return new int[]{usernameColumnSize, passwordColumnSize};
+
         } catch (SQLException e) {
             ExceptionHandler.HandleFatalException("Couldn't retrieve User Meta data due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Won't reach, but needed to compile
+        return new int[0];
+    }
+
+    public static int[] getItemMetaData() {
+        if (connection == null) {
+            setup(false);
+        }
+
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            //Get metadata for title column
+            ResultSet resultSet = metaData.getColumns(null, null,
+                    "Items", "title");
+            int titleColumnSize = 0;
+            if (resultSet.next()) {
+                titleColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{titleColumnSize};
+
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException("Couldn't retrieve Item Meta data due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 

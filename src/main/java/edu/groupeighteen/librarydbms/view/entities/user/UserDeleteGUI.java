@@ -36,7 +36,7 @@ public class UserDeleteGUI extends GUI {
 
             if (LibraryManager.getCurrentUser() != null) {
                 try {
-                    if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
+                    if (UserHandler.validate(LibraryManager.getCurrentUser(),
                             Arrays.toString(passwordField.getPassword()))) {
                         //UserHandler.deleteUser(usertoDelete);
                         //dispose();

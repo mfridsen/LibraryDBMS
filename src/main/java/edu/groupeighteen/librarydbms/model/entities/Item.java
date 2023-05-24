@@ -1,5 +1,6 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
@@ -24,8 +25,17 @@ public class Item extends Entity {
     //TODO-future add more fields and methods
     //TODO-comment everything
 
-    public static final int ITEM_TITLE_MAX_LENGTH = 255; //TODO-PRIO RETRIEVE METADATA
+    public static final int ITEM_TITLE_MAX_LENGTH; //TODO-PRIO RETRIEVE METADATA
     public static final int DEFAULT_ALLOWED_DAYS = 14;
+
+    /*
+      So we don't have to update both create_tables.sql AND this file when we want to change rules.
+     */
+    static
+    {
+        int[] metaData = DatabaseHandler.getItemMetaData();
+        ITEM_TITLE_MAX_LENGTH = metaData[0];
+    }
 
     private int itemID; //Primary key
     //ENUM TYPE
@@ -43,13 +53,17 @@ public class Item extends Entity {
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
      * @param title
      */
-    public Item(String title) throws ConstructionException {
-        try {
+    public Item(String title) throws ConstructionException
+    {
+        try
+        {
             this.itemID = 0; //Set AFTER initial INSERT by createNewItem
             setTitle(title); //Throws InvalidTitleException
             this.allowedRentalDays = DEFAULT_ALLOWED_DAYS; //TODO-prio for now
             this.available = true;
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             throw new ConstructionException("Failed to construct Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
