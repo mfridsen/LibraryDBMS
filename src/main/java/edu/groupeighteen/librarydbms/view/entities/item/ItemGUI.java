@@ -20,6 +20,7 @@ public class ItemGUI extends GUI {
     public ItemGUI(GUI preiousGUI, Item item){
         super(preiousGUI, "ItemGUI");
         this.item = item;
+        setupScrollPane();
         setupPanels();
         displayGUI();
     }
