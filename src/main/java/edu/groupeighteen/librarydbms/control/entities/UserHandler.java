@@ -174,7 +174,7 @@ public class UserHandler {
                     String.valueOf(user.getAllowedRentals()),
                     String.valueOf(user.getCurrentRentals()),
                     String.valueOf(user.getLateFee()),
-                    "0", //allowedToRent is false by default
+                    "1", //allowedToRent is true by default
                     "0" //deleted is false by default
             };
 
@@ -209,8 +209,8 @@ public class UserHandler {
             checkValidUserID(userID);
 
             // Prepare a SQL query to select a user by userID.
-            String query = "SELECT username, password, allowedRentals, currentRentals, lateFee " +
-                    "FROM users WHERE userID = ?";
+            String query = "SELECT username, password, allowedRentals, currentRentals, " +
+                    "lateFee, allowedToRent, deleted FROM users WHERE userID = ?";
             String[] params = {String.valueOf(userID)};
 
             // Execute the query and store the result in a ResultSet.
@@ -219,15 +219,19 @@ public class UserHandler {
                 // If the ResultSet contains data, create a new User object using the retrieved username and password,
                 // and set the user's userID.
                 if (resultSet.next()) {
-                    User user = new User(resultSet.getString("username"),
-                            resultSet.getString("password"));
-                    user.setUserID(userID);
-                    user.setCurrentRentals(resultSet.getInt("currentRentals"));
-                    user.setLateFee(resultSet.getFloat("lateFee"));
-                    return user;
+
+                    return new User(userID,
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getInt("allowedRentals"),
+                            resultSet.getInt("currentRentals"),
+                            resultSet.getFloat("lateFee"),
+                            resultSet.getBoolean("allowedToRent"),
+                            resultSet.getBoolean("deleted")
+                    );
                 }
             }
-        } catch (SQLException | InvalidLateFeeException | ConstructionException | RentalNotAllowedException e) {
+        } catch (SQLException | ConstructionException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve user by ID from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -352,7 +356,7 @@ public class UserHandler {
                 ResultSet resultSet = queryResult.getResultSet();
                 // If the ResultSet contains data, create a new User object using the retrieved username and password,
                 // and set the user's userID
-                if (resultSet.next()) {
+                if (resultSet.next()) { //TODO-PRIO UPDATE
                     User user = new User(username, resultSet.getString("password"));
                     user.setUserID(resultSet.getInt("userID"));
                     user.setCurrentRentals( resultSet.getInt("currentRentals"));

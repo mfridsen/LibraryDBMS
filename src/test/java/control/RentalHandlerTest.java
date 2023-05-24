@@ -346,8 +346,13 @@ public class RentalHandlerTest extends BaseHandlerTest {
             //Assert correct exception with correct message is thrown
             Exception exception = assertThrows(RentalNotAllowedException.class,
                     () -> RentalHandler.createNewRental(validUserID, validItemID));
-            String expectedMessage = "Current rentals can't be greater than allowed rentals.";
+            String expectedMessage = "User not allowed to rent either due to already renting at maximum capacity " +
+                    "or having a late fee.";
             String actualMessage = exception.getMessage();
+
+            //Debug
+            System.out.println(actualMessage);
+
             assertTrue(actualMessage.contains(expectedMessage));
 
             //setupAndReset();
@@ -362,7 +367,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             //... where 6 should fail
             exception = assertThrows(RentalNotAllowedException.class,
                     () -> RentalHandler.createNewRental(2, 6));
-            expectedMessage = "User not allowed to rent due to already renting to capacity.";
+            expectedMessage = "User not allowed to rent either due to already renting at maximum capacity " +
+                    "or having a late fee.";
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 

@@ -318,7 +318,7 @@ public class User extends Entity {
      *                      than permitted should be allowed to rent.
      */
     public void setAllowedToRent(boolean allowedToRent) throws InvalidRentalStatusChangeException {
-        if (lateFee == 0.0 && allowedRentals > currentRentals)
+        if (lateFee == 0.0 && allowedRentals > currentRentals && !allowedToRent)
             throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
                     "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
                     "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
