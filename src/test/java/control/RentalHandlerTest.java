@@ -355,8 +355,6 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             assertTrue(actualMessage.contains(expectedMessage));
 
-            //setupAndReset();
-
             //Try with user 2 and items 1-6...
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 1));
             assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 2));
