@@ -75,6 +75,7 @@ public class User extends Entity {
             this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
             this.currentRentals = 0;
             this.lateFee = 0.0;
+            this.allowedToRent = true;
             this.deleted = false;
         } catch (InvalidUsernameException | InvalidPasswordException e) {
             throw new ConstructionException("Failed to construct User due to " +
@@ -106,6 +107,7 @@ public class User extends Entity {
             this.allowedRentals = allowedRentals;
             setCurrentRentals(currentRentals); //Throws InvalidRentalException
             setLateFee(lateFee); //Throws InvalidLateFeeException
+
             this.deleted = deleted;
         } catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException
                 | InvalidRentalException | InvalidLateFeeException e) {
@@ -128,6 +130,7 @@ public class User extends Entity {
         this.allowedRentals = other.allowedRentals;
         this.currentRentals = other.currentRentals;
         this.lateFee = other.lateFee;
+        this.allowedToRent = other.allowedToRent;
         this.deleted = other.deleted;
     }
 
@@ -259,5 +262,16 @@ public class User extends Entity {
         if (lateFee < 0)
             throw new InvalidLateFeeException("Late fee cannot be less than zero. Received: " + lateFee);
         this.lateFee = lateFee;
+    }
+
+
+
+
+    public boolean isAllowedToRent() {
+        return allowedToRent;
+    }
+
+    public void setAllowedToRent(boolean allowedToRent) {
+        this.allowedToRent = allowedToRent;
     }
 }

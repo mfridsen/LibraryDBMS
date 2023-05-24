@@ -1373,6 +1373,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     //GET BY DAY -------------------------------------------------------------------------------------------------------
 
+    /**
+     * Tests the method getRentalsByRentalDay() when the rental day provided is null.
+     * Expects an InvalidDateException.
+     */
     @Test
     @Order(41)
     void testGetRentalsByRentalDay_NullRentalDay() {
@@ -1384,6 +1388,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when the rental day provided is in the future.
+     * Expects an InvalidDateException.
+     */
     @Test
     @Order(42)
     void testGetRentalsByRentalDay_FutureRentalDay() {
@@ -1397,6 +1405,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when there are no existing rentals.
+     * Expects the returned list to be empty.
+     */
     @Test
     @Order(43)
     void testGetRentalsByRentalDay_NoExistingRentals() {
@@ -1415,6 +1427,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when there are existing rentals, but none on the desired date.
+     * Expects the returned list to be empty.
+     */
     @Test
     @Order(44)
     void testGetRentalsByRentalDay_NoRentalsOnDesiredDate() {
@@ -1423,7 +1439,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         LocalDate rentalDay = LocalDate.now();
 
         // Assuming method to create and save rentals with different dates.
-        createAndSaveRentalsWithDifferentDates(5, 0);
+        createAndSaveRentalsWithDifferentDates(5, 5);
 
         try {
             List<Rental> rentals = RentalHandler.getRentalsByRentalDay(rentalDay);
@@ -1436,6 +1452,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when there are 5 existing rentals and 1 on the desired date.
+     * Expects the returned list to contain one rental.
+     */
     @Test
     @Order(45)
     void testGetRentalsByRentalDay_OneRentalOnDesiredDate() {
@@ -1444,7 +1464,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         LocalDate rentalDay = LocalDate.now();
 
         // Assuming method to create and save rentals with different dates.
-        createAndSaveRentalsWithDifferentDates(5, 1);
+        createAndSaveRentalsWithDifferentDates(5, 4);
 
         try {
             List<Rental> rentals = RentalHandler.getRentalsByRentalDay(rentalDay);
@@ -1457,6 +1477,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when there are 5 existing rentals and 3 on the desired date.
+     * Expects the returned list to contain three rentals.
+     */
     @Test
     @Order(46)
     void testGetRentalsByRentalDay_ThreeRentalsOnDesiredDate() {
@@ -1465,7 +1489,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         LocalDate rentalDay = LocalDate.now();
 
         // Assuming method to create and save rentals with different dates.
-        createAndSaveRentalsWithDifferentDates(5, 2);
+        createAndSaveRentalsWithDifferentDates(6, 3);
 
         try {
             List<Rental> rentals = RentalHandler.getRentalsByRentalDay(rentalDay);
@@ -1478,6 +1502,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when there are 5 existing rentals and all are on the desired date.
+     * Expects the returned list to contain all five rentals.
+     */
     @Test
     @Order(47)
     void testGetRentalsByRentalDay_AllRentalsOnDesiredDate() {
@@ -1499,6 +1527,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when there are rentals having same date but different times.
+     * Expects the returned list to contain all rentals regardless of different times.
+     */
     @Test
     @Order(48)
     void testGetRentalsByRentalDay_SameDateDifferentTimes() {
@@ -1520,18 +1552,22 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+    /**
+     * Tests the method getRentalsByRentalDay() when the rental day is before any existing rentals.
+     * Expects the returned list to be empty.
+     */
     @Test
     @Order(49)
     void testGetRentalsByRentalDay_BeforeExistingRentals() {
         System.out.println("\n49: Testing getRentalsByRentalDay method with a rental day before any existing rentals...");
 
-        LocalDate rentalDay = LocalDate.now().plusDays(1);
+        LocalDate rentalDay = LocalDate.now().minusDays(5);
 
         // Assuming method to create and save rentals with dates after the rentalDay.
         createAndSaveRentalsWithDifferentDates(5, 0);
 
         try {
-            List<Rental> rentals = RentalHandler.getRentalsByRentalDay(rentalDay.minusDays(1));
+            List<Rental> rentals = RentalHandler.getRentalsByRentalDay(rentalDay);
             assertEquals(0, rentals.size(), "Returned rental list should be empty when the rental day is before any existing rentals");
         } catch (InvalidDateException e) {
             fail("Unexpected exception thrown: " + e.getMessage());
@@ -1541,6 +1577,31 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("TEST FINISHED.");
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Creates a specific number of Rental instances and saves them to the database with different rental dates.
+     * Each rental date is offset by an increasing number of days.
+     *
+     * @param numOfRentals  The number of Rental instances to be created.
+     * @param offsetRentals The number of Rental instances whose rental dates should be offset.
+     */
     private void createAndSaveRentalsWithDifferentDates(int numOfRentals, int offsetRentals) {
         try {
             LocalDateTime now = LocalDateTime.now();
@@ -1555,18 +1616,57 @@ public class RentalHandlerTest extends BaseHandlerTest {
                 assertNotNull(rental);
 
                 //This will give different days to all the offset rentals
-                rental.setRentalDate(now.minusDays(i));
+                LocalDateTime offsetDate = now.minusDays(i);
+
+                String query = "UPDATE rentals SET rentalDate = ? WHERE rentalID = ?";
+                String[] params = {
+                        String.valueOf(offsetDate),
+                        String.valueOf(rental.getRentalID())
+                };
+
+                DatabaseHandler.executePreparedUpdate(query, params);
             }
 
-        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidDateException e) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException e) {
             e.printStackTrace();
         }
-
     }
 
-
+    /**
+     * Creates a specific number of Rental instances and saves them to the database with different rental dates.
+     * Each rental date is offset by an increasing number of days.
+     *
+     * @param numOfRentals  The number of Rental instances to be created.
+     */
     private void createAndSaveRentalsWithDifferentTimes(int numOfRentals) {
+        try {
+            LocalDateTime now = LocalDateTime.now();
 
+            // Create numOfRentals number of rentals
+            for (int i = 1; i <= numOfRentals; i++) {
+                RentalHandler.createNewRental(i, i);
+            }
+
+            // Change rentalTimes on each rental
+            for (int i = 1; i <= numOfRentals; i++) {
+                Rental rental = RentalHandler.getRentalByID(i);
+                assertNotNull(rental);
+
+                // This will give different times to all the rentals, by offsetting each one by an increasing number of hours and minutes
+                LocalDateTime offsetTime = now.minusMinutes(i);
+
+                String query = "UPDATE rentals SET rentalDate = ? WHERE rentalID = ?";
+                String[] params = {
+                        String.valueOf(offsetTime),
+                        String.valueOf(rental.getRentalID())
+                };
+
+                DatabaseHandler.executePreparedUpdate(query, params);
+            }
+
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException e) {
+            e.printStackTrace();
+        }
     }
 
 }
