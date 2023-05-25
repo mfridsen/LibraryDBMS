@@ -1,5 +1,8 @@
 package view.entities.item;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.view.entities.item.ItemSearchGUI;
+import edu.groupeighteen.librarydbms.view.entities.user.UserSearchGUI;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,13 +16,8 @@ import org.junit.Test;
  * Unit Test for the ItemSearchGUI class.
  */
 public class ItemSearchGUITest {
-    private String[] bookTitles = { "Harry Potter", "The Mist", "Revenge Of The Sith", "Harry Potter hej", "Harry Potter 3" }; // Example book titles
-
-
-
-    @Test
-    public void testItemSearchGUI() {
-        System.out.println("No test implemented here yet!");
-        // Write your code here
+    public static void main(String[] args) {
+        LibraryManager.setup();
+        new ItemSearchGUI(null);
     }
 }

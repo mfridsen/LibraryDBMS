@@ -9,65 +9,82 @@ package edu.groupeighteen.librarydbms.view.entities.item;
  * leads to ItemGUI
  */
 
+import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.view.LoginScreenGUI;
+import edu.groupeighteen.librarydbms.view.gui.ButtonRenderer;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ItemSearchResultGUI extends GUI {
-    private JPanel searchPanel;
-    private JFrame searchFrame;
-    private JButton lånaButton;
-    private JButton visaobjektButton;
-    private String searchedBook;
-    private String[] bookTitles = { "Harry Potter", "The Mist", "Revenge Of The Sith", "Harry Potter hej", "Harry Potter 3" }; // Example book titles
+    // TODO- if LibraryManager.getCurrentUser != null and item.isAvailable
+    //  Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser.getUserID, item.getItemID)
+    //  new RentalGUI för newRental
 
+    //TODO- fält som ska visas i denna ordning:
+    //  type, title
+    //  genre, author name, publisher name
+    private final List<Item> searchResultList;
+    private JPanel searchResultPanel;
 
-    public ItemSearchResultGUI(GUI previousGUI, String searchedBook) {
+    public ItemSearchResultGUI(GUI previousGUI, List<Item> searchResultList) {
         super(previousGUI, "ItemSearchResultGUI");
-        this.searchedBook = searchedBook;
-        ItemSearchGUI search = new ItemSearchGUI(null);
-
-        searchPanel = new JPanel();
-        searchFrame = new JFrame("ItemSearchResultGUI");
-        lånaButton = new JButton("Låna");
-        visaobjektButton = new JButton("Visa objekt");
-
-        JLabel resultatLabel;
-        if (searchedBook != null) {
-            resultatLabel = new JLabel("Resultat: " + getFormattedBookTitle());
-        } else {
-            resultatLabel = new JLabel("Inget resultat hittades.");
-        }
-        searchPanel.add(resultatLabel);
-        searchPanel.add(lånaButton);
-        searchPanel.add(visaobjektButton);
-
-        searchFrame.add(searchPanel);
-        searchFrame.pack();
-        searchFrame.setVisible(true);
-        searchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.searchResultList = searchResultList;
+        clearDuplicates();
+        setupScrollPane();
+        setupPanels();
+        displayGUI();
     }
 
-    private String getFormattedBookTitle() {
-        for (String title : bookTitles) {
-            if (containsIgnoreCase(searchedBook, title)) {
-                return title;
-            }
-        }
-        return searchedBook;
-    }
-
-    private boolean containsIgnoreCase(String search, String source){
-        return source.toLowerCase().contains(search.toLowerCase());
+    private void clearDuplicates() {
+        Set<Integer> seenItemIDs = new HashSet<>();
+        searchResultList.removeIf(item -> !seenItemIDs.add(item.getItemID()));
     }
 
     @Override
     protected JButton[] setupButtons() {
-        return new JButton[0];
+        JButton homeButton = new JButton("Home");
+        homeButton.addActionListener(e -> {
+            dispose();
+            new LoginScreenGUI(this);
+        });
+        return new JButton[]{homeButton};
+    }
+
+    private void setupScrollPane() {
+        String[] columnNames = {"ItemID", "Item Title", "View Rental"};
+
+        if (searchResultList != null && !searchResultList.isEmpty()) {
+            Object[][] data = new Object[searchResultList.size()][columnNames.length];
+            for (int i = 0; i < searchResultList.size(); i++) {
+                Item item = searchResultList.get(i);
+                data[i][0] = item.getItemID();
+                data[i][1] = item.getTitle();
+                data[i][2] = "View";  // Text for the button
+            }
+
+            ItemTable searchResultTable = new ItemTable(new ItemTableModel(data, columnNames), searchResultList, this);
+
+            ButtonRenderer buttonRenderer = new ButtonRenderer();
+            searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
+            for (Item item : searchResultList) {
+                ItemGUIButtonEditor itemGUIButtonEditor = new ItemGUIButtonEditor(new JCheckBox(), item, this);
+                searchResultTable.getColumnModel().getColumn(2).setCellEditor(itemGUIButtonEditor);
+            }
+
+            JScrollPane searchResultScrollPane = new JScrollPane();
+            searchResultScrollPane.setViewportView(searchResultTable);
+            searchResultPanel = new JPanel(new BorderLayout());
+            searchResultPanel.add(searchResultScrollPane, BorderLayout.CENTER);
+        }
     }
 
     @Override
     protected void setupPanels() {
-
+        GUIPanel.add(searchResultPanel);
     }
 }
