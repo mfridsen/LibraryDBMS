@@ -22,6 +22,10 @@ import java.awt.*;
  * @see Rental
  */
 public class RentalGUI extends GUI {
+    //TODO- fält som ska visas i denna ordning:
+    //  RentalID, UserID, ItemID, RentalDate
+    //  userName, itemTitle, rentalDueDate, rentalReturnDate
+    //  active, overdue, lateFee
     //TODO-comment
     //TODO-test
     //The rental object to display

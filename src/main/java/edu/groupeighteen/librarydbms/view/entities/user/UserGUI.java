@@ -12,6 +12,10 @@ import java.awt.*;
  * @date 2023-05-12
  */
 public class UserGUI extends GUI {
+    //TODO- fält som ska visas i denna ordning:
+    //  userID, userName, type,
+    //  firstName, lastName, Email
+    //  allowedRentals, currentRentals, allowedToRent, lateFee
     private final User user;
     private JPanel scrollPanePanel;
 

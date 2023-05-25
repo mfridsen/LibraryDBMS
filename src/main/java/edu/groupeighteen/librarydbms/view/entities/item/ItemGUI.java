@@ -14,6 +14,13 @@ import java.awt.*;
  * this class displays all information about a single item object
  */
 public class ItemGUI extends GUI {
+    // TODO- if LibraryManager.getCurrentUser != null and item.isAvailable
+    //  Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser.getUserID, item.getItemID)
+    //  new RentalGUI för newRental
+
+    //TODO- fält som ska visas i denna ordning:
+    //  itemID, type, title, barcode, isbn
+    //  genre, author name, publisher name
         private Item item;
         private JPanel scrollPanePanel;
 
@@ -29,6 +36,7 @@ public class ItemGUI extends GUI {
     protected JButton[] setupButtons() {
         //Leads to ItemGUI
         return new JButton[0];
+
     }
 
     protected void setupScrollPane(){

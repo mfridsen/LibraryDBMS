@@ -46,6 +46,10 @@ import java.util.List;
  * @see GUI
  */
 public class RentalSearchGUI extends GUI {
+    //TODO- fält som ska visas i denna ordning:
+    //  RentalID, RentalDate
+    //  userName, itemTitle, rentalDueDate, rentalReturnDate
+    //  active, overdue, lateFee
     //TODO-prio add search-by-day and search-by-dates
     private JPanel searchFieldsPanel;
     private JTable rentalSearchTable;

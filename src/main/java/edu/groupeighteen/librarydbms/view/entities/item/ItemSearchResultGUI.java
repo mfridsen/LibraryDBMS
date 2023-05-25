@@ -20,13 +20,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class ItemSearchResultGUI extends GUI {
+    // TODO- if LibraryManager.getCurrentUser != null and item.isAvailable
+    //  Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser.getUserID, item.getItemID)
+    //  new RentalGUI för newRental
+
+    //TODO- fält som ska visas i denna ordning:
+    //  type, title
+    //  genre, author name, publisher name
     private final List<Item> searchResultList;
     private JPanel searchResultPanel;
 

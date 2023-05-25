@@ -21,6 +21,10 @@ import java.util.Set;
  */
 
 public class UserSearchResultGUI extends GUI {
+    //TODO- fält som ska visas i denna ordning:
+    //  userID, userName, type,
+    //  firstName, lastName, Email
+    //  lateFee
     /**
      * The list of User objects to be displayed.
      */
