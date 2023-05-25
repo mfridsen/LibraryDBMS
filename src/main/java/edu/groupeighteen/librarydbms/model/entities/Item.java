@@ -40,6 +40,7 @@ public class Item extends Entity {
     private int itemID; //Primary key
     //ENUM TYPE
     private String title;
+    //Barcode
     //ISBN
     //Genre/Classification
     //Author ID
@@ -47,7 +48,7 @@ public class Item extends Entity {
     //Publisher ID
     //Publisher name
     private int allowedRentalDays;
-    private boolean available; //True by default
+    private boolean available; //True by default //TODO-prio double check availability on delete
 
     /**
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.

@@ -15,8 +15,78 @@ package edu.groupeighteen.librarydbms.model.entities;
  */
 public class Author extends Entity {
 
-    public Author() {
+    private int authorID;
+    private String authorFirstname;
+    private String authorLastName;
+    private String biography;
 
+    /**
+     * Creation Constructor.
+     * @param authorFirstname
+     * @param authorLastName
+     */
+    public Author(String authorFirstname, String authorLastName) {
+        this.authorID = 0;
+        this.authorFirstname = authorFirstname;
+        this.authorLastName = authorLastName;
     }
 
+    /**
+     * Retrieval Constructor.
+     * @param authorID
+     * @param authorFirstname
+     * @param authorLastName
+     * @param biography
+     */
+    //TODO-prio CALL SETTERS
+    public Author(int authorID, String authorFirstname, String authorLastName, String biography) {
+        this.authorID = authorID;
+        this.authorFirstname = authorFirstname;
+        this.authorLastName = authorLastName;
+        this.biography = biography;
+    }
+
+    /**
+     * Copy Constructor.
+     * @param other
+     */
+    public Author(Author other) {
+        this.authorID = other.authorID;
+        this.authorFirstname = other.authorFirstname;
+        this.authorLastName = other.authorLastName;
+        this.biography = other.biography;
+    }
+
+
+    public int getAuthorID() {
+        return authorID;
+    }
+
+    public void setAuthorID(int authorID) {
+        this.authorID = authorID;
+    }
+
+    public String getAuthorFirstname() {
+        return authorFirstname;
+    }
+
+    public void setAuthorFirstname(String authorFirstname) {
+        this.authorFirstname = authorFirstname;
+    }
+
+    public String getAuthorLastName() {
+        return authorLastName;
+    }
+
+    public void setAuthorLastName(String authorLastName) {
+        this.authorLastName = authorLastName;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
 }

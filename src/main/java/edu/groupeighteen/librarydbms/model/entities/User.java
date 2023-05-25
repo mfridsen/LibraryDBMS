@@ -70,7 +70,7 @@ public class User extends Entity {
     //First name
     //Last name
     //E-mail
-    private double lateFee;
+    private double lateFee; //TODO-future implement logic
     boolean allowedToRent; //TODO-PRIO UPDATE USERTEST, USERHANDLER, RENTALHANDLER AND TESTS AS WELL AS SETTERS
 
     /**

@@ -83,6 +83,7 @@ public class Rental extends Entity {
     //TODO-future implement
     private boolean active;
     private boolean overdue;
+    //TODO-prio RECEIPT
 
     /**
      * Constructs a new Rental object which represents a rental transaction between a user and an item.
