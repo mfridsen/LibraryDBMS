@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -92,19 +93,20 @@ public class ItemSearchGUI extends GUI {
                     }
                     case 1 -> {
                         String title = cellData.toString();
+                        //TODO-prio change
+                        /*
                         Item item = ItemHandler.getItemByTitle(title);
                         if (item != null) {
                             searchResultList.add(item);
                         } else {
                             System.err.println("No item found for title: " + title);
                         }
+
+                         */
                     }
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException | InvalidIDException nfe) {
                 System.err.println("Wrong data type for field: " + itemSearchTable.getValueAt(row, 0));
-            } catch (SQLException sqle) {
-                sqle.printStackTrace();
-                LibraryManager.exit(1);
             }
         }
 

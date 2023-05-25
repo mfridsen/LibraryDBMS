@@ -1,8 +1,16 @@
 package view.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
+import edu.groupeighteen.librarydbms.view.entities.rental.RentalSearchGUI;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import java.sql.SQLException;
 
 /**
  * @author Mattias Fridsén
@@ -20,19 +28,17 @@ public class RentalSearchGUITest {
 
     public static void main(String[] args) {
         LibraryManager.setup();
-        /*try {
+        try {
             RentalHandler.createNewRental(1, 1);
             RentalHandler.createNewRental(2, 2);
             RentalHandler.createNewRental(3, 3);
             RentalHandler.createNewRental(4, 4);
             RentalHandler.createNewRental(5, 5);
-        } catch (SQLException | UserNotFoundException sqle) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException sqle) {
             sqle.printStackTrace();
-        } catch (ItemNotFoundException e) {
-            e.printStackTrace();
         }
         new RentalSearchGUI(null);
 
-         */
+
     }
 }

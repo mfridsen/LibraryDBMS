@@ -4,6 +4,8 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -33,15 +35,15 @@ public class ItemDeleteGUI extends GUI {
         confirmButton.addActionListener(e -> {
             //TODO-prio you shouldn't be able to access this GUI at all without being logged in (and staff)
             if (LibraryManager.getCurrentUser() != null) {
-                if (UserHandler.validateUser(LibraryManager.getCurrentUser(),
-                        Arrays.toString(passwordField.getPassword()))) {
-                    try {
+                try {
+                    if (UserHandler.validate(LibraryManager.getCurrentUser(),
+                            Arrays.toString(passwordField.getPassword()))) {
                         ItemHandler.deleteItem(itemToDelete);
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
-                    } catch (SQLException sqle) {
-                        sqle.printStackTrace();
                     }
+                } catch (NullUserException | InvalidPasswordException nullUserException) {
+                    nullUserException.printStackTrace();
                 }
             }
         });

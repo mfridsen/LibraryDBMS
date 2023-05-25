@@ -2,7 +2,7 @@ package edu.groupeighteen.librarydbms.view.entities.user;
 
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.view.LoginScreenGUI;
-import edu.groupeighteen.librarydbms.view.gui.ButtonRenderer;
+import edu.groupeighteen.librarydbms.view.buttons.ButtonRenderer;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;

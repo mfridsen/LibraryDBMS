@@ -3,6 +3,7 @@ package view.entities.item;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.view.entities.item.ItemGUI;
 import edu.groupeighteen.librarydbms.view.entities.user.UserGUI;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class ItemGUITest {
         LibraryManager.setup();
         try {
             new ItemGUI(null, ItemHandler.getItemByID(2));
-        } catch (SQLException e) {
+        } catch (InvalidIDException e) {
             throw new RuntimeException(e);
         }
     }

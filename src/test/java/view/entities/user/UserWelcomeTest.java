@@ -2,6 +2,7 @@ package view.entities.user;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.view.entities.user.UserGUI;
 
 import java.sql.SQLException;
@@ -15,6 +16,10 @@ import java.sql.SQLException;
 public class UserWelcomeTest {
     public static void main(String[] args) {
         LibraryManager.setup();
-        //new UserGUI(null, UserHandler.getUserByID(1));
+        try {
+            new UserGUI(null, UserHandler.getUserByID(1));
+        } catch (InvalidIDException e) {
+            e.printStackTrace();
+        }
     }
 }

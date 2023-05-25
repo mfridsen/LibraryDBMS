@@ -3,6 +3,10 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -140,9 +144,9 @@ public class ItemUpdateGUI extends GUI {
                 if (itemTitle != null && !itemTitle.isEmpty()) {
                     newitem.setTitle(itemTitle);
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException | InvalidIDException nfe) {
                 System.err.println("One of the fields that requires a number received an invalid input. User ID:" + userID + ", Item ID: " + itemID);
-            } catch (DateTimeParseException dtpe) {
+            } catch (DateTimeParseException | InvalidTitleException dtpe) {
                 System.err.println("The date field received an invalid input. Please ensure it is in the correct format.");
             }
 
@@ -151,7 +155,7 @@ public class ItemUpdateGUI extends GUI {
                 ItemHandler.updateItem(olditem);
                 dispose();
                 new ItemGUI(this, newitem);
-            } catch (SQLException sqle) {
+            } catch (NullItemException | ItemNotFoundException sqle) {
                 sqle.printStackTrace();
                 LibraryManager.exit(1);
             } catch (IllegalArgumentException ile) {

@@ -1,14 +1,32 @@
 package view.entities.item;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.view.entities.item.ItemCreateGUI;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.view.entities.item.ItemGUI;
+import edu.groupeighteen.librarydbms.view.entities.user.UserGUI;
+import org.junit.Test;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ItemCreateGuiTest {
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import java.sql.SQLException;
+
+/**
+ * @author Jesper Truedsson
+ * @project LibraryDBMS
+ * @date 2023-05-21
+ * Unit Test for the ItemCreateGUI class.
+ */
+public class ItemCreateGUITest {
     public static void main(String[] args) {
         LibraryManager.setup();
-        new ItemCreateGUI(null);
+        try {
+            new ItemGUI(null, ItemHandler.getItemByID(1));
+        } catch (InvalidIDException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

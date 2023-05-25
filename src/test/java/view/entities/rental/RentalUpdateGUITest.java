@@ -2,6 +2,10 @@ package view.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalUpdateGUI;
 
 import java.sql.SQLException;
@@ -19,15 +23,11 @@ import java.time.LocalDateTime;
  */
 public class RentalUpdateGUITest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidIDException {
         LibraryManager.setup();
-        /*
-        try {
-            new RentalUpdateGUI(null, RentalHandler.createNewRental(1, 1, LocalDateTime.now()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-         */
+        new RentalUpdateGUI(null, RentalHandler.createNewRental(1, 1));
+
+
     }
 }

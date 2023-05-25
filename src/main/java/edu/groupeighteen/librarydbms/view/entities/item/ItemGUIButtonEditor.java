@@ -1,7 +1,7 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.view.gui.EntityButtonEditor;
+import edu.groupeighteen.librarydbms.view.buttons.EntityButtonEditor;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;

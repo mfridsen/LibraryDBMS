@@ -11,7 +11,7 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.view.LoginScreenGUI;
-import edu.groupeighteen.librarydbms.view.gui.ButtonRenderer;
+import edu.groupeighteen.librarydbms.view.buttons.ButtonRenderer;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;

@@ -3,6 +3,10 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
@@ -114,9 +118,9 @@ public class ItemCreateGUI extends GUI {
         //If successful, dispose, create a new item and open a new ItemGUI for that item
         try {
             dispose();
-            Rental newRental = RentalHandler.createNewRental(userID, itemID, LocalDateTime.now());
+            Rental newRental = RentalHandler.createNewRental(userID, itemID);
             new RentalGUI(this, newRental);
-        } catch (SQLException sqle) {
+        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException sqle) {
             System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
             sqle.printStackTrace();
             LibraryManager.exit(1);
