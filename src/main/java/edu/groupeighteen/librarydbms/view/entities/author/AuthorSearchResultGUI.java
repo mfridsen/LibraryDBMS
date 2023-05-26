@@ -23,7 +23,6 @@ public class AuthorSearchResultGUI {
     //TODO- fält som ska visas i denna ordning:
     //  authorID, firstName, lastName
 
-
     private final List<Author> searchResultList;
     private JPanel searchResultPanel;
 

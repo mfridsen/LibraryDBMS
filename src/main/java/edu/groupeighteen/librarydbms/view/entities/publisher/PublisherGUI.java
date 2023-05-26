@@ -25,7 +25,6 @@ public class PublisherGUI {
         setupPanels();
         displayGUI();
     }
-
     @Override
     protected JButton[] setupButtons() {
         //Leads to PublisherGUI

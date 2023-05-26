@@ -64,7 +64,6 @@ public class PublisherSearchResultGUI {
             }
 
             PublisherTable searchResultTable = new PublisherTable(new PublisherTableModel(data, columnNames), searchResultList, this);
-
             ButtonRenderer buttonRenderer = new ButtonRenderer();
             searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
             for (Publisher Publisher : searchResultList) {

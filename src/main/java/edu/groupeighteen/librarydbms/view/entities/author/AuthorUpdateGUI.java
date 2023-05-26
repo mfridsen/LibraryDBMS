@@ -6,5 +6,4 @@ package edu.groupeighteen.librarydbms.view.entities.author;
  * @date 2023-05-26
  */
 public class AuthorUpdateGUI {
-
 }

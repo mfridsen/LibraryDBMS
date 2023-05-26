@@ -6,5 +6,4 @@ package edu.groupeighteen.librarydbms.view.entities.publisher;
  * @date 2023-05-26
  */
 public class PublisherDeleteGUI {
-
 }
