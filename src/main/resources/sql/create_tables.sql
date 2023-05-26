@@ -7,8 +7,13 @@
 
 -- BASE TABLES ---------------------------------------------------------------------------------------------------------
 
+-- Author
+
+-- Publisher
+
+
 -- User
-CREATE TABLE `Users` (
+CREATE TABLE `users` (
     userID INT AUTO_INCREMENT UNIQUE NOT NULL,
     username VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(50) NOT NULL,
@@ -21,7 +26,7 @@ CREATE TABLE `Users` (
 );
 
 -- Item
-CREATE TABLE Items (
+CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     allowedRentalDays INT NOT NULL,
@@ -32,7 +37,7 @@ CREATE TABLE Items (
 );
 
 -- Rental
-CREATE TABLE Rentals (
+CREATE TABLE rentals (
     rentalID INT AUTO_INCREMENT UNIQUE NOT NULL,
     userID INT NOT NULL,
     itemID INT NOT NULL,

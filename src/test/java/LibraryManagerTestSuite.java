@@ -28,6 +28,7 @@ import org.junit.platform.suite.api.Suite;
         //ViewTestSuite.class
 })
 
-public class LibraryManagerTestSuite {
+public class
+LibraryManagerTestSuite {
 
 }

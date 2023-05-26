@@ -41,13 +41,13 @@ import java.util.Map;
 public class ItemHandler {
 
     /**
-     * Used to speed up searching. Contains a HashMap with the titles of all items in the database and how many
+     * Used to speed up searching. Contains a HashMap with the titles of all Items in the database and how many
      * copies there are of each.
      */
     private static final Map<String, Integer> storedTitles = new HashMap<>();
 
     /**
-     * Used to keep track of how many available copies there are of items in the database.
+     * Used to keep track of how many available copies there are of Items in the database.
      */
     private static final Map<String, Integer> availableTitles = new HashMap<>();
 
@@ -155,11 +155,11 @@ public class ItemHandler {
     }
 
     /**
-     * Retrieves titles from the items table and returns them as a map with title-count pairs.
+     * Retrieves titles from the Items table and returns them as a map with title-count pairs.
      */
     private static void retrieveTitlesFromTable() {
         try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available FROM items ORDER BY title ASC")) {
-            // Add the retrieved items to the maps
+            // Add the retrieved Items to the maps
             while (result.getResultSet().next()) {
                 String title = result.getResultSet().getString("title");
                 boolean available = result.getResultSet().getBoolean("available");
@@ -186,9 +186,9 @@ public class ItemHandler {
     }
 
     /**
-     * Prints the list of items with their IDs and titles.
+     * Prints the list of Items with their IDs and titles.
      *
-     * @param itemList the list of items to print
+     * @param itemList the list of Items to print
      */
     public static void printItemList(List<Item> itemList) {
         System.out.println("Items:");
@@ -268,7 +268,7 @@ public class ItemHandler {
      */
     public static Item getItemByID(int itemID) throws InvalidIDException {
 
-        // No point getting impossible items
+        // No point getting impossible Items
         checkValidItemID(itemID);
 
         // Prepare a SQL query to select an item by itemID
@@ -410,14 +410,14 @@ public class ItemHandler {
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
     /**
-     * Retrieves all items with a given title from the database.
-     * @param title The title of the items to be retrieved.
+     * Retrieves all Items with a given title from the database.
+     * @param title The title of the Items to be retrieved.
      * @return A list of Item objects with the provided title.
      */
     public static List<Item> getItemsByTitle(String title) throws InvalidTitleException {
         List<Item> items = new ArrayList<>();
         try {
-            // No point getting invalid items
+            // No point getting invalid Items
             checkEmptyTitle(title);
 
             // Prepare a SQL query to select an item by title
@@ -442,7 +442,7 @@ public class ItemHandler {
                 }
             }
         } catch (SQLException | InvalidIDException | ConstructionException | InvalidDateException e) {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Items by title due to " +
+            ExceptionHandler.HandleFatalException("Failed to retrieve items by title due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
@@ -459,7 +459,7 @@ public class ItemHandler {
         //Incorrect format ISBN
         //Item does not exist
         //Item does exist
-        //Multiple items exist
+        //Multiple Items exist
         // == 6 test cases
         return null;
     }
@@ -468,9 +468,9 @@ public class ItemHandler {
         //Empty genre
         //Null genre
         //genre does not exist
-        //items don't exist in genre
+        //Items don't exist in genre
         //Item does exist
-        //Multiple items exist
+        //Multiple Items exist
         // == 6 test cases
         return null;
     }
@@ -481,7 +481,7 @@ public class ItemHandler {
         //no such author
         //author exists, but no titles for some reason
         //author exists and has title
-        //Multiple items exist for author
+        //Multiple Items exist for author
         // == 6 test cases
 
         return null;
@@ -493,7 +493,7 @@ public class ItemHandler {
         //no such publisher
         //publisher exists, but no titles for some reason
         //publisher exists and has title
-        //Multiple items exist for publisher
+        //Multiple Items exist for publisher
         // == 6 test cases
 
         return null;
@@ -502,9 +502,9 @@ public class ItemHandler {
     public static Item getItemsByType(String type) { //Not going to be string, but an ENUM instead
         //Invalid enum should not be possible...
 
-        //No items of such type
+        //No Items of such type
         //Single item of type
-        //multiple items of type
+        //multiple Items of type
         // == 3 test cases
 
         return null;

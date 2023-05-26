@@ -298,7 +298,7 @@ public class DatabaseHandler {
 
             // Get metadata for username column
             ResultSet resultSet = metaData.getColumns(null, null,
-                    "Users", "username");
+                    "users", "username");
             int usernameColumnSize = 0;
             if (resultSet.next()) {
                 usernameColumnSize = resultSet.getInt("COLUMN_SIZE");
@@ -306,7 +306,7 @@ public class DatabaseHandler {
 
             // Get metadata for password column
             resultSet = metaData.getColumns(null, null,
-                    "Users", "password");
+                    "users", "password");
             int passwordColumnSize = 0;
             if (resultSet.next()) {
                 passwordColumnSize = resultSet.getInt("COLUMN_SIZE");
@@ -333,7 +333,7 @@ public class DatabaseHandler {
 
             //Get metadata for title column
             ResultSet resultSet = metaData.getColumns(null, null,
-                    "Items", "title");
+                    "items", "title");
             int titleColumnSize = 0;
             if (resultSet.next()) {
                 titleColumnSize = resultSet.getInt("COLUMN_SIZE");

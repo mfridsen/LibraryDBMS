@@ -54,7 +54,7 @@ public class UserHandler {
     }
 
     /**
-     * Syncs the storedUsernames list against the usernames in the users table.
+     * Syncs the storedUsernames list against the usernames in the Users table.
      */
     public static void syncUsernames() {
         if (!storedUsernames.isEmpty())
@@ -63,7 +63,7 @@ public class UserHandler {
     }
 
     /**
-     * Method that retrieves the usernames in the users table and stores them in the static ArrayList.
+     * Method that retrieves the usernames in the Users table and stores them in the static ArrayList.
      * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
      */
     private static void retrieveUsernamesFromTable() {
@@ -205,7 +205,7 @@ public class UserHandler {
      */
     public static User getUserByID(int userID) throws InvalidIDException {
         try {
-            // No point getting invalid users, throws InvalidIDException
+            // No point getting invalid Users, throws InvalidIDException
             checkValidUserID(userID);
 
             // Prepare a SQL query to select a user by userID.
@@ -401,7 +401,7 @@ public class UserHandler {
      */
     public static User getUserByUsername(String username) throws InvalidUsernameException {
         try {
-            // No point in getting invalid users, throws InvalidUsernameException
+            // No point in getting invalid Users, throws InvalidUsernameException
             checkEmptyUsername(username);
 
             // Prepare a SQL query to select a user by username
@@ -436,18 +436,18 @@ public class UserHandler {
 
     public static List<User> getUsersByFirstname(String firstname) {
         //Invalid firstname
-        //No such users
+        //No such Users
         //One valid user
-        //Multiple valid users
+        //Multiple valid Users
         // == 4
         return null;
     }
 
     public static List<User> getUsersByLastname(String lastname) {
         //Invalid lastname
-        //No such users
+        //No such Users
         //One valid user
-        //Multiple valid users
+        //Multiple valid Users
         // == 4
         return null;
     }
