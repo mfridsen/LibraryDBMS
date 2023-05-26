@@ -10,6 +10,7 @@ import javax.swing.*;
 public class PublisherTableModel {
 
 
+
     public PublisherTableModel(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
     }

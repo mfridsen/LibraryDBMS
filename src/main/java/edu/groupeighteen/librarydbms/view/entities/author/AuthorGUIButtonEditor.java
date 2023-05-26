@@ -7,4 +7,5 @@ package edu.groupeighteen.librarydbms.view.entities.author;
  */
 public class AuthorGUIButtonEditor {
 
+
 }

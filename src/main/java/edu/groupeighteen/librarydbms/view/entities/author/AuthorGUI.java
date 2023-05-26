@@ -18,6 +18,7 @@ public class AuthorGUI {
     private Author Author;
     private JPanel scrollPanePanel;
 
+
     public AuthorGUI(GUI preiousGUI, Author Author){
         super(preiousGUI, "AuthorGUI");
         this.Author = Author;
