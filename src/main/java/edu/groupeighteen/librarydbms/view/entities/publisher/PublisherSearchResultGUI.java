@@ -19,7 +19,7 @@ import java.util.Set;
  * @project LibraryDBMS
  * @date 2023-05-25
  */
-public class PublisherSearchResultGUI {
+public class PublisherSearchResultGUI extends GUI {
     //TODO- fält som ska visas i denna ordning:
     //  publisherID, name, email
 
