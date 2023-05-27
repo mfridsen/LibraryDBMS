@@ -8,9 +8,32 @@
 -- BASE TABLES ---------------------------------------------------------------------------------------------------------
 
 -- Author
+CREATE TABLE `authors` (
+    authorID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    authorFirstname VARCHAR(100) NOT NULL,
+    authorLastName VARCHAR(100),
+    biography TEXT,
+    deleted TINYINT(1) NOT NULL,
+    PRIMARY KEY (authorID)
+);
 
 -- Publisher
+CREATE TABLE `publishers` (
+    publisherID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    publisherName VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    deleted TINYINT(1) NOT NULL,
+    PRIMARY KEY (publisherID)
+);
 
+-- Classification
+CREATE TABLE `classifications` (
+    classificationID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    classificationName VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT,
+    deleted TINYINT(1) NOT NULL,
+    PRIMARY KEY (classificationID)
+);
 
 -- User
 CREATE TABLE `users` (
@@ -28,10 +51,15 @@ CREATE TABLE `users` (
 -- Item
 CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    authorID INT NOT NULL,
+    publisherID INT NOT NULL,
+    classificationID INT NOT NULL,
     title VARCHAR(255) NOT NULL,
+    -- ENUM TYPE
+        -- ISBN
+        -- barcode
     allowedRentalDays INT NOT NULL,
     available TINYINT(1) NOT NULL,
-
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (itemID)
 );

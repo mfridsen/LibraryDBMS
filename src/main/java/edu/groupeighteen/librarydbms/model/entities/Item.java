@@ -38,15 +38,16 @@ public class Item extends Entity {
     }
 
     private int itemID; //Primary key
+    //Author ID //FK
+    //Publisher ID //FK
+    //classificationID //FK
     //ENUM TYPE
     private String title;
-    //Barcode
     //ISBN
-    //Genre/Classification
-    //Author ID
     //Author name
-    //Publisher ID
     //Publisher name
+    //Genre/Classification
+    //Barcode
     private int allowedRentalDays;
     private boolean available; //True by default //TODO-prio double check availability on delete
 

@@ -13,7 +13,7 @@ package edu.groupeighteen.librarydbms.model.entities;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class Entity {
+public abstract class Entity {
 
     protected boolean deleted;
 

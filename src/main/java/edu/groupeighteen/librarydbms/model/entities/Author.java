@@ -15,10 +15,10 @@ package edu.groupeighteen.librarydbms.model.entities;
  */
 public class Author extends Entity {
 
-    private int authorID;
-    private String authorFirstname;
-    private String authorLastName;
-    private String biography;
+    private int authorID; //Primary key
+    private String authorFirstname; ///Varchar 100 NOT NULL
+    private String authorLastName; //Varchar 100
+    private String biography; //SQL TEXT
 
     /**
      * Creation Constructor.

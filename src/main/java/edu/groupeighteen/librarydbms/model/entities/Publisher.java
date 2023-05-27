@@ -15,9 +15,9 @@ package edu.groupeighteen.librarydbms.model.entities;
  */
 public class Publisher extends Entity {
 
-    private int publisherID;
-    private String publisherName;
-    private String email;
+    private int publisherID; //Primary key
+    private String publisherName; //Varchar 255 UNIQUE NOT NULL
+    private String email; //Varchar 255 UNIQUE NOT NULL
 
     /**
      * Creation Constructor.
@@ -34,9 +34,9 @@ public class Publisher extends Entity {
      * @param email
      */
     public Publisher(int publisherID, String publisherName, String email) {
-        this.publisherID = publisherID;
-        this.publisherName = publisherName;
-        this.email = email;
+        setPublisherID(publisherID);
+        setPublisherName(publisherName);
+        setEmail(email);
     }
 
     /**
