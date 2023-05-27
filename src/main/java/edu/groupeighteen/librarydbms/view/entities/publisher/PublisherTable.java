@@ -15,7 +15,7 @@ import java.util.List;
  * @project LibraryDBMS
  * @date 2023-05-26
  */
-public class PublisherTable {
+public class PublisherTable extends JTable {
 
     private final List<PublisherGUIButtonEditor> editors;
 

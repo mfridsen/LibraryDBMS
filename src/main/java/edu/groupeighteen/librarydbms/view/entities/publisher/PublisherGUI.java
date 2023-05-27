@@ -11,7 +11,7 @@ import java.awt.*;
  * @project LibraryDBMS
  * @date 2023-05-25
  */
-public class PublisherGUI {
+public class PublisherGUI extends GUI {
     //TODO- fält som ska visas i denna ordning:
     //  publisherID, name, email
 
