@@ -3,9 +3,6 @@ package edu.groupeighteen.librarydbms.view.entities.author;
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.view.LoginScreenGUI;
 import edu.groupeighteen.librarydbms.view.buttons.ButtonRenderer;
-import edu.groupeighteen.librarydbms.view.entities.Author.AuthorGUIButtonEditor;
-import edu.groupeighteen.librarydbms.view.entities.Author.AuthorTable;
-import edu.groupeighteen.librarydbms.view.entities.Author.AuthorTableModel;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -19,7 +16,7 @@ import java.util.Set;
  * @project LibraryDBMS
  * @date 2023-05-25
  */
-public class AuthorSearchResultGUI {
+public class AuthorSearchResultGUI extends GUI {
     //TODO- fält som ska visas i denna ordning:
     //  authorID, firstName, lastName
 
