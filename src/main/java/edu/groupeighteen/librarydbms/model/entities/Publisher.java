@@ -1,5 +1,10 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidEmailException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -27,9 +32,19 @@ public class Publisher extends Entity
      * @param publisherName
      */
     public Publisher(String publisherName)
+    throws ConstructionException
     {
         super();
-        this.publisherName = publisherName;
+        try
+        {
+            setPublisherName(publisherName);
+            this.email = null;
+        }
+        catch (InvalidNameException e)
+        {
+            throw new ConstructionException("Publisher Creation Construction failed due to " +
+                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -40,11 +55,24 @@ public class Publisher extends Entity
      * @param email
      */
     public Publisher(int publisherID, String publisherName, String email, boolean deleted)
+    throws ConstructionException
     {
         super(deleted);
-        setPublisherID(publisherID);
-        setPublisherName(publisherName);
-        setEmail(email);
+        try
+        {
+            setPublisherID(publisherID);
+            setPublisherName(publisherName);
+            setEmail(email);
+        }
+        catch (InvalidIDException | InvalidNameException e)
+        {
+            throw new ConstructionException("Publisher Retrieval Construction failed due to " +
+                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+        catch (InvalidEmailException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -66,7 +94,10 @@ public class Publisher extends Entity
     }
 
     public void setPublisherID(int publisherID)
+    throws InvalidIDException
     {
+        if (publisherID <= 0)
+            throw new InvalidIDException("Publisher ID must be greater than 0. Received: " + publisherID);
         this.publisherID = publisherID;
     }
 
@@ -76,7 +107,13 @@ public class Publisher extends Entity
     }
 
     public void setPublisherName(String publisherName)
+    throws InvalidNameException
     {
+        if (publisherName == null || publisherName.isEmpty())
+            throw new InvalidNameException("Publisher name cannot be null or empty.");
+        if (publisherName.length() > 255)
+            throw new InvalidNameException("Publisher name must be at most 255 characters. " +
+                                                   "Received: " + publisherName.length());
         this.publisherName = publisherName;
     }
 
@@ -86,7 +123,13 @@ public class Publisher extends Entity
     }
 
     public void setEmail(String email)
+    throws InvalidEmailException
     {
+        if (email == null || email.isEmpty())
+            throw new InvalidEmailException("Publisher email cannot be null or empty.");
+        if (email.length() > 255)
+            throw new InvalidEmailException("Publisher email must be at most 255 characters. " +
+                                                   "Received: " + email.length());
         this.email = email;
     }
 }

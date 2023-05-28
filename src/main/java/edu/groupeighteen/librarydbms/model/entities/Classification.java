@@ -103,10 +103,8 @@ public class Classification extends Entity
         if (classificationName == null || classificationName.isEmpty())
             throw new InvalidNameException("Classification name cannot be null or empty.");
         if (classificationName.length() > 255)
-        {
             throw new InvalidNameException("Classification name must be at most 255 characters. " +
                                                    "Received: " + classificationName.length());
-        }
         this.classificationName = classificationName;
     }
 
