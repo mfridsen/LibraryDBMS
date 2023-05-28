@@ -295,6 +295,44 @@ public class DatabaseHandler {
         }
     }
 
+
+    public static int[] getAuthorMetaData()
+    {
+        if (connection == null) {
+            setup(false);
+        }
+
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            // Get metadata for username column
+            ResultSet resultSet = metaData.getColumns(null, null,
+                                                      "authors", "authorFirstname");
+            int firstnameColumnSize = 0;
+            if (resultSet.next()) {
+                firstnameColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            // Get metadata for password column
+            resultSet = metaData.getColumns(null, null,
+                                            "authors", "authorLastName");
+            int lastnameColumnSize = 0;
+            if (resultSet.next()) {
+                lastnameColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{firstnameColumnSize, lastnameColumnSize};
+
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException("Couldn't retrieve Author Meta data due to " +
+                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Won't reach, but needed to compile
+        return new int[0];
+    }
+
+
     //TODO-test
     //TODO-comment
     public static int[] getUserMetaData() {
@@ -382,4 +420,6 @@ public class DatabaseHandler {
     public static void setVerbose(boolean verbose) {
         DatabaseHandler.verbose = verbose;
     }
+
+
 }

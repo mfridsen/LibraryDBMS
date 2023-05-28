@@ -1,15 +1,14 @@
 package model;
 
 import model.db.DatabaseConnectionTest;
-import model.entities.ItemTest;
-import model.entities.RentalTest;
-import model.entities.UserTest;
+import model.entities.*;
+import model.entities.author.AuthorTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
- * @project LibraryDBMS
  * @author Mattias Fridsén
+ * @project LibraryDBMS
  * @date 4/18/2023
  * @contact matfir-1@student.ltu.se
  * <p>
@@ -25,13 +24,15 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
         //Model tests
         DatabaseConnectionTest.class,
-        UserTest.class,
+        AuthorTest.class,
+        ClassificationTest.class,
+        PublisherTest.class,
         ItemTest.class,
+        UserTest.class,
         RentalTest.class,
 })
 
-public class ModelTestSuite {
-    static {
-        System.out.println("Running Model Test Suite...");
-    }
+public class ModelTestSuite
+{
+
 }

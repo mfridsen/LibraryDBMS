@@ -1,6 +1,7 @@
 @Test
 @Order(<Test_Number>)
-void test<MethodName>_<TestCase>() {
+void test<MethodName>_<TestCase>()
+{
     System.out.println("\n<Test_Number>: Testing <MethodName> method with <explanation of test case>...");
 
 
@@ -9,9 +10,13 @@ void test<MethodName>_<TestCase>() {
 
 Example:
 
+/**
+ * Javadoc providing a brief description of what the method tests.
+ */
 @Test
 @Order(7)
-void testSetup_EmptyDatabase() {
+void testSetup_EmptyDatabase()
+{
     System.out.println("\n7: Testing setup method with an empty database...");
 
     // Call the setup method
@@ -22,3 +27,29 @@ void testSetup_EmptyDatabase() {
 
     System.out.println("\nTEST FINISHED.");
 }
+
+
+For Model classes, create one test class per constructor and then one for the setters.
+
+Example:
+
+/**
+ * Javadoc providing brief description of what the class tests.
+ /*
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class AuthorCreationTest
+{
+
+    @Test
+    @Order(1)
+    void testAuthorCreation_ValidData()
+    {
+
+    }
+}
+
+For Control classes (named <ModelClassName>Handler), create one test class per one major method in the Handler.
+For utility methods and generally short methods we can create one or two classes depending on circumstances.
+For instance, if we have a setup() method, which I usually do, at the very top of the class, that method and the methods
+it calls should be tested in one test class, and any other utility methods found at the bottom of the class should be
+covered by another test class.
