@@ -1,5 +1,9 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -25,10 +29,16 @@ public class Author extends Entity {
      * @param authorFirstname
      * @param authorLastName
      */
-    public Author(String authorFirstname, String authorLastName) {
-        this.authorID = 0;
-        this.authorFirstname = authorFirstname;
-        this.authorLastName = authorLastName;
+    public Author(String authorFirstname, String authorLastName) throws ConstructionException {
+        try {
+            this.authorID = 0;
+            setAuthorFirstname(authorFirstname);
+            setAuthorLastName(authorLastName);
+            this.biography = null;
+        } catch (InvalidNameException e) {
+            throw new ConstructionException("Author Creation Construction failed due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -38,12 +48,21 @@ public class Author extends Entity {
      * @param authorLastName
      * @param biography
      */
-    //TODO-prio CALL SETTERS
-    public Author(int authorID, String authorFirstname, String authorLastName, String biography) {
-        this.authorID = authorID;
-        this.authorFirstname = authorFirstname;
-        this.authorLastName = authorLastName;
-        this.biography = biography;
+    public Author(int authorID, String authorFirstname, String authorLastName, String biography)
+            throws ConstructionException
+    {
+        try
+        {
+            setAuthorID(authorID);
+            setAuthorFirstname(authorFirstname);
+            setAuthorLastName(authorLastName);
+            setBiography(biography);
+        }
+        catch (InvalidIDException | InvalidNameException e)
+        {
+            throw new ConstructionException("Author Retrieval Construction failed due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -62,7 +81,9 @@ public class Author extends Entity {
         return authorID;
     }
 
-    public void setAuthorID(int authorID) {
+    public void setAuthorID(int authorID) throws InvalidIDException {
+        if (authorID <= 0)
+            throw new InvalidIDException("Author ID must be greater than 0. Received: " + authorID);
         this.authorID = authorID;
     }
 
@@ -70,7 +91,12 @@ public class Author extends Entity {
         return authorFirstname;
     }
 
-    public void setAuthorFirstname(String authorFirstname) {
+    public void setAuthorFirstname(String authorFirstname) throws InvalidNameException {
+        if (authorFirstname == null || authorFirstname.isEmpty())
+            throw new InvalidNameException("Author first name cannot be null or empty.");
+        if (authorFirstname.length() > 100)
+            throw new InvalidNameException("Author first name must be at most 100 characters. " +
+                    "Received: " + authorFirstname.length());
         this.authorFirstname = authorFirstname;
     }
 
@@ -78,7 +104,10 @@ public class Author extends Entity {
         return authorLastName;
     }
 
-    public void setAuthorLastName(String authorLastName) {
+    public void setAuthorLastName(String authorLastName) throws InvalidNameException {
+        if (authorLastName.length() > 100)
+            throw new InvalidNameException("Author last name must be at most 100 characters. " +
+                    "Received: " + authorLastName.length());
         this.authorLastName = authorLastName;
     }
 

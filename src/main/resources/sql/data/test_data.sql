@@ -1,17 +1,10 @@
 -- (''),
 
--- //TODO Add user test data here
-INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) VALUES
-('user1', 'password1', 5, 0, 0.0, 1, 0),
-('user2', 'password2', 5, 0, 0.0, 1, 0),
-('user3', 'password3', 5, 0, 0.0, 1, 0),
-('user4', 'password4', 5, 0, 0.0, 1, 0),
-('user5', 'password5', 5, 0, 0.0, 1, 0),
-('user6', 'password6', 5, 0, 0.0, 1, 0),
-('user7', 'password7', 5, 0, 0.0, 1, 0),
-('user8', 'password8', 5, 0, 0.0, 1, 0),
-('user9', 'password9', 5, 0, 0.0, 1, 0),
-('uname', 'password', 5, 0, 0.0, 1, 0);
+-- //TODO add Author test data
+
+-- //TODO add Classification test data
+
+-- //TODO add Publisher test data
 
 -- //TODO add Item test data here
 INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES
@@ -35,5 +28,18 @@ INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES
 ('A Little Hatred', 14, 1, 0),
 ('The Trouble With Peace', 14, 1, 0),
 ('The Wisdom Of Crowds', 14, 1, 0);
+
+-- //TODO Add user test data here
+INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) VALUES
+('user1', 'password1', 5, 0, 0.0, 1, 0),
+('user2', 'password2', 5, 0, 0.0, 1, 0),
+('user3', 'password3', 5, 0, 0.0, 1, 0),
+('user4', 'password4', 5, 0, 0.0, 1, 0),
+('user5', 'password5', 5, 0, 0.0, 1, 0),
+('user6', 'password6', 5, 0, 0.0, 1, 0),
+('user7', 'password7', 5, 0, 0.0, 1, 0),
+('user8', 'password8', 5, 0, 0.0, 1, 0),
+('user9', 'password9', 5, 0, 0.0, 1, 0),
+('uname', 'password', 5, 0, 0.0, 1, 0);
 
 -- //TODO add Rental test data here

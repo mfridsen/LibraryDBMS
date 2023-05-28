@@ -27,7 +27,7 @@ public abstract class BaseHandlerTest {
      * Create the connection to the database, set DatabaseHandlers connection, and reset the database before each test.
      */
     @BeforeEach
-    void setupAndReset() {
+    protected void setupAndReset() {
         System.out.println("\nSetting up and resetting database...");
         try {
             setupConnectionAndTables();
@@ -38,7 +38,7 @@ public abstract class BaseHandlerTest {
         System.out.println("Setup finished.");
     }
 
-    void setupConnectionAndTables() throws SQLException, ClassNotFoundException {
+    protected void setupConnectionAndTables() throws SQLException, ClassNotFoundException {
         connection = DatabaseConnection.setup();
         DatabaseHandler.setConnection(connection);
         DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
@@ -49,7 +49,7 @@ public abstract class BaseHandlerTest {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
     }
 
-    void setupTestData() {
+    protected void setupTestData() {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         DatabaseHandler.setVerbose(true);
     }
@@ -58,7 +58,7 @@ public abstract class BaseHandlerTest {
      * Always close the connection to the database after use.
      */
     @AfterAll
-    static void tearDown() {
+    static protected void tearDown() {
         DatabaseHandler.closeDatabaseConnection();
     }
 }

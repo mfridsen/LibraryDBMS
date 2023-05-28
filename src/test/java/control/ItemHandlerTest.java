@@ -33,7 +33,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     @BeforeEach
     @Override
-    void setupAndReset() {
+    protected void setupAndReset() {
         try {
             setupConnectionAndTables();
         } catch (SQLException | ClassNotFoundException e) {

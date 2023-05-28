@@ -1,6 +1,7 @@
 
-package control;
+package control.rental;
 
+import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
@@ -46,7 +47,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     @Override
     @BeforeEach
-    void setupAndReset() {
+    protected void setupAndReset() {
         super.setupAndReset();
         ItemHandler.setup(); //Fills maps with items
         UserHandler.setup(); //Fills list with users
