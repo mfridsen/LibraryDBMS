@@ -263,8 +263,13 @@ public class DatabaseHandler {
             StringBuilder commandBuilder = new StringBuilder();
 
             while ((line = reader.readLine()) != null) {
-                //Skip comments
-                if (line.startsWith("--")) {
+                //Remove inline comments
+                if (line.contains("--")) {
+                    line = line.substring(0, line.indexOf("--"));
+                }
+
+                //Skip lines that are now empty (were only a comment)
+                if (line.trim().isEmpty()) {
                     continue;
                 }
 
@@ -273,8 +278,12 @@ public class DatabaseHandler {
 
                 //Check if the line ends with a semicolon, signifying the end of the command
                 if (line.endsWith(";")) {
-                    String command = commandBuilder.toString();
-                    executeCommand(command);
+                    String command = commandBuilder.toString().trim();
+
+                    if (!command.isEmpty()) {
+                        executeCommand(command);
+                    }
+
                     //Reset the command builder for the next command
                     commandBuilder = new StringBuilder();
                 }
@@ -298,7 +307,7 @@ public class DatabaseHandler {
 
             // Get metadata for username column
             ResultSet resultSet = metaData.getColumns(null, null,
-                    "Users", "username");
+                    "users", "username");
             int usernameColumnSize = 0;
             if (resultSet.next()) {
                 usernameColumnSize = resultSet.getInt("COLUMN_SIZE");
@@ -306,7 +315,7 @@ public class DatabaseHandler {
 
             // Get metadata for password column
             resultSet = metaData.getColumns(null, null,
-                    "Users", "password");
+                    "users", "password");
             int passwordColumnSize = 0;
             if (resultSet.next()) {
                 passwordColumnSize = resultSet.getInt("COLUMN_SIZE");
@@ -333,7 +342,7 @@ public class DatabaseHandler {
 
             //Get metadata for title column
             ResultSet resultSet = metaData.getColumns(null, null,
-                    "Items", "title");
+                    "items", "title");
             int titleColumnSize = 0;
             if (resultSet.next()) {
                 titleColumnSize = resultSet.getInt("COLUMN_SIZE");

@@ -1,6 +1,7 @@
 
-package control;
+package control.rental;
 
+import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
@@ -46,10 +47,10 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
     @Override
     @BeforeEach
-    void setupAndReset() {
+    protected void setupAndReset() {
         super.setupAndReset();
-        ItemHandler.setup(); //Fills table with items
-        UserHandler.setup(); //Fills table with users
+        ItemHandler.setup(); //Fills maps with items
+        UserHandler.setup(); //Fills list with users
         DatabaseHandler.setVerbose(false); //Get that thing to shut up
     }
 
@@ -445,7 +446,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
         System.out.println("\n11: Testing getAllRentals method with an empty database...");
 
         // Clear the rentals table in the database
-        DatabaseHandler.executeCommand("DELETE FROM Rentals");
+        DatabaseHandler.executeCommand("DELETE FROM rentals");
 
         List<Rental> expectedRentals = Collections.emptyList();
         List<Rental> actualRentals;

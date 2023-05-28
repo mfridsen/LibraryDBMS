@@ -26,7 +26,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
     @BeforeEach
     @Override
-    void setupAndReset() {
+    protected void setupAndReset() {
         try {
             setupConnectionAndTables();
             UserHandler.reset();

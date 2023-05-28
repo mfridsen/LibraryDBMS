@@ -33,7 +33,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
     @BeforeEach
     @Override
-    void setupAndReset() {
+    protected void setupAndReset() {
         try {
             setupConnectionAndTables();
         } catch (SQLException | ClassNotFoundException e) {
@@ -189,7 +189,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
     /**
      * Tests the {@link ItemHandler#setup()} method of the ItemHandler class when the database is empty.
      * The test validates the correct initialization of the {@code storedTitles} map.
-     * It should be empty after calling {@link ItemHandler#setup()} as there are no items in the database.
+     * It should be empty after calling {@link ItemHandler#setup()} as there are no Items in the database.
      */
     @Test
     @Order(5)
@@ -208,15 +208,15 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
 
     /**
-     * Test case for the setup method with some items in the database.
-     * This test verifies the behavior of the setup method when there are existing items in the database.
+     * Test case for the setup method with some Items in the database.
+     * This test verifies the behavior of the setup method when there are existing Items in the database.
      */
     @Test
     @Order(6)
     void testSetup_WithSomeItemsInDatabase() {
-        System.out.println("\n6: Testing setup method with some items in the database...");
+        System.out.println("\n6: Testing setup method with some Items in the database...");
 
-        // Insert some items into the database, with one available single and two duplicates of which one is available
+        // Insert some Items into the database, with one available single and two duplicates of which one is available
         String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
         String[] params1 = {"Harry Potter", "14", "1", "0"};
         String[] params2 = {"The Lord of the Rings", "14", "1", "0"};
@@ -299,7 +299,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             assertTrue(retrievedItem.isAvailable());
             assertFalse(retrievedItem.isDeleted());
 
-            //A known bug causes items availability to change, let's try retrieving the same item again
+            //A known bug causes Items availability to change, let's try retrieving the same item again
             retrievedItem = ItemHandler.getItemByID(createdItem.getItemID());
 
             // The retrieved item should not be null
@@ -376,20 +376,20 @@ public class ItemHandlerTest extends BaseHandlerTest {
             //Create a single item
             String singleItemTitle = "Single Item Title";
             ItemHandler.createNewItem(singleItemTitle);
-            List<Item> items = ItemHandler.getItemsByTitle(singleItemTitle);
+            List<Item> Items = ItemHandler.getItemsByTitle(singleItemTitle);
 
             // Ensure that there is exactly one item in the returned list
-            assertNotNull(items);
-            assertEquals(1, items.size());
+            assertNotNull(Items);
+            assertEquals(1, Items.size());
 
             // Check the title of the item
-            assertEquals(singleItemTitle, items.get(0).getTitle());
+            assertEquals(singleItemTitle, Items.get(0).getTitle());
 
             //Check available
-            assertTrue(items.get(0).isAvailable());
+            assertTrue(Items.get(0).isAvailable());
 
             //Check deleted
-            assertFalse(items.get(0).isDeleted());
+            assertFalse(Items.get(0).isDeleted());
         } catch (InvalidTitleException e) {
             // No exceptions should be thrown
             fail("Error while getting item by title: " + e.getMessage());
@@ -401,7 +401,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
     @Test
     @Order(14)
     void testGetItemsByTitle_MultipleItemsWithGivenTitle() {
-        System.out.println("\n14: Testing getItemsByTitle with multiple items with the given title...");
+        System.out.println("\n14: Testing getItemsByTitle with multiple Items with the given title...");
 
         try {
             String multipleItemsTitle = "Multiple Items Title";
@@ -412,29 +412,29 @@ public class ItemHandlerTest extends BaseHandlerTest {
             DatabaseHandler.executePreparedQuery(query, params2);
 
             //Retrieve list and assert not null
-            List<Item> items = ItemHandler.getItemsByTitle(multipleItemsTitle);
-            assertNotNull(items);
+            List<Item> Items = ItemHandler.getItemsByTitle(multipleItemsTitle);
+            assertNotNull(Items);
 
             // Ensure that there is more than one item in the returned list
-            assertTrue(items.size() > 1);
+            assertTrue(Items.size() > 1);
 
-            // Check the titles and isDeleted of all the items
-            for (Item item : items) {
+            // Check the titles and isDeleted of all the Items
+            for (Item item : Items) {
                 assertEquals(multipleItemsTitle, item.getTitle());
                 assertFalse(item.isDeleted());
             }
 
             //Check allowedRentalDays
-            assertEquals(14, items.get(0).getAllowedRentalDays());
-            assertEquals(7, items.get(1).getAllowedRentalDays());
+            assertEquals(14, Items.get(0).getAllowedRentalDays());
+            assertEquals(7, Items.get(1).getAllowedRentalDays());
 
-            //Check the availability of the items
-            assertTrue(items.get(0).isAvailable());
-            assertFalse(items.get(1).isAvailable());
+            //Check the availability of the Items
+            assertTrue(Items.get(0).isAvailable());
+            assertFalse(Items.get(1).isAvailable());
 
         } catch (InvalidTitleException e) {
             // No exceptions should be thrown
-            fail("Error while getting items by title: " + e.getMessage());
+            fail("Error while getting Items by title: " + e.getMessage());
         }
 
         System.out.println("\nTEST FINISHED.");

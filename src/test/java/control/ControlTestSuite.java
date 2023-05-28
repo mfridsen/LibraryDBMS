@@ -1,5 +1,6 @@
 package control;
 
+import control.rental.RentalHandlerTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 

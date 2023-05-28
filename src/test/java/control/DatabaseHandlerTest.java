@@ -51,6 +51,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             assertTrue(resultSet.next(), "No data found in temp_table");
             assertEquals(1, resultSet.getInt("id"), "ID value does not match");
             assertEquals("Test User", resultSet.getString("name"), "Name value does not match");
+            resultSet.close();
         } catch (SQLException e) {
             fail("Failed to query data from temp_table: " + e.getMessage());
         }
@@ -111,7 +112,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
             //Assert that the expected number of rows were affected
             assertEquals(1, affectedRows);
 
-            //Check if the delete worked
+            //Check if the deletion worked
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(selectCommand, new String[]{})) {
                 ResultSet resultSet = queryResult.getResultSet();
                 if (resultSet.next()) {
@@ -248,7 +249,7 @@ public class DatabaseHandlerTest extends BaseHandlerTest {
     }
 
     /**
-     * Creates an sql file for testing purposes.
+     * Creates a sql file for testing purposes.
      * @param filePath the path to the sql file
      */
     private File createTestSQLFile(String filePath) {
