@@ -20,6 +20,9 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
  */
 public class Publisher extends Entity
         //TODO-prio METADATA AND CONSTANTS
+        /*
+         * Helps with adherence to DRY, now if we want to change the rules we only need to do so in one place.
+         */
 {
 
     private int publisherID; //Primary key

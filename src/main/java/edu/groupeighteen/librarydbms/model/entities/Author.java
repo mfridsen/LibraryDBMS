@@ -12,7 +12,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
  * @contact matfir-1@student.ltu.se
  * @date 5/23/2023
  *
- * Represents an Author in a publishing system.
+ * Represents an Author in a library system.
  * The Author class extends Entity and contains information about the author, including
  * first name, last name, and biography.
  * It provides methods to set and get these values, enforcing various constraints.
