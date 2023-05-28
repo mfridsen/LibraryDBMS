@@ -13,7 +13,9 @@ package edu.groupeighteen.librarydbms.model.entities;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class Publisher extends Entity {
+public class Publisher extends Entity
+        //TODO-prio METADATA AND CONSTANTS
+{
 
     private int publisherID; //Primary key
     private String publisherName; //Varchar 255 UNIQUE NOT NULL
@@ -21,19 +23,25 @@ public class Publisher extends Entity {
 
     /**
      * Creation Constructor.
+     *
      * @param publisherName
      */
-    public Publisher(String publisherName) {
+    public Publisher(String publisherName)
+    {
+        super();
         this.publisherName = publisherName;
     }
 
     /**
      * Retrieval Constructor.
+     *
      * @param publisherID
      * @param publisherName
      * @param email
      */
-    public Publisher(int publisherID, String publisherName, String email) {
+    public Publisher(int publisherID, String publisherName, String email, boolean deleted)
+    {
+        super(deleted);
         setPublisherID(publisherID);
         setPublisherName(publisherName);
         setEmail(email);
@@ -41,35 +49,44 @@ public class Publisher extends Entity {
 
     /**
      * Copy Constructor.
+     *
      * @param other
      */
-    public Publisher(Publisher other) {
+    public Publisher(Publisher other)
+    {
+        super(other);
         this.publisherID = other.publisherID;
         this.publisherName = other.publisherName;
         this.email = other.email;
     }
 
-    public int getPublisherID() {
+    public int getPublisherID()
+    {
         return publisherID;
     }
 
-    public void setPublisherID(int publisherID) {
+    public void setPublisherID(int publisherID)
+    {
         this.publisherID = publisherID;
     }
 
-    public String getPublisherName() {
+    public String getPublisherName()
+    {
         return publisherName;
     }
 
-    public void setPublisherName(String publisherName) {
+    public void setPublisherName(String publisherName)
+    {
         this.publisherName = publisherName;
     }
 
-    public String getEmail() {
+    public String getEmail()
+    {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email)
+    {
         this.email = email;
     }
 }

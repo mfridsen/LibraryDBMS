@@ -13,15 +13,46 @@ package edu.groupeighteen.librarydbms.model.entities;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public abstract class Entity {
+public abstract class Entity
+{
+
+    /**
+     * Creation Constructor.
+     */
+    public Entity()
+    {
+        this.deleted = false; //Newly created entities are not deleted by default
+    }
+
+    /**
+     * Retrieval Constructor.
+     *
+     * @param deleted
+     */
+    public Entity(boolean deleted)
+    {
+        this.deleted = deleted;
+    }
+
+    /**
+     * Copy Constructor.
+     *
+     * @param other
+     */
+    public Entity(Entity other)
+    {
+        this.deleted = other.deleted;
+    }
 
     protected boolean deleted;
 
-    public boolean isDeleted() {
+    public boolean isDeleted()
+    {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(boolean deleted)
+    {
         this.deleted = deleted;
     }
 }
