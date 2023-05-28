@@ -1,5 +1,5 @@
 
-package control.rental;
+package control.entities.rental;
 
 import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;

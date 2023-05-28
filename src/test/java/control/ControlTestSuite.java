@@ -1,6 +1,9 @@
 package control;
 
-import control.rental.RentalHandlerTest;
+import control.db.DatabaseHandlerTest;
+import control.entities.item.ItemHandlerTest;
+import control.entities.rental.RentalHandlerTest;
+import control.entities.user.UserHandlerTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
