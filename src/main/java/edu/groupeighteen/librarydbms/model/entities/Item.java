@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 
 /**
@@ -22,8 +23,11 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException
  */
 public class Item extends Entity
 {
-    public enum ItemType
-    {
+    /**
+     * An enumeration of different types of items available in the library.
+     * Each item type can be one of the following: REFERENCE_LITERATURE, MAGAZINE, FILM, COURSE_LITERATURE, OTHER_BOOKS
+     */
+    public enum ItemType {
         REFERENCE_LITERATURE,
         MAGAZINE,
         FILM,
@@ -31,50 +35,106 @@ public class Item extends Entity
         OTHER_BOOKS
     }
 
-    //TODO-future add more fields and methods
-    //TODO-comment everything
-
-    //TODO ADD DELETED IN CONSTRUCTORS
-    public static final int ITEM_TITLE_MAX_LENGTH;
-    public static final int DEFAULT_ALLOWED_DAYS = 14;
-
-    /*
-      So we don't have to update both create_tables.sql AND this file when we want to change rules.
+    /**
+     * Maximum allowed length of an item's title. The value is retrieved from the database metadata to maintain consistency.
      */
-    static
-    {
-        int[] metaData = DatabaseHandler.getItemMetaData();
-        ITEM_TITLE_MAX_LENGTH = metaData[0];
-    }
-
-    protected int itemID; //Primary key
-    protected String title;
-    protected ItemType type;
-    protected int authorID; //FK
-    protected int classificationID; //FK
-    protected String authorName; //Not in table
-    protected String classificationName; //Not in table
-    protected String barcode;
-    protected int allowedRentalDays;
-    protected boolean available; //True by default //TODO-prio double check availability on delete
+    public static final int ITEM_TITLE_MAX_LENGTH;
 
     /**
-     * Creation Constructor. Takes the needed values to construct a new Item as arguments.
-     *
-     * @param title
+     * The exact required length of an item's barcode. The value is retrieved from the database metadata to maintain consistency.
      */
-    public Item(String title) //TODO-prio add type
+    public static final int ITEM_BARCODE_LENGTH;
+
+    /*
+      Static initializer block that retrieves item metadata from the database and sets ITEM_TITLE_MAX_LENGTH and ITEM_BARCODE_LENGTH accordingly.
+     */
+    static {
+        int[] metaData = DatabaseHandler.getItemMetaData();
+        ITEM_TITLE_MAX_LENGTH = metaData[0];
+        ITEM_BARCODE_LENGTH = metaData[1];
+    }
+
+    /**
+     * Primary key of the item in the database.
+     */
+    protected int itemID;
+
+    /**
+     * Title of the item.
+     */
+    protected String title;
+
+    /**
+     * Type of the item, as defined in the ItemType enumeration.
+     */
+    protected ItemType type;
+
+    /**
+     * Unique identifier for the item, represented as a barcode.
+     */
+    protected String barcode;
+
+    /**
+     * Foreign key reference to the ID of the author or director associated with the item.
+     */
+    protected int authorID;
+
+    /**
+     * Foreign key reference to the ID of the item's classification.
+     */
+    protected int classificationID;
+
+    /**
+     * Name of the author or director associated with the item. This field is not persisted in the database.
+     */
+    protected String authorName;
+
+    /**
+     * Name of the item's classification. This field is not persisted in the database.
+     */
+    protected String classificationName;
+
+    /**
+     * Number of days this item is allowed to be rented.
+     */
+    protected int allowedRentalDays;
+
+    /**
+     * Availability status of the item. True if the item is available for rental, false otherwise.
+     */
+    protected boolean available; //True by default //TODO-prio double check availability on delete
+
+    //TODO remember the protected boolean deleted inherited from Entity
+
+    /**
+     * Constructs a new Item object using provided data. The ItemID is not set during construction and should be
+     * set separately after insertion into the database. This constructor is used when creating a new item for the database.
+     *
+     * @param title Title of the item.
+     * @param type Type of the item.
+     * @param barcode Unique barcode identifier of the item.
+     * @param authorID Identifier for the author or director of the item.
+     * @param classificationID Identifier for the classification of the item.
+     * @throws ConstructionException If any of the validation checks for the input data fail.
+     */
+    public Item(String title, ItemType type, String barcode, int authorID, int classificationID)
     throws ConstructionException
     {
-        super();
+        super(); //deleted
         try
         {
-            this.itemID = 0; //Set AFTER initial INSERT by createNewItem
+            this.itemID = 0; //Set after initial INSERT by createNewItem
             setTitle(title); //Throws InvalidTitleException
-            this.allowedRentalDays = DEFAULT_ALLOWED_DAYS; //TODO-prio for now
+            setType(type);
+            setBarcode(barcode); //Throws InvalidBarcodeException
+            setAuthorID(authorID); //Throws InvalidIDException
+            setClassificationID(classificationID); //Throws InvalidIDException
+            this.authorName = null; //Retrieved after creation
+            this.classificationName = null; //Retrieved after creation
+            setAllowedRentalDays(getDefaultAllowedDays(type)); //Throws InvalidDateException
             this.available = true;
         }
-        catch (InvalidTitleException e)
+        catch (InvalidTitleException | InvalidIDException | InvalidDateException | InvalidBarcodeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
                                                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -82,24 +142,42 @@ public class Item extends Entity
     }
 
     /**
-     * Retrieval Constructor.
+     * Constructs an Item object using the provided data. This constructor is typically used when retrieving an item from
+     * the database, as it includes all fields that are stored in the database, including the item's database ID.
      *
-     * @param itemID
-     * @param title
-     * @param allowedRentalDays
+     * @param deleted Boolean indicating if the item has been deleted.
+     * @param itemID Identifier for the item.
+     * @param title Title of the item.
+     * @param type Type of the item.
+     * @param barcode Unique barcode identifier of the item.
+     * @param authorID Identifier for the author or director of the item.
+     * @param classificationID Identifier for the classification of the item.
+     * @param authorName Name of the author or director of the item.
+     * @param classificationName Name of the classification of the item.
+     * @param allowedRentalDays Number of days the item is allowed to be rented for.
+     * @param available Boolean indicating the availability of the item.
+     * @throws ConstructionException If any of the validation checks for the input data fail.
      */
-    public Item(int itemID, String title, int allowedRentalDays, boolean available)
+    public Item(boolean deleted, int itemID, String title, ItemType type, String barcode, int authorID,
+                int classificationID, String authorName, String classificationName, int allowedRentalDays,
+                boolean available)
     throws ConstructionException
     {
-        //TODO-prio super(deleted);
+        super(deleted);
         try
         {
             setItemID(itemID); //Throws InvalidIDException
             setTitle(title); //Throws InvalidTitleException
-            setAllowedRentalDays(allowedRentalDays);
+            setType(type);
+            setBarcode(barcode); //Throws InvalidBarcodeException
+            setAuthorID(authorID); //Throws InvalidIDException
+            setClassificationID(classificationID); //Throws InvalidIDException
+            setAuthorName(authorName);
+            setClassificationName(classificationName);
+            setAllowedRentalDays(allowedRentalDays); //Throws InvalidDateException
             this.available = available;
         }
-        catch (InvalidIDException | InvalidTitleException | InvalidDateException e)
+        catch (InvalidIDException | InvalidTitleException | InvalidDateException | InvalidBarcodeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
                                                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -107,19 +185,31 @@ public class Item extends Entity
     }
 
     /**
-     * Copy Constructor.
+     * Copy constructor for the Item class. Creates a new Item object that is an exact copy of the provided Item.
      *
-     * @param other
+     * @param other The Item object to be copied.
      */
     public Item(Item other)
     {
-        super(other);
+        super(other); //deleted
         this.itemID = other.itemID;
         this.title = other.title;
+        this.type = other.type;
+        this.barcode = other.barcode;
+        this.authorID = other.authorID;
+        this.classificationID = other.classificationID;
+        this.authorName = other.authorName;
+        this.classificationName = other.classificationName;
         this.allowedRentalDays = other.allowedRentalDays;
         this.available = other.available;
     }
 
+    /**
+     * Retrieves the default number of rental days for a given ItemType.
+     *
+     * @param type The ItemType for which to get the default rental days.
+     * @return An integer representing the default number of rental days.
+     */
     public static int getDefaultAllowedDays(ItemType type)
     {
         return switch (type)
@@ -131,24 +221,46 @@ public class Item extends Entity
                 };
     }
 
+    /**
+     * Gets the ID of this Item.
+     *
+     * @return The ID of this Item.
+     */
     public int getItemID()
     {
         return itemID;
     }
 
+    /**
+     * Sets the ID of this Item.
+     *
+     * @param itemID The ID to set for this Item.
+     * @throws InvalidIDException If the provided ID is not greater than 0.
+     */
     public void setItemID(int itemID)
     throws InvalidIDException
     {
         if (itemID <= 0)
-            throw new InvalidIDException("ItemID must not be less than 0. Received: " + itemID);
+            throw new InvalidIDException("Item ID must be greater than 0. Received: " + itemID);
         this.itemID = itemID;
     }
 
+    /**
+     * Gets the title of this Item.
+     *
+     * @return The title of this Item.
+     */
     public String getTitle()
     {
         return title;
     }
 
+    /**
+     * Sets the title of this Item.
+     *
+     * @param title The title to set for this Item.
+     * @throws InvalidTitleException If the provided title is null, empty, or longer than the maximum allowed length.
+     */
     public void setTitle(String title)
     throws InvalidTitleException
     {
@@ -156,16 +268,161 @@ public class Item extends Entity
             throw new InvalidTitleException("Title cannot be null or empty.");
         if (title.length() > ITEM_TITLE_MAX_LENGTH)
             throw new InvalidTitleException("Title cannot be longer than " +
-                                                    ITEM_TITLE_MAX_LENGTH + " characters. Received: " + title);
+                                                    ITEM_TITLE_MAX_LENGTH + " characters. Received: " + title.length());
         this.title = title;
     }
 
-    //TODO-implement properly
+    /**
+     * Gets the ItemType of this Item.
+     *
+     * @return The ItemType of this Item.
+     */
+    public ItemType getType()
+    {
+        return type;
+    }
+
+    /**
+     * Sets the ItemType of this Item.
+     *
+     * @param type The ItemType to set for this Item.
+     */
+    public void setType(ItemType type)
+    {
+        this.type = type;
+    }
+
+    /**
+     * Gets the barcode of this Item.
+     *
+     * @return The barcode of this Item.
+     */
+    public String getBarcode()
+    {
+        return barcode;
+    }
+
+    /**
+     * Sets the barcode of this Item.
+     *
+     * @param barcode The barcode to set for this Item.
+     * @throws InvalidBarcodeException If the provided barcode is null, empty, or longer than the maximum allowed length.
+     */
+    public void setBarcode(String barcode)
+    throws InvalidBarcodeException
+    {
+        if (barcode == null || barcode.isEmpty())
+            throw new InvalidBarcodeException("Item barcode cannot be null or empty.");
+        if (barcode.length() > ITEM_BARCODE_LENGTH)
+            throw new InvalidBarcodeException("Item barcode length cannot be greater than " +
+                                                ITEM_BARCODE_LENGTH + " characters. Received: " + barcode.length());
+        this.barcode = barcode;
+    }
+
+    /**
+     * Gets the author ID of this Item.
+     *
+     * @return The author ID of this Item.
+     */
+    public int getAuthorID()
+    {
+        return authorID;
+    }
+
+    /**
+     * Sets the author ID of this Item.
+     *
+     * @param authorID The author ID to set for this Item.
+     * @throws InvalidIDException If the provided author ID is not greater than 0.
+     */
+    public void setAuthorID(int authorID)
+    throws InvalidIDException
+    {
+        if (authorID <= 0)
+            throw new InvalidIDException("Author ID must be greater than 0. Received: " + authorID);
+        this.authorID = authorID;
+    }
+
+    /**
+     * Gets the classification ID of this Item.
+     *
+     * @return The classification ID of this Item.
+     */
+    public int getClassificationID()
+    {
+        return classificationID;
+    }
+
+    /**
+     * Sets the classification ID of this Item.
+     *
+     * @param classificationID The classification ID to set for this Item.
+     * @throws InvalidIDException If the provided classification ID is not greater than 0.
+     */
+    public void setClassificationID(int classificationID)
+    throws InvalidIDException
+    {
+        if (classificationID <= 0)
+            throw new InvalidIDException("Classification ID must be greater than 0. Received: " + classificationID);
+        this.classificationID = classificationID;
+    }
+
+    /**
+     * Gets the author name of this Item.
+     *
+     * @return The author name of this Item.
+     */
+    public String getAuthorName()
+    {
+        return authorName;
+    }
+
+    /**
+     * Sets the author name of this Item.
+     *
+     * @param authorName The author name to set for this Item.
+     */
+    public void setAuthorName(String authorName)
+    {
+        this.authorName = authorName; //Validation is the responsibility of the Author class
+    }
+
+    /**
+     * Gets the classification name of this Item.
+     *
+     * @return The classification name of this Item.
+     */
+    public String getClassificationName()
+    {
+        return classificationName;
+    }
+
+    /**
+     * Sets the classification name of this Item.
+     *
+     * @param classificationName The classification name to set for this Item.
+     */
+    public void setClassificationName(String classificationName)
+    {
+        this.classificationName = classificationName; //Validation is the responsibility of the Classification class
+    }
+
+    /**
+     * Gets the number of days this Item is allowed to be rented.
+     *
+     * @return The number of days this Item is allowed to be rented.
+     */
     public int getAllowedRentalDays()
     {
         return allowedRentalDays;
     }
 
+    /**
+     * Sets the number of days this Item is allowed to be rented.
+     *
+     * @param allowedRentalDays The number of days to set for this Item.
+     * @throws InvalidDateException If the provided number of days is less than 0.
+     */
     public void setAllowedRentalDays(int allowedRentalDays)
     throws InvalidDateException
     {
@@ -174,11 +431,21 @@ public class Item extends Entity
         this.allowedRentalDays = allowedRentalDays;
     }
 
+    /**
+     * Checks if this Item is available.
+     *
+     * @return True if this Item is available, false otherwise.
+     */
     public boolean isAvailable()
     {
         return available;
     }
 
+    /**
+     * Sets the availability of this Item.
+     *
+     * @param available The availability to set for this Item.
+     */
     public void setAvailable(boolean available)
     {
         this.available = available;

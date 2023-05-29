@@ -34,8 +34,8 @@ public class Author extends Entity
      */
     static {
         int[] metaData = DatabaseHandler.getAuthorMetaData();
-        AUTHOR_FIRST_NAME_LENGTH = metaData[0];
-        AUTHOR_LAST_NAME_LENGTH = metaData[1];
+        AUTHOR_FIRST_NAME_LENGTH = metaData[0]; //100
+        AUTHOR_LAST_NAME_LENGTH = metaData[1];  //100
     }
 
     /**

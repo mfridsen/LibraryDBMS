@@ -15,21 +15,16 @@ import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class Literature extends Film
+public class Literature extends Item
 {
     //ISBN
 
-    public Literature(String title)
+    public Literature(String title, ItemType type, int authorID, int classificationID, String barcode)
     throws ConstructionException
     {
-        super(title);
+        super(title, type, barcode, authorID, classificationID);
     }
 
-    public Literature(int itemID, String title, int allowedRentalDays, boolean available)
-    throws ConstructionException
-    {
-        super(itemID, title, allowedRentalDays, available);
-    }
 
     public Literature(Item other)
     {

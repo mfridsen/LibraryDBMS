@@ -72,6 +72,7 @@ public class DatabaseHandlerMetaDataTest
 
         int[] metaData = DatabaseHandler.getItemMetaData();
         assertEquals(255, metaData[0]);
+        assertEquals(255, metaData[1]);
 
         System.out.println("\nTEST FINISHED.");
     }

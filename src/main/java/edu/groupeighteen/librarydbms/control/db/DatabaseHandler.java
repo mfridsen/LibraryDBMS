@@ -455,7 +455,16 @@ public class DatabaseHandler
                 titleColumnSize = resultSet.getInt("COLUMN_SIZE");
             }
 
-            return new int[]{titleColumnSize};
+            //Get metadata for barcode column
+            resultSet = metaData.getColumns(null, null,
+                                                      "items", "barcode");
+            int barcodeColumnSize = 0;
+            if (resultSet.next())
+            {
+                barcodeColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{titleColumnSize, barcodeColumnSize};
 
         }
         catch (SQLException e)

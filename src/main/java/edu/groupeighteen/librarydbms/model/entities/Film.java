@@ -18,17 +18,14 @@ import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 public class Film extends Item
 {
     //Publisher Country
+    //actors string
+    //age rating
 
-    public Film(String title)
+
+    public Film(String title, int authorID, int classificationID, String barcode)
     throws ConstructionException
     {
-        super(title);
-    }
-
-    public Film(int itemID, String title, int allowedRentalDays, boolean available)
-    throws ConstructionException
-    {
-        super(itemID, title, allowedRentalDays, available);
+        super(title, ItemType.FILM, barcode, authorID, classificationID);
     }
 
     public Film(Item other)

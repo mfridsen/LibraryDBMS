@@ -43,7 +43,7 @@ CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     -- ENUM TYPE
-    -- barcode
+    barcode VARCHAR(255) UNIQUE NOT NULL,
     -- authorID INT NOT NULL,
     -- classificationID INT NOT NULL,
     allowedRentalDays INT NOT NULL,
