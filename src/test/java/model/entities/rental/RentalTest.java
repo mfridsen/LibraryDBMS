@@ -1,4 +1,4 @@
-package model.entities;
+package model.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.*;

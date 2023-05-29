@@ -1,4 +1,4 @@
-package model.entities;
+package model.entities.item;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;

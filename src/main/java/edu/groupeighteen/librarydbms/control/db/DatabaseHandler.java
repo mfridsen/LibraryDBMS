@@ -424,6 +424,47 @@ public class DatabaseHandler
         return new int[0];
     }
 
+    //TODO-test
+    //TODO-comment
+    public static int[] getPublisherMetaData()
+    {
+        checkConnection();
+
+        try
+        {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            // Get metadata for username column
+            ResultSet resultSet = metaData.getColumns(null, null,
+                                                      "publishers", "publisherName");
+            int publisherNameColumnSize = 0;
+            if (resultSet.next())
+            {
+                publisherNameColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            // Get metadata for password column
+            resultSet = metaData.getColumns(null, null,
+                                            "publishers", "email");
+            int emailColumnSize = 0;
+            if (resultSet.next())
+            {
+                emailColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{publisherNameColumnSize, emailColumnSize};
+
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Couldn't retrieve Publisher Meta data due to " +
+                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Won't reach, but needed to compile
+        return new int[0];
+    }
+
 
     //TODO-test
     //TODO-comment
@@ -532,5 +573,6 @@ public class DatabaseHandler
             setup(false);
         }
     }
+
 
 }
