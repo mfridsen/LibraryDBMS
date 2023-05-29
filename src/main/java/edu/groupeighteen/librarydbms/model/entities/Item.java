@@ -27,7 +27,7 @@ public class Item extends Entity
     //TODO-comment everything
 
     //TODO ADD DELETED IN CONSTRUCTORS
-    public static final int ITEM_TITLE_MAX_LENGTH; //TODO-PRIO RETRIEVE METADATA
+    public static final int ITEM_TITLE_MAX_LENGTH;
     public static final int DEFAULT_ALLOWED_DAYS = 14;
 
     /*
@@ -40,12 +40,12 @@ public class Item extends Entity
     }
 
     private int itemID; //Primary key
+    private String title;
+    //ENUM TYPE
+    //ISBN
     //Author ID //FK
     //Publisher ID //FK
     //classificationID //FK
-    //ENUM TYPE
-    private String title;
-    //ISBN
     //Author name
     //Publisher name
     //Genre/Classification

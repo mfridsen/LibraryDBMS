@@ -27,13 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ItemTest {
-
-    static {
-        System.out.println("Verifying metadata and constants...");
-        System.out.println("Item.ITEM_TITLE_MAX_LENGTH = " + Item.ITEM_TITLE_MAX_LENGTH);
-        System.out.println("Item.DEFAULT_ALLOWED_DAYS = " + Item.DEFAULT_ALLOWED_DAYS);
-    }
-
     //TODO-PRIO UPDATE
 
     @Test

@@ -74,6 +74,6 @@ INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, 
 ('user7', 'password7', 5, 0, 0.0, 1, 0),
 ('user8', 'password8', 5, 0, 0.0, 1, 0),
 ('user9', 'password9', 5, 0, 0.0, 1, 0),
-('uname', 'password', 5, 0, 0.0, 1, 0);
+('user10', 'password10', 5, 0, 0.0, 1, 0);
 
 -- //TODO add Rental test data here

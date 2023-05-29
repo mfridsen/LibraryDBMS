@@ -43,6 +43,7 @@ public class User extends Entity
 {
 
     //TODO ADD DELETED IN CONSTRUCTORS
+    //TODO-PRIO DELETING USERS WITH FEES AND ACTIVE RENTALS SHOULD NOT BE POSSIBLE
 
     //TODO-future add more fields and methods
     //TODO-comment everything
