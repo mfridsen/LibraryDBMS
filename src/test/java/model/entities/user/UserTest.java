@@ -4,9 +4,9 @@ import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidRentalStatusChangeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -235,7 +235,7 @@ public class UserTest {
             String username = "newUsername";
             testUser.setUsername(username);
             assertEquals(username, testUser.getUsername());
-        } catch (InvalidUsernameException | ConstructionException e) {
+        } catch (InvalidNameException | ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -254,19 +254,19 @@ public class UserTest {
 
             // Test for null input
             String nullUsername = null;
-            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(nullUsername));
+            assertThrows(InvalidNameException.class, () -> testUser.setUsername(nullUsername));
 
             // Test for empty string
             String emptyUsername = "";
-            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(emptyUsername));
+            assertThrows(InvalidNameException.class, () -> testUser.setUsername(emptyUsername));
 
             // Test for username length less than minimum length
             String shortUsername = "ab";
-            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(shortUsername));
+            assertThrows(InvalidNameException.class, () -> testUser.setUsername(shortUsername));
 
             // Test for username length greater than maximum length
             String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
-            assertThrows(InvalidUsernameException.class, () -> testUser.setUsername(longUsername));
+            assertThrows(InvalidNameException.class, () -> testUser.setUsername(longUsername));
         } catch (ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

@@ -353,6 +353,13 @@ public class DatabaseHandler
 
     //TODO-test
     //TODO-comment
+    /**
+     * Retrieves the metadata for the "authors" table from the database, specifically the sizes of the
+     * "authorFirstname" and "authorLastName" columns.
+     *
+     * @return an int array with two elements, the first representing the size of "authorFirstname" column and the
+     * second representing the size of the "authorLastName" column.
+     */
     public static int[] getAuthorMetaData()
     {
         checkConnection();
@@ -394,6 +401,12 @@ public class DatabaseHandler
 
     //TODO-test
     //TODO-comment
+    /**
+     * Retrieves the metadata for the "classifications" table from the database, specifically the size of the
+     * "classificationName" column.
+     *
+     * @return an int array with one element, representing the size of the "classificationName" column.
+     */
     public static int[] getClassificationMetaData()
     {
         checkConnection();
@@ -426,6 +439,13 @@ public class DatabaseHandler
 
     //TODO-test
     //TODO-comment
+    /**
+     * Retrieves the metadata for the "publishers" table from the database, specifically the sizes of the
+     * "publisherName" and "email" columns.
+     *
+     * @return an int array with two elements, the first representing the size of "publisherName" column and the second
+     * representing the size of the "email" column.
+     */
     public static int[] getPublisherMetaData()
     {
         checkConnection();
@@ -465,9 +485,53 @@ public class DatabaseHandler
         return new int[0];
     }
 
+    //TODO-test
+    //TODO-comment
+    /**
+     * Retrieves the metadata for the "items" table from the database, specifically the size of the
+     * "title" column.
+     *
+     * @return an int array with one element, representing the size of the "title" column.
+     */
+    public static int[] getItemMetaData()
+    {
+        checkConnection();
+
+        try
+        {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            //Get metadata for title column
+            ResultSet resultSet = metaData.getColumns(null, null,
+                                                      "items", "title");
+            int titleColumnSize = 0;
+            if (resultSet.next())
+            {
+                titleColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{titleColumnSize};
+
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Couldn't retrieve Item Meta data due to " +
+                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Won't reach, but needed to compile
+        return new int[0];
+    }
 
     //TODO-test
     //TODO-comment
+    /**
+     * Retrieves the metadata for the "users" table from the database, specifically the sizes of the "username"
+     * and "password" columns.
+     *
+     * @return an int array with two elements, the first representing the size of "username" column and the second
+     * representing the size of the "password" column.
+     */
     public static int[] getUserMetaData()
     {
         checkConnection();
@@ -500,36 +564,6 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve User Meta data due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        //Won't reach, but needed to compile
-        return new int[0];
-    }
-
-    public static int[] getItemMetaData()
-    {
-        checkConnection();
-
-        try
-        {
-            DatabaseMetaData metaData = connection.getMetaData();
-
-            //Get metadata for title column
-            ResultSet resultSet = metaData.getColumns(null, null,
-                                                      "items", "title");
-            int titleColumnSize = 0;
-            if (resultSet.next())
-            {
-                titleColumnSize = resultSet.getInt("COLUMN_SIZE");
-            }
-
-            return new int[]{titleColumnSize};
-
-        }
-        catch (SQLException e)
-        {
-            ExceptionHandler.HandleFatalException("Couldn't retrieve Item Meta data due to " +
                                                           e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
@@ -573,6 +607,4 @@ public class DatabaseHandler
             setup(false);
         }
     }
-
-
 }

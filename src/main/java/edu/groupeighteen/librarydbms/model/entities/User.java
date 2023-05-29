@@ -2,12 +2,11 @@ package edu.groupeighteen.librarydbms.model.entities;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidRentalException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidRentalStatusChangeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
 
 /**
  * @author Mattias Fridsén
@@ -94,14 +93,14 @@ public class User extends Entity
         try
         {
             this.userID = 0;
-            setUsername(username); //InvalidUsernameException
+            setUsername(username); //InvalidNameException
             setPassword(password); //InvalidPasswordException
             this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
             this.currentRentals = 0;
             this.lateFee = 0.0;
             this.allowedToRent = true;
         }
-        catch (InvalidUsernameException | InvalidPasswordException e)
+        catch (InvalidNameException | InvalidPasswordException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
                                                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -130,14 +129,14 @@ public class User extends Entity
         try
         {
             setUserID(userID); //Throws InvalidIDException
-            setUsername(username); //Throws InvalidUsernameException
+            setUsername(username); //Throws InvalidNameException
             setPassword(password); //Throws InvalidPasswordException
             this.allowedRentals = allowedRentals;
             setCurrentRentals(currentRentals); //Throws InvalidRentalException
             setLateFee(lateFee); //Throws InvalidLateFeeException
             setAllowedToRent(allowedToRent);
         }
-        catch (InvalidIDException | InvalidUsernameException | InvalidPasswordException | RentalNotAllowedException
+        catch (InvalidIDException | InvalidNameException | InvalidPasswordException | RentalNotAllowedException
                | InvalidLateFeeException | InvalidRentalStatusChangeException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
@@ -202,18 +201,18 @@ public class User extends Entity
      * Sets the username for this User.
      *
      * @param username The username to set.
-     * @throws InvalidUsernameException If the provided username is not valid (null, empty, too short, or too long).
+     * @throws InvalidNameException If the provided username is not valid (null, empty, too short, or too long).
      */
     public void setUsername(String username)
-    throws InvalidUsernameException
+    throws InvalidNameException
     {
         if (username == null || username.isEmpty())
-            throw new InvalidUsernameException("Username cannot be null or empty.");
+            throw new InvalidNameException("Username cannot be null or empty.");
         if (username.length() < MIN_USERNAME_LENGTH)
-            throw new InvalidUsernameException("Username too short, must be at least " + MIN_USERNAME_LENGTH +
+            throw new InvalidNameException("Username too short, must be at least " + MIN_USERNAME_LENGTH +
                                                        " characters. Received: " + username);
         if (username.length() > MAX_USERNAME_LENGTH)
-            throw new InvalidUsernameException("Username too long, must be at most " + MAX_USERNAME_LENGTH +
+            throw new InvalidNameException("Username too long, must be at most " + MAX_USERNAME_LENGTH +
                                                        " characters. Received: " + username);
         this.username = username;
     }

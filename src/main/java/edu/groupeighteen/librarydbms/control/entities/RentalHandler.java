@@ -12,7 +12,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException
 import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 
@@ -148,7 +148,7 @@ public class RentalHandler {
             return newRental;
 
         } catch (InvalidIDException | NullUserException | NullItemException | InvalidDateException
-                 | InvalidUsernameException | InvalidTitleException e) {
+                 | InvalidNameException | InvalidTitleException e) {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
         } catch (ConstructionException e) {
@@ -292,7 +292,7 @@ public class RentalHandler {
                 }
             }
         } catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException |
-                InvalidUsernameException | InvalidTitleException | InvalidLateFeeException | NullUserException |
+                InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullUserException |
                 NullItemException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve rentals from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);

@@ -14,7 +14,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException
 import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import org.junit.jupiter.api.*;
@@ -379,7 +379,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             RentalHandler.setVerbose(false);
 
-        } catch (InvalidIDException | NullUserException | InvalidUsernameException | RentalNotAllowedException e) {
+        } catch (InvalidIDException | NullUserException | InvalidNameException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -419,7 +419,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             System.out.println(actualMessage);
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | NullUserException | InvalidUsernameException | InvalidLateFeeException e) {
+        } catch (InvalidIDException | NullUserException | InvalidNameException | InvalidLateFeeException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
