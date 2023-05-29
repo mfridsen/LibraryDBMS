@@ -26,20 +26,6 @@ INSERT INTO classifications (classificationName, description, deleted) VALUES
 ('Psychology', 'Scientific literature on the topic of psychology', 0),
 ('Fantasy', 'Tolkien did it best', 0);
 
--- //TODO add Publisher test data
--- ('', '', ),
-INSERT INTO publishers (publisherName, email, deleted) VALUES
-('publisher1', 'publisher1@email.com', 0),
-('publisher2', 'publisher2@email.com', 0),
-('publisher3', 'publisher3@email.com', 0),
-('publisher4', 'publisher4@email.com', 0),
-('publisher5', 'publisher5@email.com', 0),
-('publisher6', 'publisher6@email.com', 0),
-('publisher7', 'publisher7@email.com', 0),
-('publisher8', 'publisher8@email.com', 0),
-('publisher9', 'publisher9@email.com', 0),
-('publisher10', 'publisher10@email.com', 0);
-
 -- //TODO add Item test data here
 INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES
 ('item1', 14, 1, 0),

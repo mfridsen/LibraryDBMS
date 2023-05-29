@@ -62,29 +62,13 @@ public class DatabaseHandlerMetaDataTest
     }
 
     /**
-     * Tests retrieving Publisher meta data.
-     */
-    @Test
-    @Order(3)
-    void testGetPublisherMetaData()
-    {
-        System.out.println("\n3: Testing to retrieve Publisher meta data...");
-
-        int[] metaData = DatabaseHandler.getPublisherMetaData();
-        assertEquals(255, metaData[0]);
-        assertEquals(255, metaData[1]);
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    /**
      * Tests retrieving Item meta data.
      */
     @Test
-    @Order(4)
+    @Order(3)
     void testGetItemMetaData()
     {
-        System.out.println("\n4: Testing to retrieve Item meta data...");
+        System.out.println("\n3: Testing to retrieve Item meta data...");
 
         int[] metaData = DatabaseHandler.getItemMetaData();
         assertEquals(255, metaData[0]);
@@ -96,10 +80,10 @@ public class DatabaseHandlerMetaDataTest
      * Tests retrieving User meta data.
      */
     @Test
-    @Order(5)
+    @Order(4)
     void testGetUserMetaData()
     {
-        System.out.println("\n5: Testing to retrieve User meta data...");
+        System.out.println("\n4: Testing to retrieve User meta data...");
 
         int[] metaData = DatabaseHandler.getUserMetaData();
         assertEquals(20, metaData[0]);

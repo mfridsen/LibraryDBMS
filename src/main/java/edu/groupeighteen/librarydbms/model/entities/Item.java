@@ -50,14 +50,11 @@ public class Item extends Entity
     protected int itemID; //Primary key
     protected String title;
     protected ItemType type;
-
-    //Author ID //FK
-
-    //classificationID //FK
-    //Author name
-
-    //Genre/Classification
-    //Barcode
+    protected int authorID; //FK
+    protected int classificationID; //FK
+    protected String authorName; //Not in table
+    protected String classificationName; //Not in table
+    protected String barcode;
     protected int allowedRentalDays;
     protected boolean available; //True by default //TODO-prio double check availability on delete
 
