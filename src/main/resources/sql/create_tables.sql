@@ -38,13 +38,13 @@ CREATE TABLE `publishers` (
 -- Item, dependent on Author, Classification and Publisher
 CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    -- authorID INT NOT NULL,
-    -- publisherID INT NOT NULL,
-    -- classificationID INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     -- ENUM TYPE
         -- ISBN
         -- barcode
+    -- authorID INT NOT NULL,
+        -- publisherID INT NOT NULL,
+        -- classificationID INT NOT NULL,
     allowedRentalDays INT NOT NULL,
     available TINYINT(1) NOT NULL,
     deleted TINYINT(1) NOT NULL,
