@@ -9,6 +9,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedExc
 import edu.groupeighteen.librarydbms.model.exceptions.user.*;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -284,7 +285,7 @@ public class UserHandler {
 
             // Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
-        } catch (UserNotFoundException | InvalidIDException e) {
+        } catch (EntityNotFoundException | InvalidIDException e) {
             ExceptionHandler.HandleFatalException("Failed to update user in database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -303,7 +304,7 @@ public class UserHandler {
      *
      * This method first checks if the provided User object is not null and if
      * the user with the ID of the provided User object exists in the database. If the user does not exist,
-     * a UserNotFoundException is thrown.
+     * a EntityNotFoundException is thrown.
      *
      * If the user exists, an SQL command is prepared to delete the user from the database,
      * and this command is executed.
@@ -312,7 +313,8 @@ public class UserHandler {
      *
      * @param user The User object representing the user to be deleted.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void hardDeleteUser(User user) throws NullEntityException, UserNotFoundException {
+    public static void hardDeleteUser(User user) throws NullEntityException, EntityNotFoundException
+    {
         try {
             //Validate the input. Throws NullEntityException
             validateUser(user);
@@ -342,7 +344,7 @@ public class UserHandler {
      * @return true if successful, otherwise false
      */
     public static boolean login(String username, String password)
-    throws InvalidNameException, UserNotFoundException, InvalidPasswordException {
+    throws InvalidNameException, EntityNotFoundException, InvalidPasswordException {
         try {
             // No point verifying empty strings, throws UsernameEmptyException
             checkEmptyUsername(username);
@@ -351,7 +353,7 @@ public class UserHandler {
 
             //First check list
             if (!storedUsernames.contains(username))
-                throw new UserNotFoundException("Login failed: User " + username + " does not exist.");
+                throw new EntityNotFoundException("Login failed: User " + username + " does not exist.");
 
             String query = "SELECT password FROM users WHERE username = ?";
             String[] params = {username};
@@ -517,12 +519,12 @@ public class UserHandler {
             throw new InvalidNameException("Username " + username + " already taken.");
     }
 
-    private static void validateUser(User user) throws UserNotFoundException, InvalidIDException, NullEntityException
+    private static void validateUser(User user) throws EntityNotFoundException, InvalidIDException, NullEntityException
     {
         checkNullUser(user);
         int ID = user.getUserID();
         if (UserHandler.getUserByID(ID) == null)
-            throw new UserNotFoundException("User with ID " + user + "not found in database.");
+            throw new EntityNotFoundException("User with ID " + user + "not found in database.");
     }
 
     /**

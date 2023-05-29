@@ -350,9 +350,6 @@ public class DatabaseHandler
         }
     }
 
-
-    //TODO-test
-    //TODO-comment
     /**
      * Retrieves the metadata for the "authors" table from the database, specifically the sizes of the
      * "authorFirstname" and "authorLastName" columns.
@@ -399,8 +396,6 @@ public class DatabaseHandler
         return new int[0];
     }
 
-    //TODO-test
-    //TODO-comment
     /**
      * Retrieves the metadata for the "classifications" table from the database, specifically the size of the
      * "classificationName" column.
@@ -437,8 +432,6 @@ public class DatabaseHandler
         return new int[0];
     }
 
-    //TODO-test
-    //TODO-comment
     /**
      * Retrieves the metadata for the "publishers" table from the database, specifically the sizes of the
      * "publisherName" and "email" columns.
@@ -485,8 +478,6 @@ public class DatabaseHandler
         return new int[0];
     }
 
-    //TODO-test
-    //TODO-comment
     /**
      * Retrieves the metadata for the "items" table from the database, specifically the size of the
      * "title" column.
@@ -523,8 +514,6 @@ public class DatabaseHandler
         return new int[0];
     }
 
-    //TODO-test
-    //TODO-comment
     /**
      * Retrieves the metadata for the "users" table from the database, specifically the sizes of the "username"
      * and "password" columns.

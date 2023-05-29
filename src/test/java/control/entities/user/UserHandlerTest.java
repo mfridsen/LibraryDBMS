@@ -9,6 +9,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedExc
 import edu.groupeighteen.librarydbms.model.exceptions.user.*;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -435,8 +436,8 @@ public class UserHandlerTest extends BaseHandlerTest {
             //Assert User doesn't exist in database
             assertNull(UserHandler.getUserByID(1));
 
-            // Call deleteUser and expect a UserNotFoundException to be thrown
-            assertThrows(UserNotFoundException.class, () -> UserHandler.hardDeleteUser(nonExistingUser), "deleteUser should throw UserNotFoundException when the user does not exist.");
+            // Call deleteUser and expect a EntityNotFoundException to be thrown
+            assertThrows(EntityNotFoundException.class, () -> UserHandler.hardDeleteUser(nonExistingUser), "deleteUser should throw EntityNotFoundException when the user does not exist.");
         } catch (InvalidIDException | ConstructionException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -465,7 +466,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Verify that the user has been deleted from the database
             assertNull(UserHandler.getUserByUsername("user1"));
-        } catch (NullEntityException | InvalidNameException | InvalidPasswordException | UserNotFoundException e) {
+        } catch (NullEntityException | InvalidNameException | InvalidPasswordException | EntityNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -525,7 +526,7 @@ public class UserHandlerTest extends BaseHandlerTest {
         System.out.println("\n40: Testing login method with nonexistent username...");
 
         // Call login with a nonexistent username and expect false to be returned
-        assertThrows(UserNotFoundException.class, () -> UserHandler.login("nonexistentUser", "password"), "Login should return false when username does not exist.");
+        assertThrows(EntityNotFoundException.class, () -> UserHandler.login("nonexistentUser", "password"), "Login should return false when username does not exist.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -541,7 +542,7 @@ public class UserHandlerTest extends BaseHandlerTest {
             UserHandler.createNewUser("user1", "password1");
             // Attempt to login with the correct username but incorrect password
             assertFalse(UserHandler.login("user1", "incorrectPassword"), "Login should return false when password is incorrect.");
-        } catch (InvalidNameException | InvalidPasswordException | UserNotFoundException e) {
+        } catch (InvalidNameException | InvalidPasswordException | EntityNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -560,7 +561,7 @@ public class UserHandlerTest extends BaseHandlerTest {
 
             // Attempt to login with the correct username and password
             assertTrue(UserHandler.login("user2", "password2"), "Login should return true when username and password are correct.");
-        } catch (InvalidNameException | InvalidPasswordException | UserNotFoundException e) {
+        } catch (InvalidNameException | InvalidPasswordException | EntityNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

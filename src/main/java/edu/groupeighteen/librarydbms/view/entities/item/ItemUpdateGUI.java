@@ -5,7 +5,7 @@ import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
@@ -154,7 +154,7 @@ public class ItemUpdateGUI extends GUI {
                 ItemHandler.updateItem(olditem);
                 dispose();
                 new ItemGUI(this, newitem);
-            } catch (NullEntityException | ItemNotFoundException sqle) {
+            } catch (NullEntityException | EntityNotFoundException sqle) {
                 sqle.printStackTrace();
                 LibraryManager.exit(1);
             } catch (IllegalArgumentException ile) {

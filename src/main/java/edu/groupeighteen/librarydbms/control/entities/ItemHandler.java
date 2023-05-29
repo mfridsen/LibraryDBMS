@@ -5,8 +5,8 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 
 import java.sql.*;
@@ -308,7 +308,8 @@ public class ItemHandler {
      * Updates an existing item in the database and adjusts the count of the old and new titles.
      * @param item The Item object containing the updated information.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void updateItem(Item item) throws NullEntityException, ItemNotFoundException {
+    public static void updateItem(Item item) throws NullEntityException, EntityNotFoundException
+    {
         try {
             //TODO-prio update when Item is finished
             //Validate the input, throws NullEntityException
@@ -316,7 +317,7 @@ public class ItemHandler {
 
             // Get the old Item instance (which hasn't been updated)
             Item oldItem = getItemByID(item.getItemID());
-            if (oldItem == null) throw new ItemNotFoundException("Updated failed: could not find Item with ID " + item.getItemID());
+            if (oldItem == null) throw new EntityNotFoundException("Updated failed: could not find Item with ID " + item.getItemID());
 
             // Get the old title
             String oldTitle = oldItem.getTitle();
@@ -368,16 +369,17 @@ public class ItemHandler {
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void hardDeleteItem(Item item) throws NullEntityException, ItemNotFoundException {
+    public static void hardDeleteItem(Item item) throws NullEntityException, EntityNotFoundException
+    {
         try {
             //TODO-prio UPDATE TO CHANGE DELETED
             //TODO-prio update when Item is finished
             //Validate the input, NullEntityException
             checkNullItem(item);
 
-            // Get the old title, throws ItemNotFoundException
+            // Get the old title, throws EntityNotFoundException
             Item oldItem = getItemByID(item.getItemID());
-            if (oldItem == null) throw new ItemNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
+            if (oldItem == null) throw new EntityNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
             String oldTitle = oldItem.getTitle();
 
             // Check if the item exists in the database
@@ -519,27 +521,27 @@ public class ItemHandler {
      * Retrieves the allowed rental days for an item by its ID.
      * @param itemID The ID of the item.
      * @return The allowed rental days for the item.
-     * @throws ItemNotFoundException If no item with the provided ID exists in the database.
+     * @throws EntityNotFoundException If no item with the provided ID exists in the database.
      * @throws InvalidIDException If the provided ID is invalid (e.g., negative or zero).
      */
-    public static int getAllowedRentalDaysByID(int itemID) throws ItemNotFoundException, InvalidIDException {
+    public static int getAllowedRentalDaysByID(int itemID) throws EntityNotFoundException, InvalidIDException {
         Item item = getItemByID(itemID);
         if (item != null) return item.getAllowedRentalDays();
-        else throw new ItemNotFoundException("Item not found. Item ID: " + itemID);
+        else throw new EntityNotFoundException("Item not found. Item ID: " + itemID);
     }
 
     /**
      * Retrieves the number of available copies for a specific item.
      * @param item The Item object for which the available copies are to be retrieved.
      * @return The number of available copies for the item.
-     * @throws ItemNotFoundException If the item does not exist in the database.
+     * @throws EntityNotFoundException If the item does not exist in the database.
      * @throws NullEntityException If the Item is null.
      */
-    public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException, NullEntityException
+    public static int getAvailableCopiesForItem(Item item) throws EntityNotFoundException, NullEntityException
     {
         checkNullItem(item);
         if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
-            throw new ItemNotFoundException(item.getTitle() + ": Item not found in stored or available titles.");
+            throw new EntityNotFoundException(item.getTitle() + ": Item not found in stored or available titles.");
         return availableTitles.get(item.getTitle());
     }
 
@@ -548,7 +550,7 @@ public class ItemHandler {
     /**
      * This method is used to retrieve the title of an item by its ID from the database. It executes a prepared
      * SQL query to fetch the title of the item corresponding to the provided itemID. If the item exists, the title
-     * is returned. If the item does not exist, an ItemNotFoundException is thrown. In the case of a SQLException,
+     * is returned. If the item does not exist, an EntityNotFoundException is thrown. In the case of a SQLException,
      * the exception is handled and the method returns null.
      *
      * @param itemID The ID of the item whose title is to be fetched.

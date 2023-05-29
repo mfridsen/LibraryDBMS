@@ -5,8 +5,8 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import org.junit.jupiter.api.*;
 
@@ -358,7 +358,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         try {
             String nonexistentTitle = "Nonexistent Title";
-            // Expect an ItemNotFoundException when passing a nonexistent title
+            // Expect an EntityNotFoundException when passing a nonexistent title
             assertEquals(0, ItemHandler.getItemsByTitle(nonexistentTitle).size());
         } catch (InvalidTitleException e) {
             fail("Valid operations should not throw exceptions.");
@@ -470,7 +470,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to update with null item
             ItemHandler.updateItem(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (NullEntityException | ItemNotFoundException iae) {
+        } catch (NullEntityException | EntityNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
         }
 
@@ -488,7 +488,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             nonexistentItem.setItemID(99999);
 
             // Try to update this nonexistent item
-            assertThrows(ItemNotFoundException.class, () -> ItemHandler.updateItem(nonexistentItem));
+            assertThrows(EntityNotFoundException.class, () -> ItemHandler.updateItem(nonexistentItem));
         } catch (ConstructionException | InvalidIDException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -554,7 +554,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to delete null item
             ItemHandler.hardDeleteItem(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (NullEntityException | ItemNotFoundException iae) {
+        } catch (NullEntityException | EntityNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
         }
 
@@ -572,7 +572,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             nonexistentItem.setItemID(99999);
 
             // Try to delete this nonexistent item
-            assertThrows(ItemNotFoundException.class, () -> ItemHandler.hardDeleteItem(nonexistentItem));
+            assertThrows(EntityNotFoundException.class, () -> ItemHandler.hardDeleteItem(nonexistentItem));
         } catch (InvalidIDException | ConstructionException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
@@ -616,7 +616,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
                 assertNull(ItemHandler.getAvailableTitles().get(validItem.getTitle()));
             }
 
-        } catch (InvalidTitleException | NullEntityException | ItemNotFoundException e) {
+        } catch (InvalidTitleException | NullEntityException | EntityNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -639,7 +639,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The allowed rental days should be equal to the allowed rental days of the created item
             assertEquals(validItem.getAllowedRentalDays(), allowedRentalDays);
-        } catch (ItemNotFoundException | InvalidTitleException | InvalidIDException e) {
+        } catch (EntityNotFoundException | InvalidTitleException | InvalidIDException e) {
             fail("Unexpected exception: " + e.getMessage());
             e.printStackTrace();
         }
@@ -654,7 +654,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
         // Try to retrieve the allowed rental days for an item with an invalid ID
         int invalidID = 1;
-        Exception exception = assertThrows(ItemNotFoundException.class, () -> {
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             ItemHandler.getAllowedRentalDaysByID(invalidID);
         });
 
@@ -681,7 +681,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The number of available copies should be 1
             assertEquals(1, availableCopies);
-        } catch (ItemNotFoundException | InvalidTitleException | NullEntityException e) {
+        } catch (EntityNotFoundException | InvalidTitleException | NullEntityException e) {
             fail("Item should exist in availableTitles.");
             e.printStackTrace();
         }
@@ -698,8 +698,8 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Create an item with a title that does not exist in the map
             Item invalidItem = new Item("Invalid Title");
 
-            // Expect an ItemNotFoundException
-            Exception exception = assertThrows(ItemNotFoundException.class, () -> {
+            // Expect an EntityNotFoundException
+            Exception exception = assertThrows(EntityNotFoundException.class, () -> {
                 ItemHandler.getAvailableCopiesForItem(invalidItem);
             });
 
