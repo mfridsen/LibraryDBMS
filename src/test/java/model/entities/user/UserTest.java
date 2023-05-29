@@ -1,4 +1,4 @@
-package model.entities;
+package model.entities.user;
 
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
