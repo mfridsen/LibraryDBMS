@@ -14,20 +14,35 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
  * <p>
- * This class represents an Item in the library.
+ * Represents an Item in a library system. This abstract class forms the basis for different types of library Items.
+ * It provides all the common fields and methods needed to handle a library Item, regardless of its specific type
+ * (like book or film).
+ * An Item has a title, type, barcode, author ID, classification ID, author name, classification name,
+ * allowed rental days, and an availability status. These fields can be retrieved and (where applicable) set through
+ * the provided getters and setters.
  * <p>
- * Invariants, enforced by setters:
- * ItemIDs have to be > 0.
- * Titles cannot be null, empty or longer than ITEM_TITLE_MAX_LENGTH.
- * Allowed rental days must not be less than 0.
+ * The Item class also provides constructors to create a new Item, to create an Item with specific data,
+ * and to create a copy of an existing Item.
+ * <p>
+ * Items are uniquely identified by their barcode within the library system, which is enforced at construction.
+ * <p>
+ * The class utilizes the ItemType enum for type specification.
+ * <p>
+ * The maximum length of an Item's title and the length of the Item's barcode are retrieved from the database
+ * upon class initialization to keep the constraints consistent across the system.
+ * <p>
+ * Furthermore, the class provides a static method to get the default allowed rental days based on the ItemType.
+ * <p>
+ * Exceptions are used to handle errors in construction and setting of fields, ensuring the integrity of the Item data.
  */
-public class Item extends Entity
+public abstract class Item extends Entity
 {
     /**
      * An enumeration of different types of items available in the library.
      * Each item type can be one of the following: REFERENCE_LITERATURE, MAGAZINE, FILM, COURSE_LITERATURE, OTHER_BOOKS
      */
-    public enum ItemType {
+    public enum ItemType
+    {
         REFERENCE_LITERATURE,
         MAGAZINE,
         FILM,
@@ -36,19 +51,23 @@ public class Item extends Entity
     }
 
     /**
-     * Maximum allowed length of an item's title. The value is retrieved from the database metadata to maintain consistency.
+     * Maximum allowed length of an item's title. The value is retrieved from the database metadata to
+     * maintain consistency.
      */
     public static final int ITEM_TITLE_MAX_LENGTH;
 
     /**
-     * The exact required length of an item's barcode. The value is retrieved from the database metadata to maintain consistency.
+     * The exact required length of an item's barcode. The value is retrieved from the database metadata to
+     * maintain consistency.
      */
     public static final int ITEM_BARCODE_LENGTH;
 
     /*
-      Static initializer block that retrieves item metadata from the database and sets ITEM_TITLE_MAX_LENGTH and ITEM_BARCODE_LENGTH accordingly.
+      Static initializer block that retrieves item metadata from the database and sets ITEM_TITLE_MAX_LENGTH
+      and ITEM_BARCODE_LENGTH accordingly.
      */
-    static {
+    static
+    {
         int[] metaData = DatabaseHandler.getItemMetaData();
         ITEM_TITLE_MAX_LENGTH = metaData[0];
         ITEM_BARCODE_LENGTH = metaData[1];
@@ -108,12 +127,13 @@ public class Item extends Entity
 
     /**
      * Constructs a new Item object using provided data. The ItemID is not set during construction and should be
-     * set separately after insertion into the database. This constructor is used when creating a new item for the database.
+     * set separately after insertion into the database. This constructor is used when creating a new item for
+     * the database.
      *
-     * @param title Title of the item.
-     * @param type Type of the item.
-     * @param barcode Unique barcode identifier of the item.
-     * @param authorID Identifier for the author or director of the item.
+     * @param title            Title of the item.
+     * @param type             Type of the item.
+     * @param barcode          Unique barcode identifier of the item.
+     * @param authorID         Identifier for the author or director of the item.
      * @param classificationID Identifier for the classification of the item.
      * @throws ConstructionException If any of the validation checks for the input data fail.
      */
@@ -142,20 +162,20 @@ public class Item extends Entity
     }
 
     /**
-     * Constructs an Item object using the provided data. This constructor is typically used when retrieving an item from
-     * the database, as it includes all fields that are stored in the database, including the item's database ID.
+     * Constructs an Item object using the provided data. This constructor is typically used when retrieving an item
+     * from the database, as it includes all fields that are stored in the database, including the item's database ID.
      *
-     * @param deleted Boolean indicating if the item has been deleted.
-     * @param itemID Identifier for the item.
-     * @param title Title of the item.
-     * @param type Type of the item.
-     * @param barcode Unique barcode identifier of the item.
-     * @param authorID Identifier for the author or director of the item.
-     * @param classificationID Identifier for the classification of the item.
-     * @param authorName Name of the author or director of the item.
+     * @param deleted            Boolean indicating if the item has been deleted.
+     * @param itemID             Identifier for the item.
+     * @param title              Title of the item.
+     * @param type               Type of the item.
+     * @param barcode            Unique barcode identifier of the item.
+     * @param authorID           Identifier for the author or director of the item.
+     * @param classificationID   Identifier for the classification of the item.
+     * @param authorName         Name of the author or director of the item.
      * @param classificationName Name of the classification of the item.
-     * @param allowedRentalDays Number of days the item is allowed to be rented for.
-     * @param available Boolean indicating the availability of the item.
+     * @param allowedRentalDays  Number of days the item is allowed to be rented for.
+     * @param available          Boolean indicating the availability of the item.
      * @throws ConstructionException If any of the validation checks for the input data fail.
      */
     public Item(boolean deleted, int itemID, String title, ItemType type, String barcode, int authorID,
@@ -306,7 +326,8 @@ public class Item extends Entity
      * Sets the barcode of this Item.
      *
      * @param barcode The barcode to set for this Item.
-     * @throws InvalidBarcodeException If the provided barcode is null, empty, or longer than the maximum allowed length.
+     * @throws InvalidBarcodeException If the provided barcode is null, empty, or longer than the
+     *                                 maximum allowed length.
      */
     public void setBarcode(String barcode)
     throws InvalidBarcodeException
@@ -315,7 +336,7 @@ public class Item extends Entity
             throw new InvalidBarcodeException("Item barcode cannot be null or empty.");
         if (barcode.length() > ITEM_BARCODE_LENGTH)
             throw new InvalidBarcodeException("Item barcode length cannot be greater than " +
-                                                ITEM_BARCODE_LENGTH + " characters. Received: " + barcode.length());
+                                                      ITEM_BARCODE_LENGTH + " characters. Received: " + barcode.length());
         this.barcode = barcode;
     }
 
