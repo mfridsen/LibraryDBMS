@@ -106,7 +106,7 @@ public class PublisherCreateGUI extends GUI {
         }
 
         //If successful, dispose, create a new Publisher and open a new PublisherGUI for that Publisher
-        try {
+        /*try {
             dispose();
             Rental newRental = RentalHandler.createNewRental(userID, PublisherID);
             new RentalGUI(this, newRental);
@@ -114,7 +114,7 @@ public class PublisherCreateGUI extends GUI {
             System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
             sqle.printStackTrace();
             LibraryManager.exit(1);
-        }
+        }*/
     }
 
     /**
