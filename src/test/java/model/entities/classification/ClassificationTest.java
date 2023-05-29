@@ -16,7 +16,10 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-
+        ClassificationCreationTest.class,
+        ClassificationRetrievalTest.class,
+        ClassificationCopyTest.class,
+        ClassificationSetterTest.class
 })
 public class ClassificationTest {
 

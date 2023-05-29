@@ -73,7 +73,8 @@ public class Classification extends Entity
      * @param classificationName The name of the classification.
      * @param description The description of the classification.
      * @param deleted Indicates whether the classification is deleted.
-     * @throws ConstructionException if the classificationID is invalid or if the classification's name is null, empty, or too long.
+     * @throws ConstructionException if the classificationID is invalid or if the classification's name is null,
+     *          empty, or too long.
      */
     public Classification(int classificationID, String classificationName, String description, boolean deleted)
     throws ConstructionException
