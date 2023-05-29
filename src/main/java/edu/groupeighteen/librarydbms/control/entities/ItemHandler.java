@@ -7,7 +7,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -308,10 +308,10 @@ public class ItemHandler {
      * Updates an existing item in the database and adjusts the count of the old and new titles.
      * @param item The Item object containing the updated information.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void updateItem(Item item) throws NullItemException, ItemNotFoundException {
+    public static void updateItem(Item item) throws NullEntityException, ItemNotFoundException {
         try {
             //TODO-prio update when Item is finished
-            //Validate the input, throws NullItemException
+            //Validate the input, throws NullEntityException
             checkNullItem(item);
 
             // Get the old Item instance (which hasn't been updated)
@@ -368,11 +368,11 @@ public class ItemHandler {
      * Deletes an item from the database and decrements the count of the item's title.
      * @param item The Item object to be deleted.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void hardDeleteItem(Item item) throws NullItemException, ItemNotFoundException {
+    public static void hardDeleteItem(Item item) throws NullEntityException, ItemNotFoundException {
         try {
             //TODO-prio UPDATE TO CHANGE DELETED
             //TODO-prio update when Item is finished
-            //Validate the input, NullItemException
+            //Validate the input, NullEntityException
             checkNullItem(item);
 
             // Get the old title, throws ItemNotFoundException
@@ -533,9 +533,10 @@ public class ItemHandler {
      * @param item The Item object for which the available copies are to be retrieved.
      * @return The number of available copies for the item.
      * @throws ItemNotFoundException If the item does not exist in the database.
-     * @throws NullItemException If the Item is null.
+     * @throws NullEntityException If the Item is null.
      */
-    public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException, NullItemException {
+    public static int getAvailableCopiesForItem(Item item) throws ItemNotFoundException, NullEntityException
+    {
         checkNullItem(item);
         if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
             throw new ItemNotFoundException(item.getTitle() + ": Item not found in stored or available titles.");
@@ -595,12 +596,13 @@ public class ItemHandler {
     }
 
     /**
-     * Checks whether a given Item is null. If so, throws a NullItemException which must be handled.
+     * Checks whether a given Item is null. If so, throws a NullEntityException which must be handled.
      * @param item the item to check.
-     * @throws NullItemException if item is null.
+     * @throws NullEntityException if item is null.
      */
-    private static void checkNullItem(Item item) throws NullItemException {
+    private static void checkNullItem(Item item) throws NullEntityException
+    {
         if (item == null)
-            throw new NullItemException("Invalid item: item is null.");
+            throw new NullEntityException("Invalid item: item is null.");
     }
 }

@@ -9,11 +9,10 @@ import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 
 import java.sql.*;
@@ -147,7 +146,7 @@ public class RentalHandler {
             //Return rental
             return newRental;
 
-        } catch (InvalidIDException | NullUserException | NullItemException | InvalidDateException
+        } catch (InvalidIDException | NullEntityException | InvalidDateException
                  | InvalidNameException | InvalidTitleException e) {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
@@ -179,7 +178,7 @@ public class RentalHandler {
         try {
             //Validate input
             if (rental == null)
-                throw new NullRentalException("Error saving rental: rental is null.");
+                throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException("Error saving rental: rental is null.");
 
             //Prepare query
             String query = "INSERT INTO rentals " +
@@ -206,7 +205,7 @@ public class RentalHandler {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next()) return generatedKeys.getInt(1);
             }
-        } catch (NullRentalException | SQLException e) {
+        } catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | SQLException e) {
             ExceptionHandler.HandleFatalException("Failed to save Rental due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -253,14 +252,14 @@ public class RentalHandler {
                     //Get user by ID, throws UserNotFoundException
                     int userID = resultSet.getInt("userID");
                     User user = UserHandler.getUserByID(userID);
-                    if (user == null) throw new NullUserException("Rental retrieval failed: NullUserException " +
+                    if (user == null) throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException("Rental retrieval failed: NullEntityException " +
                             "thrown for valid user with ID " + userID);
                     String username = user.getUsername();
 
                     //Get item by ID
                     int itemID = resultSet.getInt("itemID");
                     Item item = ItemHandler.getItemByID(itemID);
-                    if (item == null) throw new NullItemException("Rental retrieval failed: NullItemException " +
+                    if (item == null) throw new NullEntityException("Rental retrieval failed: NullEntityException " +
                             "thrown for valid item with ID " + itemID);
                     String itemTitle = item.getTitle();
 
@@ -292,8 +291,7 @@ public class RentalHandler {
                 }
             }
         } catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException |
-                InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullUserException |
-                NullItemException e) {
+                InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve rentals from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -360,7 +358,7 @@ public class RentalHandler {
         //Validate input
         try {
             validateRental(updatedRental);
-        } catch (NullRentalException | RentalNotFoundException | InvalidIDException e) {
+        } catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | RentalNotFoundException | InvalidIDException e) {
             throw new RentalUpdateException("Rental Update failed: " + e.getMessage(), e);
         }
 
@@ -389,7 +387,7 @@ public class RentalHandler {
         //Validate input
         try {
             validateRental(rentalToDelete);
-        } catch (RentalNotFoundException | InvalidIDException | NullRentalException e) {
+        } catch (RentalNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e) {
             throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
         }
 
@@ -424,7 +422,7 @@ public class RentalHandler {
         //Validate input
         try {
             validateRental(rentalToRecover);
-        } catch (RentalNotFoundException | InvalidIDException | NullRentalException e) {
+        } catch (RentalNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e) {
             throw new RentalRecoveryException("Rental Recovery failed: " + e.getMessage(), e);
         }
 
@@ -454,7 +452,7 @@ public class RentalHandler {
         //Validate input
         try {
             validateRental(rentalToDelete);
-        } catch (NullRentalException | RentalNotFoundException | InvalidIDException e) {
+        } catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | RentalNotFoundException | InvalidIDException e) {
             throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
         }
 
@@ -997,13 +995,14 @@ public class RentalHandler {
      * A rental is considered valid if it is not null and it exists in the database (has a valid ID).
      *
      * @param rentalToValidate the rental object to validate.
-     * @throws NullRentalException if the rental is null.
+     * @throws edu.groupeighteen.librarydbms.model.exceptions.NullEntityException if the rental is null.
      * @throws RentalNotFoundException if a rental with the provided rentalID doesn't exist in the database.
      * @throws InvalidIDException if the provided rentalID is invalid (less than or equal to 0).
      */
-    private static void validateRental(Rental rentalToValidate) throws NullRentalException, RentalNotFoundException, InvalidIDException {
+    private static void validateRental(Rental rentalToValidate) throws
+                                                                edu.groupeighteen.librarydbms.model.exceptions.NullEntityException, RentalNotFoundException, InvalidIDException {
         if (rentalToValidate == null)
-            throw new NullRentalException("Error validating rental: rental is null.");
+            throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException("Error validating rental: rental is null.");
         if (getRentalByID(rentalToValidate.getRentalID()) == null)
             throw new RentalNotFoundException("Error validating rental: rental with ID " + rentalToValidate.getRentalID() + " not found.");
     }

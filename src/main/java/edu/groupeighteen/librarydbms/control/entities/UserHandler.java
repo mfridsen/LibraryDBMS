@@ -8,6 +8,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.*;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -251,7 +252,7 @@ public class UserHandler {
      *
      * @param updatedUser The User object containing the updated user data.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void updateUser(User updatedUser) throws NullUserException, InvalidNameException
+    public static void updateUser(User updatedUser) throws NullEntityException, InvalidNameException
     {
         try {
             //Let's check if the user exists in the database before we go on
@@ -311,9 +312,9 @@ public class UserHandler {
      *
      * @param user The User object representing the user to be deleted.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void hardDeleteUser(User user) throws NullUserException, UserNotFoundException {
+    public static void hardDeleteUser(User user) throws NullEntityException, UserNotFoundException {
         try {
-            //Validate the input. Throws NullUserException
+            //Validate the input. Throws NullEntityException
             validateUser(user);
 
             //Prepare a SQL command to delete a user by userID.
@@ -384,7 +385,7 @@ public class UserHandler {
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
-    public static boolean validate(User user, String password) throws NullUserException, InvalidPasswordException {
+    public static boolean validate(User user, String password) throws NullEntityException, InvalidPasswordException {
         checkNullUser(user);
         checkEmptyPassword(password);
         return user.getPassword().equals(password);
@@ -516,7 +517,8 @@ public class UserHandler {
             throw new InvalidNameException("Username " + username + " already taken.");
     }
 
-    private static void validateUser(User user) throws UserNotFoundException, InvalidIDException, NullUserException {
+    private static void validateUser(User user) throws UserNotFoundException, InvalidIDException, NullEntityException
+    {
         checkNullUser(user);
         int ID = user.getUserID();
         if (UserHandler.getUserByID(ID) == null)
@@ -524,13 +526,14 @@ public class UserHandler {
     }
 
     /**
-     * Checks if a given user is null. If so, throws a NullUserException which must be handled.
+     * Checks if a given user is null. If so, throws a NullEntityException which must be handled.
      * @param user the user.
-     * @throws NullUserException if the user is null.
+     * @throws NullEntityException if the user is null.
      */
-    private static void checkNullUser(User user) throws NullUserException {
+    private static void checkNullUser(User user) throws NullEntityException
+    {
         if (user == null)
-            throw new NullUserException("User is null.");
+            throw new NullEntityException("User is null.");
     }
 
     /**

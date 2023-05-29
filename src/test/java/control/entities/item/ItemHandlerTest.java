@@ -7,7 +7,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -470,7 +470,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to update with null item
             ItemHandler.updateItem(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (NullItemException | ItemNotFoundException iae) {
+        } catch (NullEntityException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
         }
 
@@ -554,7 +554,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
             // Try to delete null item
             ItemHandler.hardDeleteItem(null);
             fail("An IllegalArgumentException was expected.");
-        } catch (NullItemException | ItemNotFoundException iae) {
+        } catch (NullEntityException | ItemNotFoundException iae) {
             assertEquals("Invalid item: item is null.", iae.getMessage());
         }
 
@@ -616,7 +616,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
                 assertNull(ItemHandler.getAvailableTitles().get(validItem.getTitle()));
             }
 
-        } catch (InvalidTitleException | NullItemException | ItemNotFoundException e) {
+        } catch (InvalidTitleException | NullEntityException | ItemNotFoundException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -681,7 +681,7 @@ public class ItemHandlerTest extends BaseHandlerTest {
 
             // The number of available copies should be 1
             assertEquals(1, availableCopies);
-        } catch (ItemNotFoundException | InvalidTitleException | NullItemException e) {
+        } catch (ItemNotFoundException | InvalidTitleException | NullEntityException e) {
             fail("Item should exist in availableTitles.");
             e.printStackTrace();
         }

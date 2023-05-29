@@ -9,13 +9,14 @@ import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
@@ -310,8 +311,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | NullItemException | ItemNotFoundException
-                | UserNotFoundException | RentalNotAllowedException e) {
+        } catch (InvalidIDException | ItemNotFoundException | UserNotFoundException
+                | RentalNotAllowedException | NullEntityException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -379,7 +380,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
             RentalHandler.setVerbose(false);
 
-        } catch (InvalidIDException | NullUserException | InvalidNameException | RentalNotAllowedException e) {
+        } catch (InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | InvalidNameException | RentalNotAllowedException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -419,7 +420,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
             System.out.println(actualMessage);
             assertTrue(actualMessage.contains(expectedMessage));
 
-        } catch (InvalidIDException | NullUserException | InvalidNameException | InvalidLateFeeException e) {
+        } catch (InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | InvalidNameException | InvalidLateFeeException e) {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -652,7 +653,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
     /**
      * Test case for updateRental method when the rental to update is null.
      *
-     * This test checks if a NullRentalException is correctly thrown when the rental is null.
+     * This test checks if a NullEntityException is correctly thrown when the rental is null.
      */
     @Test
     @Order(17)
@@ -664,7 +665,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         // Check that the exception has the right message and cause
         assertTrue(exception.getMessage().contains("Rental Update failed:"));
-        assertTrue(exception.getCause() instanceof NullRentalException);
+        assertTrue(exception.getCause() instanceof edu.groupeighteen.librarydbms.model.exceptions.NullEntityException);
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -968,7 +969,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         // Attempt to softly delete a null rental
         Exception e = assertThrows(RentalDeleteException.class, () -> RentalHandler.deleteRental(null), "A RentalDeleteException should be thrown when attempting to softly delete a null rental.");
-        assertTrue(e.getCause() instanceof NullRentalException, "The cause of the RentalDeleteException should be a NullRentalException.");
+        assertTrue(e.getCause() instanceof edu.groupeighteen.librarydbms.model.exceptions.NullEntityException, "The cause of the RentalDeleteException should be a NullEntityException.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -1078,8 +1079,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
                 () -> RentalHandler.undoDeleteRental(null),
                 "A RentalRecoveryException should be thrown when attempting to undo a soft " +
                         "delete on a null rental.");
-        assertTrue(e.getCause() instanceof NullRentalException,
-                "The cause of the RentalRecoveryException should be a NullRentalException.");
+        assertTrue(e.getCause() instanceof edu.groupeighteen.librarydbms.model.exceptions.NullEntityException,
+                "The cause of the RentalRecoveryException should be a NullEntityException.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -1160,8 +1161,8 @@ public class RentalHandlerTest extends BaseHandlerTest {
         Exception e = assertThrows(RentalDeleteException.class,
                 () -> RentalHandler.hardDeleteRental(null), "A RentalDeleteException should be thrown " +
                         "when attempting to delete a null rental.");
-        assertTrue(e.getCause() instanceof NullRentalException,
-                "The cause of the RentalDeleteException should be a NullRentalException.");
+        assertTrue(e.getCause() instanceof edu.groupeighteen.librarydbms.model.exceptions.NullEntityException,
+                "The cause of the RentalDeleteException should be a NullEntityException.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -1375,8 +1376,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
 
         try {
             // Create 5 rentals
-            for (int i = 1; i <= 5; i++)
-                RentalHandler.createNewRental(i, i);
+            createAndSaveRentalsWithDifferentDates(5, 0);
 
             List<Rental> rentals = RentalHandler.getRentalsByRentalDate(dateWithMultipleRentals);
 
@@ -1389,7 +1389,7 @@ public class RentalHandlerTest extends BaseHandlerTest {
                 assertNotNull(rental, "The rental at index " + i + " should not be null.");
                 assertEquals(i + 1, rental.getRentalID(), "The rental ID of the rental at index " + i + " should be " + (i + 1));
             }
-        } catch (InvalidIDException | UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidDateException e) {
+        } catch (InvalidDateException e) {
             fail("Exception occurred during test: " + e.getMessage());
         }
 
