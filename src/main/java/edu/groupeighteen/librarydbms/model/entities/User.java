@@ -71,9 +71,6 @@ public class User extends Entity
     //ENUM TYPE
     private final int allowedRentals;
     private int currentRentals;
-    //First name
-    //Last name
-    //E-mail
     private double lateFee; //TODO-future implement logic
     boolean allowedToRent; //TODO-PRIO UPDATE USERTEST, USERHANDLER, RENTALHANDLER AND TESTS AS WELL AS SETTERS
 

@@ -82,7 +82,26 @@ block and failing like so:
         System.out.println("\nTEST FINISHED.");
     }
 
-For Control classes (named <ModelClassName>Handler), create one test class per one major method in the Handler.
+For Control classes (named <ModelClassName>Handler), create one test class per one major method in the Handler, named
+like so:
+
+/**
+ * Javadoc providing brief description of what the class tests.
+ /*
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class CreateItemTest
+{
+    /**
+     * Javadoc providing a brief description of what the method tests.
+     */
+    @Test
+    @Order(1)
+    void testCreateItem_ValidData()
+    {
+
+    }
+}
+
 For utility methods and generally short methods we can create one or two classes depending on circumstances.
 For instance, if we have a setup() method, which I usually do, at the very top of the class, that method and the methods
 it calls should be tested in one test class, and any other utility methods found at the bottom of the class should be

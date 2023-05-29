@@ -22,6 +22,14 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException
  */
 public class Item extends Entity
 {
+    public enum ItemType
+    {
+        REFERENCE_LITERATURE,
+        MAGAZINE,
+        FILM,
+        COURSE_LITERATURE,
+        OTHER_BOOKS
+    }
 
     //TODO-future add more fields and methods
     //TODO-comment everything
@@ -39,26 +47,26 @@ public class Item extends Entity
         ITEM_TITLE_MAX_LENGTH = metaData[0];
     }
 
-    private int itemID; //Primary key
-    private String title;
-    //ENUM TYPE
-    //ISBN
+    protected int itemID; //Primary key
+    protected String title;
+    protected ItemType type;
+
     //Author ID //FK
-    //Publisher ID //FK
+
     //classificationID //FK
     //Author name
-    //Publisher name
+
     //Genre/Classification
     //Barcode
-    private int allowedRentalDays;
-    private boolean available; //True by default //TODO-prio double check availability on delete
+    protected int allowedRentalDays;
+    protected boolean available; //True by default //TODO-prio double check availability on delete
 
     /**
      * Creation Constructor. Takes the needed values to construct a new Item as arguments.
      *
      * @param title
      */
-    public Item(String title)
+    public Item(String title) //TODO-prio add type
     throws ConstructionException
     {
         super();
@@ -113,6 +121,17 @@ public class Item extends Entity
         this.title = other.title;
         this.allowedRentalDays = other.allowedRentalDays;
         this.available = other.available;
+    }
+
+    public static int getDefaultAllowedDays(ItemType type)
+    {
+        return switch (type)
+                {
+                    case REFERENCE_LITERATURE, MAGAZINE -> 0;
+                    case FILM -> 7;
+                    case COURSE_LITERATURE -> 14;
+                    case OTHER_BOOKS -> 28;
+                };
     }
 
     public int getItemID()

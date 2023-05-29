@@ -35,7 +35,7 @@ CREATE TABLE `publishers` (
     PRIMARY KEY (publisherID)
 );
 
--- Item, dependent on Author, Classification and Publisher
+-- Item, dependent on Author, Classification
 CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -43,7 +43,6 @@ CREATE TABLE items (
         -- ISBN
         -- barcode
     -- authorID INT NOT NULL,
-        -- publisherID INT NOT NULL,
         -- classificationID INT NOT NULL,
     allowedRentalDays INT NOT NULL,
     available TINYINT(1) NOT NULL,

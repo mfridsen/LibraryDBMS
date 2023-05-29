@@ -6,7 +6,7 @@ package edu.groupeighteen.librarydbms.model.entities;
  * @package edu.groupeighteen.librarydbms.model.entities
  * @contact matfir-1@student.ltu.se
  * @date 5/18/2023
- *
+ * <p>
  * This class represents a generic entity object in a library database management system.
  * Each entity in the system is either active or deleted, a state that is stored internally within each entity.
  * This abstract class can be extended to create specific entities with additional properties and behavior.
