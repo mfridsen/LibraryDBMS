@@ -1,5 +1,6 @@
 package edu.groupeighteen.librarydbms.model.entities;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 
 /**
@@ -17,7 +18,15 @@ import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
  */
 public class Literature extends Item
 {
-    //ISBN
+    public static final int LITERATURE_ISBN_LENGTH;
+
+    static
+    {
+        int[] metaData = DatabaseHandler.getLiteratureMetaData();
+        LITERATURE_ISBN_LENGTH = metaData[0];
+    }
+
+    protected String ISBN;
 
     public Literature(String title, ItemType type, int authorID, int classificationID, String barcode)
     throws ConstructionException
