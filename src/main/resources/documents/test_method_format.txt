@@ -102,6 +102,11 @@ public class CreateItemTest
     }
 }
 
+Remember to test ALL the fields are set correctly in the ValidData tests, both declared AND inherited!
+Remember to test Strings for null, empty and length, where applicable.
+Remember to test IDs where applicable.
+Remember to test causes of exceptions where applicable.
+
 For utility methods and generally short methods we can create one or two classes depending on circumstances.
 For instance, if we have a setup() method, which I usually do, at the very top of the class, that method and the methods
 it calls should be tested in one test class, and any other utility methods found at the bottom of the class should be
