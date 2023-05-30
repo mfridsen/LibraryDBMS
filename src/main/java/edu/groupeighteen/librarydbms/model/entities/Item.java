@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidItemTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 
 /**
@@ -154,10 +155,11 @@ public abstract class Item extends Entity
             setAllowedRentalDays(getDefaultAllowedDays(type)); //Throws InvalidDateException
             this.available = true;
         }
-        catch (InvalidTitleException | InvalidIDException | InvalidDateException | InvalidBarcodeException e)
+        catch (InvalidTitleException | InvalidIDException | InvalidDateException | InvalidBarcodeException
+                | InvalidItemTypeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -197,10 +199,11 @@ public abstract class Item extends Entity
             setAllowedRentalDays(allowedRentalDays); //Throws InvalidDateException
             this.available = available;
         }
-        catch (InvalidIDException | InvalidTitleException | InvalidDateException | InvalidBarcodeException e)
+        catch (InvalidIDException | InvalidTitleException | InvalidDateException
+                | InvalidBarcodeException | InvalidItemTypeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -288,7 +291,7 @@ public abstract class Item extends Entity
             throw new InvalidTitleException("Title cannot be null or empty.");
         if (title.length() > ITEM_TITLE_MAX_LENGTH)
             throw new InvalidTitleException("Title cannot be longer than " +
-                                                    ITEM_TITLE_MAX_LENGTH + " characters. Received: " + title.length());
+                    ITEM_TITLE_MAX_LENGTH + " characters. Received: " + title.length());
         this.title = title;
     }
 
@@ -308,7 +311,10 @@ public abstract class Item extends Entity
      * @param type The ItemType to set for this Item.
      */
     public void setType(ItemType type)
+    throws InvalidItemTypeException
     {
+        if (type == null)
+            throw new InvalidItemTypeException("Item type cannot be null.");
         this.type = type;
     }
 
@@ -336,7 +342,7 @@ public abstract class Item extends Entity
             throw new InvalidBarcodeException("Item barcode cannot be null or empty.");
         if (barcode.length() > ITEM_BARCODE_LENGTH)
             throw new InvalidBarcodeException("Item barcode length cannot be greater than " +
-                                                      ITEM_BARCODE_LENGTH + " characters. Received: " + barcode.length());
+                    ITEM_BARCODE_LENGTH + " characters. Received: " + barcode.length());
         this.barcode = barcode;
     }
 

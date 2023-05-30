@@ -1,5 +1,0 @@
-1. Put in new data in row 188- in class PublisherUpdateGUI
-2. See if it's correct data in row 126-145
-3. There might be some errors when you refactor for example item->publisher. Depending if it's capital I or not (i).
-4. It must consist a lot of errors in different classes when you do refactor. We might have to go through the code and see.
-5. Row 133- in class PublisherCreateGUI see if it's correct or not.
