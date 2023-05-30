@@ -5,15 +5,8 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.Author.AuthorNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.Author.InvalidAuthornameException;
-import edu.groupeighteen.librarydbms.model.exceptions.Author.NullAuthorException;
-import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -113,18 +106,7 @@ public class AuthorHandler {
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Creates a new author with the specified authorFirstName and authorLastName. The method first checks if the provided author name is
-     * already taken. If the username is unique, a new User object is created and saved to the database. The Authors's ID
-     * from the database is set in the Author object before it is returned. The method also handles any potential
-     * InvalidPasswordException or InvalidIDException.
-     *
-     * @param authorFirstName The username for the new author.
-     * @param authorLastName The password for the new author.
-     * @return A User object representing the newly created author.
-     */
-    public static Author createNewUAuthor(String authorFirstName, String authorLastName ) throws InvalidAuthornameException,
-            InvalidPasswordException {
+    public static Author createNewUAuthor(String authorFirstName, String authorLastName ) throws InvalidNameException{
         Author newAuthor = null;
 
         try {
@@ -212,6 +194,8 @@ public class AuthorHandler {
                     return new Author(authorID,
                             resultSet.getString("Author First Name"),
                             resultSet.getString("Author Last Name"),
+                            resultSet.getString("biography"),
+                            resultSet.getBoolean("deleted")
                     );
                 }
             }
@@ -235,7 +219,7 @@ public class AuthorHandler {
      *
      * @param updatedAuthor The User object containing the updated user data.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void updateAuthor(Author updatedAuthor) throws NullAuthorException, InvalidAuthornameException {
+    public static void updateAuthor(Author updatedAuthor) throws InvalidNameException {
         try {
             //Let's check if the author exists in the database before we go on
             updateAuthor(updatedAuthor);
@@ -263,7 +247,7 @@ public class AuthorHandler {
 
             // Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
-        } catch (AuthorNotFoundException | InvalidIDException e) {
+        } catch (InvalidIDException e) {
             ExceptionHandler.HandleFatalException("Failed to update author in database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -291,9 +275,9 @@ public class AuthorHandler {
      *
      * @param author The User object representing the user to be deleted.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void hardDeleteAuthor(Author author) throws NullAuthorException, AuthorNotFoundException {
+    public static void hardDeleteAuthor(Author author) throws NullEntityException, EntityNotFoundException {
         try {
-            //Validate the input. Throws NullAuthorException
+            //Validate the input. Throws NullEntityException
             validateAuthor(author);
 
             //Prepare a SQL command to delete a user by authorID.
@@ -364,7 +348,7 @@ public class AuthorHandler {
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
-    public static boolean validate(Author author, String password) throws NullAuthorException, InvalidPasswordException {
+    public static boolean validate(Author author, String password) throws NullEntityException, InvalidPasswordException {
         checkNullAuthor(author);
         checkEmptyPassword(password);
         return author.getAuthorFirstname().equals(password);
@@ -380,7 +364,7 @@ public class AuthorHandler {
      * @param authorName The username of the user to be retrieved.
      * @return A User object representing the user with the provided username. Returns null if the user does not exist.
      */
-    public static Author getAuthorByAuthorname(String authorName) throws InvalidAuthornameException {
+    public static Author getAuthorByAuthorname(String authorName) throws InvalidNameException {
         try {
             // No point in getting invalid users, throws InvalidUsernameException
             checkEmptyAuthorname(authorName);
@@ -402,12 +386,12 @@ public class AuthorHandler {
                 }
             }
         }/* catch (SQLException | InvalidIDException | InvalidLateFeeException | ConstructionException |
-                 AuthorNotAllowedException | InvalidAuthornameException e) {
+                 AuthorNotAllowedException | InvalidNameException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve user by username from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }*/ catch (SQLException e) {
             throw new RuntimeException(e);
-        } catch (InvalidAuthornameException e) {
+        } catch (InvalidNameException | ConstructionException | InvalidIDException e) {
             throw new RuntimeException(e);
         }
 
@@ -438,14 +422,11 @@ public class AuthorHandler {
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 
-    private static void validateAuthorname(String authorName) throws InvalidAuthornameException {
+    private static void validateAuthorname(String authorName) throws InvalidNameException {
         checkEmptyAuthorname(authorName);
         checkAuthornameTaken(authorName);
-        if (authorName.length() < Author.AUTHOR_FIRST_NAME_LENGTH)
-            throw new InvalidAuthornameException("Author Name too short. Must be at least " + Author.MIN_AUTHORNAME_LENGTH +
-                    " characters, received " + authorName.length());
-        if (authorName.length() > Author.MAX_AUTHORNAME_LENGTH)
-            throw new InvalidAuthornameException("Username too long. Must be at most "+ Author.MAX_AUTHORNAME_LENGTH +
+        if (authorName.length() > Author.AUTHOR_FIRST_NAME_LENGTH)
+            throw new InvalidNameException("Username too long. Must be at most "+ Author.AUTHOR_FIRST_NAME_LENGTH +
                     " characters, received " + authorName.length());
     }
 
@@ -464,11 +445,11 @@ public class AuthorHandler {
      * Checks whether a given username is null or empty. If so, throws an UsernameEmptyException
      * which must be handled.
      * @param authorName the username to check.
-     * @throws InvalidAuthornameException if username is null or empty.
+     * @throws InvalidNameException if username is null or empty.
      */
-    private static void checkEmptyAuthorname(String authorName) throws InvalidAuthornameException {
+    private static void checkEmptyAuthorname(String authorName) throws InvalidNameException {
         if (authorName == null || authorName.isEmpty()) {
-            throw new InvalidAuthornameException("Author Name is null or empty.");
+            throw new InvalidNameException("Author Name is null or empty.");
         }
     }
 
@@ -476,28 +457,28 @@ public class AuthorHandler {
      * Checks if a given username exists in the list of usernames. If so, throws a UsernameTakenException
      * which must be handled.
      * @param authorName the username.
-     * @throws InvalidAuthornameException if the username already exists in storedTitles.
+     * @throws InvalidNameException if the username already exists in storedTitles.
      */
-    private static void checkAuthornameTaken(String authorName) throws InvalidAuthornameException {
+    private static void checkAuthornameTaken(String authorName) throws InvalidNameException {
         if (storedAuthors.contains(authorName))
-            throw new InvalidAuthornameException("Author Name " + authorName + " already taken.");
+            throw new InvalidNameException("Author Name " + authorName + " already taken.");
     }
 
-    private static void validateAuthor(Author author) throws AuthorNotFoundException, InvalidIDException, NullAuthorException {
+    private static void validateAuthor(Author author) throws EntityNotFoundException, InvalidIDException, NullEntityException {
         checkNullAuthor(author);
         int ID = author.getAuthorID();
         if (UserHandler.getUserByID(ID) == null)
-            throw new AuthorNotFoundException("User with ID " + author + "not found in database.");
+            throw new EntityNotFoundException("User with ID " + author + "not found in database.");
     }
 
     /**
      * Checks if a given user is null. If so, throws a NullUserException which must be handled.
      * @param author the user.
-     * @throws NullAuthorException if the user is null.
+     * @throws NullEntityException if the user is null.
      */
-    private static void checkNullAuthor(Author author) throws NullAuthorException {
+    private static void checkNullAuthor(Author author) throws NullEntityException {
         if (author == null)
-            throw new NullAuthorException("User is null.");
+            throw new NullEntityException("User is null.");
     }
 
     /**
