@@ -204,7 +204,7 @@ public class ItemHandler
         catch (SQLException e)
         { //This is fatal
             ExceptionHandler.HandleFatalException("Failed to retrieve titles from database due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
         finally
         {
@@ -261,7 +261,7 @@ public class ItemHandler
         catch (/*ConstructionException | InvalidIDException*/ Exception e)
         {
             ExceptionHandler.HandleFatalException("Failed to create Item due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, needed for compilation
@@ -289,7 +289,7 @@ public class ItemHandler
 
             // Execute query and get the generated itemID
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
-                                                                                Statement.RETURN_GENERATED_KEYS))
+                    Statement.RETURN_GENERATED_KEYS))
             {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next())
@@ -301,7 +301,7 @@ public class ItemHandler
         catch (SQLException e)
         { // Fatal
             ExceptionHandler.HandleFatalException("Failed to save Item to database due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, needed for compilation
@@ -339,14 +339,14 @@ public class ItemHandler
                 int allowedRentalDays = resultSet.getInt("allowedRentalDays");
                 boolean available = resultSet.getBoolean("available");
                 boolean deleted = resultSet.getBoolean("deleted");
-        //TODO-PRIO FIX THIS
+                //TODO-PRIO FIX THIS
                 return null;
             }
         }
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         // If no Item was found, return null
@@ -414,7 +414,7 @@ public class ItemHandler
         catch (InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to update Item due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -475,7 +475,7 @@ public class ItemHandler
         catch (SQLException | InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to delete Item due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -515,7 +515,7 @@ public class ItemHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve items by title due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Can be empty
@@ -649,7 +649,7 @@ public class ItemHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to get Item title by ID due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //If no item title was found
