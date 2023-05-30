@@ -293,11 +293,11 @@ public class AuthorHandler {
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
     public static void hardDeleteAuthor(Author author) throws NullAuthorException, AuthorNotFoundException {
         try {
-            //Validate the input. Throws NullUserException
+            //Validate the input. Throws NullAuthorException
             validateAuthor(author);
 
-            //Prepare a SQL command to delete a user by userID.
-            String sql = "DELETE FROM users WHERE userID = ?";
+            //Prepare a SQL command to delete a user by authorID.
+            String sql = "DELETE FROM authors WHERE authorID = ?";
             String[] params = {String.valueOf(author.getAuthorID())};
 
             //Execute the update. //TODO-prio handle cascades in rentals
@@ -360,14 +360,14 @@ public class AuthorHandler {
      * This method compares the password provided as an argument with the password stored in the User object.
      * If the provided password matches the stored password, the method returns true. Otherwise, it returns false.
      *
-     * @param user The User object whose password is to be validated.
+     * @param author The User object whose password is to be validated.
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
-    public static boolean validate(User user, String password) throws NullUserException, InvalidPasswordException {
-        checkNullUser(user);
+    public static boolean validate(Author author, String password) throws NullAuthorException, InvalidPasswordException {
+        checkNullAuthor(author);
         checkEmptyPassword(password);
-        return user.getPassword().equals(password);
+        return author.getAuthorFirstname().equals(password);
     }
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
@@ -380,7 +380,7 @@ public class AuthorHandler {
      * @param authorName The username of the user to be retrieved.
      * @return A User object representing the user with the provided username. Returns null if the user does not exist.
      */
-    public static Author getAuthorByAuthorname(String authorName) throws InvalidUsernameException {
+    public static Author getAuthorByAuthorname(String authorName) throws InvalidAuthornameException {
         try {
             // No point in getting invalid users, throws InvalidUsernameException
             checkEmptyAuthorname(authorName);
@@ -441,7 +441,7 @@ public class AuthorHandler {
     private static void validateAuthorname(String authorName) throws InvalidAuthornameException {
         checkEmptyAuthorname(authorName);
         checkAuthornameTaken(authorName);
-        if (authorName.length() < Author.MIN_AUTHORNAME_LENGTH)
+        if (authorName.length() < Author.AUTHOR_FIRST_NAME_LENGTH)
             throw new InvalidAuthornameException("Author Name too short. Must be at least " + Author.MIN_AUTHORNAME_LENGTH +
                     " characters, received " + authorName.length());
         if (authorName.length() > Author.MAX_AUTHORNAME_LENGTH)
@@ -476,28 +476,28 @@ public class AuthorHandler {
      * Checks if a given username exists in the list of usernames. If so, throws a UsernameTakenException
      * which must be handled.
      * @param authorName the username.
-     * @throws InvalidUsernameException if the username already exists in storedTitles.
+     * @throws InvalidAuthornameException if the username already exists in storedTitles.
      */
     private static void checkAuthornameTaken(String authorName) throws InvalidAuthornameException {
         if (storedAuthors.contains(authorName))
             throw new InvalidAuthornameException("Author Name " + authorName + " already taken.");
     }
 
-    private static void validateUser(User user) throws UserNotFoundException, InvalidIDException, NullUserException {
-        checkNullUser(user);
-        int ID = user.getUserID();
+    private static void validateAuthor(Author author) throws AuthorNotFoundException, InvalidIDException, NullAuthorException {
+        checkNullAuthor(author);
+        int ID = author.getAuthorID();
         if (UserHandler.getUserByID(ID) == null)
-            throw new UserNotFoundException("User with ID " + user + "not found in database.");
+            throw new AuthorNotFoundException("User with ID " + author + "not found in database.");
     }
 
     /**
      * Checks if a given user is null. If so, throws a NullUserException which must be handled.
-     * @param user the user.
-     * @throws NullUserException if the user is null.
+     * @param author the user.
+     * @throws NullAuthorException if the user is null.
      */
-    private static void checkNullUser(User user) throws NullUserException {
-        if (user == null)
-            throw new NullUserException("User is null.");
+    private static void checkNullAuthor(Author author) throws NullAuthorException {
+        if (author == null)
+            throw new NullAuthorException("User is null.");
     }
 
     /**
