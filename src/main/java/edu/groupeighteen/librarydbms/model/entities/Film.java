@@ -22,11 +22,12 @@ public class Film extends Item
     //age rating
 
 
-    public Film(String title, int authorID, int classificationID, String barcode)
+    public Film(String title, int authorID, int classificationID, String barcode, int ageRating)
     throws ConstructionException
     {
         super(title, ItemType.FILM, barcode, authorID, classificationID);
     }
+
 
     public Film(Item other)
     {
