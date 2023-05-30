@@ -38,7 +38,7 @@ public class Film extends Item
     }
 
     private int ageRating;
-    private String publisherCountry; //Can be null, since it's possible we might not know the origin of a movie
+    private String countryOfProduction; //Can be null, since it's possible we might not know the origin of a movie
     private String listOfActors; //Not an actual list, cause databases. Actors entity is too much bother for now
 
     /**
@@ -58,7 +58,7 @@ public class Film extends Item
         try
         {
             setAgeRating(ageRating);
-            this.publisherCountry = null;
+            this.countryOfProduction = null;
             this.listOfActors = null;
         }
         catch (InvalidAgeRatingException e)
@@ -83,13 +83,13 @@ public class Film extends Item
      * @param allowedRentalDays  the number of allowed rental days
      * @param available          true if the film is available, false otherwise
      * @param ageRating          the age rating of the film
-     * @param publisherCountry   the country of the film's publisher
+     * @param countryOfProduction   the country of the film's publisher
      * @param listOfActors       the list of actors in the film
      * @throws ConstructionException if the construction fails
      */
     public Film(boolean deleted, int itemID, String title, ItemType type, String barcode, int authorID,
                 int classificationID, String authorName, String classificationName, int allowedRentalDays,
-                boolean available, int ageRating, String publisherCountry, String listOfActors)
+                boolean available, int ageRating, String countryOfProduction, String listOfActors)
     throws ConstructionException
     {
         super(deleted, itemID, title, type, barcode, authorID, classificationID, authorName, classificationName,
@@ -97,7 +97,7 @@ public class Film extends Item
         try
         {
             setAgeRating(ageRating);
-            setPublisherCountry(publisherCountry);
+            setCountryOfProduction(countryOfProduction);
             setListOfActors(listOfActors);
         }
         catch (InvalidAgeRatingException | InvalidNameException e)
@@ -116,7 +116,7 @@ public class Film extends Item
     {
         super(other);
         this.ageRating = other.ageRating;
-        this.publisherCountry = other.publisherCountry;
+        this.countryOfProduction = other.countryOfProduction;
         this.listOfActors = other.listOfActors;
     }
 
@@ -148,20 +148,20 @@ public class Film extends Item
      *
      * @return the publisher country
      */
-    public String getPublisherCountry() {
-        return publisherCountry;
+    public String getCountryOfProduction() {
+        return countryOfProduction;
     }
 
     /**
      * Sets the country of the film's publisher.
      *
-     * @param publisherCountry the publisher country to set
+     * @param countryOfProduction the publisher country to set
      * @throws InvalidNameException if the publisher country name is invalid
      */
-    public void setPublisherCountry(String publisherCountry) throws InvalidNameException {
-        if (publisherCountry.length() > FILM_COUNTRY_LENGTH)
+    public void setCountryOfProduction(String countryOfProduction) throws InvalidNameException {
+        if (countryOfProduction.length() > FILM_COUNTRY_LENGTH)
             throw new InvalidNameException("Film country name cannot be greater than " + FILM_COUNTRY_LENGTH + ".");
-        this.publisherCountry = publisherCountry;
+        this.countryOfProduction = countryOfProduction;
     }
 
     /**

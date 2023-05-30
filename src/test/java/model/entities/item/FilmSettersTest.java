@@ -625,11 +625,11 @@ public class FilmSettersTest
     void testSetPublisherCountry_ValidPublisherCountry()
     {
         try {
-            film.setPublisherCountry("Canada");
+            film.setCountryOfProduction("Canada");
         } catch (InvalidNameException e) {
             fail("Unexpected exception: " + e.getMessage());
         }
-        assertEquals("Canada", film.getPublisherCountry());
+        assertEquals("Canada", film.getCountryOfProduction());
     }
 
     /**
@@ -640,7 +640,7 @@ public class FilmSettersTest
     void testSetPublisherCountry_PublisherCountryTooLong()
     {
         String tooLongPublisherCountry = String.join("", Collections.nCopies(Film.FILM_COUNTRY_LENGTH + 1, "a"));
-        InvalidNameException exception = assertThrows(InvalidNameException.class, () -> film.setPublisherCountry(tooLongPublisherCountry));
+        InvalidNameException exception = assertThrows(InvalidNameException.class, () -> film.setCountryOfProduction(tooLongPublisherCountry));
         assertEquals("Film country name cannot be greater than " + Film.FILM_COUNTRY_LENGTH + ".", exception.getMessage());
     }
     /**

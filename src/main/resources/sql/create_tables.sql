@@ -48,6 +48,7 @@ CREATE TABLE literature (
 -- //TODO LOOK OVER
 CREATE TABLE films (
     filmID INT PRIMARY KEY,
+    ageRating INT NOT NULL,
     countryOfProduction VARCHAR(100),
     actors TEXT
 );

@@ -64,7 +64,7 @@ public class FilmCopyTest
                     "Available flag should be true.");
             assertEquals(18, film.getAgeRating(),
                     "Age rating should be set correctly in constructor");
-            assertEquals("USA", film.getPublisherCountry());
+            assertEquals("USA", film.getCountryOfProduction());
             assertEquals("Actor1, Actor2, Actor3", film.getListOfActors());
 
 

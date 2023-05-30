@@ -3,7 +3,9 @@ package edu.groupeighteen.librarydbms.control.entities;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
+import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
@@ -52,7 +54,7 @@ public class ItemHandler
      */
     private static final Map<String, Integer> availableTitles = new HashMap<>();
 
-    //TODO-PRIO BARCODES
+    //TODO-PRIO BARCODES UNIQUENESS
 
     /**
      * Returns the storedTitles map.
@@ -238,38 +240,8 @@ public class ItemHandler
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-
-    public static Item createNewItem(String title, Item.ItemType type, int authorID, int classificationID,
-                                     String barcode)
-    throws InvalidTitleException
-    {
-        try
-        {
-            //TODO-prio update method and test when Item is finished
-            //Validate input, throws InvalidTitleException
-            checkEmptyTitle(title);
-
-            //Create item and retrieve and set itemID, throws ConstructionException and InvalidIDException
-            Item newItem = new Item(title, type, barcode, authorID, classificationID);
-            newItem.setItemID(saveItem(newItem));
-
-            //Increment the count of the new title. Add a new entry if the title does not exist yet.
-            incrementBothTitles(title);
-
-            return newItem;
-        }
-        catch (/*ConstructionException | InvalidIDException*/ Exception e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to create Item due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        //Won't reach, needed for compilation
-        return null;
-    }
-
     public static Item createNewLiterature(String title, Item.ItemType type, int authorID, int classificationID,
-                                     String barcode, String isbn)
+                                           String barcode, String ISBN)
     throws InvalidTitleException
     {
         try
@@ -277,20 +249,21 @@ public class ItemHandler
             //Validate input, throws InvalidTitleException
             checkEmptyTitle(title);
 
-            //Create item and retrieve and set itemID, throws ConstructionException and InvalidIDException
-            Item newItem = new Item(title, type, barcode, authorID, classificationID);
-            int itemID = saveItem(newItem);
-            newItem.setItemID(itemID);
+            //Create literature object and set authorName and classificationName by retrieving from their handlers
+            Literature newLiterature = new Literature(title, type, authorID, classificationID, barcode, ISBN);
+            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
 
-            if (type == Item.ItemType.REFERENCE_LITERATURE || type == Item.ItemType.COURSE_LITERATURE ||
-                    type == Item.ItemType.OTHER_BOOKS) {
-                saveLiterature(itemID, isbn);
-            }
+            //Retrieve and set itemID,
+            int itemID = saveItem(newLiterature);
+            newLiterature.setItemID(itemID);
+
+            //Save literature
+            saveLiterature(newLiterature);
 
             //Increment the count of the new title. Add a new entry if the title does not exist yet.
             incrementBothTitles(title);
 
-            return newItem;
+            return newLiterature;
         }
         catch (Exception e)
         {
@@ -309,17 +282,21 @@ public class ItemHandler
         {
             checkEmptyTitle(title);
 
-            Item newItem = new Item(title, type, barcode, authorID, classificationID);
-            int itemID = saveItem(newItem);
-            newItem.setItemID(itemID);
+            //Create film object and set authorName and classificationName by retrieving from their handlers
+            Film newFilm = new Film(title, authorID, classificationID, barcode, ageRating);
+            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
 
-            if (type == Item.ItemType.FILM) {
-                saveFilm(itemID, countryOfProduction, actors);
-            }
+            //Retrieve and set itemID,
+            int itemID = saveItem(newFilm);
+            newFilm.setItemID(itemID);
 
+            //Save film
+            saveFilm(newFilm);
+
+            //Increment the count of the new title. Add a new entry if the title does not exist yet.
             incrementBothTitles(title);
 
-            return newItem;
+            return newFilm;
         }
         catch (Exception e)
         {
@@ -341,41 +318,8 @@ public class ItemHandler
         try
         {
             // Prepare query
-            String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
-            String[] params = {
-                    item.getTitle(),
-                    String.valueOf(item.getAllowedRentalDays()),
-                    item.isAvailable() ? "1" : "0", // If boolean is true, add the string "1", if false, "0"
-                    item.isDeleted() ? "1" : "0" // If boolean is true, add the string "1", if false, "0"
-            };
-
-            // Execute query and get the generated itemID
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
-                    Statement.RETURN_GENERATED_KEYS))
-            {
-                ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-                if (generatedKeys.next())
-                {
-                    return generatedKeys.getInt(1);
-                }
-            }
-        }
-        catch (SQLException e)
-        { // Fatal
-            ExceptionHandler.HandleFatalException("Failed to save Item to database due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        //Won't reach, needed for compilation
-        return 0;
-    }
-
-    private static int saveItem(Item item)
-    {
-        try
-        {
-            // Prepare query
-            String query = "INSERT INTO items (title, itemType, barcode, authorID, classificationID, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO items (title, itemType, barcode, authorID, classificationID, " +
+                    "allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             String[] params = {
                     item.getTitle(),
                     item.getType().toString(),
@@ -388,7 +332,8 @@ public class ItemHandler
             };
 
             // Execute query and get the generated itemID
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS))
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
+                    Statement.RETURN_GENERATED_KEYS))
             {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next())
@@ -407,34 +352,33 @@ public class ItemHandler
         return 0;
     }
 
-    private static void saveLiterature(int itemID, String isbn) {
-        try {
-            // Save to literature table
-            String query = "INSERT INTO literature (literatureID, ISBN) VALUES (?, ?)";
-            DatabaseHandler.executePreparedQuery(query, new String[]{String.valueOf(itemID), isbn});
+    private static void saveLiterature(Literature literature)
+    {
+        // Save to literature table
+        String query = "INSERT INTO literature (literatureID, ISBN) VALUES (?, ?)";
+        DatabaseHandler.executePreparedQuery(query, new String[]{String.valueOf(itemID), isbn});
 
-            // Save to literature_item join table
-            String joinQuery = "INSERT INTO literature_item (literatureID, itemID) VALUES (?, ?)";
-            DatabaseHandler.executePreparedQuery(joinQuery, new String[]{String.valueOf(itemID), String.valueOf(itemID)});
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException("Failed to save Literature to database due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
+        // Save to literature_item join table
+        String joinQuery = "INSERT INTO literature_item (literatureID, itemID) VALUES (?, ?)";
+        DatabaseHandler.executePreparedQuery(joinQuery,
+                new String[]{String.valueOf(itemID), String.valueOf(itemID)});
     }
 
-    private static void saveFilm(int itemID, String countryOfProduction, String actors) {
-        try {
-            // Save to films table
-            String query = "INSERT INTO films (filmID, countryOfProduction, actors) VALUES (?, ?, ?)";
-            DatabaseHandler.executePreparedQuery(query, new String[]{String.valueOf(itemID), countryOfProduction, actors});
+    private static void saveFilm(Film film)
+    {
+        // Save to films table
+        String query = "INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES (?, ?, ?, ?)";
+        DatabaseHandler.executePreparedQuery(query,
+                new String[]{
+                        String.valueOf(film.getItemID()),
+                        String.valueOf(film.getAgeRating()),
+                        film.getCountryOfProduction(),
+                        film.getListOfActors()});
 
-            // Save to film_item join table
-            String joinQuery = "INSERT INTO film_item (filmID, itemID) VALUES (?, ?)";
-            DatabaseHandler.executePreparedQuery(joinQuery, new String[]{String.valueOf(itemID), String.valueOf(itemID)});
-        } catch (SQLException e) {
-            ExceptionHandler.HandleFatalException("Failed to save Film to database due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
+        // Save to film_item join table
+        String joinQuery = "INSERT INTO film_item (filmID, itemID) VALUES (?, ?)";
+        DatabaseHandler.executePreparedQuery(joinQuery,
+                new String[]{String.valueOf(film.getItemID()), String.valueOf(film.getItemID())});
     }
 
     /**

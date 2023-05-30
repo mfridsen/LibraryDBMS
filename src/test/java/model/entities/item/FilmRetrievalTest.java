@@ -51,7 +51,7 @@ public class FilmRetrievalTest
             assertEquals(7, film.getAllowedRentalDays());
             assertTrue(film.isAvailable());
             assertEquals(15, film.getAgeRating());
-            assertEquals("USA", film.getPublisherCountry());
+            assertEquals("USA", film.getCountryOfProduction());
             assertEquals("Actor1, Actor2, Actor3", film.getListOfActors());
         }
         catch (ConstructionException e)

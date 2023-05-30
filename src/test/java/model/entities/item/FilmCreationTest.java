@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import edu.groupeighteen.librarydbms.model.entities.*;
 import edu.groupeighteen.librarydbms.model.entities.Film;
-import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidAgeRatingException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
@@ -51,7 +50,7 @@ public class FilmCreationTest
                     "ISBN should be set correctly in constructor");
             assertEquals(18, film.getAgeRating(),
                     "Age rating should be set correctly in constructor");
-            assertNull(film.getPublisherCountry(),
+            assertNull(film.getCountryOfProduction(),
                     "Publisher country should be set correctly in constructor.");
             assertNull(film.getListOfActors(),
                     "List of actors should be set correctly in constructor.");
