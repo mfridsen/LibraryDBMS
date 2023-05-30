@@ -433,10 +433,9 @@ public class DatabaseHandler
     }
 
     /**
-     * Retrieves the metadata for the "items" table from the database, specifically the size of the
-     * "title" column.
+     * Retrieves the metadata for the "items" table from the database.
      *
-     * @return an int array with one element, representing the size of the "title" column.
+     * @return an int array with the results.
      */
     public static int[] getItemMetaData()
     {
@@ -457,7 +456,7 @@ public class DatabaseHandler
 
             //Get metadata for barcode column
             resultSet = metaData.getColumns(null, null,
-                                                      "items", "barcode");
+                                            "items", "barcode");
             int barcodeColumnSize = 0;
             if (resultSet.next())
             {
@@ -470,6 +469,74 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve Item Meta data due to " +
+                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Won't reach, but needed to compile
+        return new int[0];
+    }
+
+    /**
+     * Retrieves the metadata for the "literature" table from the database.
+     *
+     * @return an int array with the results.
+     */
+    public static int[] getLiteratureMetaData()
+    {
+        checkConnection();
+
+        try
+        {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            //Get metadata for title column
+            ResultSet resultSet = metaData.getColumns(null, null,
+                                                      "literature", "isbn");
+            int ISBNColumnSize = 0;
+            if (resultSet.next())
+            {
+                ISBNColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{ISBNColumnSize};
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Couldn't retrieve Literature Meta data due to " +
+                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Won't reach, but needed to compile
+        return new int[0];
+    }
+
+    /**
+     * Retrieves the metadata for the "films" table from the database.
+     *
+     * @return an int array with the results.
+     */
+    public static int[] getFilmMetaData()
+    {
+        checkConnection();
+
+        try
+        {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            //Get metadata for title column
+            ResultSet resultSet = metaData.getColumns(null, null,
+                                                      "films", "countryOfProduction");
+            int countryOfProductionColumnSize = 0;
+            if (resultSet.next())
+            {
+                countryOfProductionColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{countryOfProductionColumnSize};
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Couldn't retrieve Literature Meta data due to " +
                                                           e.getClass().getName() + ": " + e.getMessage(), e);
         }
 

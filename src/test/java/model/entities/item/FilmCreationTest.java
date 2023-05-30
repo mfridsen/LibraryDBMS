@@ -10,25 +10,24 @@ import org.junit.jupiter.api.TestMethodOrder;
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
- * @date 5/29/2023
+ * @date 5/30/2023
  * @contact matfir-1@student.ltu.se
  * <p>
- * Unit Test for the ItemCopy class.
+ * Unit Test for the Film class.
  * <p>
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ItemCopyTest
+public class FilmCreationTest
 {
     /**
      *
      */
     @Test
     @Order(1)
-    void testItemCopy()
+    void testFilmCreation_ValidData()
     {
-        System.out.println("\n1: Testing ItemCopy...");
-        System.out.println("No test implemented here yet!");
+        System.out.println("\n1: Testing Film Creation Constructor with valid data...");
         //TODO Write your code here
         System.out.println("\nTEST FINISHED.");
     }

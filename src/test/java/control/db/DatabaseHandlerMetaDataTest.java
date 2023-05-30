@@ -92,4 +92,34 @@ public class DatabaseHandlerMetaDataTest
 
         System.out.println("\nTEST FINISHED.");
     }
+
+    /**
+     * Tests retrieving Literature meta data.
+     */
+    @Test
+    @Order(5)
+    void testGetLiteratureMetaData()
+    {
+        System.out.println("\n5: Testing to retrieve Literature meta data...");
+
+        int[] metaData = DatabaseHandler.getLiteratureMetaData();
+        assertEquals(13, metaData[0]);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests retrieving Film meta data.
+     */
+    @Test
+    @Order(6)
+    void testGetFilmMetaData()
+    {
+        System.out.println("\n6: Testing to retrieve Film meta data...");
+
+        int[] metaData = DatabaseHandler.getFilmMetaData();
+        assertEquals(100, metaData[0]);
+
+        System.out.println("\nTEST FINISHED.");
+    }
 }

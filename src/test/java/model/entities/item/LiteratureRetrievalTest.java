@@ -10,25 +10,24 @@ import org.junit.jupiter.api.TestMethodOrder;
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
- * @date 5/29/2023
+ * @date 5/30/2023
  * @contact matfir-1@student.ltu.se
  * <p>
- * Unit Test for the ItemRetrieval class.
+ * Unit Test for the Literature class.
  * <p>
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ItemRetrievalTest
+public class LiteratureRetrievalTest
 {
     /**
      *
      */
     @Test
     @Order(1)
-    void testItemRetrieval()
+    void testLiteratureRetrieval_ValidData()
     {
-        System.out.println("\n1: Testing ItemRetrieval...");
-        System.out.println("No test implemented here yet!");
+        System.out.println("\n1: Testing Literature Retrieval Constructor with valid data...");
         //TODO Write your code here
         System.out.println("\nTEST FINISHED.");
     }

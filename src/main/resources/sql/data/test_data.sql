@@ -27,17 +27,17 @@ INSERT INTO classifications (classificationName, description, deleted) VALUES
 ('Fantasy', 'Tolkien did it best', 0);
 
 -- //TODO add Item test data here
-INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES
-('item1', 14, 1, 0),
-('item2', 14, 1, 0),
-('item3', 14, 1, 0),
-('item4', 14, 1, 0),
-('item5', 14, 1, 0),
-('item6', 14, 1, 0),
-('item7', 14, 1, 0),
-('item8', 14, 1, 0),
-('item9', 14, 1, 0),
-('item10', 14, 1, 0);
+INSERT INTO items (title, barcode, allowedRentalDays, available, deleted) VALUES
+('item1', 0, 14, 1, 0),
+('item2', 1, 14, 1, 0),
+('item3', 2, 14, 1, 0),
+('item4', 3, 14, 1, 0),
+('item5', 4, 14, 1, 0),
+('item6', 5, 14, 1, 0),
+('item7', 6, 14, 1, 0),
+('item8', 7, 14, 1, 0),
+('item9', 8, 14, 1, 0),
+('item10', 9, 14, 1, 0);
 -- ('The Blade Itself', 14, 1, 0),
 -- ('Before They Are Hanged', 14, 1, 0),
 -- ('Last Argument Of Kings', 14, 1, 0),

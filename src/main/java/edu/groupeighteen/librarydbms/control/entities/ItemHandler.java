@@ -245,7 +245,7 @@ public class ItemHandler
     {
         try
         {
-            //TODO-prio update method and test when Item is finished
+            /*//TODO-prio update method and test when Item is finished
             //Validate input, throws InvalidTitleException
             checkEmptyTitle(title);
 
@@ -256,9 +256,9 @@ public class ItemHandler
             //Increment the count of the new title. Add a new entry if the title does not exist yet.
             incrementBothTitles(title);
 
-            return newItem;
+            return newItem;*/
         }
-        catch (ConstructionException | InvalidIDException e)
+        catch (/*ConstructionException | InvalidIDException*/ Exception e)
         {
             ExceptionHandler.HandleFatalException("Failed to create Item due to " +
                                                           e.getClass().getName() + ": " + e.getMessage(), e);

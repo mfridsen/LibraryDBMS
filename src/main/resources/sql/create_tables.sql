@@ -26,18 +26,6 @@ CREATE TABLE `classifications` (
     PRIMARY KEY (classificationID)
 );
 
--- //TODO LOOK OVER
-CREATE TABLE literature (
-    literatureID INT PRIMARY KEY,
-    ISBN VARCHAR(13) NOT NULL
-);
--- //TODO LOOK OVER
-CREATE TABLE films (
-    filmID INT PRIMARY KEY,
-    countryOfProduction VARCHAR(100),
-    actors TEXT
-);
-
 -- Item, dependent on Author, Classification, depended on by Rental
 CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
@@ -50,6 +38,18 @@ CREATE TABLE items (
     available TINYINT(1) NOT NULL,
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (itemID)
+);
+
+-- //TODO LOOK OVER
+CREATE TABLE literature (
+    literatureID INT PRIMARY KEY,
+    ISBN VARCHAR(13) NOT NULL
+);
+-- //TODO LOOK OVER
+CREATE TABLE films (
+    filmID INT PRIMARY KEY,
+    countryOfProduction VARCHAR(100),
+    actors TEXT
 );
 
 -- //TODO LOOK OVER

@@ -120,7 +120,7 @@ public class ItemUpdateGUI extends GUI {
         JButton confirmUpdateButton = new JButton("Confirm Update");
         confirmUpdateButton.addActionListener(e -> {
             //Duplicate olditem
-            newitem = new Item(olditem);
+            //newitem = new Item(olditem);
 
             //Get the new values from the table
             String userID = (String) itemUpdateTable.getValueAt(0, 2);

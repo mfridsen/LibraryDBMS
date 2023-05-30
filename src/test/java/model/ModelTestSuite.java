@@ -3,7 +3,8 @@ package model;
 import model.db.DatabaseConnectionTest;
 import model.entities.author.AuthorTest;
 import model.entities.classification.ClassificationTest;
-import model.entities.item.ItemTest;
+import model.entities.item.FilmTestSuite;
+import model.entities.item.LiteratureTestSuite;
 import model.entities.rental.RentalTest;
 import model.entities.user.UserTest;
 import org.junit.platform.suite.api.SelectClasses;
@@ -29,7 +30,8 @@ import org.junit.platform.suite.api.Suite;
         DatabaseConnectionTest.class,
         AuthorTest.class,
         ClassificationTest.class,
-        ItemTest.class,
+        LiteratureTestSuite.class,
+        FilmTestSuite.class,
         UserTest.class,
         RentalTest.class,
 })
