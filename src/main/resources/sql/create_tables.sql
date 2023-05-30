@@ -26,29 +26,47 @@ CREATE TABLE `classifications` (
     PRIMARY KEY (classificationID)
 );
 
--- Publisher, depended on by Item
-CREATE TABLE `publishers` (
-    publisherID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    publisherName VARCHAR(255) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    deleted TINYINT(1) NOT NULL,
-    PRIMARY KEY (publisherID)
-);
-
--- Item, dependent on Author, Classification and Publisher
+-- Item, dependent on Author, Classification, depended on by Rental
 CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    -- authorID INT NOT NULL,
-    -- publisherID INT NOT NULL,
-    -- classificationID INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     -- ENUM TYPE
-        -- ISBN
-        -- barcode
+    barcode VARCHAR(255) UNIQUE NOT NULL,
+    -- authorID INT NOT NULL,
+    -- classificationID INT NOT NULL,
     allowedRentalDays INT NOT NULL,
     available TINYINT(1) NOT NULL,
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (itemID)
+);
+
+-- //TODO LOOK OVER
+CREATE TABLE literature (
+    literatureID INT PRIMARY KEY,
+    ISBN VARCHAR(13) NOT NULL
+);
+-- //TODO LOOK OVER
+CREATE TABLE films (
+    filmID INT PRIMARY KEY,
+    countryOfProduction VARCHAR(100),
+    actors TEXT
+);
+
+-- //TODO LOOK OVER
+CREATE TABLE literature_item (
+    literatureID INT,
+    itemID INT,
+    PRIMARY KEY (literatureID, itemID),
+    FOREIGN KEY (literatureID) REFERENCES literature(literatureID),
+    FOREIGN KEY (itemID) REFERENCES items(itemID)
+);
+-- //TODO LOOK OVER
+CREATE TABLE film_item (
+    filmID INT,
+    itemID INT,
+    PRIMARY KEY (filmID, itemID),
+    FOREIGN KEY (filmID) REFERENCES films(filmID),
+    FOREIGN KEY (itemID) REFERENCES items(itemID)
 );
 
 -- User, depended on by Rental

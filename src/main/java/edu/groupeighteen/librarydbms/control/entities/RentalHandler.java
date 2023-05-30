@@ -8,13 +8,11 @@ import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -30,10 +28,10 @@ import java.util.List;
  * @package edu.groupeighteen.librarydbms.control.entities
  * @contact matfir-1@student.ltu.se
  * @date 5/5/2023
- *
+ * <p>
  * The RentalHandler class provides methods to manage rental data in a database. It allows you to add,
  * retrieve, update, and delete rental records.
- *
+ * <p>
  * The class provides the following methods:
  * - addRental(Rental rental): Adds a new rental to the database.
  * - getRentalByID(int rentalID): Retrieves a rental by its ID.
@@ -41,63 +39,68 @@ import java.util.List;
  * - getRentalsByItemID(int itemID): Retrieves all rentals associated with a specific item ID.
  * - updateRental(Rental oldRental, Rental newRental): Updates the details of a rental in the database.
  * - deleteRental(Rental rental): Deletes a rental from the database.
- *
+ * <p>
  * Additionally, the class provides the following private method:
  * - compareRentals(Rental oldRental, Rental newRental): Compares two Rental objects and validates/updates user and
- *   item data.
- *
+ * item data.
+ * <p>
  * The RentalHandler class uses the DatabaseHandler class to interact with the database and performs data validation
  * before executing database operations. It throws SQLException if an error occurs while interacting with the database
  * and IllegalArgumentException if the provided data is not valid.
- *
+ * <p>
  * Note on Exceptions:
- *
+ * <p>
  * "Exceptions should only be thrown in exceptional circumstances, and invalid user input is not exceptional".
- *
+ * <p>
  * I've battled this one for long, but if finally clicked. This class is NOT handling user input. That is going
  * to be handled in RentalCreateGUI. When I press the "Create Rental" button in that class, we perform an instant
  * check on whether the title, and any other needed fields, are empty.
- *
+ * <p>
  * If so, we print an error message, reset all fields in the GUI and wait for new input.
- *
+ * <p>
  * Meaning, createNewRental (as an example) should NEVER be called with an empty or null String as argument.
  * If it is, that IS exceptional.
  */
-public class RentalHandler {
+public class RentalHandler
+{
 
     private static boolean verbose = false;
 
-    public static boolean isVerbose() {
+    public static boolean isVerbose()
+    {
         return verbose;
     }
 
-    public static void setVerbose(boolean verbose) {
+    public static void setVerbose(boolean verbose)
+    {
         RentalHandler.verbose = verbose;
     }
 
     /**
      * This method creates a new rental in the system.
-     *
+     * <p>
      * The method will first validate the IDs and ensure the user is allowed to rent.
      * Then, it will create a new Rental object and fill it with the appropriate information.
      * This rental will then be saved to the system, and the item's availability and the user's rental count will be
      * updated accordingly.
-     *
+     * <p>
      * In case of a failure during the rental creation process, the error is logged as a fatal exception.
      *
      * @param userID The ID of the user who is creating the rental.
      * @param itemID The ID of the item being rented.
      * @return A Rental object representing the new rental that was created.
-     * @throws UserNotFoundException if the user with the given ID does not exist in the system.
-     * @throws ItemNotFoundException if the item with the given ID does not exist in the system, or if there is no
-     *                              available copy of the item.
+     * @throws EntityNotFoundException   if the user with the given ID does not exist in the system.
+     *                                   if the item with the given ID does not exist in the system, or if there is no
+     *                                   available copy of the item.
      * @throws RentalNotAllowedException if the user is not allowed to rent an item (e.g. due to reaching the limit
-     *                              of simultaneous rentals).
-     * @throws InvalidIDException if either the userID or itemID is invalid.
+     *                                   of simultaneous rentals).
+     * @throws InvalidIDException        if either the userID or itemID is invalid.
      */
 
-    public static Rental createNewRental(int userID, int itemID) throws UserNotFoundException, ItemNotFoundException,
-            RentalNotAllowedException, InvalidIDException {
+    public static Rental createNewRental(int userID, int itemID)
+    throws
+    EntityNotFoundException, RentalNotAllowedException, InvalidIDException
+    {
         if (verbose)
             System.out.println("\nCreating new rental...");
 
@@ -110,12 +113,13 @@ public class RentalHandler {
         String username = ""; //Create username here so catch block is happy
         String title = ""; //Create title here so catch block is happy
 
-        try {
-            //Retrieve user, throws UserNotFoundException if not found or RentalNotAllowedException if not allowed
+        try
+        {
+            //Retrieve user, throws EntityNotFoundException if not found or RentalNotAllowedException if not allowed
             User user = getValidatedUser(userID);
             username = user.getUsername();
 
-            //Retrieve item, throws ItemNotFoundException if not found
+            //Retrieve item, throws EntityNotFoundException if not found
             Item item = getExistingItem(itemID);
             title = item.getTitle();
             itemID = item.getItemID(); //Might be changed if item wasn't available
@@ -147,11 +151,15 @@ public class RentalHandler {
             //Return rental
             return newRental;
 
-        } catch (InvalidIDException | NullUserException | NullItemException | InvalidDateException
-                 | InvalidUsernameException | InvalidTitleException e) {
+        }
+        catch (InvalidIDException | NullEntityException | InvalidDateException
+                | InvalidNameException | InvalidTitleException e)
+        {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
-        } catch (ConstructionException e) {
+        }
+        catch (ConstructionException e)
+        {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental construction failed due to " + cause, e);
 
@@ -163,23 +171,26 @@ public class RentalHandler {
 
     /**
      * Saves a new rental in the database.
-     *
-     * The method accepts a Rental object, validates it, and then attempts to insert it 
-     * into the 'rentals' table in the database. The rental's user ID, item ID, rental date, 
+     * <p>
+     * The method accepts a Rental object, validates it, and then attempts to insert it
+     * into the 'rentals' table in the database. The rental's user ID, item ID, rental date,
      * rental due date, and late fee are required and must be set in the
-     * Rental object before calling this method. The rental return date can be null, 
+     * Rental object before calling this method. The rental return date can be null,
      * indicating that the item has not been returned yet.
-     *
+     * <p>
      * The method returns the ID of the newly inserted rental as generated by the database.
      *
      * @param rental The Rental object to be saved. It must have all required fields set.
      * @return The ID of the newly inserted rental as generated by the database.
      */
-    private static int saveRental(Rental rental) {
-        try {
+    private static int saveRental(Rental rental)
+    {
+        try
+        {
             //Validate input
             if (rental == null)
-                throw new NullRentalException("Error saving rental: rental is null.");
+                throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException(
+                        "Error saving rental: rental is null.");
 
             //Prepare query
             String query = "INSERT INTO rentals " +
@@ -202,13 +213,16 @@ public class RentalHandler {
 
             //Execute query and get the generated rentalID, using try-with-resources
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
-                    Statement.RETURN_GENERATED_KEYS)) {
+                                                                                Statement.RETURN_GENERATED_KEYS))
+            {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next()) return generatedKeys.getInt(1);
             }
-        } catch (NullRentalException | SQLException e) {
+        }
+        catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | SQLException e)
+        {
             ExceptionHandler.HandleFatalException("Failed to save Rental due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
+                                                          e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Cannot be reached, but needed for compilation
@@ -229,39 +243,43 @@ public class RentalHandler {
      *                  parameters are required.
      * @param settings  Settings to apply to the Statement, passed to the DatabaseHandler's executePreparedQuery method.
      *                  For example, it can be used to set Statement.RETURN_GENERATED_KEYS.
-     *
      * @return A list of Rental objects matching the query, or an empty list if no matching rentals are found.
      */
-    private static List<Rental> getRentals(String sqlSuffix, String[] params, int settings) {
+    private static List<Rental> getRentals(String sqlSuffix, String[] params, int settings)
+    {
         //Convert the ResultSet into a List of Rental objects
         List<Rental> rentals = new ArrayList<>();
 
         // Prepare a SQL command to select all rentals from the 'rentals' table with given sqlSuffix
         String sql = "SELECT * FROM rentals " + (sqlSuffix == null ? "" : sqlSuffix);
 
-        try {
+        try
+        {
             //Execute the query.
-            try(QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings)) {
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings))
+            {
 
                 //Retrieve the ResultSet from the QueryResult
                 ResultSet resultSet = queryResult.getResultSet();
 
                 //Loop through the results
-                while (resultSet.next()) {
+                while (resultSet.next())
+                {
                     int rentalID = resultSet.getInt("rentalID");
 
-                    //Get user by ID, throws UserNotFoundException
+                    //Get user by ID, throws EntityNotFoundException
                     int userID = resultSet.getInt("userID");
                     User user = UserHandler.getUserByID(userID);
-                    if (user == null) throw new NullUserException("Rental retrieval failed: NullUserException " +
-                            "thrown for valid user with ID " + userID);
+                    if (user == null) throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException(
+                            "Rental retrieval failed: NullEntityException " +
+                                    "thrown for valid user with ID " + userID);
                     String username = user.getUsername();
 
                     //Get item by ID
                     int itemID = resultSet.getInt("itemID");
                     Item item = ItemHandler.getItemByID(itemID);
-                    if (item == null) throw new NullItemException("Rental retrieval failed: NullItemException " +
-                            "thrown for valid item with ID " + itemID);
+                    if (item == null) throw new NullEntityException("Rental retrieval failed: NullEntityException " +
+                                                                            "thrown for valid item with ID " + itemID);
                     String itemTitle = item.getTitle();
 
                     LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
@@ -270,7 +288,8 @@ public class RentalHandler {
                     //Rental return date can be null in the table
                     Timestamp returnDateTimestamp = resultSet.getTimestamp("rentalReturnDate");
                     LocalDateTime rentalReturnDate = null; // Set to null by default
-                    if (returnDateTimestamp != null) {
+                    if (returnDateTimestamp != null)
+                    {
                         rentalReturnDate = returnDateTimestamp.toLocalDateTime();
                     }
 
@@ -278,7 +297,7 @@ public class RentalHandler {
                     boolean deleted = resultSet.getBoolean("deleted");
 
                     Rental rental = new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle,
-                            rentalDueDate, rentalReturnDate, lateFee, deleted);
+                                               rentalDueDate, rentalReturnDate, lateFee, deleted);
                     rental.setRentalID(rentalID);
                     rental.setRentalDate(rentalDate);
                     rental.setUsername(user.getUsername());
@@ -291,11 +310,12 @@ public class RentalHandler {
                     rentals.add(rental);
                 }
             }
-        } catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException |
-                InvalidUsernameException | InvalidTitleException | InvalidLateFeeException | NullUserException |
-                NullItemException e) {
+        }
+        catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException |
+                InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException e)
+        {
             ExceptionHandler.HandleFatalException("Failed to retrieve rentals from database due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
+                                                          e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Return the List of rentals
@@ -304,9 +324,11 @@ public class RentalHandler {
 
     /**
      * Retrieves all rentals found in the table.
+     *
      * @return a list of all rentals in database.
      */
-    public static List<Rental> getAllRentals() {
+    public static List<Rental> getAllRentals()
+    {
         //Executor-class Star Dreadnought
         return getRentals(null, null, 0);
     }
@@ -316,10 +338,12 @@ public class RentalHandler {
      *
      * @param rentalID The ID of the rental to fetch. This should be a valid, existing rental ID.
      * @return A Rental object corresponding to the rental with the specified ID if it exists,
-     *          or null if no such rental exists.
+     * or null if no such rental exists.
      * @throws InvalidIDException If the provided rental ID is invalid (i.e., less than or equal to zero).
      */
-    public static Rental getRentalByID(int rentalID) throws InvalidIDException {
+    public static Rental getRentalByID(int rentalID)
+    throws InvalidIDException
+    {
         //Validate input
         validateRentalID(rentalID); //Throws InvalidIDException if <= 0
 
@@ -335,9 +359,9 @@ public class RentalHandler {
         //Check results, this first option should not happen and will be considered fatal
         if (rentals.size() > 1)
             ExceptionHandler.HandleFatalException(new InvalidIDException("There should not be more than 1 rental " +
-                    "with ID " + rentalID + ", received: " + rentals.size()));
+                                                                                 "with ID " + rentalID + ", received: " + rentals.size()));
 
-        //Found something
+            //Found something
         else if (rentals.size() == 1) return rentals.get(0);
 
         //Found nothing
@@ -348,19 +372,24 @@ public class RentalHandler {
 
     /**
      * Updates the details of a rental record in the database.
-     *
+     * <p>
      * The rental ID, User ID, Item ID, Username, Item Title, and Rental Date are immutable
      * and cannot be changed. Only the Due Date, Return Date, and Late Fee can be modified.
      *
      * @param updatedRental the rental object with updated details.
      * @throws RentalUpdateException if the updatedRental is null, or if a rental with the provided rentalID
-     *          doesn't exist in the database.
+     *                               doesn't exist in the database.
      */
-    public static void updateRental(Rental updatedRental) throws RentalUpdateException {
+    public static void updateRental(Rental updatedRental)
+    throws RentalUpdateException
+    {
         //Validate input
-        try {
+        try
+        {
             validateRental(updatedRental);
-        } catch (NullRentalException | RentalNotFoundException | InvalidIDException e) {
+        }
+        catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
+        {
             throw new RentalUpdateException("Rental Update failed: " + e.getMessage(), e);
         }
 
@@ -385,11 +414,16 @@ public class RentalHandler {
      * @param rentalToDelete the rental object to be softly deleted
      * @throws RentalDeleteException if rental object is invalid
      */
-    public static void deleteRental(Rental rentalToDelete) throws RentalDeleteException {
+    public static void deleteRental(Rental rentalToDelete)
+    throws RentalDeleteException
+    {
         //Validate input
-        try {
+        try
+        {
             validateRental(rentalToDelete);
-        } catch (RentalNotFoundException | InvalidIDException | NullRentalException e) {
+        }
+        catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
+        {
             throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
         }
 
@@ -411,20 +445,25 @@ public class RentalHandler {
      * Reverses a soft delete of a rental, by marking it as not deleted in the database.
      * The rental object is expected to be not null, with a valid rental ID and the deleted attribute set to true.
      * If the rental object is invalid, a RentalRecoveryException is thrown.
-     *
+     * <p>
      * This method will do the reverse of softDeleteRental(), it will set the deleted attribute of rentalToRecover
      * to false before proceeding with the update in the database.
-     *
+     * <p>
      * This allows the rental to be recovered from a soft delete.
      *
      * @param rentalToRecover the rental object to be recovered from soft delete
      * @throws RentalRecoveryException if rental object is invalid
      */
-    public static void undoDeleteRental(Rental rentalToRecover) throws RentalRecoveryException {
+    public static void undoDeleteRental(Rental rentalToRecover)
+    throws RentalRecoveryException
+    {
         //Validate input
-        try {
+        try
+        {
             validateRental(rentalToRecover);
-        } catch (RentalNotFoundException | InvalidIDException | NullRentalException e) {
+        }
+        catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
+        {
             throw new RentalRecoveryException("Rental Recovery failed: " + e.getMessage(), e);
         }
 
@@ -450,11 +489,16 @@ public class RentalHandler {
      * @param rentalToDelete the rental object to be removed from the database
      * @throws RentalDeleteException if rental object is invalid
      */
-    public static void hardDeleteRental(Rental rentalToDelete) throws RentalDeleteException {
+    public static void hardDeleteRental(Rental rentalToDelete)
+    throws RentalDeleteException
+    {
         //Validate input
-        try {
+        try
+        {
             validateRental(rentalToDelete);
-        } catch (NullRentalException | RentalNotFoundException | InvalidIDException e) {
+        }
+        catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
+        {
             throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
         }
 
@@ -476,10 +520,12 @@ public class RentalHandler {
      * @param rentalDate The rental date to retrieve rentals for.
      *                   This date is truncated to seconds to match the precision in the database.
      * @return A list of Rental objects that were rented at the given date.
-     *         If no rentals are found, it returns an empty list.
+     * If no rentals are found, it returns an empty list.
      * @throws InvalidDateException If the provided rental date is invalid.
      */
-    public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate) throws InvalidDateException {
+    public static List<Rental> getRentalsByRentalDate(LocalDateTime rentalDate)
+    throws InvalidDateException
+    {
         //No point getting invalid rentals
         validateRentalDate(rentalDate); //Throws InvalidDateException if null or future
 
@@ -510,7 +556,9 @@ public class RentalHandler {
      * @return a list of Rental objects whose rentalDate matches the input date
      * @throws InvalidDateException if rentalDay is null or a future date
      */
-    public static List<Rental> getRentalsByRentalDay(LocalDate rentalDay) throws InvalidDateException {
+    public static List<Rental> getRentalsByRentalDay(LocalDate rentalDay)
+    throws InvalidDateException
+    {
         //Validate the input
         validateRentalDay(rentalDay); //Throws InvalidDateException if null or future
 
@@ -525,7 +573,7 @@ public class RentalHandler {
         String suffix = "WHERE rentalDate >= ? AND rentalDate < ?";
 
         // Prepare parameters for query
-        String[] params =   {startOfDay.toString(),
+        String[] params = {startOfDay.toString(),
                 startOfDayPlusOne.toString()};
 
         //Executor-class Star Dreadnought
@@ -595,19 +643,19 @@ public class RentalHandler {
         return rentals;
     }
 
-    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
     //to make error handling more consistent
     *//**
-     * This method retrieves all rentals that are associated with a specific user, creates a Rental object for each one,
-     * and adds it to a list. The list of rentals is then returned. If no rentals are found for the specified user,
-     * an empty list is returned.
-     *
-     * Usage: check if returned list is not empty.
-     *
-     * @param userID the ID of the user whose rentals are to be retrieved.
-     * @return The list of rentals if found, otherwise an empty list.
-     * @throws SQLException If an error occurs while interacting with the database.
-     *//*
+ * This method retrieves all rentals that are associated with a specific user, creates a Rental object for each one,
+ * and adds it to a list. The list of rentals is then returned. If no rentals are found for the specified user,
+ * an empty list is returned.
+ *
+ * Usage: check if returned list is not empty.
+ *
+ * @param userID the ID of the user whose rentals are to be retrieved.
+ * @return The list of rentals if found, otherwise an empty list.
+ * @throws SQLException If an error occurs while interacting with the database.
+ *//*
     public static List<Rental> getRentalsByUserID(int userID) throws SQLException {
         //Validate the input
         if (userID <= 0)
@@ -655,20 +703,20 @@ public class RentalHandler {
         return rentals;
     }
 
-    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
     //to make error handling more consistent
     *//**
-     * This method retrieves all rentals that have the specified item ID, creates a Rental object for each one,
-     * and adds it to a list. The list of rentals is then returned. If no rentals with the specified item ID are found,
-     * an empty list is returned.
-     *
-     * Usage: check if returned list is not empty.
-     *
-     * @param itemID the ID of the item.
-     * @return The list of rentals if found, otherwise an empty list.
-     * @throws SQLException If an error occurs while interacting with the database.
-     * @throws IllegalArgumentException If the itemID is less than or equal to 0.
-     *//*
+ * This method retrieves all rentals that have the specified item ID, creates a Rental object for each one,
+ * and adds it to a list. The list of rentals is then returned. If no rentals with the specified item ID are found,
+ * an empty list is returned.
+ *
+ * Usage: check if returned list is not empty.
+ *
+ * @param itemID the ID of the item.
+ * @return The list of rentals if found, otherwise an empty list.
+ * @throws SQLException If an error occurs while interacting with the database.
+ * @throws IllegalArgumentException If the itemID is less than or equal to 0.
+ *//*
     public static List<Rental> getRentalsByItemID(int itemID) throws SQLException {
         //Validate the input
         if (itemID <= 0)
@@ -716,20 +764,20 @@ public class RentalHandler {
         return rentals;
     }
 
-    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
     //to make error handling more consistent
     *//**
-     * This method retrieves all rentals for the specified username, creates a Rental object for each one,
-     * and adds it to a list. The list of rentals is then returned. If no rentals for the specified username are found,
-     * an empty list is returned.
-     *
-     * Usage: check if returned list is not empty.
-     *
-     * @param username the username for which the rentals are to be retrieved.
-     * @return The list of rentals if found, otherwise an empty list.
-     * @throws SQLException If an error occurs while interacting with the database.
-     * @throws IllegalArgumentException If the provided username is null or empty.
-     *//*
+ * This method retrieves all rentals for the specified username, creates a Rental object for each one,
+ * and adds it to a list. The list of rentals is then returned. If no rentals for the specified username are found,
+ * an empty list is returned.
+ *
+ * Usage: check if returned list is not empty.
+ *
+ * @param username the username for which the rentals are to be retrieved.
+ * @return The list of rentals if found, otherwise an empty list.
+ * @throws SQLException If an error occurs while interacting with the database.
+ * @throws IllegalArgumentException If the provided username is null or empty.
+ *//*
     public static List<Rental> getRentalsByUsername(String username) throws SQLException {
         //Validate the input
         if (username == null || username.isEmpty())
@@ -778,20 +826,20 @@ public class RentalHandler {
         return rentals;
     }
 
-    //TODO-exception might want to throw a custom exception (like RentalNotFoundException) instead of returning null,
+    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
     //to make error handling more consistent
     *//**
-     * This method retrieves all rentals for the specified item title, creates a Rental object for each one,
-     * and adds it to a list. The list of rentals is then returned. If no rentals for the specified item title are found,
-     * an empty list is returned.
-     *
-     * Usage: check if returned list is not empty.
-     *
-     * @param title the title of the item for which the rentals are to be retrieved.
-     * @return The list of rentals if found, otherwise an empty list.
-     * @throws SQLException If an error occurs while interacting with the database.
-     * @throws IllegalArgumentException If the provided title is null or empty.
-     *//*
+ * This method retrieves all rentals for the specified item title, creates a Rental object for each one,
+ * and adds it to a list. The list of rentals is then returned. If no rentals for the specified item title are found,
+ * an empty list is returned.
+ *
+ * Usage: check if returned list is not empty.
+ *
+ * @param title the title of the item for which the rentals are to be retrieved.
+ * @return The list of rentals if found, otherwise an empty list.
+ * @throws SQLException If an error occurs while interacting with the database.
+ * @throws IllegalArgumentException If the provided title is null or empty.
+ *//*
     public static List<Rental> getRentalsByItemTitle(String title) throws SQLException {
         //Validate the input
         if (title == null || title.isEmpty())
@@ -841,7 +889,6 @@ public class RentalHandler {
     }*/
 
 
-
     // UTILITY STUFF --------------------------------------------------------------------------------------------------
 
     /**
@@ -850,7 +897,8 @@ public class RentalHandler {
      * @param userID the userID to be checked
      * @return true if userID is invalid (<= 0), false otherwise
      */
-    private static boolean checkUserID(int userID) {
+    private static boolean checkUserID(int userID)
+    {
         return userID <= 0;
     }
 
@@ -860,7 +908,8 @@ public class RentalHandler {
      * @param itemID the itemID to be checked
      * @return true if itemID is invalid (<= 0), false otherwise
      */
-    private static boolean checkItemID(int itemID) {
+    private static boolean checkItemID(int itemID)
+    {
         return itemID <= 0;
     }
 
@@ -869,10 +918,14 @@ public class RentalHandler {
      *
      * @param userID the id of the User to be retrieved
      * @return the User object corresponding to the given userID
-     * @throws UserNotFoundException if there's no User with the given userID
-     * @throws InvalidIDException if the userID is invalid
+     * @throws edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException if there's no User with the given userID
+     * @throws InvalidIDException                                                     if the userID is invalid
      */
-    private static User getValidatedUser(int userID) throws UserNotFoundException, InvalidIDException, RentalNotAllowedException {
+    private static User getValidatedUser(int userID)
+    throws
+    edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException, InvalidIDException,
+    RentalNotAllowedException
+    {
         if (verbose)
             System.out.println("\nGetting valid user with ID " + userID);
 
@@ -880,22 +933,24 @@ public class RentalHandler {
 
         //Not null
         if (user == null)
-            throw new UserNotFoundException("User with ID " + userID + " not found.");
+            throw new edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException(
+                    "User with ID " + userID + " not found.");
         if (verbose)
             System.out.println("Found non-null user with ID " + userID);
 
         //Not deleted
         if (user.isDeleted())
-            throw new UserNotFoundException("User with ID " + userID + " found but is deleted.");
+            throw new edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException(
+                    "User with ID " + userID + " found but is deleted.");
         if (verbose)
             System.out.println("User with ID " + userID + " is not deleted: " + !user.isDeleted());
 
         //Allowed to rent
         if (!user.isAllowedToRent())
             throw new RentalNotAllowedException("User not allowed to rent either due to already renting at " +
-                    "maximum capacity or having a late fee." +
-                    "\nCurrent late fee: " + user.getLateFee() + ", Current rentals: " + user.getCurrentRentals() +
-                    ", Allowed rentals: " + user.getAllowedRentals());
+                                                        "maximum capacity or having a late fee." +
+                                                        "\nCurrent late fee: " + user.getLateFee() + ", Current rentals: " + user.getCurrentRentals() +
+                                                        ", Allowed rentals: " + user.getAllowedRentals());
         if (verbose)
             System.out.println("User with ID " + userID + " is allowed to rent: " + user.isAllowedToRent());
 
@@ -907,21 +962,25 @@ public class RentalHandler {
      *
      * @param itemID the id of the Item to be retrieved
      * @return the Item object corresponding to the given itemID
-     * @throws ItemNotFoundException if there's no Item with the given itemID
-     * @throws InvalidIDException if the itemID is invalid
+     * @throws EntityNotFoundException if there's no Item with the given itemID
+     * @throws InvalidIDException      if the itemID is invalid
      */
-    private static Item getExistingItem(int itemID) throws ItemNotFoundException, InvalidIDException, InvalidTitleException {
+    private static Item getExistingItem(int itemID)
+    throws
+    EntityNotFoundException, InvalidIDException,
+    InvalidTitleException
+    {
         if (verbose)
             System.out.println("\nGetting available item with ID " + itemID);
 
         Item item = ItemHandler.getItemByID(itemID);
         if (item == null)
-            throw new ItemNotFoundException("Item with ID " + itemID + " not found.");
+            throw new EntityNotFoundException("Item with ID " + itemID + " not found.");
         if (verbose)
             System.out.println("Found non-null Item with ID " + itemID + " and title '" + item.getTitle() + "'");
 
         if (item.isDeleted())
-            throw new ItemNotFoundException("Item with ID " + itemID + " found but is deleted.");
+            throw new EntityNotFoundException("Item with ID " + itemID + " found but is deleted.");
         if (verbose)
             System.out.println("Item with ID " + itemID + " is not deleted: " + !item.isDeleted());
 
@@ -939,21 +998,25 @@ public class RentalHandler {
      *
      * @param title the title of the Item to be retrieved
      * @return an available Item object with the given title
-     * @throws InvalidTitleException if the title is invalid
-     * @throws ItemNotFoundException if there's no available copy of the Item with the given title
+     * @throws InvalidTitleException   if the title is invalid
+     * @throws EntityNotFoundException if there's no available copy of the Item with the given title
      */
-    private static Item getAvailableCopy(String title) throws InvalidTitleException, ItemNotFoundException {
+    private static Item getAvailableCopy(String title)
+    throws InvalidTitleException, EntityNotFoundException
+    {
         if (verbose)
             System.out.println("\nGetting another available copy of item with title '" + title + "'");
 
         List<Item> items = ItemHandler.getItemsByTitle(title);
 
-        for (Item item : items) {
+        for (Item item : items)
+        {
             if (item.isAvailable())
                 return item;
         }
 
-        throw new ItemNotFoundException("Rental creation failed: No available copy of " + title + " found.");
+        throw new EntityNotFoundException(
+                "Rental creation failed: No available copy of " + title + " found.");
     }
 
     /**
@@ -962,7 +1025,9 @@ public class RentalHandler {
      * @param rentalID the rentalID to be validated
      * @throws InvalidIDException if the rentalID is invalid (<= 0)
      */
-    private static void validateRentalID(int rentalID) throws InvalidIDException {
+    private static void validateRentalID(int rentalID)
+    throws InvalidIDException
+    {
         if (rentalID <= 0) throw new InvalidIDException("Invalid rentalID. rentalID: " + rentalID);
     }
 
@@ -972,10 +1037,12 @@ public class RentalHandler {
      * @param rentalDate the rentalDate to be validated
      * @throws InvalidDateException if the rentalDate is null or a future date
      */
-    private static void validateRentalDate(LocalDateTime rentalDate) throws InvalidDateException {
+    private static void validateRentalDate(LocalDateTime rentalDate)
+    throws InvalidDateException
+    {
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
             throw new InvalidDateException("Invalid rentalDate: RentalDate cannot be null or in the future. " +
-                    "Received: " +rentalDate);
+                                                   "Received: " + rentalDate);
     }
 
     /**
@@ -985,46 +1052,54 @@ public class RentalHandler {
      * @param rentalDay the date to be validated
      * @throws InvalidDateException if rentalDay is null or a future date
      */
-    private static void validateRentalDay(LocalDate rentalDay) throws InvalidDateException {
+    private static void validateRentalDay(LocalDate rentalDay)
+    throws InvalidDateException
+    {
         if (rentalDay == null || rentalDay.isAfter(LocalDate.now()))
             throw new InvalidDateException("Invalid rentalDay: RentalDay cannot be null or in the future. " +
-                    "Received: " + rentalDay);
+                                                   "Received: " + rentalDay);
     }
 
     /**
      * Validates a rental object.
-     *
+     * <p>
      * A rental is considered valid if it is not null and it exists in the database (has a valid ID).
      *
      * @param rentalToValidate the rental object to validate.
-     * @throws NullRentalException if the rental is null.
-     * @throws RentalNotFoundException if a rental with the provided rentalID doesn't exist in the database.
-     * @throws InvalidIDException if the provided rentalID is invalid (less than or equal to 0).
+     * @throws edu.groupeighteen.librarydbms.model.exceptions.NullEntityException     if the rental is null.
+     * @throws edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException if a rental with the provided rentalID doesn't exist in the database.
+     * @throws InvalidIDException                                                     if the provided rentalID is invalid (less than or equal to 0).
      */
-    private static void validateRental(Rental rentalToValidate) throws NullRentalException, RentalNotFoundException, InvalidIDException {
+    private static void validateRental(Rental rentalToValidate)
+    throws
+    edu.groupeighteen.librarydbms.model.exceptions.NullEntityException,
+    edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException, InvalidIDException
+    {
         if (rentalToValidate == null)
-            throw new NullRentalException("Error validating rental: rental is null.");
+            throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException(
+                    "Error validating rental: rental is null.");
         if (getRentalByID(rentalToValidate.getRentalID()) == null)
-            throw new RentalNotFoundException("Error validating rental: rental with ID " + rentalToValidate.getRentalID() + " not found.");
+            throw new edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException(
+                    "Error validating rental: rental with ID " + rentalToValidate.getRentalID() + " not found.");
     }
-
-
-
 
 
     /**
      * Prints all data of rentals in a list.
+     *
      * @param rentals the list of rentals.
      */
-    public static void printRentalList(List<Rental> rentals) {
+    public static void printRentalList(List<Rental> rentals)
+    {
         System.out.println("Rentals:");
         int count = 1;
-        for (Rental rental : rentals) {
+        for (Rental rental : rentals)
+        {
             System.out.println(count + " rentalID: " + rental.getRentalID() + ", userID: " + rental.getUserID()
-                    + ", username: " + rental.getUsername() + ", itemID: " + rental.getItemID()
-                    + ", item title: " + rental.getItemTitle() + ", rental date: " + rental.getRentalDate()
-                    + ", rental due date: " + rental.getRentalDueDate()
-                    + ", rental return date: " + rental.getRentalReturnDate() + ", late fee: " + rental.getLateFee());
+                                       + ", username: " + rental.getUsername() + ", itemID: " + rental.getItemID()
+                                       + ", item title: " + rental.getItemTitle() + ", rental date: " + rental.getRentalDate()
+                                       + ", rental due date: " + rental.getRentalDueDate()
+                                       + ", rental return date: " + rental.getRentalReturnDate() + ", late fee: " + rental.getLateFee());
             count++;
         }
     }

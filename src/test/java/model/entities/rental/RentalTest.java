@@ -1,10 +1,10 @@
-package model.entities;
+package model.entities.rental;
 
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -311,11 +311,11 @@ public class RentalTest {
 
         try {
             Rental rental = new Rental(1, 1);
-            assertThrows(InvalidUsernameException.class, () -> rental.setUsername(null));
-            assertThrows(InvalidUsernameException.class, () -> rental.setUsername(""));
+            assertThrows(InvalidNameException.class, () -> rental.setUsername(null));
+            assertThrows(InvalidNameException.class, () -> rental.setUsername(""));
             rental.setUsername("testUser");
             assertEquals("testUser", rental.getUsername());
-        } catch (InvalidUsernameException | ConstructionException e) {
+        } catch (InvalidNameException | ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }

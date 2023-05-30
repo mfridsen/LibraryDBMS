@@ -3,13 +3,11 @@ package view.entities.rental;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalUpdateGUI;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 /**
  * @author Mattias Fridsén
@@ -23,7 +21,7 @@ import java.time.LocalDateTime;
  */
 public class RentalUpdateGUITest {
 
-    public static void main(String[] args) throws SQLException, UserNotFoundException, ItemNotFoundException, RentalNotAllowedException, InvalidIDException {
+    public static void main(String[] args) throws SQLException, EntityNotFoundException, EntityNotFoundException, RentalNotAllowedException, InvalidIDException {
         LibraryManager.setup();
 
         new RentalUpdateGUI(null, RentalHandler.createNewRental(1, 1));

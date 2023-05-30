@@ -1,5 +1,6 @@
-package control;
+package control.db;
 
+import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;

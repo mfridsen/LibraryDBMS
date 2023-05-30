@@ -5,13 +5,12 @@ import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.NullItemException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLException;
 import java.time.format.DateTimeParseException;
 
 /**
@@ -121,7 +120,7 @@ public class ItemUpdateGUI extends GUI {
         JButton confirmUpdateButton = new JButton("Confirm Update");
         confirmUpdateButton.addActionListener(e -> {
             //Duplicate olditem
-            newitem = new Item(olditem);
+            //newitem = new Item(olditem);
 
             //Get the new values from the table
             String userID = (String) itemUpdateTable.getValueAt(0, 2);
@@ -155,7 +154,7 @@ public class ItemUpdateGUI extends GUI {
                 ItemHandler.updateItem(olditem);
                 dispose();
                 new ItemGUI(this, newitem);
-            } catch (NullItemException | ItemNotFoundException sqle) {
+            } catch (NullEntityException | EntityNotFoundException sqle) {
                 sqle.printStackTrace();
                 LibraryManager.exit(1);
             } catch (IllegalArgumentException ile) {

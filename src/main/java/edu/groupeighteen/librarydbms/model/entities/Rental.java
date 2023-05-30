@@ -3,7 +3,7 @@ package edu.groupeighteen.librarydbms.model.entities;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -138,7 +138,7 @@ public class Rental extends Entity
      * @param deleted          A boolean representing whether the rental has been (soft) deleted.
      * @throws ConstructionException If an error occurs while setting the values of the rental attributes.
      *                          The cause of the exception (InvalidIDException, InvalidDateException,
-     *                          InvalidUsernameException, InvalidTitleException, or InvalidLateFeeException)
+     *                          InvalidNameException, InvalidTitleException, or InvalidLateFeeException)
      *                          is included in the thrown exception.
      */
     public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, String username, String itemTitle,
@@ -152,13 +152,13 @@ public class Rental extends Entity
             setUserID(userID); //Throws InvalidIDException
             setItemID(itemID); //Throws InvalidIDException
             setRentalDate(rentalDate); //Throws InvalidDateException
-            setUsername(username); //Throws InvalidUsernameException
+            setUsername(username); //Throws InvalidNameException
             setItemTitle(itemTitle); //Throws InvalidTitleException
             setRentalDueDate(rentalDueDate); //Throws InvalidDateException
             setRentalReturnDate(rentalReturnDate); //Throws InvalidDateException
             setLateFee(lateFee); //Throws InvalidLateFeeException
         }
-        catch (InvalidIDException | InvalidDateException | InvalidUsernameException | InvalidTitleException
+        catch (InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException
                | InvalidLateFeeException e)
         {
             throw new ConstructionException("Failed to construct Rental due to " +
@@ -301,10 +301,10 @@ public class Rental extends Entity
      * @throws IllegalArgumentException if the username is null or empty
      */
     public void setUsername(String username)
-    throws InvalidUsernameException
+    throws InvalidNameException
     {
         if (username == null || username.isEmpty())
-            throw new InvalidUsernameException("Username cannot be null or empty.");
+            throw new InvalidNameException("Username cannot be null or empty.");
         this.username = username;
     }
 
