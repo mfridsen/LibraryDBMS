@@ -6,15 +6,15 @@ import org.junit.platform.suite.api.Suite;
 
 
 /**
- * @project LibraryDBMS
  * @author Mattias Fridsén
+ * @project LibraryDBMS
  * @date 4/18/2023
  * @contact matfir-1@student.ltu.se
- *
+ * <p>
  * Test Suite for all the test classes related to this LibraryManager application.
- *
+ * <p>
  * Calls all the other test suites.
- *
+ * <p>
  * Brought to you by inhumane amounts of tobacco.
  */
 
@@ -28,6 +28,8 @@ import org.junit.platform.suite.api.Suite;
         //ViewTestSuite.class
 })
 
-public class LibraryManagerTestSuite {
+public class
+LibraryManagerTestSuite
+{
 
 }

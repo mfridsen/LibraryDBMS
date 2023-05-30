@@ -4,16 +4,13 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.ItemNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 /**
  * @author Mattias Fridsén
@@ -120,7 +117,7 @@ public class ItemCreateGUI extends GUI {
             dispose();
             Rental newRental = RentalHandler.createNewRental(userID, itemID);
             new RentalGUI(this, newRental);
-        } catch (UserNotFoundException | ItemNotFoundException | RentalNotAllowedException | InvalidIDException sqle) {
+        } catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException sqle) {
             System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
             sqle.printStackTrace();
             LibraryManager.exit(1);

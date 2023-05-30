@@ -5,11 +5,10 @@ import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -42,8 +41,8 @@ public class ItemDeleteGUI extends GUI {
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     }
-                } catch (NullUserException | InvalidPasswordException nullUserException) {
-                    nullUserException.printStackTrace();
+                } catch (NullEntityException | InvalidPasswordException nullEntityException) {
+                    nullEntityException.printStackTrace();
                 }
             }
         });
