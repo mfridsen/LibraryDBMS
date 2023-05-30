@@ -245,7 +245,7 @@ public class ItemHandler
     {
         try
         {
-            /*//TODO-prio update method and test when Item is finished
+            //TODO-prio update method and test when Item is finished
             //Validate input, throws InvalidTitleException
             checkEmptyTitle(title);
 
@@ -256,7 +256,7 @@ public class ItemHandler
             //Increment the count of the new title. Add a new entry if the title does not exist yet.
             incrementBothTitles(title);
 
-            return newItem;*/
+            return newItem;
         }
         catch (/*ConstructionException | InvalidIDException*/ Exception e)
         {
@@ -265,6 +265,68 @@ public class ItemHandler
         }
 
         //Won't reach, needed for compilation
+        return null;
+    }
+
+    public static Item createNewLiterature(String title, Item.ItemType type, int authorID, int classificationID,
+                                     String barcode, String isbn)
+    throws InvalidTitleException
+    {
+        try
+        {
+            //Validate input, throws InvalidTitleException
+            checkEmptyTitle(title);
+
+            //Create item and retrieve and set itemID, throws ConstructionException and InvalidIDException
+            Item newItem = new Item(title, type, barcode, authorID, classificationID);
+            int itemID = saveItem(newItem);
+            newItem.setItemID(itemID);
+
+            if (type == Item.ItemType.REFERENCE_LITERATURE || type == Item.ItemType.COURSE_LITERATURE ||
+                    type == Item.ItemType.OTHER_BOOKS) {
+                saveLiterature(itemID, isbn);
+            }
+
+            //Increment the count of the new title. Add a new entry if the title does not exist yet.
+            incrementBothTitles(title);
+
+            return newItem;
+        }
+        catch (Exception e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to create Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        return null;
+    }
+
+    public static Item createNewFilm(String title, Item.ItemType type, int authorID, int classificationID,
+                                     String barcode, int ageRating)
+    throws InvalidTitleException
+    {
+        try
+        {
+            checkEmptyTitle(title);
+
+            Item newItem = new Item(title, type, barcode, authorID, classificationID);
+            int itemID = saveItem(newItem);
+            newItem.setItemID(itemID);
+
+            if (type == Item.ItemType.FILM) {
+                saveFilm(itemID, countryOfProduction, actors);
+            }
+
+            incrementBothTitles(title);
+
+            return newItem;
+        }
+        catch (Exception e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to create Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
         return null;
     }
 
@@ -308,6 +370,72 @@ public class ItemHandler
         return 0;
     }
 
+    private static int saveItem(Item item)
+    {
+        try
+        {
+            // Prepare query
+            String query = "INSERT INTO items (title, itemType, barcode, authorID, classificationID, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String[] params = {
+                    item.getTitle(),
+                    item.getType().toString(),
+                    item.getBarcode(),
+                    String.valueOf(item.getAuthorID()),
+                    String.valueOf(item.getClassificationID()),
+                    String.valueOf(item.getAllowedRentalDays()),
+                    item.isAvailable() ? "1" : "0", // If boolean is true, add the string "1", if false, "0"
+                    item.isDeleted() ? "1" : "0"
+            };
+
+            // Execute query and get the generated itemID
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS))
+            {
+                ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
+                if (generatedKeys.next())
+                {
+                    return generatedKeys.getInt(1);
+                }
+            }
+        }
+        catch (SQLException e) // Fatal
+        {
+            ExceptionHandler.HandleFatalException("Failed to save Item to database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Won't reach, needed for compilation
+        return 0;
+    }
+
+    private static void saveLiterature(int itemID, String isbn) {
+        try {
+            // Save to literature table
+            String query = "INSERT INTO literature (literatureID, ISBN) VALUES (?, ?)";
+            DatabaseHandler.executePreparedQuery(query, new String[]{String.valueOf(itemID), isbn});
+
+            // Save to literature_item join table
+            String joinQuery = "INSERT INTO literature_item (literatureID, itemID) VALUES (?, ?)";
+            DatabaseHandler.executePreparedQuery(joinQuery, new String[]{String.valueOf(itemID), String.valueOf(itemID)});
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException("Failed to save Literature to database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
+
+    private static void saveFilm(int itemID, String countryOfProduction, String actors) {
+        try {
+            // Save to films table
+            String query = "INSERT INTO films (filmID, countryOfProduction, actors) VALUES (?, ?, ?)";
+            DatabaseHandler.executePreparedQuery(query, new String[]{String.valueOf(itemID), countryOfProduction, actors});
+
+            // Save to film_item join table
+            String joinQuery = "INSERT INTO film_item (filmID, itemID) VALUES (?, ?)";
+            DatabaseHandler.executePreparedQuery(joinQuery, new String[]{String.valueOf(itemID), String.valueOf(itemID)});
+        } catch (SQLException e) {
+            ExceptionHandler.HandleFatalException("Failed to save Film to database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
 
     /**
      * Retrieves an item by its ID from the database.
