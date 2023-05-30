@@ -159,7 +159,7 @@ public abstract class Item extends Entity
                 | InvalidItemTypeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -203,7 +203,7 @@ public abstract class Item extends Entity
                 | InvalidBarcodeException | InvalidItemTypeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -291,7 +291,7 @@ public abstract class Item extends Entity
             throw new InvalidTitleException("Title cannot be null or empty.");
         if (title.length() > ITEM_TITLE_MAX_LENGTH)
             throw new InvalidTitleException("Title cannot be longer than " +
-                                                    ITEM_TITLE_MAX_LENGTH + " characters. Received: " + title.length());
+                    ITEM_TITLE_MAX_LENGTH + " characters. Received: " + title.length());
         this.title = title;
     }
 
@@ -342,7 +342,7 @@ public abstract class Item extends Entity
             throw new InvalidBarcodeException("Item barcode cannot be null or empty.");
         if (barcode.length() > ITEM_BARCODE_LENGTH)
             throw new InvalidBarcodeException("Item barcode length cannot be greater than " +
-                                                      ITEM_BARCODE_LENGTH + " characters. Received: " + barcode.length());
+                    ITEM_BARCODE_LENGTH + " characters. Received: " + barcode.length());
         this.barcode = barcode;
     }
 
