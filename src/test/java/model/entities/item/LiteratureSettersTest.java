@@ -64,13 +64,16 @@ public class LiteratureSettersTest
     {
         System.out.println("\n1: Testing setItemID method with a valid ID...");
 
-        try {
+        try
+        {
             int validID = 2;
             literature.setItemID(validID);
             assertEquals(validID, literature.getItemID(),
                     "Item ID must be the same as the one set");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -89,11 +92,14 @@ public class LiteratureSettersTest
 
         int zeroID = 0;
 
-        try {
+        try
+        {
             literature.setItemID(zeroID);
             fail("Zero ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Item ID must be greater than 0. Received: " + zeroID, e.getMessage());
         }
 
@@ -111,11 +117,14 @@ public class LiteratureSettersTest
 
         int negativeID = -1;
 
-        try {
+        try
+        {
             literature.setItemID(negativeID);
             fail("Negative ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Item ID must be greater than 0. Received: " + negativeID, e.getMessage());
         }
 
@@ -131,13 +140,16 @@ public class LiteratureSettersTest
     {
         System.out.println("\n4: Testing setTitle method with a valid title...");
 
-        try {
+        try
+        {
             String validTitle = "The Great Gatsby";
             literature.setTitle(validTitle);
             assertEquals(validTitle, literature.getTitle(),
                     "Title must be the same as the one set");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -154,12 +166,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n5: Testing setTitle method with a null title...");
 
-        try {
+        try
+        {
             String nullTitle = null;
             literature.setTitle(nullTitle);
             fail("Null title should throw InvalidTitleException");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             assertEquals("Title cannot be null or empty.", e.getMessage());
         }
 
@@ -175,12 +190,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n6: Testing setTitle method with an empty title...");
 
-        try {
+        try
+        {
             String emptyTitle = "";
             literature.setTitle(emptyTitle);
             fail("Empty title should throw InvalidTitleException");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             assertEquals("Title cannot be null or empty.", e.getMessage());
         }
 
@@ -198,11 +216,14 @@ public class LiteratureSettersTest
 
         String tooLongTitle = "A".repeat(Item.ITEM_TITLE_MAX_LENGTH + 1);
 
-        try {
+        try
+        {
             literature.setTitle(tooLongTitle);
             fail("Too long title should throw InvalidTitleException");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             assertEquals("Title cannot be longer than " + Item.ITEM_TITLE_MAX_LENGTH +
                     " characters. Received: " + tooLongTitle.length(), e.getMessage());
         }
@@ -219,13 +240,16 @@ public class LiteratureSettersTest
     {
         System.out.println("\n8: Testing setType method with a valid ItemType...");
 
-        try {
+        try
+        {
             Item.ItemType validType = Item.ItemType.REFERENCE_LITERATURE;
             literature.setType(validType);
             assertEquals(validType, literature.getType(),
                     "ItemType must be the same as the one set");
 
-        } catch (InvalidItemTypeException e) {
+        }
+        catch (InvalidItemTypeException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -242,12 +266,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n9: Testing setType method with a null ItemType...");
 
-        try {
+        try
+        {
             Item.ItemType nullType = null;
             literature.setType(nullType);
             fail("Null ItemType should throw InvalidItemTypeException");
 
-        } catch (InvalidItemTypeException e) {
+        }
+        catch (InvalidItemTypeException e)
+        {
             assertEquals("Item type cannot be null.", e.getMessage());
         }
 
@@ -263,13 +290,16 @@ public class LiteratureSettersTest
     {
         System.out.println("\n10: Testing setBarcode method with a valid barcode...");
 
-        try {
+        try
+        {
             String validBarcode = "12345678901234567890"; // 20 digits
             literature.setBarcode(validBarcode);
             assertEquals(validBarcode, literature.getBarcode(),
                     "Barcode must be the same as the one set");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -286,12 +316,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n11: Testing setBarcode method with a null barcode...");
 
-        try {
+        try
+        {
             String nullBarcode = null;
             literature.setBarcode(nullBarcode);
             fail("Null barcode should throw InvalidBarcodeException");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             assertEquals("Item barcode cannot be null or empty.", e.getMessage());
         }
 
@@ -307,12 +340,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n12: Testing setBarcode method with an empty barcode...");
 
-        try {
+        try
+        {
             String emptyBarcode = "";
             literature.setBarcode(emptyBarcode);
             fail("Empty barcode should throw InvalidBarcodeException");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             assertEquals("Item barcode cannot be null or empty.", e.getMessage());
         }
 
@@ -330,11 +366,14 @@ public class LiteratureSettersTest
 
         String tooLongBarcode = "a".repeat(Item.ITEM_BARCODE_LENGTH + 1);
 
-        try {
+        try
+        {
             literature.setBarcode(tooLongBarcode);
             fail("Too long barcode should throw InvalidBarcodeException");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             assertEquals("Item barcode length cannot be greater than " + Literature.ITEM_BARCODE_LENGTH
                     + " characters. Received: " + tooLongBarcode.length(), e.getMessage());
         }
@@ -351,13 +390,16 @@ public class LiteratureSettersTest
     {
         System.out.println("\n14: Testing setAuthorID method with a valid ID...");
 
-        try {
+        try
+        {
             int validID = 10;
             literature.setAuthorID(validID);
             assertEquals(validID, literature.getAuthorID(),
                     "Author ID must be the same as the one set");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -376,11 +418,14 @@ public class LiteratureSettersTest
 
         int zeroID = 0;
 
-        try {
+        try
+        {
             literature.setAuthorID(zeroID);
             fail("Zero ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Author ID must be greater than 0. Received: " + zeroID, e.getMessage());
         }
 
@@ -398,11 +443,14 @@ public class LiteratureSettersTest
 
         int negativeID = -1;
 
-        try {
+        try
+        {
             literature.setAuthorID(negativeID);
             fail("Negative ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Author ID must be greater than 0. Received: " + negativeID, e.getMessage());
         }
 
@@ -418,13 +466,16 @@ public class LiteratureSettersTest
     {
         System.out.println("\n17: Testing setClassificationID method with a valid ID...");
 
-        try {
+        try
+        {
             int validID = 10;
             literature.setClassificationID(validID);
             assertEquals(validID, literature.getClassificationID(),
                     "Classification ID must be the same as the one set");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -443,11 +494,14 @@ public class LiteratureSettersTest
 
         int zeroID = 0;
 
-        try {
+        try
+        {
             literature.setClassificationID(zeroID);
             fail("Zero ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Classification ID must be greater than 0. Received: " + zeroID, e.getMessage());
         }
 
@@ -465,11 +519,14 @@ public class LiteratureSettersTest
 
         int negativeID = -1;
 
-        try {
+        try
+        {
             literature.setClassificationID(negativeID);
             fail("Negative ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Classification ID must be greater than 0. Received: " + negativeID, e.getMessage());
         }
 
@@ -485,7 +542,8 @@ public class LiteratureSettersTest
     {
         System.out.println("\n20: Testing setAllowedRentalDays method with a valid number of days...");
 
-        try {
+        try
+        {
             int zeroDays = 0;
             int validDays = 7;
 
@@ -496,7 +554,9 @@ public class LiteratureSettersTest
             assertEquals(validDays, literature.getAllowedRentalDays(),
                     "Allowed rental days must be the same as the one set");
 
-        } catch (InvalidDateException e) {
+        }
+        catch (InvalidDateException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -515,11 +575,14 @@ public class LiteratureSettersTest
 
         int negativeDays = -1;
 
-        try {
+        try
+        {
             literature.setAllowedRentalDays(negativeDays);
             fail("Negative days should throw InvalidDateException");
 
-        } catch (InvalidDateException e) {
+        }
+        catch (InvalidDateException e)
+        {
             assertEquals("Allowed rental days can't be negative. Received: " + negativeDays, e.getMessage());
         }
 
@@ -535,12 +598,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n22: Testing setISBN method with a valid ISBN...");
 
-        try {
+        try
+        {
             String validISBN = "978-3-16-1484";
             literature.setISBN(validISBN);
             assertEquals(validISBN, literature.getISBN(), "ISBN must be the same as the one set");
 
-        } catch (InvalidISBNException e) {
+        }
+        catch (InvalidISBNException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -557,12 +623,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n23: Testing setISBN method with a null ISBN...");
 
-        try {
+        try
+        {
             String nullISBN = null;
             literature.setISBN(nullISBN);
             fail("Null ISBN should throw InvalidISBNException");
 
-        } catch (InvalidISBNException e) {
+        }
+        catch (InvalidISBNException e)
+        {
             assertEquals("ISBN must not be null or empty.", e.getMessage());
         }
 
@@ -578,12 +647,15 @@ public class LiteratureSettersTest
     {
         System.out.println("\n24: Testing setISBN method with an empty ISBN...");
 
-        try {
+        try
+        {
             String emptyISBN = "";
             literature.setISBN(emptyISBN);
             fail("Empty ISBN should throw InvalidISBNException");
 
-        } catch (InvalidISBNException e) {
+        }
+        catch (InvalidISBNException e)
+        {
             assertEquals("ISBN must not be null or empty.", e.getMessage());
         }
 
@@ -601,11 +673,14 @@ public class LiteratureSettersTest
 
         String tooLongISBN = "1".repeat(Literature.LITERATURE_ISBN_LENGTH + 1);
 
-        try {
+        try
+        {
             literature.setISBN(tooLongISBN);
             fail("Too long ISBN should throw InvalidISBNException");
 
-        } catch (InvalidISBNException e) {
+        }
+        catch (InvalidISBNException e)
+        {
             assertEquals("ISBN cannot be longer than " + Literature.LITERATURE_ISBN_LENGTH +
                     " characters. Received: " + tooLongISBN.length(), e.getMessage());
         }

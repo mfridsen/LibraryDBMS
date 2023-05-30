@@ -4,13 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Film;
-import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidItemTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import org.junit.jupiter.api.*;
+
+import java.util.Collections;
 
 /**
  * @author Mattias Fridsén
@@ -33,7 +33,17 @@ public class FilmSettersTest
     @BeforeEach
     void setUp()
     {
-
+        try
+        {
+            film = new Film(false, 1, "Film", Item.ItemType.FILM,
+                    "1", 1,1, "D",
+                    "G", 1, true,1,
+                    "U", "Actor1");
+        }
+        catch (ConstructionException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -45,13 +55,16 @@ public class FilmSettersTest
     {
         System.out.println("\n1: Testing setItemID method with a valid ID...");
 
-        try {
+        try
+        {
             int validID = 2;
             film.setItemID(validID);
             assertEquals(validID, film.getItemID(),
                     "Item ID must be the same as the one set");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -70,11 +83,14 @@ public class FilmSettersTest
 
         int zeroID = 0;
 
-        try {
+        try
+        {
             film.setItemID(zeroID);
             fail("Zero ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Item ID must be greater than 0. Received: " + zeroID, e.getMessage());
         }
 
@@ -92,11 +108,14 @@ public class FilmSettersTest
 
         int negativeID = -1;
 
-        try {
+        try
+        {
             film.setItemID(negativeID);
             fail("Negative ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Item ID must be greater than 0. Received: " + negativeID, e.getMessage());
         }
 
@@ -112,13 +131,16 @@ public class FilmSettersTest
     {
         System.out.println("\n4: Testing setTitle method with a valid title...");
 
-        try {
+        try
+        {
             String validTitle = "The Great Gatsby";
             film.setTitle(validTitle);
             assertEquals(validTitle, film.getTitle(),
                     "Title must be the same as the one set");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -135,12 +157,15 @@ public class FilmSettersTest
     {
         System.out.println("\n5: Testing setTitle method with a null title...");
 
-        try {
+        try
+        {
             String nullTitle = null;
             film.setTitle(nullTitle);
             fail("Null title should throw InvalidTitleException");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             assertEquals("Title cannot be null or empty.", e.getMessage());
         }
 
@@ -156,12 +181,15 @@ public class FilmSettersTest
     {
         System.out.println("\n6: Testing setTitle method with an empty title...");
 
-        try {
+        try
+        {
             String emptyTitle = "";
             film.setTitle(emptyTitle);
             fail("Empty title should throw InvalidTitleException");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             assertEquals("Title cannot be null or empty.", e.getMessage());
         }
 
@@ -179,11 +207,14 @@ public class FilmSettersTest
 
         String tooLongTitle = "A".repeat(Item.ITEM_TITLE_MAX_LENGTH + 1);
 
-        try {
+        try
+        {
             film.setTitle(tooLongTitle);
             fail("Too long title should throw InvalidTitleException");
 
-        } catch (InvalidTitleException e) {
+        }
+        catch (InvalidTitleException e)
+        {
             assertEquals("Title cannot be longer than " + Item.ITEM_TITLE_MAX_LENGTH +
                     " characters. Received: " + tooLongTitle.length(), e.getMessage());
         }
@@ -200,13 +231,16 @@ public class FilmSettersTest
     {
         System.out.println("\n8: Testing setType method with a valid ItemType...");
 
-        try {
+        try
+        {
             Item.ItemType validType = Item.ItemType.FILM;
             film.setType(validType);
             assertEquals(validType, film.getType(),
                     "ItemType must be the same as the one set");
 
-        } catch (InvalidItemTypeException e) {
+        }
+        catch (InvalidItemTypeException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -223,12 +257,15 @@ public class FilmSettersTest
     {
         System.out.println("\n9: Testing setType method with a null ItemType...");
 
-        try {
+        try
+        {
             Item.ItemType nullType = null;
             film.setType(nullType);
             fail("Null ItemType should throw InvalidItemTypeException");
 
-        } catch (InvalidItemTypeException e) {
+        }
+        catch (InvalidItemTypeException e)
+        {
             assertEquals("Item type cannot be null.", e.getMessage());
         }
 
@@ -244,13 +281,16 @@ public class FilmSettersTest
     {
         System.out.println("\n10: Testing setBarcode method with a valid barcode...");
 
-        try {
+        try
+        {
             String validBarcode = "12345678901234567890"; // 20 digits
             film.setBarcode(validBarcode);
             assertEquals(validBarcode, film.getBarcode(),
                     "Barcode must be the same as the one set");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -267,12 +307,15 @@ public class FilmSettersTest
     {
         System.out.println("\n11: Testing setBarcode method with a null barcode...");
 
-        try {
+        try
+        {
             String nullBarcode = null;
             film.setBarcode(nullBarcode);
             fail("Null barcode should throw InvalidBarcodeException");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             assertEquals("Item barcode cannot be null or empty.", e.getMessage());
         }
 
@@ -288,12 +331,15 @@ public class FilmSettersTest
     {
         System.out.println("\n12: Testing setBarcode method with an empty barcode...");
 
-        try {
+        try
+        {
             String emptyBarcode = "";
             film.setBarcode(emptyBarcode);
             fail("Empty barcode should throw InvalidBarcodeException");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             assertEquals("Item barcode cannot be null or empty.", e.getMessage());
         }
 
@@ -311,11 +357,14 @@ public class FilmSettersTest
 
         String tooLongBarcode = "a".repeat(Item.ITEM_BARCODE_LENGTH + 1);
 
-        try {
+        try
+        {
             film.setBarcode(tooLongBarcode);
             fail("Too long barcode should throw InvalidBarcodeException");
 
-        } catch (InvalidBarcodeException e) {
+        }
+        catch (InvalidBarcodeException e)
+        {
             assertEquals("Item barcode length cannot be greater than " + Film.ITEM_BARCODE_LENGTH
                     + " characters. Received: " + tooLongBarcode.length(), e.getMessage());
         }
@@ -332,13 +381,16 @@ public class FilmSettersTest
     {
         System.out.println("\n14: Testing setAuthorID method with a valid ID...");
 
-        try {
+        try
+        {
             int validID = 10;
             film.setAuthorID(validID);
             assertEquals(validID, film.getAuthorID(),
                     "Author ID must be the same as the one set");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -357,11 +409,14 @@ public class FilmSettersTest
 
         int zeroID = 0;
 
-        try {
+        try
+        {
             film.setAuthorID(zeroID);
             fail("Zero ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Author ID must be greater than 0. Received: " + zeroID, e.getMessage());
         }
 
@@ -379,11 +434,14 @@ public class FilmSettersTest
 
         int negativeID = -1;
 
-        try {
+        try
+        {
             film.setAuthorID(negativeID);
             fail("Negative ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Author ID must be greater than 0. Received: " + negativeID, e.getMessage());
         }
 
@@ -399,13 +457,16 @@ public class FilmSettersTest
     {
         System.out.println("\n17: Testing setClassificationID method with a valid ID...");
 
-        try {
+        try
+        {
             int validID = 10;
             film.setClassificationID(validID);
             assertEquals(validID, film.getClassificationID(),
                     "Classification ID must be the same as the one set");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -424,11 +485,14 @@ public class FilmSettersTest
 
         int zeroID = 0;
 
-        try {
+        try
+        {
             film.setClassificationID(zeroID);
             fail("Zero ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Classification ID must be greater than 0. Received: " + zeroID, e.getMessage());
         }
 
@@ -446,11 +510,14 @@ public class FilmSettersTest
 
         int negativeID = -1;
 
-        try {
+        try
+        {
             film.setClassificationID(negativeID);
             fail("Negative ID should throw InvalidIDException");
 
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             assertEquals("Classification ID must be greater than 0. Received: " + negativeID, e.getMessage());
         }
 
@@ -466,7 +533,8 @@ public class FilmSettersTest
     {
         System.out.println("\n20: Testing setAllowedRentalDays method with a valid number of days...");
 
-        try {
+        try
+        {
             int zeroDays = 0;
             int validDays = 7;
 
@@ -477,7 +545,9 @@ public class FilmSettersTest
             assertEquals(validDays, film.getAllowedRentalDays(),
                     "Allowed rental days must be the same as the one set");
 
-        } catch (InvalidDateException e) {
+        }
+        catch (InvalidDateException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -496,17 +566,93 @@ public class FilmSettersTest
 
         int negativeDays = -1;
 
-        try {
+        try
+        {
             film.setAllowedRentalDays(negativeDays);
             fail("Negative days should throw InvalidDateException");
 
-        } catch (InvalidDateException e) {
+        }
+        catch (InvalidDateException e)
+        {
             assertEquals("Allowed rental days can't be negative. Received: " + negativeDays, e.getMessage());
         }
 
         System.out.println("\nTEST FINISHED.");
     }
-    
-    
-    //TODO more tests for Film
+
+    /**
+     * Test case for setting a valid age rating.
+     */
+    @Test
+    @Order(22)
+    void testSetAgeRating_ValidAgeRating()
+    {
+        try {
+            film.setAgeRating(12);
+        } catch (InvalidAgeRatingException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+        assertEquals(12, film.getAgeRating());
+    }
+
+    /**
+     * Test case for setting an age rating lower than zero.
+     */
+    @Test
+    @Order(23)
+    void testSetAgeRating_AgeRatingLowerThanZero()
+    {
+        InvalidAgeRatingException exception = assertThrows(InvalidAgeRatingException.class, () -> film.setAgeRating(-1));
+        assertEquals("Cannot set an age rating lower than 0.", exception.getMessage());
+    }
+
+    /**
+     * Test case for setting an age rating higher than the maximum allowed value.
+     */
+    @Test
+    @Order(24)
+    void testSetAgeRating_AgeRatingHigherThanMax()
+    {
+        InvalidAgeRatingException exception = assertThrows(InvalidAgeRatingException.class, () -> film.setAgeRating(19));
+        assertEquals("Cannot set an age rating higher than " + Film.FILM_MAX_AGE_RATING + ".", exception.getMessage());
+    }
+
+    /**
+     * Test case for setting a valid publisher country.
+     */
+    @Test
+    @Order(25)
+    void testSetPublisherCountry_ValidPublisherCountry()
+    {
+        try {
+            film.setPublisherCountry("Canada");
+        } catch (InvalidNameException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+        assertEquals("Canada", film.getPublisherCountry());
+    }
+
+    /**
+     * Test case for setting a publisher country that exceeds the maximum allowed length.
+     */
+    @Test
+    @Order(26)
+    void testSetPublisherCountry_PublisherCountryTooLong()
+    {
+        String tooLongPublisherCountry = String.join("", Collections.nCopies(Film.FILM_COUNTRY_LENGTH + 1, "a"));
+        InvalidNameException exception = assertThrows(InvalidNameException.class, () -> film.setPublisherCountry(tooLongPublisherCountry));
+        assertEquals("Film country name cannot be greater than " + Film.FILM_COUNTRY_LENGTH + ".", exception.getMessage());
+    }
+    /**
+     * Test case for setting a valid list of actors.
+     */
+
+    @Test
+    @Order(27)
+    void testSetListOfActors_ValidListOfActors()
+    {
+        String listOfActors = "Actor1, Actor2, Actor3";
+        film.setListOfActors(listOfActors);
+        assertEquals(listOfActors, film.getListOfActors());
+    }
 }
