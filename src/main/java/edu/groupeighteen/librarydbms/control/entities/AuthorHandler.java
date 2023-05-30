@@ -29,12 +29,15 @@ import java.util.List;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
+/*
 public class AuthorHandler {
     private static final ArrayList<String> storedAuthors = new ArrayList<>();
 
-    /**
+    */
+/**
      * Performs setup tasks. In this case, syncing storedUsernames against the database.
-     */
+     *//*
+
     public static void setup() {
         syncAuthors();
     }
@@ -43,19 +46,23 @@ public class AuthorHandler {
         storedAuthors.clear();
     }
 
-    /**
+    */
+/**
      * Syncs the storedUsernames list against the usernames in the users table.
-     */
-    public static void syncUsernames() {
+     *//*
+
+    public static void syncAuthors() {
         if (!storedAuthors.isEmpty())
             storedAuthors.clear();
         retrieveAuthorsFromTable();
     }
 
-    /**
+    */
+/**
      * Method that retrieves the usernames in the users table and stores them in the static ArrayList.
      * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
-     */
+     *//*
+
     private static void retrieveAuthorsFromTable() {
         try {
             // Execute the query to retrieve all usernames
@@ -73,9 +80,11 @@ public class AuthorHandler {
         }
     }
 
-    /**
+    */
+/**
      * Prints all usernames in the ArrayList.
-     */
+     *//*
+
     public static void printAuthors() {
         System.out.println("\nUsernames:");
         int num = 1;
@@ -85,19 +94,23 @@ public class AuthorHandler {
         }
     }
 
-    /**
+    */
+/**
      * Returns the ArrayList of authors.
      * @return the ArrayList of authors
-     */
+     *//*
+
     public static ArrayList<String> getStoredAuthors() {
         return storedAuthors;
     }
 
     //TODO-prio update when User class is finished
-    /**
+    */
+/**
      * Prints all non-sensitive data for all Users in a list.
      * @param authorList the list of User objects.
-     */
+     *//*
+
     public static void printAuthorList(List<Author> authorList) {
         System.out.println("Users:");
         int count = 1;
@@ -108,7 +121,8 @@ public class AuthorHandler {
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-    /**
+    */
+/**
      * Creates a new user with the specified username and password. The method first checks if the provided username is
      * already taken. If the username is unique, a new User object is created and saved to the database. The User's ID
      * from the database is set in the User object before it is returned. The method also handles any potential
@@ -117,7 +131,8 @@ public class AuthorHandler {
      * @param authorFirstName The username for the new author.
      * @param authorLastName The password for the new author.
      * @return A User object representing the newly created author.
-     */
+     *//*
+
     public static Author createNewUAuthor(String authorFirstName, String authorLastName ) throws InvalidAuthornameException,
             InvalidPasswordException {
         Author newAuthor = null;
@@ -141,7 +156,8 @@ public class AuthorHandler {
         return newAuthor;
     }
 
-    /**
+    */
+/**
      * Saves a user to the database. The method prepares an SQL insert query with the user's details such as
      * username, password, allowed rentals, current rentals and late fee. The query is executed and the
      * auto-generated user ID from the database is retrieved and returned. If the query execution fails, the method
@@ -150,7 +166,8 @@ public class AuthorHandler {
      * @param author The user object to be saved.
      * @return The auto-generated ID of the user from the database.
      *          Returns 0 if an SQLException occurs. This won't happen because the exception will be thrown first.
-     */
+     *//*
+
     private static int saveAuthor(Author author) {
         try {
             // Prepare query
@@ -182,14 +199,16 @@ public class AuthorHandler {
         return 0;
     }
 
-    /**
+    */
+/**
      * Retrieves a User object from the database using the provided userID. The method first validates the provided
      * userID. It then prepares and executes an SQL query to select the user's details from the database. If a user
      * with the provided userID exists, a new User object is created with the retrieved details and returned.
      *
      * @param authorID The userID of the user to be retrieved.
      * @return A User object representing the user with the provided userID. Returns null if the user does not exist.
-     */
+     *//*
+
     public static Author getAuthorByID(int authorID) throws InvalidIDException {
         try {
             // No point getting invalid users, throws InvalidIDException
@@ -224,7 +243,8 @@ public class AuthorHandler {
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
-    /**
+    */
+/**
      * Updates the data of an existing user in the database with the data of the provided User object. Before updating,
      * the method validates that the provided User object is not null and the old username is not empty.
      * If the username of the provided User object differs from the old username, the method checks if the new username
@@ -232,7 +252,8 @@ public class AuthorHandler {
      * SQL command to update the user's data in the database and executes the update.
      *
      * @param updatedAuthor The User object containing the updated user data.
-     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
+     *//*
+ //TODO-PRIO UPDATE EXCEPTION AND TESTS
     public static void updateAuthor(Author updatedAuthor) throws NullAuthorException, InvalidAuthornameException {
         try {
             //Let's check if the user exists in the database before we go on
@@ -275,7 +296,8 @@ public class AuthorHandler {
 
     }
 
-    /**
+    */
+/**
      * Deletes a user from the database.
      *
      * This method first checks if the provided User object is not null and if
@@ -288,7 +310,8 @@ public class AuthorHandler {
      * The username of the deleted user is then removed from the storedUsernames list.
      *
      * @param author The User object representing the user to be deleted.
-     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
+     *//*
+ //TODO-PRIO UPDATE EXCEPTION AND TESTS
     public static void hardDeleteAuthor(Author author) throws NullAuthorException, AuthorNotFoundException {
         try {
             //Validate the input. Throws NullUserException
@@ -311,14 +334,17 @@ public class AuthorHandler {
 
     // VALIDATION STUFF -----------------------------------------------------------------------------------------------
 
-    /**
+    */
+/**
      * Basic login method. Checks whether username exists in storedUsernames. If it does, check whether password
      * matches that user's password.
      * @param username the username attempting to login
      * @param password the password attempting to login
      * @return true if successful, otherwise false
-     */
-    /*public static boolean login(String username, String password)
+     *//*
+
+    */
+/*public static boolean login(String username, String password)
             throws InvalidUsernameException, UserNotFoundException, InvalidPasswordException {
         try {
             // No point verifying empty strings, throws UsernameEmptyException
@@ -350,9 +376,11 @@ public class AuthorHandler {
 
         //Incorrect password
         return false;
-    }*/
+    }*//*
 
-    /**
+
+    */
+/**
      * Validates the user's password.
      *
      * This method compares the password provided as an argument with the password stored in the User object.
@@ -361,7 +389,8 @@ public class AuthorHandler {
      * @param user The User object whose password is to be validated.
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
-     */
+     *//*
+
     public static boolean validate(User user, String password) throws NullUserException, InvalidPasswordException {
         checkNullUser(user);
         checkEmptyPassword(password);
@@ -370,14 +399,16 @@ public class AuthorHandler {
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
-    /**
+    */
+/**
      * Retrieves a User object from the database using the provided username. The method first validates the provided
      * username. It then prepares and executes an SQL query to select the user's details from the database. If a user
      * with the provided username exists, a new User object is created with the retrieved details and returned.
      *
      * @param username The username of the user to be retrieved.
      * @return A User object representing the user with the provided username. Returns null if the user does not exist.
-     */
+     *//*
+
     public static Author getAuthorByAuthorname(String authorName) throws InvalidUsernameException {
         try {
             // No point in getting invalid users, throws InvalidUsernameException
@@ -454,24 +485,28 @@ public class AuthorHandler {
     }
 
 
-    /**
+    */
+/**
      * Checks whether a given username is null or empty. If so, throws an UsernameEmptyException
      * which must be handled.
      * @param authorName the username to check.
      * @throws InvalidAuthornameException if username is null or empty.
-     */
+     *//*
+
     private static void checkEmptyAuthorname(String authorName) throws InvalidAuthornameException {
         if (authorName == null || authorName.isEmpty()) {
             throw new InvalidAuthornameException("Author Name is null or empty.");
         }
     }
 
-    /**
+    */
+/**
      * Checks if a given username exists in the list of usernames. If so, throws a UsernameTakenException
      * which must be handled.
      * @param authorName the username.
      * @throws InvalidUsernameException if the username already exists in storedTitles.
-     */
+     *//*
+
     private static void checkAuthornameTaken(String authorName) throws InvalidAuthornameException {
         if (storedAuthors.contains(authorName))
             throw new InvalidAuthornameException("Author Name " + authorName + " already taken.");
@@ -484,36 +519,42 @@ public class AuthorHandler {
             throw new UserNotFoundException("User with ID " + user + "not found in database.");
     }
 
-    /**
+    */
+/**
      * Checks if a given user is null. If so, throws a NullUserException which must be handled.
      * @param user the user.
      * @throws NullUserException if the user is null.
-     */
+     *//*
+
     private static void checkNullUser(User user) throws NullUserException {
         if (user == null)
             throw new NullUserException("User is null.");
     }
 
-    /**
+    */
+/**
      * Checks whether a given authorID is invalid (<= 0). If so, throws an InvalidIDException
      * which must be handled by the caller.
      * @param authorID the userID to validate.
      * @throws InvalidIDException if authorID <= 0.
-     */
+     *//*
+
     private static void checkValidAuthorID(int authorID) throws InvalidIDException {
         if (authorID <= 0) {
             throw new InvalidIDException("Invalid authorID: " + authorID);
         }
     }
 
-    /**
+    */
+/**
      * Checks whether a given password is null or empty. If so, throws an PasswordEmptyException
      * which must be handled.
      * @param password the password to check.
      * @throws InvalidPasswordException if password is null or empty.
-     */
+     *//*
+
     private static void checkEmptyPassword(String password) throws InvalidPasswordException {
         if (password == null || password.isEmpty())
             throw new InvalidPasswordException("Password is empty.");
     }
-}
+}*/

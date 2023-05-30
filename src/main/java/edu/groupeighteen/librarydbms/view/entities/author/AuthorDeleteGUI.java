@@ -5,7 +5,7 @@ import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -36,7 +36,7 @@ public class AuthorDeleteGUI extends GUI {
             dispose();
 
             if (LibraryManager.getCurrentUser() != null) {
-                try {
+                /*try {
                     if (UserHandler.validate(LibraryManager.getCurrentUser(),
                             Arrays.toString(passwordField.getPassword()))) {
                         //UserHandler.deleteUser(authortoDelete);
@@ -45,7 +45,7 @@ public class AuthorDeleteGUI extends GUI {
                     }
                 } catch (InvalidPasswordException | NullUserException userNullException) {
                     userNullException.printStackTrace();
-                }
+                }*/
             }
             //delete user
             //previous gui = null
