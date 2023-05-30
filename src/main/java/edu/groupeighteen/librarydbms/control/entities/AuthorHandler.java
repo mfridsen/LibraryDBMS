@@ -5,10 +5,15 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.Author.AuthorNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.Author.InvalidAuthornameException;
+import edu.groupeighteen.librarydbms.model.exceptions.Author.NullAuthorException;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.*;
-
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUsernameException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.NullUserException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,23 +51,23 @@ public class AuthorHandler {
     /**
      * Syncs the storedUsernames list against the usernames in the users table.
      */
-    public static void syncUsernames() {
+    public static void syncAuthors() {
         if (!storedAuthors.isEmpty())
             storedAuthors.clear();
         retrieveAuthorsFromTable();
     }
 
     /**
-     * Method that retrieves the usernames in the users table and stores them in the static ArrayList.
-     * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
+     * Method that retrieves the authors in the author table and stores them in the static ArrayList.
+     * Query needs to be ORDER BY author_id ASC or ids will be in the order of 10, 1, 2, ...
      */
     private static void retrieveAuthorsFromTable() {
         try {
-            // Execute the query to retrieve all usernames
-            String query = "SELECT username FROM users ORDER BY userID ASC";
+            // Execute the query to retrieve all authors
+            String query = "SELECT author name FROM authors ORDER BY authorID ASC";
             try (QueryResult result = DatabaseHandler.executeQuery(query)) {
 
-                // Add the retrieved usernames to the ArrayList
+                // Add the retrieved author names to the ArrayList
                 while (result.getResultSet().next()) {
                     storedAuthors.add(result.getResultSet().getString("authors"));
                 }
@@ -77,9 +82,9 @@ public class AuthorHandler {
      * Prints all usernames in the ArrayList.
      */
     public static void printAuthors() {
-        System.out.println("\nUsernames:");
+        System.out.println("\nAuthor Names:");
         int num = 1;
-        for (String username : storedAuthors) {
+        for (String authorName : storedAuthors) {
             System.out.println(num + ": " + storedAuthors);
             num++;
         }
@@ -99,7 +104,7 @@ public class AuthorHandler {
      * @param authorList the list of User objects.
      */
     public static void printAuthorList(List<Author> authorList) {
-        System.out.println("Users:");
+        System.out.println("Authors:");
         int count = 1;
         for (Author author : authorList) {
             System.out.println(count + " authorID: " + author.getAuthorID() + ", Author Name: " + author.getAuthorFirstname());
@@ -109,9 +114,9 @@ public class AuthorHandler {
     //CREATE -----------------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a new user with the specified username and password. The method first checks if the provided username is
-     * already taken. If the username is unique, a new User object is created and saved to the database. The User's ID
-     * from the database is set in the User object before it is returned. The method also handles any potential
+     * Creates a new author with the specified authorFirstName and authorLastName. The method first checks if the provided author name is
+     * already taken. If the username is unique, a new User object is created and saved to the database. The Authors's ID
+     * from the database is set in the Author object before it is returned. The method also handles any potential
      * InvalidPasswordException or InvalidIDException.
      *
      * @param authorFirstName The username for the new author.
@@ -134,7 +139,7 @@ public class AuthorHandler {
             // Need to remember to add to the list
             storedAuthors.add(newAuthor.getAuthorFirstname());
         } catch (ConstructionException | InvalidIDException e) {
-            ExceptionHandler.HandleFatalException(String.format("Failed to create User with username: " +
+            ExceptionHandler.HandleFatalException(String.format("Failed to create Author with the given name: " +
                     "'%s' due to %s: %s", authorFirstName, e.getClass().getName(), e.getMessage()), e);
         }
 
@@ -142,7 +147,7 @@ public class AuthorHandler {
     }
 
     /**
-     * Saves a user to the database. The method prepares an SQL insert query with the user's details such as
+     * Saves a author to the database. The method prepares an SQL insert query with the user's details such as
      * username, password, allowed rentals, current rentals and late fee. The query is executed and the
      * auto-generated user ID from the database is retrieved and returned. If the query execution fails, the method
      * handles the SQLException and returns 0.
@@ -154,15 +159,12 @@ public class AuthorHandler {
     private static int saveAuthor(Author author) {
         try {
             // Prepare query
-            String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, " +
-                    "lateFee, allowedToRent, deleted) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO authors (author first name, author last name, " +
+                    "VALUES (?, ?)";
 
             String[] params = {
                     author.getAuthorFirstname(),
                     author.getAuthorLastName(),
-                    "1", //allowedToRent is true by default
-                    "0" //deleted is false by default
             };
 
             // Execute query and get the generated userID, using try-with-resources
@@ -183,12 +185,12 @@ public class AuthorHandler {
     }
 
     /**
-     * Retrieves a User object from the database using the provided userID. The method first validates the provided
-     * userID. It then prepares and executes an SQL query to select the user's details from the database. If a user
-     * with the provided userID exists, a new User object is created with the retrieved details and returned.
+     * Retrieves a Author object from the database using the provided authorID. The method first validates the provided
+     * authorID. It then prepares and executes an SQL query to select the user's details from the database. If a author
+     * with the provided authorID exists, a new Author object is created with the retrieved details and returned.
      *
      * @param authorID The userID of the user to be retrieved.
-     * @return A User object representing the user with the provided userID. Returns null if the user does not exist.
+     * @return A Author object representing the user with the provided authorID. Returns null if the user does not exist.
      */
     public static Author getAuthorByID(int authorID) throws InvalidIDException {
         try {
@@ -208,13 +210,13 @@ public class AuthorHandler {
                 if (resultSet.next()) {
 
                     return new Author(authorID,
-                            resultSet.getString("username"),
-                            resultSet.getString("password"),
+                            resultSet.getString("Author First Name"),
+                            resultSet.getString("Author Last Name"),
                     );
                 }
             }
         } catch (SQLException | ConstructionException e) {
-            ExceptionHandler.HandleFatalException("Failed to retrieve user by ID from database due to " +
+            ExceptionHandler.HandleFatalException("Failed to retrieve author by ID from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
@@ -235,13 +237,13 @@ public class AuthorHandler {
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
     public static void updateAuthor(Author updatedAuthor) throws NullAuthorException, InvalidAuthornameException {
         try {
-            //Let's check if the user exists in the database before we go on
-            validateAuthor(updatedAuthor);
+            //Let's check if the author exists in the database before we go on
+            updateAuthor(updatedAuthor);
 
             //Retrieve old username
             String oldAuthorname = getAuthorByID(updatedAuthor.getAuthorID()).getAuthorFirstname();
 
-            //If username has been changed...
+            //If author name has been changed...
             if (!updatedAuthor.getAuthorFirstname().equals(oldAuthorname)) {
                 //... and is taken. Throws UsernameTakenException
                 checkAuthornameTaken(updatedAuthor.getAuthorFirstname());
@@ -250,7 +252,7 @@ public class AuthorHandler {
                 storedAuthors.add(updatedAuthor.getAuthorFirstname());
             }
 
-            // Prepare a SQL command to update a updatedUser's data by userID.
+            // Prepare a SQL command to update a updatedAuthors's data by authorID.
             String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, " +
                     "lateFee = ?, allowedToRent = ? " + "WHERE userID = ?";
             String[] params = {
@@ -262,7 +264,7 @@ public class AuthorHandler {
             // Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
         } catch (AuthorNotFoundException | InvalidIDException e) {
-            ExceptionHandler.HandleFatalException("Failed to update user in database due to " +
+            ExceptionHandler.HandleFatalException("Failed to update author in database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
@@ -375,7 +377,7 @@ public class AuthorHandler {
      * username. It then prepares and executes an SQL query to select the user's details from the database. If a user
      * with the provided username exists, a new User object is created with the retrieved details and returned.
      *
-     * @param username The username of the user to be retrieved.
+     * @param authorName The username of the user to be retrieved.
      * @return A User object representing the user with the provided username. Returns null if the user does not exist.
      */
     public static Author getAuthorByAuthorname(String authorName) throws InvalidUsernameException {
@@ -399,10 +401,14 @@ public class AuthorHandler {
                     return author;
                 }
             }
-        } catch (SQLException | InvalidIDException | InvalidLateFeeException | ConstructionException |
-                 AuthorNotAllowedException e) {
+        }/* catch (SQLException | InvalidIDException | InvalidLateFeeException | ConstructionException |
+                 AuthorNotAllowedException | InvalidAuthornameException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve user by username from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
+        }*/ catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidAuthornameException e) {
+            throw new RuntimeException(e);
         }
 
         // Return null if not found
