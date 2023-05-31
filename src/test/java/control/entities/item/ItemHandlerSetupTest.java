@@ -17,13 +17,13 @@ import java.util.Map;
  * @date 5/31/2023
  * @contact matfir-1@student.ltu.se
  * <p>
- * Unit Test for the ItemHandlerSetup class.
- * <p>
- * Brought to you by copious amounts of nicotine.
+ * Tests the setup method in the ItemHandler class.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ItemHandlerSetupTest extends BaseHandlerTest
 {
+    //TODO-PRIO test against test_data file
+
     @BeforeEach
     @Override
     protected void setupAndReset()
