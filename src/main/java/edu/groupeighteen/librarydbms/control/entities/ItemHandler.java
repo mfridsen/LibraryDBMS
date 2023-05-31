@@ -3,7 +3,9 @@ package edu.groupeighteen.librarydbms.control.entities;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
+import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
+import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
@@ -52,12 +54,15 @@ public class ItemHandler
      */
     private static final Map<String, Integer> availableTitles = new HashMap<>();
 
-    //TODO-PRIO BARCODES
+    /**
+     * Used to keep track of already existing barcodes to quickly enforce uniqueness. //TODO-PRIO TEST
+     */
+    private static final ArrayList<String> registeredBarcodes = new ArrayList<>();
 
     /**
      * Returns the storedTitles map.
      *
-     * @return the storedTitles map
+     * @return the storedTitles map.
      */
     public static Map<String, Integer> getStoredTitles()
     {
@@ -67,11 +72,21 @@ public class ItemHandler
     /**
      * Returns the availableTitles map.
      *
-     * @return the availableTitles map
+     * @return the availableTitles map.
      */
     public static Map<String, Integer> getAvailableTitles()
     {
         return availableTitles;
+    }
+
+    /**
+     * Returns the registeredBarcodes list.
+     *
+     * @return the registeredBarcodes list. //TODO-PRIO TEST
+     */
+    public static ArrayList<String> getRegisteredBarcodes()
+    {
+        return registeredBarcodes;
     }
 
     /**
@@ -148,68 +163,76 @@ public class ItemHandler
         }
     }
 
+    public static void incrementRegisteredBarcodes(String barcode)
+    {
+
+    }
+
+    public static void decrementRegisteredBarcodes(String barcode)
+    {
+
+    }
+
     /**
      * Prepares the handler by syncing titles from the database.
      */
     public static void setup()
     {
-        syncTitles();
-    }
-
-    /**
-     * Clears both stored and available titles maps.
-     */
-    public static void reset()
-    {
-        storedTitles.clear();
-        availableTitles.clear();
+        syncTitlesAndBarcodes();
     }
 
     /**
      * Syncs the handler with the database by clearing existing data and retrieving current titles from the database.
      */
-    public static void syncTitles()
+    public static void syncTitlesAndBarcodes()
     {
-        if (!storedTitles.isEmpty())
-        {
-            storedTitles.clear();
-        }
-        if (!availableTitles.isEmpty())
-        {
-            availableTitles.clear();
-        }
-        retrieveTitlesFromTable();
+        reset();
+        retrieveTitlesAndBarcodesFromTable();
     }
 
     /**
      * Retrieves titles from the Items table and returns them as a map with title-count pairs.
      */
-    private static void retrieveTitlesFromTable()
+    private static void retrieveTitlesAndBarcodesFromTable() //TODO-PRIO RE-TEST AGAINST RETRIEVAL FROM TEST_DATA FILE
     {
-        try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available FROM items ORDER BY title ASC"))
+        try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available, barcode FROM items " +
+                "ORDER BY " + "title ASC"))
         {
-            // Add the retrieved Items to the maps
+            // Add the retrieved Items to the maps and list
             while (result.getResultSet().next())
             {
                 String title = result.getResultSet().getString("title");
                 boolean available = result.getResultSet().getBoolean("available");
+                String barcode = result.getResultSet().getString("barcode");
 
                 incrementStoredTitles(title);
                 if (available)
                 {
                     incrementAvailableTitles(title);
                 }
+
+
             }
         }
-        catch (SQLException e)
-        { //This is fatal
+        catch (SQLException e) //This is fatal
+        {
             ExceptionHandler.HandleFatalException("Failed to retrieve titles from database due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
         finally
         {
             if (storedTitles.isEmpty()) System.err.println("No titles retrieved from table!");
         }
+    }
+
+    /**
+     * Clears both stored and available titles maps as well as the registered barcodes list.
+     */
+    public static void reset()
+    {
+        storedTitles.clear();
+        availableTitles.clear();
+        registeredBarcodes.clear();
     }
 
     /**
@@ -238,33 +261,74 @@ public class ItemHandler
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-
-    public static Item createNewItem(String title, Item.ItemType type, int authorID, int classificationID,
-                                     String barcode)
+    public static Item createNewLiterature(String title, Item.ItemType type, int authorID, int classificationID,
+                                           String barcode, String ISBN)
     throws InvalidTitleException
     {
         try
         {
-            /*//TODO-prio update method and test when Item is finished
             //Validate input, throws InvalidTitleException
-            checkEmptyTitle(title);
 
-            //Create item and retrieve and set itemID, throws ConstructionException and InvalidIDException
-            Item newItem = new Item(title, type, barcode, authorID, classificationID);
-            newItem.setItemID(saveItem(newItem));
+            //TODO-prio validate uniqueness of barcode similar to uniqueness of usernames in user
+
+            //Create literature object and set authorName and classificationName by retrieving from their handlers
+            Literature newLiterature = new Literature(title, type, authorID, classificationID, barcode, ISBN);
+            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
+
+            //Retrieve and set itemID,
+            int itemID = saveItem(newLiterature);
+            newLiterature.setItemID(itemID);
+
+            //Save literature
+            saveLiterature(newLiterature);
 
             //Increment the count of the new title. Add a new entry if the title does not exist yet.
             incrementBothTitles(title);
 
-            return newItem;*/
+            return newLiterature;
         }
-        catch (/*ConstructionException | InvalidIDException*/ Exception e)
+        catch (ConstructionException | InvalidIDException e)
         {
-            ExceptionHandler.HandleFatalException("Failed to create Item due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+            e.printStackTrace();
         }
 
-        //Won't reach, needed for compilation
+        return null;
+    }
+
+    public static Item createNewFilm(String title, Item.ItemType type, int authorID, int classificationID,
+                                     String barcode, int ageRating)
+    throws InvalidTitleException
+    {
+        try
+        {
+            //Validate input, throws InvalidTitleException
+            //TODO-prio validate uniqueness of barcode similar to uniqueness of usernames in user
+
+            //Create film object and set authorName and classificationName by retrieving from their handlers
+            Film newFilm = new Film(title, authorID, classificationID, barcode, ageRating);
+            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
+
+            //Retrieve and set itemID,
+            int itemID = saveItem(newFilm);
+            newFilm.setItemID(itemID);
+
+            //Save film
+            saveFilm(newFilm);
+
+            //Increment the count of the new title. Add a new entry if the title does not exist yet.
+            incrementBothTitles(title);
+
+            return newFilm;
+        }
+        catch (Exception e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to create Film due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+
+            ExceptionHandler.HandleFatalException("Failed to create Literature due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
         return null;
     }
 
@@ -279,17 +343,22 @@ public class ItemHandler
         try
         {
             // Prepare query
-            String query = "INSERT INTO items (title, allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO items (title, itemType, barcode, authorID, classificationID, " +
+                    "allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             String[] params = {
                     item.getTitle(),
+                    item.getType().toString(),
+                    item.getBarcode(),
+                    String.valueOf(item.getAuthorID()),
+                    String.valueOf(item.getClassificationID()),
                     String.valueOf(item.getAllowedRentalDays()),
                     item.isAvailable() ? "1" : "0", // If boolean is true, add the string "1", if false, "0"
-                    item.isDeleted() ? "1" : "0" // If boolean is true, add the string "1", if false, "0"
+                    item.isDeleted() ? "1" : "0"
             };
 
             // Execute query and get the generated itemID
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
-                                                                                Statement.RETURN_GENERATED_KEYS))
+                    Statement.RETURN_GENERATED_KEYS))
             {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next())
@@ -298,15 +367,55 @@ public class ItemHandler
                 }
             }
         }
-        catch (SQLException e)
-        { // Fatal
+        catch (SQLException e) // Fatal
+        {
             ExceptionHandler.HandleFatalException("Failed to save Item to database due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, needed for compilation
         return 0;
     }
+
+    private static void saveLiterature(Literature literature)
+    {
+        // Save to literature table
+        String query = "INSERT INTO literature (literatureID, ISBN) VALUES (?, ?)";
+        DatabaseHandler.executePreparedQuery(query,
+                new String[]{
+                        String.valueOf(literature.getItemID()),
+                        literature.getISBN()});
+
+        // Save to literature_item join table
+        String joinQuery = "INSERT INTO literature_item (literatureID, itemID) VALUES (?, ?)";
+        DatabaseHandler.executePreparedQuery(joinQuery,
+                new String[]{
+                        String.valueOf(literature.getItemID()),
+                        String.valueOf(literature.getItemID())});
+    }
+
+    private static void saveFilm(Film film)
+    {
+        // Save to films table
+        String query = "INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES (?, ?, ?, ?)";
+        DatabaseHandler.executePreparedQuery(query,
+                new String[]{
+                        String.valueOf(film.getItemID()),
+                        String.valueOf(film.getAgeRating()),
+                        film.getCountryOfProduction(),
+                        film.getListOfActors()});
+
+        // Save to film_item join table
+        String joinQuery = "INSERT INTO film_item (filmID, itemID) VALUES (?, ?)";
+        DatabaseHandler.executePreparedQuery(joinQuery,
+                new String[]{String.valueOf(film.getItemID()), String.valueOf(film.getItemID())});
+    }
+
+
+
+
+
+
 
 
     /**
@@ -339,14 +448,14 @@ public class ItemHandler
                 int allowedRentalDays = resultSet.getInt("allowedRentalDays");
                 boolean available = resultSet.getBoolean("available");
                 boolean deleted = resultSet.getBoolean("deleted");
-        //TODO-PRIO FIX THIS
+                //TODO-PRIO FIX THIS
                 return null;
             }
         }
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         // If no Item was found, return null
@@ -414,7 +523,7 @@ public class ItemHandler
         catch (InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to update Item due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -475,7 +584,7 @@ public class ItemHandler
         catch (SQLException | InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to delete Item due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -515,7 +624,7 @@ public class ItemHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve items by title due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Can be empty
@@ -649,7 +758,7 @@ public class ItemHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to get Item title by ID due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //If no item title was found

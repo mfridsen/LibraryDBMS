@@ -101,7 +101,7 @@ public class User extends Entity
         catch (InvalidNameException | InvalidPasswordException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -135,10 +135,10 @@ public class User extends Entity
             setAllowedToRent(allowedToRent);
         }
         catch (InvalidIDException | InvalidNameException | InvalidPasswordException | RentalNotAllowedException
-               | InvalidLateFeeException | InvalidRentalStatusChangeException e)
+                | InvalidLateFeeException | InvalidRentalStatusChangeException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -208,10 +208,10 @@ public class User extends Entity
             throw new InvalidNameException("Username cannot be null or empty.");
         if (username.length() < MIN_USERNAME_LENGTH)
             throw new InvalidNameException("Username too short, must be at least " + MIN_USERNAME_LENGTH +
-                                                       " characters. Received: " + username);
+                    " characters. Received: " + username);
         if (username.length() > MAX_USERNAME_LENGTH)
             throw new InvalidNameException("Username too long, must be at most " + MAX_USERNAME_LENGTH +
-                                                       " characters. Received: " + username);
+                    " characters. Received: " + username);
         this.username = username;
     }
 
@@ -238,10 +238,10 @@ public class User extends Entity
             throw new InvalidPasswordException("Password cannot be null or empty.");
         if (password.length() < MIN_PASSWORD_LENGTH)
             throw new InvalidPasswordException("Password too short, must be at least " + MIN_PASSWORD_LENGTH +
-                                                       " characters. Received: " + password.length());
+                    " characters. Received: " + password.length());
         if (password.length() > 50)
             throw new InvalidPasswordException("Password too long, must be at most " + MAX_PASSWORD_LENGTH +
-                                                       " characters. Received: " + password.length());
+                    " characters. Received: " + password.length());
         this.password = password;
     }
 
@@ -284,7 +284,7 @@ public class User extends Entity
         //Current rentals can't be greater than allowed
         if (currentRentals > allowedRentals)
             throw new RentalNotAllowedException("Current rentals can't be greater than allowed rentals. Received: " +
-                                                        currentRentals + ", allowed: " + allowedRentals);
+                    currentRentals + ", allowed: " + allowedRentals);
         //User is still allowed to rent
         if (currentRentals < allowedRentals)
             allowedToRent = true;
@@ -353,24 +353,24 @@ public class User extends Entity
         //No late fee and not maximum allowed rentals means user should be allowed to rent
         if (lateFee == 0.0 && allowedRentals > currentRentals && !allowedToRent)
             throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                                                                 "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
-                                                                 "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
-                                                                 ", Allowed rentals: " + allowedRentals);
+                    "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
+                    "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
+                    ", Allowed rentals: " + allowedRentals);
 
         //Not allowed to rent with late fee
         if (lateFee > 0.0 && allowedToRent)
             throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                                                                 "User has late fee: " + lateFee);
+                    "User has late fee: " + lateFee);
 
         //Not allowed to rent when at max rentals
         if (currentRentals >= allowedRentals && allowedToRent)
             throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                                                                 "User has already rented to capacity.");
+                    "User has already rented to capacity.");
 
         //Being deleted makes it hard to rent
         if (deleted && allowedToRent)
             throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                                                                 "User who is deleted cannot be allowed to rent.");
+                    "User who is deleted cannot be allowed to rent.");
 
         this.allowedToRent = allowedToRent;
     }
