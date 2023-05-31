@@ -45,7 +45,6 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
     //Empty ISBN
     //Too long ISBN
 
-
     @Override
     @BeforeEach
     protected void setupAndReset()
@@ -54,6 +53,7 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
         ItemHandler.reset();
     }
 
+    //TODO-PRIO validate join tables
     /**
      * Test case for creating new literature with valid input.
      */
