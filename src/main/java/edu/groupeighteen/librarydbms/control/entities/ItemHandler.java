@@ -3,11 +3,10 @@ package edu.groupeighteen.librarydbms.control.entities;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
-import edu.groupeighteen.librarydbms.model.entities.Film;
-import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.entities.Literature;
+import edu.groupeighteen.librarydbms.model.entities.*;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 
@@ -163,18 +162,28 @@ public class ItemHandler
         }
     }
 
+    /**
+     * Increments the count of registered barcodes by adding the specified barcode.
+     *
+     * @param barcode The barcode to be added.
+     */
     public static void incrementRegisteredBarcodes(String barcode)
     {
-
-    }
-
-    public static void decrementRegisteredBarcodes(String barcode)
-    {
-
+        registeredBarcodes.add(barcode);
     }
 
     /**
-     * Prepares the handler by syncing titles from the database.
+     * Decrements the count of registered barcodes by removing the specified barcode.
+     *
+     * @param barcode The barcode to be removed.
+     */
+    public static void decrementRegisteredBarcodes(String barcode)
+    {
+        registeredBarcodes.remove(barcode);
+    }
+
+    /**
+     * Prepares the handler by syncing titles from the database. Called at the start of the application.
      */
     public static void setup()
     {
@@ -182,7 +191,10 @@ public class ItemHandler
     }
 
     /**
-     * Syncs the handler with the database by clearing existing data and retrieving current titles from the database.
+     * Syncs the handler with the database by clearing existing data and retrieving current titles and barcodes from
+     * the database.
+     * <p>
+     * Can be called if something's gone wrong and data needs to be re-synced during runtime.
      */
     public static void syncTitlesAndBarcodes()
     {
@@ -198,30 +210,33 @@ public class ItemHandler
         try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available, barcode FROM items " +
                 "ORDER BY " + "title ASC"))
         {
-            // Add the retrieved Items to the maps and list
             while (result.getResultSet().next())
             {
+                //Retrieve data
                 String title = result.getResultSet().getString("title");
                 boolean available = result.getResultSet().getBoolean("available");
                 String barcode = result.getResultSet().getString("barcode");
 
+                //Increment titles
                 incrementStoredTitles(title);
                 if (available)
                 {
                     incrementAvailableTitles(title);
                 }
 
-
+                //Increment barcodes
+                incrementRegisteredBarcodes(barcode);
             }
         }
         catch (SQLException e) //This is fatal
         {
-            ExceptionHandler.HandleFatalException("Failed to retrieve titles from database due to " +
+            ExceptionHandler.HandleFatalException("Failed to retrieve titles and barcodes from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
         finally
         {
             if (storedTitles.isEmpty()) System.err.println("No titles retrieved from table!");
+            if (registeredBarcodes.isEmpty()) System.err.println("No barcodes retrieved from table!");
         }
     }
 
@@ -261,19 +276,26 @@ public class ItemHandler
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-    public static Item createNewLiterature(String title, Item.ItemType type, int authorID, int classificationID,
+    public static Literature createNewLiterature(String title, Item.ItemType type, int authorID, int classificationID,
                                            String barcode, String ISBN)
-    throws InvalidTitleException
+    throws InvalidBarcodeException, InvalidIDException, EntityNotFoundException
     {
+        //Validate input, throws InvalidBarcodeException
+        checkBarcode(barcode);
+        Literature newLiterature = null;
+
         try
         {
-            //Validate input, throws InvalidTitleException
+            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
+            //Retrieve author
+            Author author = getExistingAuthor(authorID); //Throws EntityNotFoundException
 
-            //TODO-prio validate uniqueness of barcode similar to uniqueness of usernames in user
+            //Retrieve classification
+            Classification classification = getExistingClassification(classificationID);
+
 
             //Create literature object and set authorName and classificationName by retrieving from their handlers
-            Literature newLiterature = new Literature(title, type, authorID, classificationID, barcode, ISBN);
-            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
+            newLiterature = new Literature(title, type, authorID, classificationID, barcode, ISBN);
 
             //Retrieve and set itemID,
             int itemID = saveItem(newLiterature);
@@ -284,52 +306,67 @@ public class ItemHandler
 
             //Increment the count of the new title. Add a new entry if the title does not exist yet.
             incrementBothTitles(title);
-
-            return newLiterature;
         }
-        catch (ConstructionException | InvalidIDException e)
+        catch (ConstructionException e)
         {
             e.printStackTrace();
         }
 
-        return null;
+        return newLiterature;
     }
 
-    public static Item createNewFilm(String title, Item.ItemType type, int authorID, int classificationID,
-                                     String barcode, int ageRating)
-    throws InvalidTitleException
+    private static Classification getExistingClassification(int classificationID)
+    throws EntityNotFoundException
     {
-        try
-        {
-            //Validate input, throws InvalidTitleException
-            //TODO-prio validate uniqueness of barcode similar to uniqueness of usernames in user
+        Classification classification = ClassificationHandler.getClassificationByID(classificationID);
+        if (classification == null)
+            throw new EntityNotFoundException("Classification with ID " + classificationID + " not found.");
+        return classification;
+    }
 
-            //Create film object and set authorName and classificationName by retrieving from their handlers
-            Film newFilm = new Film(title, authorID, classificationID, barcode, ageRating);
-            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
 
-            //Retrieve and set itemID,
-            int itemID = saveItem(newFilm);
-            newFilm.setItemID(itemID);
+    private static void checkBarcode(String barcode)
+    throws InvalidBarcodeException
+    {
+        if (registeredBarcodes.contains(barcode))
+            throw new InvalidBarcodeException("Barcode " + barcode + " is already registered.");
+    }
 
-            //Save film
-            saveFilm(newFilm);
+    private static Author getExistingAuthor(int authorID)
+    throws EntityNotFoundException
+    {
+        Author author = AuthorHandler.getAuthorByID(authorID);
+        if (author == null)
+            throw new EntityNotFoundException("Author with ID " + authorID + "not found.");
+        return author;
+    }
 
-            //Increment the count of the new title. Add a new entry if the title does not exist yet.
-            incrementBothTitles(title);
 
-            return newFilm;
-        }
-        catch (Exception e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to create Film due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
 
-            ExceptionHandler.HandleFatalException("Failed to create Literature due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
+    public static Film createNewFilm(String title, int authorID, int classificationID,
+                                     String barcode, int ageRating)
+    throws InvalidBarcodeException, ConstructionException, InvalidIDException
+    {
+        //Validate input, throws InvalidBarcodeException
+        checkBarcode(barcode);
 
-        return null;
+        //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
+
+
+        //Create film object and set authorName and classificationName by retrieving from their handlers
+        Film newFilm = new Film(title, authorID, classificationID, barcode, ageRating);
+
+        //Retrieve and set itemID,
+        int itemID = saveItem(newFilm);
+        newFilm.setItemID(itemID);
+
+        //Save film
+        saveFilm(newFilm);
+
+        //Increment the count of the new title. Add a new entry if the title does not exist yet.
+        incrementBothTitles(title);
+
+        return newFilm;
     }
 
     /**
@@ -410,12 +447,6 @@ public class ItemHandler
         DatabaseHandler.executePreparedQuery(joinQuery,
                 new String[]{String.valueOf(film.getItemID()), String.valueOf(film.getItemID())});
     }
-
-
-
-
-
-
 
 
     /**
