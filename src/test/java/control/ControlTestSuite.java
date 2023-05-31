@@ -5,6 +5,8 @@ import control.db.DatabaseHandlerTest;
 import control.entities.item.ItemHandlerTest;
 import control.entities.rental.RentalHandlerTest;
 import control.entities.user.UserHandlerTest;
+import edu.groupeighteen.librarydbms.control.entities.AuthorHandler;
+import edu.groupeighteen.librarydbms.control.entities.ClassificationHandler;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -23,8 +25,10 @@ import org.junit.platform.suite.api.Suite;
         //Control tests
         DatabaseHandlerTest.class,
         DatabaseHandlerMetaDataTest.class,
-        UserHandlerTest.class,
+        AuthorHandler.class,
+        ClassificationHandler.class,
         ItemHandlerTest.class,
+        UserHandlerTest.class,
         RentalHandlerTest.class,
 })
 

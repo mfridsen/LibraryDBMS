@@ -5,252 +5,238 @@ import static org.junit.jupiter.api.Assertions.*;
 import control.BaseHandlerTest;
 import org.junit.jupiter.api.*;
 
+import java.sql.SQLException;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
  * @date 5/31/2023
  * @contact matfir-1@student.ltu.se
  * <p>
- * Tests the createNewLiterature method in ItemHandler.
+ * Test class for ItemHandler.createNewLiterature method.
+ * The purpose of these tests is to verify that the createNewLiterature method behaves as expected under
+ * different circumstances.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CreateNewLiteratureTest extends BaseHandlerTest
 {
+    //Valid input
+    //Valid input different types
+    //Null title
+    //Empty title
+    //Too long title
+    //Null type
+    //Invalid authorID
+    //Invalid classificationID
+    //Non-existent author
+    //Non-existent classification
+    //Null barcode
+    //Empty barcode
+    //Too long barcode
+    //Taken barcode
+    //Null ISBN
+    //Empty ISBN
+    //Too long ISBN
+
+    @Override
+    @BeforeEach
+    protected void setupAndReset()
+    {
+        try
+        {
+            setupConnectionAndTables();
+        }
+        catch (SQLException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     /**
-     * Test case for createNewLiterature with valid input.
-     *
-     * <p>This test ensures that createNewLiterature method behaves correctly
-     * when provided with valid input parameters. It verifies that a Literature object
-     * is constructed without throwing any exceptions and that the Literature properties
-     * are correctly set.</p>
+     * Test case for creating new literature with valid input.
      */
     @Test
     @Order(1)
-    void testCreateNewLiterature_ValidInput()
-    {
-        System.out.println("\n1: Testing createNewLiterature with valid input...");
-
-
+    void testCreateNewLiterature_ValidInput() {
+        System.out.println("\n1: Testing createNewLiterature method with valid input...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with null title.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidTitleException
-     * when provided with a null title. It ensures that an exception is correctly thrown
-     * during the construction of the Item object.</p>
+     * Test case for creating new literature with different valid types.
      */
     @Test
     @Order(2)
-    void testCreateNewLiterature_NullTitle()
-    {
-        System.out.println("\n2: Testing createNewLiterature with null title...");
-
-        // Test case: Null title
-        // Set the title as null
-        // Ensure an InvalidTitleException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_ValidInputDifferentTypes() {
+        System.out.println("\n2: Testing createNewLiterature method with different valid types...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with empty title.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidTitleException
-     * when provided with an empty title. It ensures that an exception is correctly thrown
-     * during the construction of the Item object.</p>
+     * Test case for creating new literature with null title.
      */
     @Test
     @Order(3)
-    void testCreateNewLiterature_EmptyTitle()
-    {
-        System.out.println("\n3: Testing createNewLiterature with empty title...");
-
-        // Test case: Empty title
-        // Set the title as an empty string
-        // Ensure an InvalidTitleException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_NullTitle() {
+        System.out.println("\n3: Testing createNewLiterature method with null title...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with too long title.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidTitleException
-     * when provided with a title exceeding the maximum length. It ensures that an exception
-     * is correctly thrown during the construction of the Item object.</p>
+     * Test case for creating new literature with empty title.
      */
     @Test
     @Order(4)
-    void testCreateNewLiterature_TooLongTitle()
-    {
-        System.out.println("\n4: Testing createNewLiterature with too long title...");
-
-        // Test case: Too long title
-        // Set the title with a length exceeding LITERATURE_TITLE_MAX_LENGTH
-        // Ensure an InvalidTitleException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_EmptyTitle() {
+        System.out.println("\n4: Testing createNewLiterature method with empty title...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with null barcode.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidBarcodeException
-     * when provided with a null barcode. It ensures that an exception is correctly thrown
-     * during the construction of the Item object.</p>
+     * Test case for creating new literature with too long title.
      */
     @Test
     @Order(5)
-    void testCreateNewLiterature_NullBarcode()
-    {
-        System.out.println("\n5: Testing createNewLiterature with null barcode...");
-
-        // Test case: Null barcode
-        // Set the barcode as null
-        // Ensure an InvalidBarcodeException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_TooLongTitle() {
+        System.out.println("\n5: Testing createNewLiterature method with too long title...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with empty barcode.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidBarcodeException
-     * when provided with an empty barcode. It ensures that an exception is correctly thrown
-     * during the construction of the Item object.</p>
+     * Test case for creating new literature with null type.
      */
     @Test
     @Order(6)
-    void testCreateNewLiterature_EmptyBarcode()
-    {
-        System.out.println("\n6: Testing createNewLiterature with empty barcode...");
-
-        // Test case: Empty barcode
-        // Set the barcode as an empty string
-        // Ensure an InvalidBarcodeException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_NullType() {
+        System.out.println("\n6: Testing createNewLiterature method with null type...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with too long barcode.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidBarcodeException
-     * when provided with a barcode exceeding the maximum length. It ensures that an exception
-     * is correctly thrown during the construction of the Item object.</p>
+     * Test case for creating new literature with invalid authorID.
      */
     @Test
     @Order(7)
-    void testCreateNewLiterature_TooLongBarcode()
-    {
-        System.out.println("\n7: Testing createNewLiterature with too long barcode...");
-
-        // Test case: Too long barcode
-        // Set the barcode with a length exceeding ITEM_BARCODE_LENGTH
-        // Ensure an InvalidBarcodeException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_InvalidAuthorID() {
+        System.out.println("\n7: Testing createNewLiterature method with invalid authorID...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with negative authorID.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidIDException
-     * when provided with a negative authorID. It ensures that an exception is correctly thrown
-     * during the construction of the Item object.</p>
+     * Test case for creating new literature with invalid classificationID.
      */
     @Test
     @Order(8)
-    void testCreateNewLiterature_NegativeAuthorID()
-    {
-        System.out.println("\n8: Testing createNewLiterature with negative authorID...");
-
-        // Test case: Negative authorID
-        // Set the authorID as a negative value
-        // Ensure an InvalidIDException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_InvalidClassificationID() {
+        System.out.println("\n8: Testing createNewLiterature method with invalid classificationID...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with negative classificationID.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidIDException
-     * when provided with a negative classificationID. It ensures that an exception is correctly thrown
-     * during the construction of the Item object.</p>
+     * Test case for creating new literature with non-existent author.
      */
     @Test
     @Order(9)
-    void testCreateNewLiterature_NegativeClassificationID()
-    {
-        System.out.println("\n9: Testing createNewLiterature with negative classificationID...");
-
-        // Test case: Negative classificationID
-        // Set the classificationID as a negative value
-        // Ensure an InvalidIDException is thrown during the construction of the Literature
-
+    void testCreateNewLiterature_NonExistentAuthor() {
+        System.out.println("\n9: Testing createNewLiterature method with non-existent author...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with null ISBN.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidISBNException
-     * when provided with a null ISBN. It ensures that an exception is correctly thrown
-     * during the execution of the createNewLiterature method.</p>
+     * Test case for creating new literature with non-existent classification.
      */
     @Test
     @Order(10)
-    void testCreateNewLiterature_NullISBN()
-    {
-        System.out.println("\n10: Testing createNewLiterature with null ISBN...");
-
-        // Test case: Null ISBN
-        // Set the ISBN as null
-        // Ensure an InvalidISBNException is thrown during the execution of createNewLiterature()
-
+    void testCreateNewLiterature_NonExistentClassification() {
+        System.out.println("\n10: Testing createNewLiterature method with non-existent classification...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with empty ISBN.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidISBNException
-     * when provided with an empty ISBN. It ensures that an exception is correctly thrown
-     * during the execution of the createNewLiterature method.</p>
+     * Test case for creating new literature with null barcode.
      */
     @Test
     @Order(11)
-    void testCreateNewLiterature_EmptyISBN()
-    {
-        System.out.println("\n11: Testing createNewLiterature with empty ISBN...");
-
-        // Test case: Empty ISBN
-        // Set the ISBN as an empty string
-        // Ensure an InvalidISBNException is thrown during the execution of createNewLiterature()
-
+    void testCreateNewLiterature_NullBarcode() {
+        System.out.println("\n11: Testing createNewLiterature method with null barcode...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for createNewLiterature with too long ISBN.
-     *
-     * <p>This test verifies that createNewLiterature method throws an InvalidISBNException
-     * when provided with an ISBN exceeding the maximum length. It ensures that an exception
-     * is correctly thrown during the execution of the createNewLiterature method.</p>
+     * Test case for creating new literature with empty barcode.
      */
     @Test
     @Order(12)
-    void testCreateNewLiterature_TooLongISBN()
-    {
-        System.out.println("\n12: Testing createNewLiterature with too long ISBN...");
-
-        // Test case: Too long ISBN
-        // Set the ISBN with a length exceeding LITERATURE_ISBN_LENGTH
-        // Ensure an InvalidISBNException is thrown during the execution of createNewLiterature()
-
+    void testCreateNewLiterature_EmptyBarcode() {
+        System.out.println("\n12: Testing createNewLiterature method with empty barcode...");
+        // TODO: Write test
         System.out.println("\nTEST FINISHED.");
     }
+
+    /**
+     * Test case for creating new literature with too long barcode.
+     */
+    @Test
+    @Order(13)
+    void testCreateNewLiterature_TooLongBarcode() {
+        System.out.println("\n13: Testing createNewLiterature method with too long barcode...");
+        // TODO: Write test
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for creating new literature with taken barcode.
+     */
+    @Test
+    @Order(14)
+    void testCreateNewLiterature_TakenBarcode() {
+        System.out.println("\n14: Testing createNewLiterature method with taken barcode...");
+        // TODO: Write test
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for creating new literature with null ISBN.
+     */
+    @Test
+    @Order(15)
+    void testCreateNewLiterature_NullISBN() {
+        System.out.println("\n15: Testing createNewLiterature method with null ISBN...");
+        // TODO: Write test
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for creating new literature with empty ISBN.
+     */
+    @Test
+    @Order(16)
+    void testCreateNewLiterature_EmptyISBN() {
+        System.out.println("\n16: Testing createNewLiterature method with empty ISBN...");
+        // TODO: Write test
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for creating new literature with too long ISBN.
+     */
+    @Test
+    @Order(17)
+    void testCreateNewLiterature_TooLongISBN() {
+        System.out.println("\n17: Testing createNewLiterature method with too long ISBN...");
+        // TODO: Write test
+        System.out.println("\nTEST FINISHED.");
+    }
+
 }
