@@ -207,8 +207,9 @@ public class ItemHandler
      */
     private static void retrieveTitlesAndBarcodesFromTable() //TODO-PRIO RE-TEST AGAINST RETRIEVAL FROM TEST_DATA FILE
     {
-        try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available, barcode FROM items " +
-                "ORDER BY " + "title ASC"))
+        //Execute the query to retrieve data
+        String query = "SELECT title, available, barcode FROM items ORDER BY " + "title ASC";
+        try (QueryResult result = DatabaseHandler.executeQuery(query))
         {
             while (result.getResultSet().next())
             {
@@ -280,21 +281,20 @@ public class ItemHandler
      * Creates a new Literature object, validates its parameters, saves it to the database, sets its ItemID,
      * sets its author and classification names, and increments the count of the new title.
      *
-     * @param title The title of the literature.
-     * @param type The type of the item.
-     * @param authorID The ID of the author.
+     * @param title            The title of the literature.
+     * @param type             The type of the item.
+     * @param authorID         The ID of the author.
      * @param classificationID The ID of the classification.
-     * @param barcode The barcode of the literature.
-     * @param ISBN The ISBN of the literature.
+     * @param barcode          The barcode of the literature.
+     * @param ISBN             The ISBN of the literature.
      * @return The newly created Literature object.
-     *
      * @throws InvalidBarcodeException If the provided barcode is already registered.
-     * @throws InvalidIDException If either the provided authorID or classificationID is invalid.
+     * @throws InvalidIDException      If either the provided authorID or classificationID is invalid.
      * @throws EntityNotFoundException If the provided authorID or classificationID does not correspond to an existing author or classification.
-     * @throws ConstructionException If there is an error during the construction of the Literature object.
+     * @throws ConstructionException   If there is an error during the construction of the Literature object.
      */
     public static Literature createNewLiterature(String title, Item.ItemType type, int authorID, int classificationID,
-                                           String barcode, String ISBN)
+                                                 String barcode, String ISBN)
     throws InvalidBarcodeException, InvalidIDException, EntityNotFoundException, ConstructionException
     {
         //Validate input
@@ -335,17 +335,16 @@ public class ItemHandler
      * Creates a new Film object, validates its parameters, saves it to the database, sets its ItemID,
      * sets its author and classification names, and increments the count of the new title.
      *
-     * @param title The title of the film.
-     * @param authorID The ID of the author.
+     * @param title            The title of the film.
+     * @param authorID         The ID of the author.
      * @param classificationID The ID of the classification.
-     * @param barcode The barcode of the film.
-     * @param ageRating The age rating of the film.
+     * @param barcode          The barcode of the film.
+     * @param ageRating        The age rating of the film.
      * @return The newly created Film object.
-     *
      * @throws InvalidBarcodeException If the provided barcode is already registered.
-     * @throws InvalidIDException If either the provided authorID or classificationID is invalid.
+     * @throws InvalidIDException      If either the provided authorID or classificationID is invalid.
      * @throws EntityNotFoundException If the provided authorID or classificationID does not correspond to an existing author or classification.
-     * @throws ConstructionException If there is an error during the construction of the Film object.
+     * @throws ConstructionException   If there is an error during the construction of the Film object.
      */
     public static Film createNewFilm(String title, int authorID, int classificationID,
                                      String barcode, int ageRating)
@@ -390,10 +389,10 @@ public class ItemHandler
      * This method saves common attributes of all items in the library to the 'items' table,
      * such as title, item type, barcode, author ID, classification ID, allowed rental days,
      * availability status, and deletion status.
-     *
+     * <p>
      * If a SQLException occurs during the operation, the method will throw a fatal exception
      * that is handled by the ExceptionHandler.
-     *
+     * <p>
      * Note: The returned value of 0 is a fallback and should never be reached in normal circumstances
      * as any SQLException will halt the execution of the program.
      *

@@ -63,8 +63,7 @@ public class UserHandler
      */
     public static void syncUsernames()
     {
-        if (!storedUsernames.isEmpty())
-            storedUsernames.clear();
+        reset();
         retrieveUsernamesFromTable();
     }
 
