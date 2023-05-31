@@ -54,12 +54,15 @@ public class ItemHandler
      */
     private static final Map<String, Integer> availableTitles = new HashMap<>();
 
-    //TODO-PRIO BARCODES UNIQUENESS
+    /**
+     * Used to keep track of already existing barcodes to quickly enforce uniqueness. //TODO-PRIO TEST
+     */
+    private static final ArrayList<String> registeredBarcodes = new ArrayList<>();
 
     /**
      * Returns the storedTitles map.
      *
-     * @return the storedTitles map
+     * @return the storedTitles map.
      */
     public static Map<String, Integer> getStoredTitles()
     {
@@ -69,11 +72,21 @@ public class ItemHandler
     /**
      * Returns the availableTitles map.
      *
-     * @return the availableTitles map
+     * @return the availableTitles map.
      */
     public static Map<String, Integer> getAvailableTitles()
     {
         return availableTitles;
+    }
+
+    /**
+     * Returns the registeredBarcodes list.
+     *
+     * @return the registeredBarcodes list. //TODO-PRIO TEST
+     */
+    public static ArrayList<String> getRegisteredBarcodes()
+    {
+        return registeredBarcodes;
     }
 
     /**
@@ -150,61 +163,59 @@ public class ItemHandler
         }
     }
 
+    public static void incrementRegisteredBarcodes(String barcode)
+    {
+
+    }
+
+    public static void decrementRegisteredBarcodes(String barcode)
+    {
+
+    }
+
     /**
      * Prepares the handler by syncing titles from the database.
      */
     public static void setup()
     {
-        syncTitles();
-    }
-
-    /**
-     * Clears both stored and available titles maps.
-     */
-    public static void reset()
-    {
-        storedTitles.clear();
-        availableTitles.clear();
+        syncTitlesAndBarcodes();
     }
 
     /**
      * Syncs the handler with the database by clearing existing data and retrieving current titles from the database.
      */
-    public static void syncTitles()
+    public static void syncTitlesAndBarcodes()
     {
-        if (!storedTitles.isEmpty())
-        {
-            storedTitles.clear();
-        }
-        if (!availableTitles.isEmpty())
-        {
-            availableTitles.clear();
-        }
-        retrieveTitlesFromTable();
+        reset();
+        retrieveTitlesAndBarcodesFromTable();
     }
 
     /**
      * Retrieves titles from the Items table and returns them as a map with title-count pairs.
      */
-    private static void retrieveTitlesFromTable()
+    private static void retrieveTitlesAndBarcodesFromTable() //TODO-PRIO RE-TEST AGAINST RETRIEVAL FROM TEST_DATA FILE
     {
-        try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available FROM items ORDER BY title ASC"))
+        try (QueryResult result = DatabaseHandler.executeQuery("SELECT title, available, barcode FROM items " +
+                "ORDER BY " + "title ASC"))
         {
-            // Add the retrieved Items to the maps
+            // Add the retrieved Items to the maps and list
             while (result.getResultSet().next())
             {
                 String title = result.getResultSet().getString("title");
                 boolean available = result.getResultSet().getBoolean("available");
+                String barcode = result.getResultSet().getString("barcode");
 
                 incrementStoredTitles(title);
                 if (available)
                 {
                     incrementAvailableTitles(title);
                 }
+
+
             }
         }
-        catch (SQLException e)
-        { //This is fatal
+        catch (SQLException e) //This is fatal
+        {
             ExceptionHandler.HandleFatalException("Failed to retrieve titles from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -212,6 +223,16 @@ public class ItemHandler
         {
             if (storedTitles.isEmpty()) System.err.println("No titles retrieved from table!");
         }
+    }
+
+    /**
+     * Clears both stored and available titles maps as well as the registered barcodes list.
+     */
+    public static void reset()
+    {
+        storedTitles.clear();
+        availableTitles.clear();
+        registeredBarcodes.clear();
     }
 
     /**
@@ -247,7 +268,8 @@ public class ItemHandler
         try
         {
             //Validate input, throws InvalidTitleException
-            checkEmptyTitle(title);
+
+            //TODO-prio validate uniqueness of barcode similar to uniqueness of usernames in user
 
             //Create literature object and set authorName and classificationName by retrieving from their handlers
             Literature newLiterature = new Literature(title, type, authorID, classificationID, barcode, ISBN);
@@ -265,10 +287,9 @@ public class ItemHandler
 
             return newLiterature;
         }
-        catch (Exception e)
+        catch (ConstructionException | InvalidIDException e)
         {
-            ExceptionHandler.HandleFatalException("Failed to create Item due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
+            e.printStackTrace();
         }
 
         return null;
@@ -280,7 +301,8 @@ public class ItemHandler
     {
         try
         {
-            checkEmptyTitle(title);
+            //Validate input, throws InvalidTitleException
+            //TODO-prio validate uniqueness of barcode similar to uniqueness of usernames in user
 
             //Create film object and set authorName and classificationName by retrieving from their handlers
             Film newFilm = new Film(title, authorID, classificationID, barcode, ageRating);
@@ -300,7 +322,10 @@ public class ItemHandler
         }
         catch (Exception e)
         {
-            ExceptionHandler.HandleFatalException("Failed to create Item due to " +
+            ExceptionHandler.HandleFatalException("Failed to create Film due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+
+            ExceptionHandler.HandleFatalException("Failed to create Literature due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
@@ -356,12 +381,17 @@ public class ItemHandler
     {
         // Save to literature table
         String query = "INSERT INTO literature (literatureID, ISBN) VALUES (?, ?)";
-        DatabaseHandler.executePreparedQuery(query, new String[]{String.valueOf(itemID), isbn});
+        DatabaseHandler.executePreparedQuery(query,
+                new String[]{
+                        String.valueOf(literature.getItemID()),
+                        literature.getISBN()});
 
         // Save to literature_item join table
         String joinQuery = "INSERT INTO literature_item (literatureID, itemID) VALUES (?, ?)";
         DatabaseHandler.executePreparedQuery(joinQuery,
-                new String[]{String.valueOf(itemID), String.valueOf(itemID)});
+                new String[]{
+                        String.valueOf(literature.getItemID()),
+                        String.valueOf(literature.getItemID())});
     }
 
     private static void saveFilm(Film film)
@@ -380,6 +410,13 @@ public class ItemHandler
         DatabaseHandler.executePreparedQuery(joinQuery,
                 new String[]{String.valueOf(film.getItemID()), String.valueOf(film.getItemID())});
     }
+
+
+
+
+
+
+
 
     /**
      * Retrieves an item by its ID from the database.
