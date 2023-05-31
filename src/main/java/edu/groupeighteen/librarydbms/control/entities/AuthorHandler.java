@@ -4,9 +4,7 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Author;
-import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,22 +36,21 @@ public class AuthorHandler {
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-    public static Author createNewUAuthor(String authorFirstName, String authorLastName ) throws InvalidNameException{
+    public static Author createNewAuthor(String authorFirstname, String authorLastName ) throws InvalidNameException{
         Author newAuthor = null;
 
         try {
             //Validate input
-            validateAuthorname(authorFirstName);
-            validateAuthorname(authorLastName);
+            validateAuthorname(authorFirstname, authorLastName);
 
             // Create and save the new author, retrieving the ID
-            newAuthor = new Author(authorFirstName, authorLastName);
+            newAuthor = new Author(authorFirstname, authorLastName);
             newAuthor.setAuthorID(saveAuthor(newAuthor));
 
 
         } catch (ConstructionException | InvalidIDException e) {
             ExceptionHandler.HandleFatalException(String.format("Failed to create Author with the given name: " +
-                    "'%s' due to %s: %s", authorFirstName, e.getClass().getName(), e.getMessage()), e);
+                    "'%s' due to %s: %s", authorFirstname, e.getClass().getName(), e.getMessage()), e);
         }
 
         return newAuthor;
@@ -72,7 +69,7 @@ public class AuthorHandler {
     private static int saveAuthor(Author author) {
         try {
             // Prepare query
-            String query = "INSERT INTO authors (author first name, author last name, " +
+            String query = "INSERT INTO authors (authorFirstname, authorLastName, " +
                     "VALUES (?, ?)";
 
             String[] params = {
@@ -102,21 +99,20 @@ public class AuthorHandler {
             // No point getting invalid users, throws InvalidIDException
             checkValidAuthorID(authorID);
 
-            // Prepare a SQL query to select a user by userID.
-            String query = "SELECT username, password, allowedRentals, currentRentals, " +
-                    "lateFee, allowedToRent, deleted FROM users WHERE userID = ?";
+            // Prepare a SQL query to select a author by authorID.
+            String query = "SELECT authorFirstname, authorLastName, biography, deleted FROM authors WHERE authorID = ?";
             String[] params = {String.valueOf(authorID)};
 
             // Execute the query and store the result in a ResultSet.
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
                 ResultSet resultSet = queryResult.getResultSet();
-                // If the ResultSet contains data, create a new User object using the retrieved username and password,
-                // and set the user's userID.
+                // If the ResultSet contains data, create a new Author object using the retrieved authorFirstname and authorLastName,
+                // and set the author's authorID.
                 if (resultSet.next()) {
 
                     return new Author(authorID,
-                            resultSet.getString("Author First Name"),
-                            resultSet.getString("Author Last Name"),
+                            resultSet.getString("authorFirstname"),
+                            resultSet.getString("authorLastName"),
                             resultSet.getString("biography"),
                             resultSet.getBoolean("deleted")
                     );
@@ -138,8 +134,7 @@ public class AuthorHandler {
         updateAuthor(updatedAuthor);
 
         // Prepare a SQL command to update a updatedAuthors's data by authorID.
-        String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, " +
-                "lateFee = ?, allowedToRent = ? " + "WHERE userID = ?";
+        String sql = "UPDATE authors SET authorFirstname = ?, authorLastName = ?, + WHERE authorID = ?";
         String[] params = {
                 updatedAuthor.getAuthorFirstname(),
                 updatedAuthor.getAuthorLastName(),
@@ -175,25 +170,28 @@ public class AuthorHandler {
         }
     }
     //RETRIEVING -------------------------------------------------------------------------------------------------------
-    public static Author getAuthorByAuthorname(String authorName) throws InvalidNameException {
+    public static Author getAuthorByAuthorName(String authorFirstname, String authorLastName) throws InvalidNameException {
         try {
-            // No point in getting invalid users, throws InvalidUsernameException
-            checkEmptyAuthorname(authorName);
+            // No point in getting invalid authors, throws InvalidNameException
+            checkEmptyAuthorname(authorFirstname, authorLastName);
 
-            // Prepare a SQL query to select a user by username
-            String query = "SELECT ID, password, allowedRentals, currentRentals, lateFee FROM users " +
-                    "WHERE username = ?";
-            String[] params = {authorName};
+
+            // Prepare a SQL query to select a author by authorFirstname and authorLastName
+            String query = "SELECT ID, biography, deleted FROM authors " +
+                    "WHERE authorName = ?";
+            String[] params = {authorFirstname, authorLastName};
+
 
             // Execute the query and store the result in a ResultSet
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
                 ResultSet resultSet = queryResult.getResultSet();
-                // If the ResultSet contains data, create a new User object using the retrieved username and password,
-                // and set the user's userID
+                // If the ResultSet contains data, create a new Author object using the retrieved ,
+                // and set the author's authorID
                 if (resultSet.next()) { //TODO-PRIO UPDATE
-                    Author author = new Author(authorName, resultSet.getString("Author Name"));
+                    Author author = new Author(authorFirstname, resultSet.getString("Author First Name"));
                     author.setAuthorID(resultSet.getInt("authorID"));
                     return author;
+                    //TODO-gör samma som ovan fast med 'authorLastName'
                 }
             }
         }/* catch (SQLException | InvalidIDException | InvalidLateFeeException | ConstructionException |
@@ -214,33 +212,35 @@ public class AuthorHandler {
 
 
     public static List<Author> getAuthorsByFirstname(String firstname) {
-        //Invalid firstname
-        //No such users
-        //One valid user
-        //Multiple valid users
+        //Invalid authorFirstname
+        //No such authors
+        //One valid author
+        //Multiple valid authors
         // == 4
         return null;
     }
 
     public static List<Author> getAuthorsByLastname(String lastname) {
-        //Invalid lastname
-        //No such users
-        //One valid user
-        //Multiple valid users
+        //Invalid authorLastName
+        //No such authors
+        //One valid author
+        //Multiple valid authors
         // == 4
         return null;
     }
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 
-    private static void validateAuthorname(String authorName) throws InvalidNameException {
-        checkEmptyAuthorname(authorName);
-        if (authorName.length() > Author.AUTHOR_FIRST_NAME_LENGTH)
-            throw new InvalidNameException("Username too long. Must be at most "+ Author.AUTHOR_FIRST_NAME_LENGTH +
-                    " characters, received " + authorName.length());
+    private static void validateAuthorname(String authorFirstname, String authorLastName) throws InvalidNameException {
+        checkEmptyAuthorname(authorFirstname, authorLastName);
+        if (authorFirstname.length() > Author.AUTHOR_FIRST_NAME_LENGTH && authorLastName.length() > Author.AUTHOR_LAST_NAME_LENGTH)
+            throw new InvalidNameException("Author first name too long. Must be at most "+ Author.AUTHOR_FIRST_NAME_LENGTH +
+                    " characters, received " + authorFirstname.length());
+            throw new InvalidNameException("Author last name too long. Must be at most "+ Author.AUTHOR_LAST_NAME_LENGTH +
+                " characters, received " + authorLastName.length());
     }
-    private static void checkEmptyAuthorname(String authorName) throws InvalidNameException {
-        if (authorName == null || authorName.isEmpty()) {
+    private static void checkEmptyAuthorname(String authorFirstname, String authorLastName) throws InvalidNameException {
+        if (authorFirstname == null || authorFirstname.isEmpty() && authorLastName == null || authorLastName.isEmpty()) {
             throw new InvalidNameException("Author Name is null or empty.");
         }
     }
@@ -249,13 +249,13 @@ public class AuthorHandler {
         checkNullAuthor(author);
         int ID = author.getAuthorID();
         if (UserHandler.getUserByID(ID) == null)
-            throw new EntityNotFoundException("User with ID " + author + "not found in database.");
+            throw new EntityNotFoundException("Author with ID " + author + "not found in database.");
     }
 
 
     private static void checkNullAuthor(Author author) throws NullEntityException {
         if (author == null)
-            throw new NullEntityException("User is null.");
+            throw new NullEntityException("Author is null.");
     }
 
 
