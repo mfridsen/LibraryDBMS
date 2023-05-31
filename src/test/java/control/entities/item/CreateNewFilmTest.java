@@ -3,10 +3,9 @@ package control.entities.item;
 import static org.junit.jupiter.api.Assertions.*;
 
 import control.BaseHandlerTest;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
+
+import java.sql.SQLException;
 
 /**
  * @author Mattias Fridsén
@@ -19,8 +18,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CreateNewFilmTest extends BaseHandlerTest
 {
-    //Valid input
-    //Valid input different types
+    //Valid input  (remember to validate ALL fields)
+    //Valid input different types (remember to validate ALL fields)
     //Null title
     //Empty title
     //Too long title
@@ -35,6 +34,20 @@ public class CreateNewFilmTest extends BaseHandlerTest
     //Taken barcode
     //Negative age rating
     //Too high age rating
+
+    @Override
+    @BeforeEach
+    protected void setupAndReset()
+    {
+        try
+        {
+            setupConnectionAndTables();
+        }
+        catch (SQLException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Test case for creating new film with valid input.

@@ -328,6 +328,9 @@ public class ItemHandler
         //Increment the count of the new title. Add a new entry if the title does not exist yet.
         incrementBothTitles(title);
 
+        //Increment registered barcode
+        incrementRegisteredBarcodes(barcode);
+
         return newLiterature;
     }
 
@@ -380,6 +383,9 @@ public class ItemHandler
 
         //Increment the count of the new title. Add a new entry if the title does not exist yet.
         incrementBothTitles(title);
+
+        //Increment registered barcode
+        incrementRegisteredBarcodes(barcode);
 
         return newFilm;
     }
