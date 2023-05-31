@@ -158,7 +158,7 @@ public class ItemHandler
         }
         else
         {
-            availableTitles.put(title, 0); // keep the item in the map with a count of 0
+            availableTitles.put(title, 0); //keep the item in the map with a count of 0
         }
     }
 
@@ -276,92 +276,108 @@ public class ItemHandler
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Creates a new Literature object, validates its parameters, saves it to the database, sets its ItemID,
+     * sets its author and classification names, and increments the count of the new title.
+     *
+     * @param title The title of the literature.
+     * @param type The type of the item.
+     * @param authorID The ID of the author.
+     * @param classificationID The ID of the classification.
+     * @param barcode The barcode of the literature.
+     * @param ISBN The ISBN of the literature.
+     * @return The newly created Literature object.
+     *
+     * @throws InvalidBarcodeException If the provided barcode is already registered.
+     * @throws InvalidIDException If either the provided authorID or classificationID is invalid.
+     * @throws EntityNotFoundException If the provided authorID or classificationID does not correspond to an existing author or classification.
+     * @throws ConstructionException If there is an error during the construction of the Literature object.
+     */
     public static Literature createNewLiterature(String title, Item.ItemType type, int authorID, int classificationID,
                                            String barcode, String ISBN)
-    throws InvalidBarcodeException, InvalidIDException, EntityNotFoundException
+    throws InvalidBarcodeException, InvalidIDException, EntityNotFoundException, ConstructionException
     {
-        //Validate input, throws InvalidBarcodeException
-        checkBarcode(barcode);
-        Literature newLiterature = null;
+        //Validate input
+        if (barcodeTaken(barcode))
+            throw new InvalidBarcodeException("Barcode " + barcode + " is already registered.");
+        if (invalidID(authorID))
+            throw new InvalidIDException("Invalid authorID: " + authorID);
+        if (invalidID(classificationID))
+            throw new InvalidIDException("Invalid classificationID: " + classificationID);
 
-        try
-        {
-            //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
-            //Retrieve author
-            Author author = getExistingAuthor(authorID); //Throws EntityNotFoundException
+        //Retrieve author, Throws EntityNotFoundException
+        Author author = getExistingAuthor(authorID);
 
-            //Retrieve classification
-            Classification classification = getExistingClassification(classificationID);
+        //Retrieve classification, Throws EntityNotFoundException
+        Classification classification = getExistingClassification(classificationID);
 
+        //Create literature object and set authorName and classificationName by retrieving from their handlers
+        Literature newLiterature = new Literature(title, type, authorID, classificationID, barcode, ISBN);
 
-            //Create literature object and set authorName and classificationName by retrieving from their handlers
-            newLiterature = new Literature(title, type, authorID, classificationID, barcode, ISBN);
+        //Save, retrieve and set itemID,
+        int itemID = saveItem(newLiterature);
+        newLiterature.setItemID(itemID); //Throws InvalidIDException
 
-            //Retrieve and set itemID,
-            int itemID = saveItem(newLiterature);
-            newLiterature.setItemID(itemID);
+        //Save literature
+        saveLiterature(newLiterature);
 
-            //Save literature
-            saveLiterature(newLiterature);
+        //Set author and classification names
+        newLiterature.setAuthorName(author.getAuthorFirstname() + " " + author.getAuthorLastName());
+        newLiterature.setClassificationName(classification.getClassificationName());
 
-            //Increment the count of the new title. Add a new entry if the title does not exist yet.
-            incrementBothTitles(title);
-        }
-        catch (ConstructionException e)
-        {
-            e.printStackTrace();
-        }
+        //Increment the count of the new title. Add a new entry if the title does not exist yet.
+        incrementBothTitles(title);
 
         return newLiterature;
     }
 
-    private static Classification getExistingClassification(int classificationID)
-    throws EntityNotFoundException
-    {
-        Classification classification = ClassificationHandler.getClassificationByID(classificationID);
-        if (classification == null)
-            throw new EntityNotFoundException("Classification with ID " + classificationID + " not found.");
-        return classification;
-    }
-
-
-    private static void checkBarcode(String barcode)
-    throws InvalidBarcodeException
-    {
-        if (registeredBarcodes.contains(barcode))
-            throw new InvalidBarcodeException("Barcode " + barcode + " is already registered.");
-    }
-
-    private static Author getExistingAuthor(int authorID)
-    throws EntityNotFoundException
-    {
-        Author author = AuthorHandler.getAuthorByID(authorID);
-        if (author == null)
-            throw new EntityNotFoundException("Author with ID " + authorID + "not found.");
-        return author;
-    }
-
-
-
+    /**
+     * Creates a new Film object, validates its parameters, saves it to the database, sets its ItemID,
+     * sets its author and classification names, and increments the count of the new title.
+     *
+     * @param title The title of the film.
+     * @param authorID The ID of the author.
+     * @param classificationID The ID of the classification.
+     * @param barcode The barcode of the film.
+     * @param ageRating The age rating of the film.
+     * @return The newly created Film object.
+     *
+     * @throws InvalidBarcodeException If the provided barcode is already registered.
+     * @throws InvalidIDException If either the provided authorID or classificationID is invalid.
+     * @throws EntityNotFoundException If the provided authorID or classificationID does not correspond to an existing author or classification.
+     * @throws ConstructionException If there is an error during the construction of the Film object.
+     */
     public static Film createNewFilm(String title, int authorID, int classificationID,
                                      String barcode, int ageRating)
-    throws InvalidBarcodeException, ConstructionException, InvalidIDException
+    throws InvalidBarcodeException, InvalidIDException, EntityNotFoundException, ConstructionException
     {
-        //Validate input, throws InvalidBarcodeException
-        checkBarcode(barcode);
+        //Validate input
+        if (barcodeTaken(barcode))
+            throw new InvalidBarcodeException("Barcode " + barcode + " is already registered.");
+        if (invalidID(authorID))
+            throw new InvalidIDException("Invalid authorID: " + authorID);
+        if (invalidID(classificationID))
+            throw new InvalidIDException("Invalid classificationID: " + classificationID);
 
-        //TODO-PRIO //Set authorName and classificationName by retrieving from their handlers
+        //Retrieve author, Throws EntityNotFoundException
+        Author author = getExistingAuthor(authorID);
 
+        //Retrieve classification, Throws EntityNotFoundException
+        Classification classification = getExistingClassification(classificationID);
 
         //Create film object and set authorName and classificationName by retrieving from their handlers
         Film newFilm = new Film(title, authorID, classificationID, barcode, ageRating);
 
-        //Retrieve and set itemID,
+        //Save, retrieve and set itemID,
         int itemID = saveItem(newFilm);
-        newFilm.setItemID(itemID);
+        newFilm.setItemID(itemID); //Throws InvalidIDException
 
         //Save film
         saveFilm(newFilm);
+
+        //Set author and classification names
+        newFilm.setAuthorName(author.getAuthorFirstname() + " " + author.getAuthorLastName());
+        newFilm.setClassificationName(classification.getClassificationName());
 
         //Increment the count of the new title. Add a new entry if the title does not exist yet.
         incrementBothTitles(title);
@@ -370,16 +386,25 @@ public class ItemHandler
     }
 
     /**
-     * Saves an item to the database, retrieving and returning the generated item ID.
+     * Saves an Item object to the database and returns the automatically generated item ID.
+     * This method saves common attributes of all items in the library to the 'items' table,
+     * such as title, item type, barcode, author ID, classification ID, allowed rental days,
+     * availability status, and deletion status.
+     *
+     * If a SQLException occurs during the operation, the method will throw a fatal exception
+     * that is handled by the ExceptionHandler.
+     *
+     * Note: The returned value of 0 is a fallback and should never be reached in normal circumstances
+     * as any SQLException will halt the execution of the program.
      *
      * @param item The Item object to be saved.
-     * @return The generated ID of the saved item.
+     * @return The automatically generated ID of the saved item.
      */
     private static int saveItem(Item item)
     {
         try
         {
-            // Prepare query
+            //Prepare query
             String query = "INSERT INTO items (title, itemType, barcode, authorID, classificationID, " +
                     "allowedRentalDays, available, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             String[] params = {
@@ -389,11 +414,11 @@ public class ItemHandler
                     String.valueOf(item.getAuthorID()),
                     String.valueOf(item.getClassificationID()),
                     String.valueOf(item.getAllowedRentalDays()),
-                    item.isAvailable() ? "1" : "0", // If boolean is true, add the string "1", if false, "0"
-                    item.isDeleted() ? "1" : "0"
+                    item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
+                    item.isDeleted() ? "1" : "0" //If boolean is true, add the string "1", if false, "0"
             };
 
-            // Execute query and get the generated itemID
+            //Execute query and get the generated itemID
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
                     Statement.RETURN_GENERATED_KEYS))
             {
@@ -404,7 +429,7 @@ public class ItemHandler
                 }
             }
         }
-        catch (SQLException e) // Fatal
+        catch (SQLException e) //Fatal
         {
             ExceptionHandler.HandleFatalException("Failed to save Item to database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -414,16 +439,24 @@ public class ItemHandler
         return 0;
     }
 
+    /**
+     * Saves a Literature object to the database. This includes saving the basic Literature information
+     * into the 'literature' table, and creating a corresponding entry in the 'literature_item' join table.
+     * The join table is used to maintain a relationship between Literature objects and their corresponding
+     * Item entries, which contain common attributes for all types of items in the library.
+     *
+     * @param literature The Literature object to be saved.
+     */
     private static void saveLiterature(Literature literature)
     {
-        // Save to literature table
+        //Save to literature table
         String query = "INSERT INTO literature (literatureID, ISBN) VALUES (?, ?)";
         DatabaseHandler.executePreparedQuery(query,
                 new String[]{
                         String.valueOf(literature.getItemID()),
                         literature.getISBN()});
 
-        // Save to literature_item join table
+        //Save to literature_item join table
         String joinQuery = "INSERT INTO literature_item (literatureID, itemID) VALUES (?, ?)";
         DatabaseHandler.executePreparedQuery(joinQuery,
                 new String[]{
@@ -431,9 +464,17 @@ public class ItemHandler
                         String.valueOf(literature.getItemID())});
     }
 
+    /**
+     * Saves a Film object to the database. This includes saving the basic Film information
+     * into the 'films' table, and creating a corresponding entry in the 'film_item' join table.
+     * The join table is used to maintain a relationship between Film objects and their corresponding
+     * Item entries, which contain common attributes for all types of items in the library.
+     *
+     * @param film The Film object to be saved.
+     */
     private static void saveFilm(Film film)
     {
-        // Save to films table
+        //Save to films table
         String query = "INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES (?, ?, ?, ?)";
         DatabaseHandler.executePreparedQuery(query,
                 new String[]{
@@ -442,12 +483,11 @@ public class ItemHandler
                         film.getCountryOfProduction(),
                         film.getListOfActors()});
 
-        // Save to film_item join table
+        //Save to film_item join table
         String joinQuery = "INSERT INTO film_item (filmID, itemID) VALUES (?, ?)";
         DatabaseHandler.executePreparedQuery(joinQuery,
                 new String[]{String.valueOf(film.getItemID()), String.valueOf(film.getItemID())});
     }
-
 
     /**
      * Retrieves an item by its ID from the database.
@@ -459,20 +499,20 @@ public class ItemHandler
     throws InvalidIDException
     {
 
-        // No point getting impossible Items
+        //No point getting impossible Items
         checkValidItemID(itemID);
 
-        // Prepare a SQL query to select an item by itemID
+        //Prepare a SQL query to select an item by itemID
         String query = "SELECT * FROM items WHERE itemID = ?";
         String[] params = {String.valueOf(itemID)};
 
-        // Execute the query and store the result in a ResultSet
+        //Execute the query and store the result in a ResultSet
         try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
         {
             ResultSet resultSet = queryResult.getResultSet();
 
-            // If the ResultSet contains data, create a new Item object using the retrieved title
-            // and set the item's itemID
+            //If the ResultSet contains data, create a new Item object using the retrieved title
+            //and set the item's itemID
             if (resultSet.next())
             {
                 String title = resultSet.getString("title");
@@ -489,7 +529,7 @@ public class ItemHandler
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
-        // If no Item was found, return null
+        //If no Item was found, return null
         return null;
     }
 
@@ -509,18 +549,18 @@ public class ItemHandler
             //Validate the input, throws NullEntityException
             checkNullItem(item);
 
-            // Get the old Item instance (which hasn't been updated)
+            //Get the old Item instance (which hasn't been updated)
             Item oldItem = getItemByID(item.getItemID());
             if (oldItem == null)
                 throw new EntityNotFoundException("Updated failed: could not find Item with ID " + item.getItemID());
 
-            // Get the old title
+            //Get the old title
             String oldTitle = oldItem.getTitle();
 
-            // Get the old availability status
+            //Get the old availability status
             boolean oldAvailability = oldItem.isAvailable();
 
-            // Prepare a SQL command to update an item's title and availability by itemID.
+            //Prepare a SQL command to update an item's title and availability by itemID.
             String sql = "UPDATE items SET title = ?, available = ? WHERE itemID = ?";
             String[] params = {
                     item.getTitle(),
@@ -528,17 +568,17 @@ public class ItemHandler
                     String.valueOf(item.getItemID())
             };
 
-            // Execute the update.
+            //Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
 
-            // If the title has changed, adjust the counts in the maps
+            //If the title has changed, adjust the counts in the maps
             if (!oldTitle.equals(item.getTitle()))
             {
                 decrementStoredTitles(oldTitle);
                 incrementStoredTitles(item.getTitle());
             }
 
-            // If the availability status has changed, adjust the counts in the availableTitles map
+            //If the availability status has changed, adjust the counts in the availableTitles map
             if (oldAvailability != item.isAvailable())
             {
                 if (oldAvailability)
@@ -583,19 +623,19 @@ public class ItemHandler
             //Validate the input, NullEntityException
             checkNullItem(item);
 
-            // Get the old title, throws EntityNotFoundException
+            //Get the old title, throws EntityNotFoundException
             Item oldItem = getItemByID(item.getItemID());
             if (oldItem == null)
                 throw new EntityNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
             String oldTitle = oldItem.getTitle();
 
-            // Check if the item exists in the database
+            //Check if the item exists in the database
             String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
             String[] params = {String.valueOf(item.getItemID())};
 
             QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
             ResultSet resultSet = queryResult.getResultSet();
-            resultSet.next(); // Move to the first row
+            resultSet.next(); //Move to the first row
 
 
             //Prepare a SQL command to delete an item by itemID.
@@ -605,7 +645,7 @@ public class ItemHandler
             //Execute the update. //TODO-prio handle cascades in rentals
             DatabaseHandler.executePreparedUpdate(sql, params);
 
-            // Decrement the count of the old title. Remove the entry if the count reaches 0.
+            //Decrement the count of the old title. Remove the entry if the count reaches 0.
             if (storedTitles.get(oldTitle) != null)
             {
                 decrementStoredTitles(oldTitle);
@@ -633,19 +673,19 @@ public class ItemHandler
         List<Item> items = new ArrayList<>();
         try
         {
-            // No point getting invalid Items
+            //No point getting invalid Items
             checkEmptyTitle(title);
 
-            // Prepare a SQL query to select an item by title
+            //Prepare a SQL query to select an item by title
             String query = "SELECT * FROM items WHERE title = ?";
             String[] params = {title};
 
-            // Execute the query and store the result in a ResultSet
+            //Execute the query and store the result in a ResultSet
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
             {
                 ResultSet resultSet = queryResult.getResultSet();
 
-                // Loop through the ResultSet. For each record, create a new Item object and add it to the list
+                //Loop through the ResultSet. For each record, create a new Item object and add it to the list
                 while (resultSet.next())
                 {
                     //TODO-PRIO FIX THIS
@@ -671,7 +711,7 @@ public class ItemHandler
         //Item does not exist
         //Item does exist
         //Multiple Items exist
-        // == 6 test cases
+        //== 6 test cases
         return null;
     }
 
@@ -683,7 +723,7 @@ public class ItemHandler
         //Items don't exist in genre
         //Item does exist
         //Multiple Items exist
-        // == 6 test cases
+        //== 6 test cases
         return null;
     }
 
@@ -695,7 +735,7 @@ public class ItemHandler
         //author exists, but no titles for some reason
         //author exists and has title
         //Multiple Items exist for author
-        // == 6 test cases
+        //== 6 test cases
 
         return null;
     }
@@ -708,7 +748,7 @@ public class ItemHandler
         //publisher exists, but no titles for some reason
         //publisher exists and has title
         //Multiple Items exist for publisher
-        // == 6 test cases
+        //== 6 test cases
 
         return null;
     }
@@ -720,12 +760,12 @@ public class ItemHandler
         //No Items of such type
         //Single item of type
         //multiple Items of type
-        // == 3 test cases
+        //== 3 test cases
 
         return null;
     }
 
-    // == 27 test cases
+    //== 27 test cases
 
 
     /**
@@ -762,6 +802,60 @@ public class ItemHandler
     }
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
+
+    /**
+     * Checks if the given ID is invalid.
+     *
+     * @param ID The ID to be checked.
+     * @return True if the ID is invalid, false otherwise.
+     */
+    private static boolean invalidID(int ID)
+    {
+        return (ID <= 0);
+    }
+
+    /**
+     * Checks if a barcode is already registered.
+     *
+     * @param barcode The barcode to be checked.
+     * @return True if the barcode is already registered, false otherwise.
+     */
+    private static boolean barcodeTaken(String barcode)
+    {
+        return (registeredBarcodes.contains(barcode));
+    }
+
+    /**
+     * Retrieves an existing Author object.
+     *
+     * @param authorID The ID of the author to be retrieved.
+     * @return The retrieved Author object.
+     * @throws EntityNotFoundException If no author with the given ID is found.
+     */
+    private static Author getExistingAuthor(int authorID)
+    throws EntityNotFoundException
+    {
+        Author author = AuthorHandler.getAuthorByID(authorID);
+        if (author == null)
+            throw new EntityNotFoundException("Author with ID " + authorID + "not found.");
+        return author;
+    }
+
+    /**
+     * Retrieves an existing Classification object.
+     *
+     * @param classificationID The ID of the classification to be retrieved.
+     * @return The retrieved Classification object.
+     * @throws EntityNotFoundException If no classification with the given ID is found.
+     */
+    private static Classification getExistingClassification(int classificationID)
+    throws EntityNotFoundException
+    {
+        Classification classification = ClassificationHandler.getClassificationByID(classificationID);
+        if (classification == null)
+            throw new EntityNotFoundException("Classification with ID " + classificationID + " not found.");
+        return classification;
+    }
 
     /**
      * This method is used to retrieve the title of an item by its ID from the database. It executes a prepared
