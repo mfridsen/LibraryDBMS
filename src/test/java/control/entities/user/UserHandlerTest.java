@@ -169,10 +169,10 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n7: Testing setup method with an empty database...");
 
-        // Call the setup method
+        //Call the setup method
         UserHandler.setup();
 
-        // Verify that the storedTitles and availableTitles maps are empty
+        //Verify that the storedTitles and availableTitles maps are empty
         assertEquals(0, UserHandler.getStoredUsernames().size(),
                 "storedUsernames list should be empty after setup with an empty database");
 
@@ -180,8 +180,8 @@ public class UserHandlerTest extends BaseHandlerTest
     }
 
     /**
-     * Test case for the setup method with some items in the database.
-     * This test verifies the behavior of the setup method when there are existing items in the database.
+     * Test case for the setup method with some users in the database.
+     * This test verifies the behavior of the setup method when there are existing users in the database.
      */
     @Test
     @Order(8)
@@ -192,9 +192,9 @@ public class UserHandlerTest extends BaseHandlerTest
         //Check that storedUsernames is empty
         assertEquals(0, UserHandler.getStoredUsernames().size());
 
-        // Insert some users into the database without using createNewUser (which automatically increments storedUsernames)
-        String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        //Insert some users into the database without using createNewUser (which automatically increments storedUsernames)
+        String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, " +
+                "allowedToRent, deleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String[] params1 = {"user1", "pass1", "5", "0", "0.0", "0", "0"};
         String[] params2 = {"user2", "pass1", "5", "0", "0.0", "0", "0"};
         String[] params3 = {"user3", "pass1", "5", "0", "0.0", "0", "0"};
@@ -202,7 +202,7 @@ public class UserHandlerTest extends BaseHandlerTest
         DatabaseHandler.executePreparedQuery(query, params2);
         DatabaseHandler.executePreparedQuery(query, params3);
 
-        // Call the setup method
+        //Call the setup method
         UserHandler.setup();
 
         //Verify that there are the expected amount of users in stored usernames
@@ -223,19 +223,19 @@ public class UserHandlerTest extends BaseHandlerTest
         {
             String username = "username";
             String password = "password";
-            // Insert a user into the database
+            //Insert a user into the database
             UserHandler.createNewUser(username, password);
 
-            // Call the getUserByUsername method and get ID
+            //Call the getUserByUsername method and get ID
             User user1 = UserHandler.getUserByUsername(username);
             assertNotNull(user1);
             int existingID = user1.getUserID();
 
             //Get user by ID
             User user2 = UserHandler.getUserByID(existingID);
-            // Verify that a User is returned and not null
+            //Verify that a User is returned and not null
             assertNotNull(user2, "A User object should be returned when a valid userID is provided.");
-            // Verify that the returned user has the expected fields set correctly
+            //Verify that the returned user has the expected fields set correctly
             assertEquals(existingID, user2.getUserID(),
                     "The returned User object should have the userID provided in the getUserByID method.");
             assertEquals(username, user2.getUsername(), "Username should match input");
@@ -265,7 +265,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             int nonExistentID = 99999;
-            // Insert a user into the database
+            //Insert a user into the database
             UserHandler.createNewUser("username", "password");
 
             //Verify it exists and doesn't have nonExistentID as ID
@@ -273,7 +273,7 @@ public class UserHandlerTest extends BaseHandlerTest
             assertNotNull(existingUser);
             assertNotEquals(nonExistentID, existingUser.getUserID());
 
-            // Call the getUserByID method with a valid userID that is not present in the database
+            //Call the getUserByID method with a valid userID that is not present in the database
             assertNull(UserHandler.getUserByID(nonExistentID));
         }
         catch (InvalidIDException | InvalidNameException | InvalidPasswordException e)
@@ -292,7 +292,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n11: Testing getUserByID method with an invalid userID...");
 
-        // Verify that an IllegalArgumentException is thrown when an invalid userID is provided
+        //Verify that an IllegalArgumentException is thrown when an invalid userID is provided
         assertThrows(InvalidIDException.class, () -> UserHandler.getUserByID(-1),
                 "An IllegalArgumentException should be thrown when the userID is less than or equal to 0.");
 
@@ -307,7 +307,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n27: Testing updateUser method with null newUser...");
 
-        // Verify that an NullEntityException is thrown when newUser is null
+        //Verify that an NullEntityException is thrown when newUser is null
         assertThrows(NullEntityException.class, () -> UserHandler.updateUser(null),
                 "An IllegalArgumentException should be thrown when newUser is null.");
 
@@ -323,7 +323,7 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a newUser object
+            //Create a newUser object
             User newUser = UserHandler.createNewUser("user1", "password1");
 
             //Verify newUsers username exists in storedUsernames
@@ -358,7 +358,7 @@ public class UserHandlerTest extends BaseHandlerTest
             String firstUsername = "user1";
             UserHandler.createNewUser(firstUsername, "password1");
 
-            // Create a newUser object with a second username
+            //Create a newUser object with a second username
             String secondUsername = "user2";
             User newUser = UserHandler.createNewUser(secondUsername, "password1");
 
@@ -398,22 +398,22 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create our first user, 'taking' that username
+            //Create our first user, 'taking' that username
             String firstUsername = "user1";
             UserHandler.createNewUser(firstUsername, "password1");
 
-            // Create a newUser object with a second username
+            //Create a newUser object with a second username
             String secondUsername = "user2";
             User newUser = UserHandler.createNewUser(secondUsername, "password1");
 
-            // Set username of newUser to firstUsername (which is already taken)
+            //Set username of newUser to firstUsername (which is already taken)
             newUser.setUsername(firstUsername);
 
-            // Assert that an UsernameTakenException is thrown when newUser's username is changed to a username that's already taken
+            //Assert that an UsernameTakenException is thrown when newUser's username is changed to a username that's already taken
             assertThrows(InvalidNameException.class, () -> UserHandler.updateUser(newUser),
                     "An IllegalArgumentException should be thrown when the new username is already taken.");
 
-            // Assert that still only two usernames exist in storedUsernames, and that they are the correct names
+            //Assert that still only two usernames exist in storedUsernames, and that they are the correct names
             assertEquals(2, UserHandler.getStoredUsernames().size());
             assertEquals(firstUsername, UserHandler.getStoredUsernames().get(0));
             assertEquals(secondUsername, UserHandler.getStoredUsernames().get(1));
@@ -434,20 +434,20 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a new User
+            //Create a new User
             User newUser = UserHandler.createNewUser("user1", "password1");
 
-            // Change password
+            //Change password
             newUser.setPassword("newPassword");
             UserHandler.updateUser(newUser);
             assertEquals("newPassword", newUser.getPassword(), "Password should be updated to 'newPassword'.");
 
-            // Change currentRentals
+            //Change currentRentals
             newUser.setCurrentRentals(3);
             UserHandler.updateUser(newUser);
             assertEquals(3, newUser.getCurrentRentals(), "Current rentals should be updated to 3.");
 
-            // Change lateFee
+            //Change lateFee
             newUser.setLateFee(15.5);
             UserHandler.updateUser(newUser);
             assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
@@ -475,7 +475,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n33: Testing deleteUser method with null user...");
 
-        // Try to delete a null user
+        //Try to delete a null user
         assertThrows(NullEntityException.class, () -> UserHandler.hardDeleteUser(null),
                 "An NullEntityException should be thrown when the user is null.");
 
@@ -490,14 +490,14 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a User object with an ID that does not exist in the database
+            //Create a User object with an ID that does not exist in the database
             User nonExistingUser = new User("nonExistingUsername", "password");
             nonExistingUser.setUserID(1);
 
             //Assert User doesn't exist in database
             assertNull(UserHandler.getUserByID(1));
 
-            // Call deleteUser and expect a EntityNotFoundException to be thrown
+            //Call deleteUser and expect a EntityNotFoundException to be thrown
             assertThrows(EntityNotFoundException.class, () -> UserHandler.hardDeleteUser(nonExistingUser),
                     "deleteUser should throw EntityNotFoundException when the user does not exist.");
         }
@@ -518,19 +518,19 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a new User
+            //Create a new User
             User newUser = UserHandler.createNewUser("user1", "password1");
 
             //Assert that a username exists in storedUsernames
             assertEquals(1, UserHandler.getStoredUsernames().size());
             assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
 
-            // Delete the user
+            //Delete the user
             UserHandler.hardDeleteUser(newUser);
             //Assert that no username exists in storedUsernames
             assertEquals(0, UserHandler.getStoredUsernames().size());
 
-            // Verify that the user has been deleted from the database
+            //Verify that the user has been deleted from the database
             assertNull(UserHandler.getUserByUsername("user1"));
         }
         catch (NullEntityException | InvalidNameException | InvalidPasswordException | EntityNotFoundException e)
@@ -550,7 +550,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n36: Testing login method with an empty username...");
 
-        // Call login with empty username and expect false to be returned
+        //Call login with empty username and expect false to be returned
         assertThrows(InvalidNameException.class, () -> UserHandler.login("", "password"),
                 "Login should return false when username is empty.");
 
@@ -563,7 +563,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n37: Testing login method with null username...");
 
-        // Call login with null username and expect false to be returned
+        //Call login with null username and expect false to be returned
         assertThrows(InvalidNameException.class, () -> UserHandler.login(null, "password"),
                 "Login should return false when username is null.");
 
@@ -576,7 +576,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n38: Testing login method with an empty password...");
 
-        // Call login with empty password and expect false to be returned
+        //Call login with empty password and expect false to be returned
         assertThrows(InvalidPasswordException.class, () -> UserHandler.login("username", ""),
                 "Login should return false when password is empty.");
 
@@ -589,7 +589,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n39: Testing login method with null password...");
 
-        // Call login with null password and expect false to be returned
+        //Call login with null password and expect false to be returned
         assertThrows(InvalidPasswordException.class, () -> UserHandler.login("username", null),
                 "Login should return false when password is null.");
 
@@ -602,7 +602,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n40: Testing login method with nonexistent username...");
 
-        // Call login with a nonexistent username and expect false to be returned
+        //Call login with a nonexistent username and expect false to be returned
         assertThrows(EntityNotFoundException.class, () -> UserHandler.login("nonexistentUser", "password"),
                 "Login should return false when username does not exist.");
 
@@ -618,9 +618,9 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a new user
+            //Create a new user
             UserHandler.createNewUser("user1", "password1");
-            // Attempt to login with the correct username but incorrect password
+            //Attempt to login with the correct username but incorrect password
             assertFalse(UserHandler.login("user1", "incorrectPassword"),
                     "Login should return false when password is incorrect.");
         }
@@ -641,10 +641,10 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a new user
+            //Create a new user
             UserHandler.createNewUser("user2", "password2");
 
-            // Attempt to login with the correct username and password
+            //Attempt to login with the correct username and password
             assertTrue(UserHandler.login("user2", "password2"),
                     "Login should return true when username and password are correct.");
         }
@@ -679,10 +679,10 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a new User
+            //Create a new User
             User user = UserHandler.createNewUser("user1", "password1");
 
-            // Call validateUser with null password
+            //Call validateUser with null password
             assertThrows(InvalidPasswordException.class, () -> UserHandler.validate(user, null),
                     "Validate should throw an exception for null passwords.");
         }
@@ -705,10 +705,10 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a new user
+            //Create a new user
             User user = new User("user1", "password1");
 
-            // Call validateUser with correct password and expect true to be returned
+            //Call validateUser with correct password and expect true to be returned
             assertTrue(UserHandler.validate(user, "password1"),
                     "ValidateUser should return true when the password is correct.");
         }
@@ -729,10 +729,10 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Create a new user
+            //Create a new user
             User user = new User("user1", "password1");
 
-            // Call validateUser with incorrect password and expect false to be returned
+            //Call validateUser with incorrect password and expect false to be returned
             assertFalse(UserHandler.validate(user, "password2"),
                     "ValidateUser should return false when the password is incorrect.");
         }
@@ -757,13 +757,13 @@ public class UserHandlerTest extends BaseHandlerTest
         {
             String username = "username";
             String password = "password";
-            // Insert a user into the database
+            //Insert a user into the database
             UserHandler.createNewUser(username, password);
 
-            // Call the getUserByUsername method with a valid username
+            //Call the getUserByUsername method with a valid username
             User user = UserHandler.getUserByUsername(username);
 
-            // Verify that a User is returned and not null and has expected values
+            //Verify that a User is returned and not null and has expected values
             assertNotNull(user, "A User object should be returned when a valid username is provided.");
             assertEquals(username, user.getUsername(),
                     "The returned User object should have the username provided in the getUserByUsername method.");
@@ -792,7 +792,7 @@ public class UserHandlerTest extends BaseHandlerTest
 
         try
         {
-            // Call the getUserByUsername method with a valid username that is not present in the database
+            //Call the getUserByUsername method with a valid username that is not present in the database
             assertNull(UserHandler.getUserByUsername("nonExistentUsername"));
         }
         catch (InvalidNameException e)
@@ -810,7 +810,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n14: Testing getUserByUsername method with a null username...");
 
-        // Verify that an InvalidNameException is thrown when a null username is provided
+        //Verify that an InvalidNameException is thrown when a null username is provided
         assertThrows(InvalidNameException.class, () -> UserHandler.getUserByUsername(null),
                 "An InvalidNameException should be thrown when the username is null.");
 
@@ -823,7 +823,7 @@ public class UserHandlerTest extends BaseHandlerTest
     {
         System.out.println("\n15: Testing getUserByUsername method with an empty username...");
 
-        // Verify that an InvalidNameException is thrown when an empty username is provided
+        //Verify that an InvalidNameException is thrown when an empty username is provided
         assertThrows(InvalidNameException.class, () -> UserHandler.getUserByUsername(""),
                 "An InvalidNameException should be thrown when the username is empty.");
 
