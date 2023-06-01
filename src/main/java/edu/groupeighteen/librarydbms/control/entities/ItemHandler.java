@@ -802,7 +802,6 @@ public class ItemHandler
     }
 
 
-
     public static List<Item> getItemsByClassification(String classificationName)
     throws InvalidNameException //TODO-test //TODO-comment
     {
@@ -826,19 +825,55 @@ public class ItemHandler
     }
 
 
-    public static List<Item> getItemsByAuthor(String authorName)
+    public static List<Item> getItemsByAuthor(String authorFirstname, String authorLastname) //TODO-test //TODO-comment
+    throws InvalidNameException
     {
-        //empty authorName
-        //null authorName
+        //Validate input, one name can be null, not both
+        if ((authorFirstname == null || authorFirstname.isEmpty()) &&
+                (authorLastname == null || authorLastname.isEmpty()))
+            throw new InvalidNameException("Can't perform a search by name with no names.");
+
+        //Prepare a SQL suffix to select an item by author name
+        String suffix;
+        String[] params;
+
+        //Both names are given
+        if (authorFirstname != null && !authorFirstname.isEmpty() &&
+                authorLastname != null && !authorLastname.isEmpty())
+        {
+            suffix = "LEFT JOIN authors ON items.authorID = authors.authorID WHERE authors.authorFirstname = ? " +
+                    "AND authors.authorLastname = ?";
+            params = new String[]{authorFirstname, authorLastname};
+        }
+        //First name is given
+        else if (authorFirstname != null && !authorFirstname.isEmpty())
+        {
+            suffix = "LEFT JOIN authors ON items.authorID = authors.authorID WHERE authors.authorFirstname = ?";
+            params = new String[]{authorFirstname};
+        }
+        //Last name is given
+        else
+        {
+            suffix = "LEFT JOIN authors ON items.authorID = authors.authorID WHERE authors.authorLastname = ?";
+            params = new String[]{authorLastname};
+        }
+
+        return getItems(suffix, params, 0);
+
+        //empty authorFirstname
+        //null authorFirstname
+        //empty authorLastname
+        //null authorLastname
+        //empty both
+        //null both
         //no such author
         //author exists, but no titles for some reason
         //author exists and has title
         //Multiple Items exist for author
         //== 6 test cases
-
-        return null;
     }
 
+    //TODO OPTIONAL
     public static Item getItemsByPublisher(String publisherName)
     {
         //empty publisherName
@@ -852,6 +887,7 @@ public class ItemHandler
         return null;
     }
 
+    //TODO OPTIONAL
     public static Item getItemsByType(String type)
     { //Not going to be string, but an ENUM instead
         //Invalid enum should not be possible...
