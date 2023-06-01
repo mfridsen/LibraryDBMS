@@ -524,8 +524,8 @@ public class ItemHandler
      *
      * @param itemID The ID of the item to retrieve.
      * @return The Literature object retrieved from the database, or null if not found.
-     * @throws SQLException           If an SQL exception occurs.
-     * @throws ConstructionException  If there is an error constructing the Literature object.
+     * @throws SQLException          If an SQL exception occurs.
+     * @throws ConstructionException If there is an error constructing the Literature object.
      */
     private static Literature getLiteratureByID(int itemID)
     throws SQLException, ConstructionException
@@ -539,7 +539,8 @@ public class ItemHandler
                 literatureParams))
         {
             ResultSet resultSet = literatureQueryResult.getResultSet();
-            if (resultSet.next()) {
+            if (resultSet.next())
+            {
                 return new Literature(
                         resultSet.getBoolean("deleted"),
                         itemID,
@@ -569,8 +570,8 @@ public class ItemHandler
      *
      * @param itemID The ID of the item to retrieve.
      * @return The Film object retrieved from the database, or null if not found.
-     * @throws SQLException           If an SQL exception occurs.
-     * @throws ConstructionException  If there is an error constructing the Film object.
+     * @throws SQLException          If an SQL exception occurs.
+     * @throws ConstructionException If there is an error constructing the Film object.
      */
     private static Film getFilmByID(int itemID)
     throws SQLException, ConstructionException
@@ -618,10 +619,12 @@ public class ItemHandler
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
     /**
-     * Updates an existing item in the database and adjusts the count of the old and new titles.
+     * Updates an item in the database with the provided item object.
      *
-     * @param item The Item object containing the updated information.
-     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
+     * @param item The item object containing the updated information.
+     * @throws NullEntityException     If the item is null.
+     * @throws EntityNotFoundException If the item with the specified ID is not found in the database.
+     */
     public static void updateItem(Item item)
     throws NullEntityException, EntityNotFoundException
     {
@@ -673,7 +676,13 @@ public class ItemHandler
         }
     }
 
-    private static void updateLiterature(Literature literature) {
+    /**
+     * Updates the literature details in the database based on the provided literature object.
+     *
+     * @param literature The literature object containing the updated information.
+     */
+    private static void updateLiterature(Literature literature)
+    {
         String updateLiteratureQuery = "UPDATE literature SET ISBN = ? WHERE literatureID = ?";
         String[] literatureParams = {
                 literature.getISBN(),
@@ -682,8 +691,13 @@ public class ItemHandler
         DatabaseHandler.executePreparedUpdate(updateLiteratureQuery, literatureParams);
     }
 
-
-    private static void updateFilm(Film film) {
+    /**
+     * Updates the film details in the database based on the provided film object.
+     *
+     * @param film The film object containing the updated information.
+     */
+    private static void updateFilm(Film film)
+    {
         // Check if countryOfProduction or listOfActors are null
         String countryOfProduction = film.getCountryOfProduction() == null ? null : film.getCountryOfProduction();
         String listOfActors = film.getListOfActors() == null ? null : film.getListOfActors();
@@ -699,7 +713,13 @@ public class ItemHandler
         DatabaseHandler.executePreparedUpdate(updateFilmQuery, filmParams);
     }
 
-
+    /**
+     * Updates the maps based on the changes in the item's title and availability status.
+     *
+     * @param item            The updated item object.
+     * @param oldTitle        The previous title of the item.
+     * @param oldAvailability The previous availability status of the item.
+     */
     private static void updateMaps(Item item, String oldTitle, boolean oldAvailability)
     {
         // If the title has changed, adjust the counts in the maps
@@ -723,8 +743,11 @@ public class ItemHandler
         }
     }
 
-
-
+    /**
+     * Deletes an item by setting its deleted boolean to true.
+     *
+     * @param itemToDelete The item object to be deleted.
+     */
     public static void deleteItem(Item itemToDelete)
     {
         // Prepare a SQL command to set deleted to true for the specified item.
@@ -738,6 +761,11 @@ public class ItemHandler
         itemToDelete.setDeleted(true);
     }
 
+    /**
+     * Restores a deleted item in the database by setting its deleted boolean to false.
+     *
+     * @param itemToRecover The item object to be recovered.
+     */
     public static void undoDeleteItem(Item itemToRecover)
     {
         // Prepare a SQL command to set deleted to false for the specified item.
@@ -751,57 +779,89 @@ public class ItemHandler
         itemToRecover.setDeleted(false);
     }
 
-
     /**
      * Deletes an item from the database and decrements the count of the item's title.
      *
      * @param item The Item object to be deleted.
-     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
+     */
     public static void hardDeleteItem(Item item)
     throws NullEntityException, EntityNotFoundException
     {
         try
         {
-            //TODO-prio UPDATE TO CHANGE DELETED
-            //TODO-prio update when Item is finished
-            //Validate the input, NullEntityException
+            // Validate the input, throws NullEntityException
             checkNullItem(item);
 
-            //Get the old title, throws EntityNotFoundException
-            Item oldItem = getItemByID(item.getItemID());
-            if (oldItem == null)
-                throw new EntityNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
-            String oldTitle = oldItem.getTitle();
+            //Retrieve old title, throws EntityNotFoundException and InvalidIDException
+            String oldTitle = retrieveOldTitle(item);
 
-            //Check if the item exists in the database
-            String sql = "SELECT COUNT(*) FROM items WHERE itemID = ?";
-            String[] params = {String.valueOf(item.getItemID())};
+            // Delete from child tables (Film or Literature) first
+            if (item instanceof Film)
+            {
+                deleteFilm(item);
+            }
+            else if (item instanceof Literature)
+            {
+                deleteLiterature(item);
+            }
 
-            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
-            ResultSet resultSet = queryResult.getResultSet();
-            resultSet.next(); //Move to the first row
+            // Prepare a SQL command to delete an item by itemID
+            String sql = "DELETE FROM items WHERE itemID = ?";
+            String[] params = new String[]{String.valueOf(item.getItemID())};
 
-
-            //Prepare a SQL command to delete an item by itemID.
-            sql = "DELETE FROM items WHERE itemID = ?";
-            params = new String[]{String.valueOf(item.getItemID())};
-
-            //Execute the update. //TODO-prio handle cascades in rentals
+            // Execute the update
             DatabaseHandler.executePreparedUpdate(sql, params);
 
-            //Decrement the count of the old title. Remove the entry if the count reaches 0.
-            if (storedTitles.get(oldTitle) != null)
-            {
-                decrementStoredTitles(oldTitle);
-                decrementAvailableTitles(oldTitle);
-            }
+            // Decrement the count of the old title. Remove the entry if the count reaches 0
+            decrementTitle(oldTitle);
         }
-        catch (SQLException | InvalidIDException e)
+        catch (InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to delete Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
+
+    private static void deleteFilm(Item item)
+    {
+        // Prepare SQL command to delete a film by filmID
+        String sql = "DELETE FROM films WHERE filmID = ?";
+        String[] params = new String[]{String.valueOf(item.getItemID())};
+
+        // Execute the update
+        DatabaseHandler.executePreparedUpdate(sql, params);
+    }
+
+    private static void deleteLiterature(Item item)
+    {
+        // Prepare SQL command to delete a literature by literatureID
+        String sql = "DELETE FROM literature WHERE literatureID = ?";
+        String[] params = new String[]{String.valueOf(item.getItemID())};
+
+        // Execute the update
+        DatabaseHandler.executePreparedUpdate(sql, params);
+    }
+
+    private static String retrieveOldTitle(Item item)
+    throws InvalidIDException, EntityNotFoundException
+    {
+        // Get the old item
+        Item oldItem = getItemByID(item.getItemID());
+        // Check if the item exists in the database
+        if (oldItem == null)
+            throw new EntityNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
+        return oldItem.getTitle();
+    }
+
+    private static void decrementTitle(String oldTitle)
+    {
+        if (storedTitles.get(oldTitle) != null)
+        {
+            decrementStoredTitles(oldTitle);
+            decrementAvailableTitles(oldTitle);
+        }
+    }
+
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
@@ -910,8 +970,6 @@ public class ItemHandler
     }
 
     //== 27 test cases
-
-
 
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------

@@ -6,16 +6,19 @@ import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
+import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -24,18 +27,20 @@ import java.sql.SQLException;
  * @date 5/31/2023
  * @contact matfir-1@student.ltu.se
  * <p>
- * Unit Test for the deleteFilm and undoDeleteFilm methods.
+ * Unit Test for the hardDeleteFilm method.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DeleteAndUndoDeleteTest
+public class HardDeleteItemTest
 {
     // Declare these at the class level so all tests can access them
     static Film film;
     static Literature literature;
 
+    //We need all this stuff, copied from BaseHandlerTest but adapted to be static
     protected static Connection connection = null;
     protected static final String testDatabaseName = "test_database";
 
+    //BeforeEach can't be static
     static void setupConnectionAndTables() throws SQLException, ClassNotFoundException {
         connection = DatabaseConnection.setup();
         DatabaseHandler.setConnection(connection);
@@ -63,8 +68,10 @@ public class DeleteAndUndoDeleteTest
             ItemHandler.setup();
             // Create new Film and Literature objects
             film = ItemHandler.createNewFilm("Test Film", 1, 2, "1234", 15);
+            assertNotNull(film);
             literature = ItemHandler.createNewLiterature("Test Literature", Item.ItemType.OTHER_BOOKS,
                     1, 2, "5678", "978-3-16-1484");
+            assertNotNull(literature);
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | SQLException | ClassNotFoundException e)
         {
@@ -95,32 +102,76 @@ public class DeleteAndUndoDeleteTest
     }
 
     /**
-     * Test case for deleting an item.
+     * Test case where the item to delete is null.
      */
     @Test
     @Order(1)
-    void testDeleteItem_ValidItem() {
-        System.out.println("\n1: Testing deleteItem method with valid item...");
+    void testHardDeleteItem_NullItem()
+    {
+        System.out.println("\n1: Testing hardDeleteItem method with null item...");
+
+        // Attempt to delete null item
+        assertThrows(NullEntityException.class, () -> {
+            ItemHandler.hardDeleteItem(null);
+        }, "Deleting null item should throw NullEntityException");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for deleting an item which doesn't exist in the database.
+     */
+    @Test
+    @Order(2)
+    void testHardDeleteItem_NonExistingItem()
+    {
+        System.out.println("\n2: Testing hardDeleteItem method with non-existing item...");
+
+        // Attempt to delete non-existing item
+        assertThrows(EntityNotFoundException.class, () -> {
+            ItemHandler.hardDeleteItem(new Literature(
+                    false,
+                    999,
+                    "non-existing",
+                    Item.ItemType.OTHER_BOOKS,
+                    "999",
+                    1,
+                    1,
+                    "Kalle",
+                    "Skräck",
+                    5,
+                    false,
+                    "non-existing"));
+        }, "Deleting non-existing item should throw EntityNotFoundException");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Test case for deleting an existing literature.
+     */
+    @Test
+    @Order(3)
+    void testHardDeleteItem_ExistingLiterature()
+    {
+        System.out.println("\n3: Testing hardDeleteItem method with existing Literature...");
 
         try
         {
-            // Call the deleteItem method on the Film object
-            ItemHandler.deleteItem(film);
-            ItemHandler.deleteItem(literature);
+            // Delete the literature
+            assertDoesNotThrow(() -> ItemHandler.hardDeleteItem(literature), "Deleting existing literature should not throw exception");
 
-            // Retrieve the film from the database
-            Film retrievedFilm = (Film) ItemHandler.getItemByID(film.getItemID());
-            Literature retrievedLiterature = (Literature) ItemHandler.getItemByID(literature.getItemID());
+            // Try to get the deleted literature, should return null
+            assertNull(ItemHandler.getItemByID(literature.getItemID()));
 
-            assertNotNull(retrievedFilm);
-            assertNotNull(retrievedLiterature);
-
-            // Verify that the deleted field is set to true
-            assertTrue(retrievedFilm.isDeleted(), "Film item should be marked as deleted after calling deleteItem.");
-            assertTrue(retrievedLiterature.isDeleted(), "Literature item should not be marked as deleted after calling " +
-                    "undoDeleteItem.");
+            // Check if literature was deleted from the 'literature' table
+            String sql = "SELECT * FROM literature WHERE literatureID = ?";
+            String[] params = {String.valueOf(literature.getItemID())};
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+            ResultSet resultSet = queryResult.getResultSet();
+            assertFalse(resultSet.next(), "Deleted literature should not exist in 'literature' table");
         }
-        catch (InvalidIDException e)
+        catch (InvalidIDException | SQLException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -130,31 +181,30 @@ public class DeleteAndUndoDeleteTest
     }
 
     /**
-     * Test case for undoing the deletion of an item.
+     * Test case for deleting an existing film.
      */
     @Test
-    @Order(2)
-    void testUndoDeleteItem_ValidItem() {
-        System.out.println("\n2: Testing undoDeleteItem method with valid item...");
+    @Order(4)
+    void testHardDeleteItem_ExistingFilm()
+    {
+        System.out.println("\n4: Testing hardDeleteItem method with existing Film...");
 
         try
         {
-            // Call the undoDeleteItem method on the Literature object
-            ItemHandler.undoDeleteItem(film);
-            ItemHandler.undoDeleteItem(literature);
+            // Delete the film
+            assertDoesNotThrow(() -> ItemHandler.hardDeleteItem(film), "Deleting existing film should not throw exception");
 
-            // Retrieve the literature from the database
-            Film retrievedFilm = (Film) ItemHandler.getItemByID(film.getItemID());
-            Literature retrievedLiterature = (Literature) ItemHandler.getItemByID(literature.getItemID());
+            // Try to get the deleted film, should return null
+            assertNull(ItemHandler.getItemByID(film.getItemID()));
 
-            assertNotNull(retrievedFilm);
-            assertNotNull(retrievedLiterature);
-
-            // Verify that the deleted field is set to false
-            assertFalse(retrievedFilm.isDeleted(), "Film item should be marked as deleted after calling deleteItem.");
-            assertFalse(retrievedLiterature.isDeleted(), "Literature item should not be marked as deleted after calling undoDeleteItem.");
+            // Check if film was deleted from the 'films' table
+            String sql = "SELECT * FROM films WHERE filmID = ?";
+            String[] params = {String.valueOf(film.getItemID())};
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params);
+            ResultSet resultSet = queryResult.getResultSet();
+            assertFalse(resultSet.next(), "Deleted film should not exist in 'films' table");
         }
-        catch (InvalidIDException e)
+        catch (InvalidIDException | SQLException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

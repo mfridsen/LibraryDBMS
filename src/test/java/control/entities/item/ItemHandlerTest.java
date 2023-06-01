@@ -20,8 +20,7 @@ import org.junit.platform.suite.api.Suite;
         GetItemByIDTest.class,
         UpdateItemTest.class,
         DeleteAndUndoDeleteTest.class,
-        HardDeleteLiteratureTest.class,
-        HardDeleteFilmTest.class,
+        HardDeleteItemTest.class,
 
 })
 public class ItemHandlerTest extends BaseHandlerTest
