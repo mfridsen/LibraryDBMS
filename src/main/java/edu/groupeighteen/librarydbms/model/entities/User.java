@@ -69,6 +69,7 @@ public class User extends Entity
     private String username;
     private String password; //TODO-future hash and salt
     //ENUM TYPE
+    //String email
     private final int allowedRentals;
     private int currentRentals;
     private double lateFee; //TODO-future implement logic

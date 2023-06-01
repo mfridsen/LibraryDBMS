@@ -34,20 +34,20 @@ public class ItemHandlerUtils
      * @param title the title to check.
      * @throws InvalidTitleException if title is null or empty.
      */
-    public static void checkEmptyTitle(String title)
+    static void checkEmptyTitle(String title)
     throws InvalidTitleException
     {
         if (title == null || title.isEmpty())
             throw new InvalidTitleException("Empty title.");
     }
 
-    public static void checkEmptyISBN(String ISBN)
+    static void checkEmptyISBN(String ISBN)
     throws InvalidISBNException
     {
         if (ISBN == null || ISBN.isEmpty()) throw new InvalidISBNException("Empty ISBN");
     }
 
-    public static void checkEmptyClassificationName(String classificationName)
+    static void checkEmptyClassificationName(String classificationName)
     throws InvalidNameException
     {
         if (classificationName == null || classificationName.isEmpty())
@@ -61,7 +61,7 @@ public class ItemHandlerUtils
      * @param itemID the ID to check.
      * @throws InvalidIDException if itemID <= 0.
      */
-    public static void checkValidItemID(int itemID)
+    static void checkValidItemID(int itemID)
     throws InvalidIDException
     {
         if (itemID <= 0)
@@ -74,7 +74,7 @@ public class ItemHandlerUtils
      * @param item the item to check.
      * @throws NullEntityException if item is null.
      */
-    public static void checkNullItem(Item item)
+    static void checkNullItem(Item item)
     throws NullEntityException
     {
         if (item == null)
@@ -87,7 +87,7 @@ public class ItemHandlerUtils
      * @param ID The ID to be checked.
      * @return True if the ID is invalid, false otherwise.
      */
-    public static boolean invalidID(int ID)
+    static boolean invalidID(int ID)
     {
         return (ID <= 0);
     }
@@ -98,7 +98,7 @@ public class ItemHandlerUtils
      * @param barcode The barcode to be checked.
      * @return True if the barcode is already registered, false otherwise.
      */
-    public static boolean barcodeTaken(String barcode)
+    static boolean barcodeTaken(String barcode)
     {
         return (ItemHandler.getRegisteredBarcodes().contains(barcode));
     }
@@ -110,7 +110,7 @@ public class ItemHandlerUtils
      * @return The retrieved Author object.
      * @throws EntityNotFoundException If no author with the given ID is found.
      */
-    public static Author getExistingAuthor(int authorID)
+    static Author getExistingAuthor(int authorID)
     throws EntityNotFoundException
     {
         Author author = AuthorHandler.getAuthorByID(authorID);
@@ -126,7 +126,7 @@ public class ItemHandlerUtils
      * @return The retrieved Classification object.
      * @throws EntityNotFoundException If no classification with the given ID is found.
      */
-    public static Classification getExistingClassification(int classificationID)
+    static Classification getExistingClassification(int classificationID)
     throws EntityNotFoundException
     {
         Classification classification = ClassificationHandler.getClassificationByID(classificationID);
@@ -135,7 +135,7 @@ public class ItemHandlerUtils
         return classification;
     }
 
-    public static String retrieveOldTitle(Item item)
+    static String retrieveOldTitle(Item item)
     throws InvalidIDException, EntityNotFoundException, RetrievalException
     {
         // Get the old item
@@ -146,7 +146,7 @@ public class ItemHandlerUtils
         return oldItem.getTitle();
     }
 
-    public static String retrieveOldBarcode(Item item)
+    static String retrieveOldBarcode(Item item)
     throws InvalidIDException, RetrievalException, EntityNotFoundException
     {
         // Get the old item
@@ -157,7 +157,7 @@ public class ItemHandlerUtils
         return oldItem.getBarcode();
     }
 
-    public static Literature constructRetrievedLiterature(ResultSet resultSet)
+    static Literature constructRetrievedLiterature(ResultSet resultSet)
     {
         Literature literature = null;
 
@@ -190,7 +190,7 @@ public class ItemHandlerUtils
     }
 
 
-    public static Film constructRetrievedFilm(ResultSet resultSet)
+    static Film constructRetrievedFilm(ResultSet resultSet)
     {
         Film film = null;
 
@@ -227,7 +227,7 @@ public class ItemHandlerUtils
     /**
      * Prints the stored titles and their counts.
      */
-    public static void printTitles()
+    static void printTitles()
     {
         System.out.println("\nTitles:");
         ItemHandler.getStoredTitles().forEach((title, count) -> System.out.println("Title: " + title + " Copies: " + count));
