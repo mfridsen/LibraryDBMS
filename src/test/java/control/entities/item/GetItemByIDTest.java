@@ -4,9 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
+import edu.groupeighteen.librarydbms.model.entities.Literature;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -86,6 +90,55 @@ public class GetItemByIDTest extends BaseHandlerTest
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(4)
+    void testGetItemByID_LiteratureItem() {
+        System.out.println("\n4: Testing getItemByID method with literature item...");
+
+        try
+        {
+            // Create a new Literature item
+            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode4", "ISBN4");
+            int itemID = newLit.getItemID();
+
+            Literature retrievedLit = (Literature) ItemHandler.getItemByID(itemID);
+            assertNotNull(retrievedLit);
+
+        }
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException
+                | ConstructionException | RetrievalException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(5)
+    void testUpdateItem_FilmItem() {
+        System.out.println("\n5: Testing getItemByID method with film item...");
+
+        try
+        {
+            // Create a new Film item
+            Film newFilm = ItemHandler.createNewFilm("Title3", 3, 3, "barcode3", 15);
+            int itemID = newFilm.getItemID();
+
+            Film retrievedFilm = (Film) ItemHandler.getItemByID(itemID);
+            assertNotNull(retrievedFilm);
+        }
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException
+                | RetrievalException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
