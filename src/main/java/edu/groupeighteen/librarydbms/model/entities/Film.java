@@ -159,7 +159,7 @@ public class Film extends Item
      * @throws InvalidNameException if the publisher country name is invalid
      */
     public void setCountryOfProduction(String countryOfProduction) throws InvalidNameException {
-        if (countryOfProduction.length() > FILM_COUNTRY_LENGTH)
+        if (countryOfProduction != null && countryOfProduction.length() > FILM_COUNTRY_LENGTH)
             throw new InvalidNameException("Film country name cannot be greater than " + FILM_COUNTRY_LENGTH + ".");
         this.countryOfProduction = countryOfProduction;
     }

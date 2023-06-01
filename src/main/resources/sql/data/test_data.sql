@@ -81,32 +81,6 @@ INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES
 (9, 16, 'Spain', 'Actor10, Actor11, Actor12'),
 (10, 18, 'UK', 'Actor13, Actor14, Actor15');
 
--- literature_item (, ),
-INSERT INTO literature_item (literatureID, itemID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(11, 11),
-(12, 12),
-(13, 13),
-(14, 14),
-(15, 15),
-(16, 16),
-(17, 17),
-(18, 18),
-(19, 19),
-(20, 20);
-
--- film_item (, ),
-INSERT INTO film_item (filmID, itemID) VALUES
-(6, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10);
-
 -- users (, '', '', , , , , , ),
 INSERT INTO users (userID, username, password, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) VALUES
 (1, 'user1', 'password1', 5, 0, 0.0, 1, 0),

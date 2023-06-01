@@ -73,6 +73,15 @@ public class ItemHandlerSetupTest extends BaseHandlerTest
     {
         System.out.println("\n2: Testing setup method with some items in the database...");
 
+        //Setup the test data and clear the items, film and literature tables
+        setupTestData();
+        String[] tablesToDelete = {"films", "literature", "items"};
+        for (String table : tablesToDelete) {
+            String deleteCommand = "DELETE FROM " + table;
+            DatabaseHandler.executeCommand(deleteCommand);
+        }
+
+
         //Check that the maps and list are empty
         assertEquals(0, ItemHandler.getStoredTitles().size());
         assertEquals(0, ItemHandler.getAvailableTitles().size());
