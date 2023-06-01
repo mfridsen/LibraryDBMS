@@ -21,7 +21,7 @@ import org.junit.platform.suite.api.Suite;
         UpdateItemTest.class,
         DeleteAndUndoDeleteTest.class,
         HardDeleteItemTest.class,
-
+        GetAllItemsTest.class,
 })
 public class ItemHandlerTestSuite extends BaseHandlerTest
 {

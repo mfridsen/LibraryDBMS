@@ -10,6 +10,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Mattias Fridsén
@@ -255,5 +256,29 @@ public class ItemHandlerUtils
         }
 
         return film;
+    }
+
+    /**
+     * Prints the stored titles and their counts.
+     */
+    public static void printTitles()
+    {
+        System.out.println("\nTitles:");
+        ItemHandler.getStoredTitles().forEach((title, count) -> System.out.println("Title: " + title + " Copies: " + count));
+    }
+
+    /**
+     * Prints the list of Items with their IDs and titles.
+     *
+     * @param itemList the list of Items to print
+     */
+    public static void printItemList(List<Item> itemList)
+    {
+        System.out.println("Items:");
+        int count = 1;
+        for (Item item : itemList)
+        {
+            System.out.println(count + " itemID: " + item.getItemID() + ", title: " + item.getTitle());
+        }
     }
 }

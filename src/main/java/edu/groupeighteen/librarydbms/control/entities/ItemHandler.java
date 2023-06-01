@@ -254,29 +254,7 @@ public class ItemHandler
         registeredBarcodes.clear();
     }
 
-    /**
-     * Prints the stored titles and their counts.
-     */
-    public static void printTitles()
-    {
-        System.out.println("\nTitles:");
-        storedTitles.forEach((title, count) -> System.out.println("Title: " + title + " Copies: " + count));
-    }
 
-    /**
-     * Prints the list of Items with their IDs and titles.
-     *
-     * @param itemList the list of Items to print
-     */
-    public static void printItemList(List<Item> itemList)
-    {
-        System.out.println("Items:");
-        int count = 1;
-        for (Item item : itemList)
-        {
-            System.out.println(count + " itemID: " + item.getItemID() + ", title: " + item.getTitle());
-        }
-    }
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
@@ -513,6 +491,11 @@ public class ItemHandler
         return items;
     }
 
+    public static List<Item> getAllItems()
+    {
+        return getItems(null, null, 0);
+    }
+
 
     public static Item getItemByID(int itemID)
     throws InvalidIDException, RetrievalException
@@ -529,69 +512,6 @@ public class ItemHandler
         if (items.size() > 1) throw new RetrievalException("There should not be more than 1 item with ID " + itemID);
         else if (items.size() == 0) return null;
         else return items.get(0);
-    }
-
-
-
-    private static Literature getLiteratureByID(int itemID)
-    throws InvalidIDException
-    {
-        //Validate input
-        checkValidItemID(itemID);
-
-        String literatureQuery = "SELECT items.*, literature.* FROM items " +
-                "INNER JOIN literature ON items.itemID = literature.literatureID " +
-                "WHERE items.itemID = ?";
-        String[] literatureParams = {String.valueOf(itemID)};
-
-        try (QueryResult literatureQueryResult = DatabaseHandler.executePreparedQuery(literatureQuery,
-                literatureParams))
-        {
-            ResultSet resultSet = literatureQueryResult.getResultSet();
-            if (resultSet.next())
-            {
-                return constructRetrievedLiterature(resultSet);
-            }
-        }
-        catch (SQLException e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Literature by ID due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        // If no Literature was found, return null
-        return null;
-    }
-
-
-    private static Film getFilmByID(int itemID)
-    throws InvalidIDException
-    {
-        //Validate input
-        checkValidItemID(itemID);
-
-        String filmQuery = "SELECT items.*, films.* FROM items " +
-                "INNER JOIN films ON items.itemID = films.filmID " +
-                "WHERE items.itemID = ?";
-        String[] filmParams = {String.valueOf(itemID)};
-
-        try (QueryResult filmQueryResult = DatabaseHandler.executePreparedQuery(filmQuery, filmParams))
-        {
-            ResultSet resultSet = filmQueryResult.getResultSet();
-
-            if (resultSet.next())
-            {
-                return constructRetrievedFilm(resultSet);
-            }
-        }
-        catch (SQLException e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Film by ID due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        // If no Film was found, return null
-        return null;
     }
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
