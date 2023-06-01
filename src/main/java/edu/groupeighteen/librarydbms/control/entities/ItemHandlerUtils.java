@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms.control.entities;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.entities.*;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 
 import java.sql.ResultSet;
@@ -38,6 +39,19 @@ public class ItemHandlerUtils
     {
         if (title == null || title.isEmpty())
             throw new InvalidTitleException("Empty title.");
+    }
+
+    public static void checkEmptyISBN(String ISBN)
+    throws InvalidISBNException
+    {
+        if (ISBN == null || ISBN.isEmpty()) throw new InvalidISBNException("Empty ISBN");
+    }
+
+    public static void checkEmptyClassificationName(String classificationName)
+    throws InvalidNameException
+    {
+        if (classificationName == null || classificationName.isEmpty())
+            throw new InvalidNameException("Classification name is empty.");
     }
 
     /**

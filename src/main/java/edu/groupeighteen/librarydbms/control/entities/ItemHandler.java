@@ -7,6 +7,7 @@ import edu.groupeighteen.librarydbms.model.entities.*;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidItemTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
@@ -44,7 +45,6 @@ import static edu.groupeighteen.librarydbms.control.entities.ItemHandlerUtils.*;
  */
 public class ItemHandler
 {
-
     /**
      * Used to speed up searching. Contains a HashMap with the titles of all Items in the database and how many
      * copies there are of each.
@@ -57,7 +57,7 @@ public class ItemHandler
     private static final Map<String, Integer> availableTitles = new HashMap<>();
 
     /**
-     * Used to keep track of already existing barcodes to quickly enforce uniqueness. //TODO-PRIO TEST
+     * Used to keep track of already existing barcodes to quickly enforce uniqueness.
      */
     private static final ArrayList<String> registeredBarcodes = new ArrayList<>();
 
@@ -469,63 +469,6 @@ public class ItemHandler
                         listOfActors});
     }
 
-    //RETRIEVING -------------------------------------------------------------------------------------------------------
-
-    public static List<Item> getItems(String sqlSuffix, String[] params, int settings)
-    {
-        List<Item> items = new ArrayList<>();
-
-        // Prepare a SQL command to select all items from the 'items' table and join with films and literature
-        String sql = "SELECT * FROM items " +
-                "LEFT JOIN films ON items.itemID = films.filmID " +
-                "LEFT JOIN literature ON items.itemID = literature.literatureID " +
-                (sqlSuffix == null ? "" : " " + sqlSuffix);
-
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings))
-        {
-            //Retrieve the ResultSet from the QueryResult
-            ResultSet resultSet = queryResult.getResultSet();
-
-            //Loop through the results
-            while (resultSet.next())
-            {
-                Item.ItemType type = Item.ItemType.valueOf(resultSet.getString("itemType"));
-
-                if (type == Item.ItemType.FILM) items.add(constructRetrievedFilm(resultSet));
-                else items.add(constructRetrievedLiterature(resultSet));
-            }
-        }
-        catch (SQLException e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Items due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-        return items;
-    }
-
-    public static List<Item> getAllItems()
-    {
-        return getItems(null, null, 0);
-    }
-
-
-    public static Item getItemByID(int itemID)
-    throws InvalidIDException, RetrievalException
-    {
-        // Validate the provided ID
-        checkValidItemID(itemID);
-
-        //Prepare suffix
-        String suffix = "WHERE itemID = ?";
-        String[] params = {String.valueOf(itemID)};
-
-        List<Item> items = getItems(suffix, params, 0);
-
-        if (items.size() > 1) throw new RetrievalException("There should not be more than 1 item with ID " + itemID);
-        else if (items.size() == 0) return null;
-        else return items.get(0);
-    }
-
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
     /**
@@ -766,54 +709,90 @@ public class ItemHandler
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-
-
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
-    /**
-     * Retrieves all Items with a given title from the database.
-     *
-     * @param title The title of the Items to be retrieved.
-     * @return A list of Item objects with the provided title.
-     */
-    public static List<Item> getItemsByTitle(String title)
-    throws InvalidTitleException
+    public static List<Item> getItems(String sqlSuffix, String[] params, int settings)
     {
         List<Item> items = new ArrayList<>();
-        try
+
+        // Prepare a SQL command to select all items from the 'items' table and join with films and literature
+        String sql = "SELECT * FROM items " +
+                "LEFT JOIN films ON items.itemID = films.filmID " +
+                "LEFT JOIN literature ON items.itemID = literature.literatureID " +
+                (sqlSuffix == null ? "" : " " + sqlSuffix);
+
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings))
         {
-            //No point getting invalid Items
-            checkEmptyTitle(title);
+            //Retrieve the ResultSet from the QueryResult
+            ResultSet resultSet = queryResult.getResultSet();
 
-            //Prepare a SQL query to select an item by title
-            String query = "SELECT * FROM items WHERE title = ?";
-            String[] params = {title};
-
-            //Execute the query and store the result in a ResultSet
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
+            //Loop through the results
+            while (resultSet.next())
             {
-                ResultSet resultSet = queryResult.getResultSet();
+                Item.ItemType type = Item.ItemType.valueOf(resultSet.getString("itemType"));
 
-                //Loop through the ResultSet. For each record, create a new Item object and add it to the list
-                while (resultSet.next())
-                {
-                    //TODO-PRIO FIX THIS
-                }
+                if (type == Item.ItemType.FILM) items.add(constructRetrievedFilm(resultSet));
+                else items.add(constructRetrievedLiterature(resultSet));
             }
         }
         catch (SQLException e)
         {
-            ExceptionHandler.HandleFatalException("Failed to retrieve items by title due to " +
+            ExceptionHandler.HandleFatalException("Failed to retrieve Items due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
-
-        //Can be empty
         return items;
     }
 
-
-    public static List<Item> getItemsByISBN(String ISBN)
+    public static List<Item> getAllItems()
     {
+        return getItems(null, null, 0);
+    }
+
+
+    public static Item getItemByID(int itemID)
+    throws InvalidIDException, RetrievalException
+    {
+        // Validate the provided ID
+        checkValidItemID(itemID);
+
+        //Prepare suffix
+        String suffix = "WHERE itemID = ?";
+        String[] params = {String.valueOf(itemID)};
+
+        List<Item> items = getItems(suffix, params, 0);
+
+        if (items.size() > 1) throw new RetrievalException("There should not be more than 1 item with ID " + itemID);
+        else if (items.size() == 0) return null;
+        else return items.get(0);
+    }
+
+
+    public static List<Item> getItemsByTitle(String title) //TODO-test //TODO-comment
+    throws InvalidTitleException
+    {
+        //No point getting invalid Items
+        checkEmptyTitle(title);
+
+        //Prepare a SQL suffix to select an item by title
+        String suffix = "WHERE title = ?";
+        String[] params = {title};
+
+        return getItems(suffix, params, 0);
+    }
+
+
+    public static List<Item> getItemsByISBN(String ISBN) //TODO-test //TODO-comment
+    throws InvalidISBNException
+    {
+        //No point getting invalid Items
+        checkEmptyISBN(ISBN);
+
+        //Prepare a SQL suffix to select an item by title
+        String suffix = "WHERE literature.ISBN = ?";
+        String[] params = {ISBN};
+
+        return getItems(suffix, params, 0);
+
         //Empty ISBN
         //Null ISBN
         //Incorrect format ISBN
@@ -821,11 +800,23 @@ public class ItemHandler
         //Item does exist
         //Multiple Items exist
         //== 6 test cases
-        return null;
     }
 
-    public static List<Item> getItemsByGenre(String genre)
+
+
+    public static List<Item> getItemsByClassification(String classificationName)
+    throws InvalidNameException //TODO-test //TODO-comment
     {
+        //No point getting invalid Items
+        checkEmptyClassificationName(classificationName);
+
+        //Prepare a SQL suffix to select an item by classification
+        String suffix = "LEFT JOIN classifications ON items.classificationID = classifications.classificationID " +
+                "WHERE classifications.classificationName = ?";
+        String[] params = {classificationName};
+
+        return getItems(suffix, params, 0);
+
         //Empty genre
         //Null genre
         //genre does not exist
@@ -833,8 +824,8 @@ public class ItemHandler
         //Item does exist
         //Multiple Items exist
         //== 6 test cases
-        return null;
     }
+
 
     public static List<Item> getItemsByAuthor(String authorName)
     {
