@@ -498,45 +498,120 @@ public class ItemHandler
      * Retrieves an item by its ID from the database.
      *
      * @param itemID The ID of the item to be retrieved.
-     * @return The retrieved Item.
+     * @return The retrieved Item or null if not found.
      */
     public static Item getItemByID(int itemID)
     throws InvalidIDException
     {
-
-        //No point getting impossible Items
+        // No point getting impossible Items
         checkValidItemID(itemID);
 
-        //Prepare a SQL query to select an item by itemID
+        // Prepare a SQL query to select an item by itemID
         String query = "SELECT * FROM items WHERE itemID = ?";
         String[] params = {String.valueOf(itemID)};
 
-        //Execute the query and store the result in a ResultSet
+        // Execute the query and store the result in a ResultSet
         try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
         {
             ResultSet resultSet = queryResult.getResultSet();
 
-            //If the ResultSet contains data, create a new Item object using the retrieved title
-            //and set the item's itemID
+            // If the ResultSet contains data, create a new Item object based on the itemType
+            // and set the item's itemID
             if (resultSet.next())
             {
                 String title = resultSet.getString("title");
+                Item.ItemType itemType = Item.ItemType.valueOf(resultSet.getString("itemType"));
                 int allowedRentalDays = resultSet.getInt("allowedRentalDays");
                 boolean available = resultSet.getBoolean("available");
                 boolean deleted = resultSet.getBoolean("deleted");
-                //TODO-PRIO FIX THIS
-                return null;
+
+                // Retrieve literature-specific data from the literature table
+                // Retrieve film-specific data from the films table
+                switch (itemType)
+                {
+                    case REFERENCE_LITERATURE, MAGAZINE, COURSE_LITERATURE, OTHER_BOOKS -> {
+                        String literatureQuery = "SELECT * FROM literature INNER JOIN literature_item " +
+                                "ON literature.literatureID = literature_item.literatureID " +
+                                "WHERE literature_item.itemID = ?";
+                        String[] literatureParams = {String.valueOf(itemID)};
+                        try (QueryResult literatureQueryResult = DatabaseHandler.executePreparedQuery(literatureQuery,
+                                literatureParams))
+                        {
+                            ResultSet literatureResultSet = literatureQueryResult.getResultSet();
+                            if (literatureResultSet.next())
+                            {
+                                String ISBN = literatureResultSet.getString("ISBN");
+                                Author author = AuthorHandler.getAuthorByID(resultSet.getInt("authorID"));
+                                String authorName = author.getAuthorFirstname() + " " + author.getAuthorLastName();
+                                Classification classification =
+                                        ClassificationHandler.getClassificationByID(resultSet.getInt("classificationID"));
+                                String classificationName = classification.getClassificationName();
+                                // Create a new Literature object with the retrieved data
+                                return new Literature(
+                                        deleted,
+                                        itemID,
+                                        title,
+                                        itemType,
+                                        resultSet.getString("barcode"),
+                                        resultSet.getInt("authorID"),
+                                        resultSet.getInt("classificationID"),
+                                        authorName,
+                                        classificationName,
+                                        allowedRentalDays,
+                                        available,
+                                        ISBN);
+                            }
+                        }
+                    }
+                    case FILM -> {
+                        String filmQuery = "SELECT * FROM films INNER JOIN film_item " +
+                                "ON films.filmID = film_item.filmID WHERE film_item.itemID = ?";
+                        String[] filmParams = {String.valueOf(itemID)};
+                        try (QueryResult filmQueryResult = DatabaseHandler.executePreparedQuery(filmQuery, filmParams))
+                        {
+                            ResultSet filmResultSet = filmQueryResult.getResultSet();
+                            if (filmResultSet.next())
+                            {
+                                int ageRating = filmResultSet.getInt("ageRating");
+                                String countryOfProduction = filmResultSet.getString("countryOfProduction");
+                                String actors = filmResultSet.getString("actors");
+                                Author author = AuthorHandler.getAuthorByID(resultSet.getInt("authorID"));
+                                String authorName = author.getAuthorFirstname() + " " + author.getAuthorLastName();
+                                Classification classification =
+                                        ClassificationHandler.getClassificationByID(resultSet.getInt("classificationID"));
+                                String classificationName = classification.getClassificationName();
+                                // Create a new Film object with the retrieved data
+                                return new Film(
+                                        deleted,
+                                        itemID,
+                                        title,
+                                        itemType,
+                                        resultSet.getString("barcode"),
+                                        resultSet.getInt("authorID"),
+                                        resultSet.getInt("classificationID"),
+                                        authorName,
+                                        classificationName,
+                                        allowedRentalDays,
+                                        available,
+                                        ageRating,
+                                        countryOfProduction,
+                                        actors);
+                            }
+                        }
+                    }
+                }
             }
         }
-        catch (SQLException e)
+        catch (SQLException | ConstructionException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
-        //If no Item was found, return null
+        // If no Item was found, return null
         return null;
     }
+
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
@@ -566,9 +641,15 @@ public class ItemHandler
             boolean oldAvailability = oldItem.isAvailable();
 
             //Prepare a SQL command to update an item's title and availability by itemID.
-            String sql = "UPDATE items SET title = ?, available = ? WHERE itemID = ?";
+            String sql = "UPDATE items SET title = ?, itemType = ?, barcode = ?, authorID = ?, classificationID = ?, " +
+                    "allowedRentalDays = ?, available = ? WHERE " +
+                    "itemID = ?";
             String[] params = {
                     item.getTitle(),
+                    String.valueOf(item.getType()),
+                    item.getBarcode(),
+                    String.valueOf(item.getAuthorID()),
+                    String.valueOf(item.getClassificationID()),
                     item.isAvailable() ? "1" : "0", //If boolean is true, add the string "1", if false, "0"
                     String.valueOf(item.getItemID())
             };
