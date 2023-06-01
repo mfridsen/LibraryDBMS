@@ -19,8 +19,7 @@ import org.junit.platform.suite.api.Suite;
         CreateNewFilmTest.class,
         GetItemByIDTest.class,
         UpdateItemTest.class,
-        DeleteAndUndoDeleteLiteratureTest.class,
-        DeleteAndUndoDeleteFilmTest.class,
+        DeleteAndUndoDeleteTest.class,
         HardDeleteLiteratureTest.class,
         HardDeleteFilmTest.class,
 

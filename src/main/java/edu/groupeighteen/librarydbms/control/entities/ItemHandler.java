@@ -660,34 +660,11 @@ public class ItemHandler
             DatabaseHandler.executePreparedUpdate(sql, params);
 
             // Depending on the itemType, update the appropriate details in either the films or literature table
-            if (item instanceof Literature)
-            {
-                updateLiterature((Literature) item);
-            }
-            else if (item instanceof Film)
-            {
-                updateFilm((Film) item);
-            }
+            if (item instanceof Literature) updateLiterature((Literature) item);
+            else if (item instanceof Film) updateFilm((Film) item);
 
-            // If the title has changed, adjust the counts in the maps
-            if (!oldTitle.equals(item.getTitle()))
-            {
-                decrementStoredTitles(oldTitle);
-                incrementStoredTitles(item.getTitle());
-            }
-
-            // If the availability status has changed, adjust the counts in the availableTitles map
-            if (oldAvailability != item.isAvailable())
-            {
-                if (oldAvailability)
-                {
-                    decrementAvailableTitles(oldTitle);
-                }
-                if (item.isAvailable())
-                {
-                    incrementAvailableTitles(item.getTitle());
-                }
-            }
+            //Update maps
+            updateMaps(item, oldTitle, oldAvailability);
         }
         catch (InvalidIDException e)
         {
@@ -723,16 +700,57 @@ public class ItemHandler
     }
 
 
+    private static void updateMaps(Item item, String oldTitle, boolean oldAvailability)
+    {
+        // If the title has changed, adjust the counts in the maps
+        if (!oldTitle.equals(item.getTitle()))
+        {
+            decrementStoredTitles(oldTitle);
+            incrementStoredTitles(item.getTitle());
+        }
+
+        // If the availability status has changed, adjust the counts in the availableTitles map
+        if (oldAvailability != item.isAvailable())
+        {
+            if (oldAvailability)
+            {
+                decrementAvailableTitles(oldTitle);
+            }
+            if (item.isAvailable())
+            {
+                incrementAvailableTitles(item.getTitle());
+            }
+        }
+    }
+
+
 
     public static void deleteItem(Item itemToDelete)
     {
+        // Prepare a SQL command to set deleted to true for the specified item.
+        String sql = "UPDATE items SET deleted = 1 WHERE itemID = ?";
+        String[] params = {String.valueOf(itemToDelete.getItemID())};
 
+        // Execute the update.
+        DatabaseHandler.executePreparedUpdate(sql, params);
+
+        // Update the deleted field of the item object
+        itemToDelete.setDeleted(true);
     }
 
     public static void undoDeleteItem(Item itemToRecover)
     {
+        // Prepare a SQL command to set deleted to false for the specified item.
+        String sql = "UPDATE items SET deleted = 0 WHERE itemID = ?";
+        String[] params = {String.valueOf(itemToRecover.getItemID())};
 
+        // Execute the update.
+        DatabaseHandler.executePreparedUpdate(sql, params);
+
+        // Update the deleted field of the item object
+        itemToRecover.setDeleted(false);
     }
+
 
     /**
      * Deletes an item from the database and decrements the count of the item's title.
@@ -894,38 +912,7 @@ public class ItemHandler
     //== 27 test cases
 
 
-    /**
-     * Retrieves the allowed rental days for an item by its ID.
-     *
-     * @param itemID The ID of the item.
-     * @return The allowed rental days for the item.
-     * @throws EntityNotFoundException If no item with the provided ID exists in the database.
-     * @throws InvalidIDException      If the provided ID is invalid (e.g., negative or zero).
-     */
-    public static int getAllowedRentalDaysByID(int itemID)
-    throws EntityNotFoundException, InvalidIDException
-    {
-        Item item = getItemByID(itemID);
-        if (item != null) return item.getAllowedRentalDays();
-        else throw new EntityNotFoundException("Item not found. Item ID: " + itemID);
-    }
 
-    /**
-     * Retrieves the number of available copies for a specific item.
-     *
-     * @param item The Item object for which the available copies are to be retrieved.
-     * @return The number of available copies for the item.
-     * @throws EntityNotFoundException If the item does not exist in the database.
-     * @throws NullEntityException     If the Item is null.
-     */
-    public static int getAvailableCopiesForItem(Item item)
-    throws EntityNotFoundException, NullEntityException
-    {
-        checkNullItem(item);
-        if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
-            throw new EntityNotFoundException(item.getTitle() + ": Item not found in stored or available titles.");
-        return availableTitles.get(item.getTitle());
-    }
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 
@@ -1056,5 +1043,38 @@ public class ItemHandler
     {
         if (item == null)
             throw new NullEntityException("Invalid item: item is null.");
+    }
+
+    /**
+     * Retrieves the allowed rental days for an item by its ID.
+     *
+     * @param itemID The ID of the item.
+     * @return The allowed rental days for the item.
+     * @throws EntityNotFoundException If no item with the provided ID exists in the database.
+     * @throws InvalidIDException      If the provided ID is invalid (e.g., negative or zero).
+     */
+    public static int getAllowedRentalDaysByID(int itemID)
+    throws EntityNotFoundException, InvalidIDException
+    {
+        Item item = getItemByID(itemID);
+        if (item != null) return item.getAllowedRentalDays();
+        else throw new EntityNotFoundException("Item not found. Item ID: " + itemID);
+    }
+
+    /**
+     * Retrieves the number of available copies for a specific item.
+     *
+     * @param item The Item object for which the available copies are to be retrieved.
+     * @return The number of available copies for the item.
+     * @throws EntityNotFoundException If the item does not exist in the database.
+     * @throws NullEntityException     If the Item is null.
+     */
+    public static int getAvailableCopiesForItem(Item item)
+    throws EntityNotFoundException, NullEntityException
+    {
+        checkNullItem(item);
+        if (!availableTitles.containsKey(item.getTitle()) && !storedTitles.containsKey(item.getTitle()))
+            throw new EntityNotFoundException(item.getTitle() + ": Item not found in stored or available titles.");
+        return availableTitles.get(item.getTitle());
     }
 }
