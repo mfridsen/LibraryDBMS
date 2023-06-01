@@ -40,7 +40,7 @@ public class HardDeleteItemTest
     protected static Connection connection = null;
     protected static final String testDatabaseName = "test_database";
 
-    //BeforeEach can't be static
+    //BeforeEach
     static void setupConnectionAndTables()
     throws SQLException, ClassNotFoundException
     {
@@ -69,7 +69,7 @@ public class HardDeleteItemTest
         {
             setupConnectionAndTables();
             setupTestData();
-            ItemHandler.setup();
+            ItemHandler.setup(); //Otherwise barcodes are stored from previous tests
             // Create new Film and Literature objects
             film = ItemHandler.createNewFilm("Test Film", 1, 2, "1234", 15);
             assertNotNull(film);
@@ -185,8 +185,8 @@ public class HardDeleteItemTest
         }
         catch (InvalidIDException | SQLException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -219,8 +219,8 @@ public class HardDeleteItemTest
         }
         catch (InvalidIDException | SQLException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");

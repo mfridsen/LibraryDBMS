@@ -28,6 +28,32 @@ void testSetup_EmptyDatabase()
     System.out.println("\nTEST FINISHED.");
 }
 
+If exceptions can be thrown, all non-asserted methods should be handled by placing the entire test in a try-catch
+block and failing like so:
+
+    /**
+     * Test case for the setPublisherName method with valid data.
+     * This test checks if the setPublisherName method correctly sets the publisherName.
+     */
+    @Test
+    @Order(3)
+    void testSetPublisherName_ValidData()
+    {
+        System.out.println("\n3: Testing setPublisherName method with valid data...");
+
+        try {
+            Publisher publisher = new Publisher("Test Publisher");
+            String validName = "Valid Publisher";
+            publisher.setPublisherName(validName);
+            assertEquals(validName, publisher.getPublisherName(),
+                         "Publisher name must be the same as the one set");
+        } catch (InvalidNameException | ConstructionException e) {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
 
 For Model classes, create one test class per constructor and then one for the setters.
 
@@ -55,32 +81,7 @@ AuthorRetrievalTest
 AuthorCopyTest
 AuthorSettersTest
 
-If exceptions can be thrown, all non-asserted methods should be handled by placing the entire test in a try-catch
-block and failing like so:
 
-    /**
-     * Test case for the setPublisherName method with valid data.
-     * This test checks if the setPublisherName method correctly sets the publisherName.
-     */
-    @Test
-    @Order(3)
-    void testSetPublisherName_ValidData()
-    {
-        System.out.println("\n3: Testing setPublisherName method with valid data...");
-
-        try {
-            Publisher publisher = new Publisher("Test Publisher");
-            String validName = "Valid Publisher";
-            publisher.setPublisherName(validName);
-            assertEquals(validName, publisher.getPublisherName(),
-                         "Publisher name must be the same as the one set");
-        } catch (InvalidNameException | ConstructionException e) {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
-        }
-
-        System.out.println("\nTEST FINISHED.");
-    }
 
 For Control classes (named <ModelClassName>Handler), create one test class per one major method in the Handler, named
 like so:

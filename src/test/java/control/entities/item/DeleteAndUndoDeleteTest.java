@@ -64,7 +64,7 @@ public class DeleteAndUndoDeleteTest
         {
             setupConnectionAndTables();
             setupTestData();
-            ItemHandler.setup();
+            ItemHandler.setup(); //Otherwise barcodes are stored from previous tests
             // Create new Film and Literature objects
             film = ItemHandler.createNewFilm("Test Film", 1, 2, "1234", 15);
             literature = ItemHandler.createNewLiterature("Test Literature", Item.ItemType.OTHER_BOOKS,

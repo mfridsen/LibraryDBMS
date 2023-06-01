@@ -61,8 +61,8 @@ public class UpdateItemTest extends BaseHandlerTest
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -89,8 +89,8 @@ public class UpdateItemTest extends BaseHandlerTest
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -127,8 +127,8 @@ public class UpdateItemTest extends BaseHandlerTest
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidAgeRatingException | NullEntityException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -157,6 +157,7 @@ public class UpdateItemTest extends BaseHandlerTest
 
             // Retrieve the updated item
             Literature updatedLit = (Literature) ItemHandler.getItemByID(itemID);
+            assertNotNull(updatedLit);
 
             // Verify that the fields have the expected changed values
             assertEquals("UpdatedTitle4", updatedLit.getTitle());
@@ -164,8 +165,8 @@ public class UpdateItemTest extends BaseHandlerTest
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");

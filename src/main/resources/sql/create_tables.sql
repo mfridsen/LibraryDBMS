@@ -41,14 +41,14 @@ CREATE TABLE items (
 
 -- Literature
 CREATE TABLE literature (
-    literatureID INT PRIMARY KEY,
+    literatureID INT PRIMARY KEY UNIQUE NOT NULL,
     ISBN VARCHAR(13) NOT NULL,
     FOREIGN KEY (literatureID) REFERENCES items(itemID)
 );
 
 -- Film
 CREATE TABLE films (
-    filmID INT PRIMARY KEY,
+    filmID INT PRIMARY KEY UNIQUE NOT NULL,
     ageRating INT NOT NULL,
     countryOfProduction VARCHAR(100),
     actors TEXT,

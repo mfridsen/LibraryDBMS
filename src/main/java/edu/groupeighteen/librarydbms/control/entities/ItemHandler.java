@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static edu.groupeighteen.librarydbms.control.entities.ItemHandlerUtils.*;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -373,6 +375,10 @@ public class ItemHandler
 
         //Save, retrieve and set itemID,
         int itemID = saveItem(newFilm);
+
+        //TODO DEBUG
+        System.err.println("ITEM ID AFTER SAVING ITEM: " + itemID);
+
         newFilm.setItemID(itemID); //Throws InvalidIDException
 
         //Save the new film to the table
@@ -466,6 +472,9 @@ public class ItemHandler
         String countryOfProduction = film.getCountryOfProduction() == null ? null : film.getCountryOfProduction();
         String listOfActors = film.getListOfActors() == null ? null : film.getListOfActors();
 
+        //TODO DEBUG
+        System.err.println("FILM ID BEING INSERTED: " + film.getItemID());
+
         //Save to films table
         String query = "INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES (?, ?, ?, ?)";
         DatabaseHandler.executePreparedQuery(query,
@@ -474,6 +483,45 @@ public class ItemHandler
                         String.valueOf(film.getAgeRating()),
                         countryOfProduction,
                         listOfActors});
+    }
+
+    //RETRIEVING -------------------------------------------------------------------------------------------------------
+
+    public static List<Item> getItems(String sqlSuffix, String[] params, int settings) throws SQLException, InvalidIDException {
+        List<Item> items = new ArrayList<>();
+
+        // Prepare a SQL command to select all items from the 'items' table with given sqlSuffix
+        String sql = "SELECT * FROM items" + (sqlSuffix == null ? "" : sqlSuffix);
+
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings)) {
+            //Retrieve the ResultSet from the QueryResult
+            ResultSet resultSet = queryResult.getResultSet();
+
+            //Loop through the results
+            while (resultSet.next()) {
+                Item.ItemType type = Item.ItemType.valueOf(resultSet.getString("itemType"));
+
+                QueryResult additionalInfoQueryResult;
+                if (type == Item.ItemType.FILM) {
+                    // Prepare a SQL command to select additional information from 'films' table
+                    String additionalSql = "SELECT * FROM films WHERE filmID = ?";
+                    String[] additionalParams = new String[]{resultSet.getString("itemID")};
+
+                    additionalInfoQueryResult = DatabaseHandler.executePreparedQuery(additionalSql, additionalParams);
+
+                    items.add(constructRetrievedFilm(resultSet, additionalInfoQueryResult.getResultSet()));
+                } else {
+                    // Prepare a SQL command to select additional information from 'literature' table
+                    String additionalSql = "SELECT * FROM literature WHERE literatureID = ?";
+                    String[] additionalParams = new String[]{resultSet.getString("itemID")};
+
+                    additionalInfoQueryResult = DatabaseHandler.executePreparedQuery(additionalSql, additionalParams);
+
+                    items.add(constructRetrievedLiterature(resultSet, additionalInfoQueryResult.getResultSet()));
+                }
+            }
+        }
+        return items;
     }
 
     /**
@@ -587,34 +635,13 @@ public class ItemHandler
 
             if (resultSet.next())
             {
-                return new Film(
-                        resultSet.getBoolean("deleted"),
-                        itemID,
-                        resultSet.getString("title"),
-                        Item.ItemType.valueOf(resultSet.getString("itemType")),
-                        resultSet.getString("barcode"),
-                        resultSet.getInt("authorID"),
-                        resultSet.getInt("classificationID"),
-                        AuthorHandler.
-                                getAuthorByID(resultSet.getInt("authorID")).getAuthorFirstname() + " " +
-                                AuthorHandler.
-                                        getAuthorByID(resultSet.getInt("authorID")).getAuthorLastName(),
-                        ClassificationHandler.
-                                getClassificationByID(resultSet.getInt("classificationID")).
-                                getClassificationName(),
-                        resultSet.getInt("allowedRentalDays"),
-                        resultSet.getBoolean("available"),
-                        resultSet.getInt("ageRating"),
-                        resultSet.getString("countryOfProduction"),
-                        resultSet.getString("actors")
-                );
+                return constructRetrievedFilm(itemID, resultSet);
             }
         }
 
         // If no Film was found, return null
         return null;
     }
-
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
@@ -997,61 +1024,6 @@ public class ItemHandler
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 
     /**
-     * Checks if the given ID is invalid.
-     *
-     * @param ID The ID to be checked.
-     * @return True if the ID is invalid, false otherwise.
-     */
-    private static boolean invalidID(int ID)
-    {
-        return (ID <= 0);
-    }
-
-    /**
-     * Checks if a barcode is already registered.
-     *
-     * @param barcode The barcode to be checked.
-     * @return True if the barcode is already registered, false otherwise.
-     */
-    private static boolean barcodeTaken(String barcode)
-    {
-        return (registeredBarcodes.contains(barcode));
-    }
-
-    /**
-     * Retrieves an existing Author object.
-     *
-     * @param authorID The ID of the author to be retrieved.
-     * @return The retrieved Author object.
-     * @throws EntityNotFoundException If no author with the given ID is found.
-     */
-    private static Author getExistingAuthor(int authorID)
-    throws EntityNotFoundException
-    {
-        Author author = AuthorHandler.getAuthorByID(authorID);
-        if (author == null)
-            throw new EntityNotFoundException("Author with ID " + authorID + "not found.");
-        return author;
-    }
-
-    /**
-     * Retrieves an existing Classification object.
-     *
-     * @param classificationID The ID of the classification to be retrieved.
-     * @return The retrieved Classification object.
-     * @throws EntityNotFoundException If no classification with the given ID is found.
-     */
-    private static Classification getExistingClassification(int classificationID)
-    throws EntityNotFoundException
-    {
-        Classification classification = ClassificationHandler.getClassificationByID(classificationID);
-        if (classification == null)
-            throw new EntityNotFoundException("Classification with ID " + classificationID + " not found.");
-        return classification;
-    }
-
-
-    /**
      * This method is used to retrieve the title of an item by its ID from the database. It executes a prepared
      * SQL query to fetch the title of the item corresponding to the provided itemID. If the item exists, the title
      * is returned. If the item does not exist, an EntityNotFoundException is thrown. In the case of a SQLException,
@@ -1082,47 +1054,6 @@ public class ItemHandler
 
         //If no item title was found
         return null;
-    }
-
-    /**
-     * Checks whether a given title is null or empty. If so, throws an InvalidTitleException,
-     * which must be handled.
-     *
-     * @param title the title to check.
-     * @throws InvalidTitleException if title is null or empty.
-     */
-    private static void checkEmptyTitle(String title)
-    throws InvalidTitleException
-    {
-        if (title == null || title.isEmpty())
-            throw new InvalidTitleException("Empty title.");
-    }
-
-    /**
-     * Checks whether a given itemID is invalid (<= 0). If so, throws an InvalidIDException,
-     * which must be handled.
-     *
-     * @param itemID the ID to check.
-     * @throws InvalidIDException if itemID <= 0.
-     */
-    private static void checkValidItemID(int itemID)
-    throws InvalidIDException
-    {
-        if (itemID <= 0)
-            throw new InvalidIDException("Error retrieving item by itemID: invalid itemID " + itemID);
-    }
-
-    /**
-     * Checks whether a given Item is null. If so, throws a NullEntityException which must be handled.
-     *
-     * @param item the item to check.
-     * @throws NullEntityException if item is null.
-     */
-    private static void checkNullItem(Item item)
-    throws NullEntityException
-    {
-        if (item == null)
-            throw new NullEntityException("Invalid item: item is null.");
     }
 
     /**
