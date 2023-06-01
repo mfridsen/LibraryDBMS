@@ -300,6 +300,7 @@ public class ItemHandlerUtils
         for (Item item : itemList)
         {
             System.out.println(count + " itemID: " + item.getItemID() + ", title: " + item.getTitle());
+            count++;
         }
     }
 }
