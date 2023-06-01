@@ -152,8 +152,7 @@ public class RentalHandler
             return newRental;
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidDateException
-                | InvalidNameException | InvalidTitleException e)
+        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException | InvalidTitleException | RetrievalException e)
         {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
@@ -311,8 +310,7 @@ public class RentalHandler
                 }
             }
         }
-        catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException |
-                InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException e)
+        catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException | RetrievalException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve rentals from database due to " +
                                                           e.getClass().getName() + ": " + e.getMessage(), e);
@@ -968,7 +966,7 @@ public class RentalHandler
     private static Item getExistingItem(int itemID)
     throws
     EntityNotFoundException, InvalidIDException,
-    InvalidTitleException
+    InvalidTitleException, RetrievalException
     {
         if (verbose)
             System.out.println("\nGetting available item with ID " + itemID);

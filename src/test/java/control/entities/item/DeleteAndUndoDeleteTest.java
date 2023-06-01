@@ -12,6 +12,7 @@ import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import org.junit.jupiter.api.*;
 
@@ -131,7 +132,7 @@ public class DeleteAndUndoDeleteTest
                     "Literature item should not be marked as deleted after calling " +
                             "undoDeleteItem.");
         }
-        catch (InvalidIDException e)
+        catch (InvalidIDException | RetrievalException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -167,7 +168,7 @@ public class DeleteAndUndoDeleteTest
             assertFalse(retrievedLiterature.isDeleted(),
                     "Literature item should not be marked as deleted after calling undoDeleteItem.");
         }
-        catch (InvalidIDException e)
+        catch (InvalidIDException | RetrievalException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

@@ -327,7 +327,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             assertTrue(actualMessage.contains(expectedMessage));
 
         }
-        catch (InvalidIDException | EntityNotFoundException | RentalNotAllowedException | NullEntityException e)
+        catch (InvalidIDException | EntityNotFoundException | RentalNotAllowedException | NullEntityException | RetrievalException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -399,7 +399,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             RentalHandler.setVerbose(false);
 
         }
-        catch (InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | InvalidNameException | RentalNotAllowedException e)
+        catch (InvalidIDException | NullEntityException | InvalidNameException | RentalNotAllowedException | RetrievalException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

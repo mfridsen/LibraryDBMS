@@ -59,7 +59,7 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle1", updatedLit.getTitle());
             assertEquals("UpdatedISBN1", updatedLit.getISBN());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -125,7 +125,7 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle3", updatedFilm.getTitle());
             assertEquals(18, updatedFilm.getAgeRating());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidAgeRatingException | NullEntityException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidAgeRatingException | NullEntityException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -163,7 +163,7 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle4", updatedLit.getTitle());
             assertEquals("UpdatedISBN4", updatedLit.getISBN());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");

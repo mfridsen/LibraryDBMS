@@ -10,10 +10,7 @@ import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
-import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import org.junit.jupiter.api.*;
 
@@ -183,7 +180,7 @@ public class HardDeleteItemTest
             ResultSet resultSet = queryResult.getResultSet();
             assertFalse(resultSet.next(), "Deleted literature should not exist in 'literature' table");
         }
-        catch (InvalidIDException | SQLException e)
+        catch (InvalidIDException | SQLException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -217,7 +214,7 @@ public class HardDeleteItemTest
             ResultSet resultSet = queryResult.getResultSet();
             assertFalse(resultSet.next(), "Deleted film should not exist in 'films' table");
         }
-        catch (InvalidIDException | SQLException e)
+        catch (InvalidIDException | SQLException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");

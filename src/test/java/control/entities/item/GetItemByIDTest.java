@@ -6,6 +6,7 @@ import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -80,7 +81,9 @@ public class GetItemByIDTest extends BaseHandlerTest
             Item item = ItemHandler.getItemByID(itemID);
 
             assertNull(item);
-        } catch (Exception e) {
+        }
+        catch (RetrievalException | InvalidIDException e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

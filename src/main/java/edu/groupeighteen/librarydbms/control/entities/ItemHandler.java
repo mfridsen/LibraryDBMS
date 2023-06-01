@@ -376,9 +376,6 @@ public class ItemHandler
         //Save, retrieve and set itemID,
         int itemID = saveItem(newFilm);
 
-        //TODO DEBUG
-        System.err.println("ITEM ID AFTER SAVING ITEM: " + itemID);
-
         newFilm.setItemID(itemID); //Throws InvalidIDException
 
         //Save the new film to the table
@@ -472,9 +469,6 @@ public class ItemHandler
         String countryOfProduction = film.getCountryOfProduction() == null ? null : film.getCountryOfProduction();
         String listOfActors = film.getListOfActors() == null ? null : film.getListOfActors();
 
-        //TODO DEBUG
-        System.err.println("FILM ID BEING INSERTED: " + film.getItemID());
-
         //Save to films table
         String query = "INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES (?, ?, ?, ?)";
         DatabaseHandler.executePreparedQuery(query,
@@ -487,98 +481,65 @@ public class ItemHandler
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
-    public static List<Item> getItems(String sqlSuffix, String[] params, int settings) throws SQLException, InvalidIDException {
+    public static List<Item> getItems(String sqlSuffix, String[] params, int settings)
+    {
         List<Item> items = new ArrayList<>();
 
-        // Prepare a SQL command to select all items from the 'items' table with given sqlSuffix
-        String sql = "SELECT * FROM items" + (sqlSuffix == null ? "" : sqlSuffix);
+        // Prepare a SQL command to select all items from the 'items' table and join with films and literature
+        String sql = "SELECT * FROM items " +
+                "LEFT JOIN films ON items.itemID = films.filmID " +
+                "LEFT JOIN literature ON items.itemID = literature.literatureID " +
+                (sqlSuffix == null ? "" : " " + sqlSuffix);
 
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings)) {
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(sql, params, settings))
+        {
             //Retrieve the ResultSet from the QueryResult
             ResultSet resultSet = queryResult.getResultSet();
 
             //Loop through the results
-            while (resultSet.next()) {
+            while (resultSet.next())
+            {
                 Item.ItemType type = Item.ItemType.valueOf(resultSet.getString("itemType"));
 
-                QueryResult additionalInfoQueryResult;
-                if (type == Item.ItemType.FILM) {
-                    // Prepare a SQL command to select additional information from 'films' table
-                    String additionalSql = "SELECT * FROM films WHERE filmID = ?";
-                    String[] additionalParams = new String[]{resultSet.getString("itemID")};
-
-                    additionalInfoQueryResult = DatabaseHandler.executePreparedQuery(additionalSql, additionalParams);
-
-                    items.add(constructRetrievedFilm(resultSet, additionalInfoQueryResult.getResultSet()));
-                } else {
-                    // Prepare a SQL command to select additional information from 'literature' table
-                    String additionalSql = "SELECT * FROM literature WHERE literatureID = ?";
-                    String[] additionalParams = new String[]{resultSet.getString("itemID")};
-
-                    additionalInfoQueryResult = DatabaseHandler.executePreparedQuery(additionalSql, additionalParams);
-
-                    items.add(constructRetrievedLiterature(resultSet, additionalInfoQueryResult.getResultSet()));
-                }
+                if (type == Item.ItemType.FILM) items.add(constructRetrievedFilm(resultSet));
+                else items.add(constructRetrievedLiterature(resultSet));
             }
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to retrieve Items due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
         return items;
     }
 
-    /**
-     * Retrieves an item by its ID from the database.
-     *
-     * @param itemID The ID of the item to be retrieved.
-     * @return The retrieved Item or null if not found.
-     */
+
     public static Item getItemByID(int itemID)
-    throws InvalidIDException
+    throws InvalidIDException, RetrievalException
     {
         // Validate the provided ID
         checkValidItemID(itemID);
 
-        // Prepare a SQL query to select an item by itemID
-        String query = "SELECT * FROM items WHERE itemID = ?";
+        //Prepare suffix
+        String suffix = "WHERE itemID = ?";
         String[] params = {String.valueOf(itemID)};
 
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
-        {
-            ResultSet resultSet = queryResult.getResultSet();
+        List<Item> items = getItems(suffix, params, 0);
 
-            if (resultSet.next())
-            {
-                Item.ItemType itemType = Item.ItemType.valueOf(resultSet.getString("itemType"));
-
-                // Based on the itemType, call the appropriate private method to retrieve the item
-                return switch (itemType)
-                        {
-                            case REFERENCE_LITERATURE, MAGAZINE, COURSE_LITERATURE, OTHER_BOOKS -> getLiteratureByID(
-                                    itemID);
-                            case FILM -> getFilmByID(itemID);
-                        };
-            }
-        }
-        catch (SQLException | ConstructionException e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-
-        // If no Item was found, return null
-        return null;
+        if (items.size() > 1) throw new RetrievalException("There should not be more than 1 item with ID " + itemID);
+        else if (items.size() == 0) return null;
+        else return items.get(0);
     }
 
-    /**
-     * Retrieves a Literature object from the database based on the given item ID.
-     *
-     * @param itemID The ID of the item to retrieve.
-     * @return The Literature object retrieved from the database, or null if not found.
-     * @throws SQLException          If an SQL exception occurs.
-     * @throws ConstructionException If there is an error constructing the Literature object.
-     */
+
+
     private static Literature getLiteratureByID(int itemID)
-    throws SQLException, ConstructionException
+    throws InvalidIDException
     {
-        String literatureQuery = "SELECT items.*, literature.ISBN FROM items " +
+        //Validate input
+        checkValidItemID(itemID);
+
+        String literatureQuery = "SELECT items.*, literature.* FROM items " +
                 "INNER JOIN literature ON items.itemID = literature.literatureID " +
                 "WHERE items.itemID = ?";
         String[] literatureParams = {String.valueOf(itemID)};
@@ -589,42 +550,27 @@ public class ItemHandler
             ResultSet resultSet = literatureQueryResult.getResultSet();
             if (resultSet.next())
             {
-                return new Literature(
-                        resultSet.getBoolean("deleted"),
-                        itemID,
-                        resultSet.getString("title"),
-                        Item.ItemType.valueOf(resultSet.getString("itemType")),
-                        resultSet.getString("barcode"),
-                        resultSet.getInt("authorID"),
-                        resultSet.getInt("classificationID"),
-                        AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).
-                                getAuthorFirstname() + " " + AuthorHandler.getAuthorByID(resultSet.
-                                getInt("authorID")).getAuthorLastName(),
-                        ClassificationHandler.getClassificationByID(resultSet.
-                                getInt("classificationID")).getClassificationName(),
-                        resultSet.getInt("allowedRentalDays"),
-                        resultSet.getBoolean("available"),
-                        resultSet.getString("ISBN")
-                );
+                return constructRetrievedLiterature(resultSet);
             }
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to retrieve Literature by ID due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         // If no Literature was found, return null
         return null;
     }
 
-    /**
-     * Retrieves a Film object from the database based on the given item ID.
-     *
-     * @param itemID The ID of the item to retrieve.
-     * @return The Film object retrieved from the database, or null if not found.
-     * @throws SQLException          If an SQL exception occurs.
-     * @throws ConstructionException If there is an error constructing the Film object.
-     */
+
     private static Film getFilmByID(int itemID)
-    throws SQLException, ConstructionException
+    throws InvalidIDException
     {
-        String filmQuery = "SELECT items.*, films.ageRating, films.countryOfProduction, films.actors FROM items " +
+        //Validate input
+        checkValidItemID(itemID);
+
+        String filmQuery = "SELECT items.*, films.* FROM items " +
                 "INNER JOIN films ON items.itemID = films.filmID " +
                 "WHERE items.itemID = ?";
         String[] filmParams = {String.valueOf(itemID)};
@@ -635,8 +581,13 @@ public class ItemHandler
 
             if (resultSet.next())
             {
-                return constructRetrievedFilm(itemID, resultSet);
+                return constructRetrievedFilm(resultSet);
             }
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to retrieve Film by ID due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         // If no Film was found, return null
@@ -696,7 +647,7 @@ public class ItemHandler
             //Update maps
             updateMaps(item, oldTitle, oldAvailability);
         }
-        catch (InvalidIDException e)
+        catch (InvalidIDException | RetrievalException e)
         {
             ExceptionHandler.HandleFatalException("Failed to update Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -842,7 +793,7 @@ public class ItemHandler
             // Decrement the count of the old title. Remove the entry if the count reaches 0
             decrementTitle(oldTitle);
         }
-        catch (InvalidIDException e)
+        catch (InvalidIDException | RetrievalException e)
         {
             ExceptionHandler.HandleFatalException("Failed to delete Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -888,7 +839,7 @@ public class ItemHandler
      * @throws EntityNotFoundException If the item with the specified ID is not found in the database.
      */
     private static String retrieveOldTitle(Item item)
-    throws InvalidIDException, EntityNotFoundException
+    throws InvalidIDException, EntityNotFoundException, RetrievalException
     {
         // Get the old item
         Item oldItem = getItemByID(item.getItemID());
@@ -1065,7 +1016,7 @@ public class ItemHandler
      * @throws InvalidIDException      If the provided ID is invalid (e.g., negative or zero).
      */
     public static int getAllowedRentalDaysByID(int itemID)
-    throws EntityNotFoundException, InvalidIDException
+    throws EntityNotFoundException, InvalidIDException, RetrievalException
     {
         Item item = getItemByID(itemID);
         if (item != null) return item.getAllowedRentalDays();

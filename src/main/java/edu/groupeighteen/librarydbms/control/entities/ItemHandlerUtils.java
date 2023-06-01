@@ -184,7 +184,43 @@ public class ItemHandlerUtils
         return null;
     }
 
-    public static Film constructRetrievedFilm(int itemID, ResultSet resultSet)
+
+
+    public static Literature constructRetrievedLiterature(ResultSet resultSet)
+    {
+        Literature literature = null;
+
+        try
+        {
+            literature = new Literature(
+                    resultSet.getBoolean("deleted"),
+                    resultSet.getInt("literatureID"),
+                    resultSet.getString("title"),
+                    Item.ItemType.valueOf(resultSet.getString("itemType")),
+                    resultSet.getString("barcode"),
+                    resultSet.getInt("authorID"),
+                    resultSet.getInt("classificationID"),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).
+                            getAuthorFirstname() + " " + AuthorHandler.getAuthorByID(resultSet.
+                            getInt("authorID")).getAuthorLastName(),
+                    ClassificationHandler.getClassificationByID(resultSet.
+                            getInt("classificationID")).getClassificationName(),
+                    resultSet.getInt("allowedRentalDays"),
+                    resultSet.getBoolean("available"),
+                    resultSet.getString("ISBN")
+            );
+        }
+        catch (ConstructionException | SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to retrieve Literature by ID due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        return literature;
+    }
+
+
+    public static Film constructRetrievedFilm(ResultSet resultSet)
     {
         Film film = null;
 
@@ -192,7 +228,7 @@ public class ItemHandlerUtils
         {
             film = new Film(
                     resultSet.getBoolean("deleted"),
-                    itemID,
+                    resultSet.getInt("filmID"),
                     resultSet.getString("title"),
                     Item.ItemType.valueOf(resultSet.getString("itemType")),
                     resultSet.getString("barcode"),
@@ -214,7 +250,7 @@ public class ItemHandlerUtils
         }
         catch (ConstructionException | SQLException e)
         {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Item by ID due to " +
+            ExceptionHandler.HandleFatalException("Failed to retrieve Film by ID due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
