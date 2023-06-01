@@ -97,38 +97,36 @@ public class AuthorHandler {
         return 0;
     }
 
-    public static Author getAuthorByID(int authorID) throws InvalidIDException {
-        try {
-            // No point getting invalid users, throws InvalidIDException
-            checkValidAuthorID(authorID);
+    public static Author getAuthorByID(int authorID)
+    {
+        Author author = null;
 
-            // Prepare a SQL query to select a author by authorID.
-            String query = "SELECT authorFirstname, authorLastName, biography, deleted FROM authors WHERE authorID = ?";
-            String[] params = {String.valueOf(authorID)};
+        //Prepare statement
+        String query = "SELECT authorID, authorFirstname, authorLastname, biography, deleted " +
+                "FROM authors WHERE authorID = ?";
+        String[] params = {String.valueOf(authorID)};
 
-            // Execute the query and store the result in a ResultSet.
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-                ResultSet resultSet = queryResult.getResultSet();
-                // If the ResultSet contains data, create a new Author object using the retrieved authorFirstname and authorLastName,
-                // and set the author's authorID.
-                if (resultSet.next()) {
-
-                    return new Author(authorID,
-                            resultSet.getString("authorFirstname"),
-                            resultSet.getString("authorLastName"),
-                            resultSet.getString("biography"),
-                            resultSet.getBoolean("deleted")
-                    );
-                }
-            }
-        } catch (SQLException | ConstructionException e) {
+        //Execute statement
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            ResultSet resultSet = queryResult.getResultSet();
+            if (resultSet.next())
+                author = new Author(
+                        resultSet.getInt("authorID"),
+                        resultSet.getString("authorFirstname"),
+                        resultSet.getString("authorLastname"),
+                        resultSet.getString("biography"),
+                        resultSet.getBoolean("deleted")
+                );
+        }
+        catch (SQLException | ConstructionException e)
+        {
             ExceptionHandler.HandleFatalException("Failed to retrieve author by ID from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
-        // Return null if not found.
-        return null;
+        return author;
     }
+
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
@@ -175,7 +173,7 @@ public class AuthorHandler {
             DatabaseHandler.executePreparedUpdate(query, params);
         }
 
-    public static void undoDeleteAuthor(Author authorToRecover){
+        public static void undoDeleteAuthor(Author authorToRecover){
            throws AuthorRecoveryException
             {
                 //Validate input
@@ -284,7 +282,7 @@ public class AuthorHandler {
                     " characters, received " + authorFirstname.length());
         if (authorLastName.length() > Author.AUTHOR_LAST_NAME_LENGTH)
             throw new InvalidNameException("Author last name too long. Must be at most "+ Author.AUTHOR_LAST_NAME_LENGTH +
-                " characters, received " + authorLastName.length());
+                    " characters, received " + authorLastName.length());
     }
     private static void checkEmptyName(String authorName) throws InvalidNameException {
         if (authorName == null || authorName.isEmpty()) {
