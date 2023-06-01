@@ -148,7 +148,7 @@ public class AuthorHandler {
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-    public static void deleteAuthor(Author authorToDelete) throws  {
+    public static void deleteAuthor(Author authorToDelete) {
        throws AuthorDeleteException
         {
             //Validate input
