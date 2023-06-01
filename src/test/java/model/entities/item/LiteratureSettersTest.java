@@ -42,7 +42,8 @@ public class LiteratureSettersTest
                     "1234567890123", // barcode
                     1, // authorID
                     1, // classificationID
-                    "Test Author", // authorName
+                    "Test Author Firstname", // authorFirstname
+                    "Test Author Lastname", //authorLastname
                     "Test Classification", // classificationName
                     10, // allowedRentalDays
                     true, // available

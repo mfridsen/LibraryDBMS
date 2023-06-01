@@ -146,6 +146,7 @@ public class HardDeleteItemTest
                     1,
                     1,
                     "Kalle",
+                    "Anka",
                     "Skräck",
                     5,
                     false,

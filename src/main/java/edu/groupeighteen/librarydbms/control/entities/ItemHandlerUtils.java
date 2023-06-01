@@ -157,71 +157,6 @@ public class ItemHandlerUtils
         return oldItem.getBarcode();
     }
 
-    public static Literature constructRetrievedLiterature(ResultSet itemResultSet, ResultSet literatureResultSet) {
-        try {
-            if (itemResultSet.next() && literatureResultSet.next()) {
-                return new Literature(
-                        itemResultSet.getBoolean("deleted"),
-                        itemResultSet.getInt("itemID"),
-                        itemResultSet.getString("title"),
-                        Item.ItemType.valueOf(itemResultSet.getString("itemType")),
-                        itemResultSet.getString("barcode"),
-                        itemResultSet.getInt("authorID"),
-                        itemResultSet.getInt("classificationID"),
-                        AuthorHandler.getAuthorByID(itemResultSet.getInt("authorID")).
-                                getAuthorFirstname() + " " + AuthorHandler.getAuthorByID(itemResultSet.
-                                getInt("authorID")).getAuthorLastName(),
-                        ClassificationHandler.getClassificationByID(itemResultSet.
-                                getInt("classificationID")).getClassificationName(),
-                        itemResultSet.getInt("allowedRentalDays"),
-                        itemResultSet.getBoolean("available"),
-                        literatureResultSet.getString("ISBN")
-                );
-            }
-        } catch (SQLException | ConstructionException e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Literature by ID due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-        return null;
-    }
-
-    public static Film constructRetrievedFilm(ResultSet itemResultSet, ResultSet filmResultSet) {
-        try {
-            if (itemResultSet.next() && filmResultSet.next()) {
-                return new Film(
-                        itemResultSet.getBoolean("deleted"),
-                        itemResultSet.getInt("itemID"),
-                        itemResultSet.getString("title"),
-                        Item.ItemType.valueOf(itemResultSet.getString("itemType")),
-                        itemResultSet.getString("barcode"),
-                        itemResultSet.getInt("authorID"),
-                        itemResultSet.getInt("classificationID"),
-                        AuthorHandler.
-                                getAuthorByID(itemResultSet.getInt("authorID")).getAuthorFirstname() + " " +
-                                AuthorHandler.
-                                        getAuthorByID(itemResultSet.getInt("authorID")).getAuthorLastName(),
-                        ClassificationHandler.
-                                getClassificationByID(itemResultSet.getInt("classificationID")).
-                                getClassificationName(),
-                        itemResultSet.getInt("allowedRentalDays"),
-                        itemResultSet.getBoolean("available"),
-                        filmResultSet.getInt("ageRating"),
-                        filmResultSet.getString("countryOfProduction"),
-                        filmResultSet.getString("actors")
-                );
-            }
-        }
-        catch (SQLException | ConstructionException e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to retrieve Film by ID due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-        return null;
-    }
-
-
-
     public static Literature constructRetrievedLiterature(ResultSet resultSet)
     {
         Literature literature = null;
@@ -236,11 +171,10 @@ public class ItemHandlerUtils
                     resultSet.getString("barcode"),
                     resultSet.getInt("authorID"),
                     resultSet.getInt("classificationID"),
-                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).
-                            getAuthorFirstname() + " " + AuthorHandler.getAuthorByID(resultSet.
-                            getInt("authorID")).getAuthorLastName(),
-                    ClassificationHandler.getClassificationByID(resultSet.
-                            getInt("classificationID")).getClassificationName(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorFirstname(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorLastName(),
+                    ClassificationHandler.getClassificationByID(
+                            resultSet.getInt("classificationID")).getClassificationName(),
                     resultSet.getInt("allowedRentalDays"),
                     resultSet.getBoolean("available"),
                     resultSet.getString("ISBN")
@@ -270,13 +204,10 @@ public class ItemHandlerUtils
                     resultSet.getString("barcode"),
                     resultSet.getInt("authorID"),
                     resultSet.getInt("classificationID"),
-                    AuthorHandler.
-                            getAuthorByID(resultSet.getInt("authorID")).getAuthorFirstname() + " " +
-                            AuthorHandler.
-                                    getAuthorByID(resultSet.getInt("authorID")).getAuthorLastName(),
-                    ClassificationHandler.
-                            getClassificationByID(resultSet.getInt("classificationID")).
-                            getClassificationName(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorFirstname(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorLastName(),
+                    ClassificationHandler.getClassificationByID(
+                            resultSet.getInt("classificationID")).getClassificationName(),
                     resultSet.getInt("allowedRentalDays"),
                     resultSet.getBoolean("available"),
                     resultSet.getInt("ageRating"),

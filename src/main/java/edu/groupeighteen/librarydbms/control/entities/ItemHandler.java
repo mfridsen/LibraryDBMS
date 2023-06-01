@@ -8,7 +8,6 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidItemTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 
@@ -315,7 +314,7 @@ public class ItemHandler
         saveLiterature(newLiterature);
 
         //Set author and classification names
-        newLiterature.setAuthorName(author.getAuthorFirstname() + " " + author.getAuthorLastName());
+        newLiterature.setAuthorFirstname(author.getAuthorFirstname() + " " + author.getAuthorLastName());
         newLiterature.setClassificationName(classification.getClassificationName());
 
         //Increment the count of the new title. Add a new entry if the title does not exist yet.
@@ -372,7 +371,7 @@ public class ItemHandler
         saveFilm(newFilm);
 
         //Set author and classification names
-        newFilm.setAuthorName(author.getAuthorFirstname() + " " + author.getAuthorLastName());
+        newFilm.setAuthorFirstname(author.getAuthorFirstname() + " " + author.getAuthorLastName());
         newFilm.setClassificationName(classification.getClassificationName());
 
         //Increment the count of the new title. Add a new entry if the title does not exist yet.

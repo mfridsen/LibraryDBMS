@@ -35,7 +35,8 @@ public class FilmCopyTest
         try
         {
             Film film = new Film(new Film(false, 1, "Title",
-                    Item.ItemType.FILM,"Barcode", 1, 1, "AuthorName",
+                    Item.ItemType.FILM,"Barcode", 1, 1, "AuthorFName",
+                    "AuthorLName",
                     "ClassificationName", 10, true, 18,
                     "USA", "Actor1, Actor2, Actor3"));
 
@@ -54,8 +55,10 @@ public class FilmCopyTest
                     "AuthorID should be 1.");
             assertEquals(1, film.getClassificationID(),
                     "ClassificationID should be 1.");
-            assertEquals("AuthorName", film.getAuthorName(),
-                    "AuthorName should be 'AuthorName'.");
+            assertEquals("AuthorFName", film.getAuthorFirstname(),
+                    "AuthorName should be 'AuthorFName'.");
+            assertEquals("AuthorLName",
+                    film.getAuthorLastname());
             assertEquals("ClassificationName", film.getClassificationName(),
                     "ClassificationName should be 'ClassificationName'.");
             assertEquals(10, film.getAllowedRentalDays(),

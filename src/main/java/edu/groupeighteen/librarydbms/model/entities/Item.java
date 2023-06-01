@@ -107,7 +107,12 @@ public abstract class Item extends Entity
     /**
      * Name of the author or director associated with the item. This field is not persisted in the database.
      */
-    protected String authorName;
+    protected String authorFirstname;
+
+    /**
+     * Last name of the author or director associated with the item. This field is not persisted in the database.
+     */
+    protected String authorLastname;
 
     /**
      * Name of the item's classification. This field is not persisted in the database.
@@ -150,7 +155,8 @@ public abstract class Item extends Entity
             setBarcode(barcode); //Throws InvalidBarcodeException
             setAuthorID(authorID); //Throws InvalidIDException
             setClassificationID(classificationID); //Throws InvalidIDException
-            this.authorName = null; //Retrieved after creation
+            this.authorFirstname = null; //Retrieved after creation
+            this.authorLastname = null; //Retrieved after creation
             this.classificationName = null; //Retrieved after creation
             setAllowedRentalDays(getDefaultAllowedDays(type)); //Throws InvalidDateException
             this.available = true;
@@ -174,14 +180,16 @@ public abstract class Item extends Entity
      * @param barcode            Unique barcode identifier of the item.
      * @param authorID           Identifier for the author or director of the item.
      * @param classificationID   Identifier for the classification of the item.
-     * @param authorName         Name of the author or director of the item.
+     * @param authorFirstname    Name of the author or director of the item.
+     * @param authorLastname     Last name of the author or director of the item.
      * @param classificationName Name of the classification of the item.
      * @param allowedRentalDays  Number of days the item is allowed to be rented for.
      * @param available          Boolean indicating the availability of the item.
      * @throws ConstructionException If any of the validation checks for the input data fail.
      */
     public Item(boolean deleted, int itemID, String title, ItemType type, String barcode, int authorID,
-                int classificationID, String authorName, String classificationName, int allowedRentalDays,
+                int classificationID, String authorFirstname, String authorLastname, String classificationName,
+                int allowedRentalDays,
                 boolean available)
     throws ConstructionException
     {
@@ -194,7 +202,8 @@ public abstract class Item extends Entity
             setBarcode(barcode); //Throws InvalidBarcodeException
             setAuthorID(authorID); //Throws InvalidIDException
             setClassificationID(classificationID); //Throws InvalidIDException
-            setAuthorName(authorName);
+            setAuthorFirstname(authorFirstname);
+            setAuthorLastname(authorLastname);
             setClassificationName(classificationName);
             setAllowedRentalDays(allowedRentalDays); //Throws InvalidDateException
             this.available = available;
@@ -221,7 +230,8 @@ public abstract class Item extends Entity
         this.barcode = other.barcode;
         this.authorID = other.authorID;
         this.classificationID = other.classificationID;
-        this.authorName = other.authorName;
+        this.authorFirstname = other.authorFirstname;
+        this.authorLastname = other.authorLastname;
         this.classificationName = other.classificationName;
         this.allowedRentalDays = other.allowedRentalDays;
         this.available = other.available;
@@ -395,23 +405,43 @@ public abstract class Item extends Entity
     }
 
     /**
-     * Gets the author name of this Item.
+     * Gets the author first name of this Item.
      *
      * @return The author name of this Item.
      */
-    public String getAuthorName()
+    public String getAuthorFirstname()
     {
-        return authorName;
+        return authorFirstname;
     }
 
     /**
-     * Sets the author name of this Item.
+     * Sets the author first name of this Item.
      *
-     * @param authorName The author name to set for this Item.
+     * @param authorFirstname The author name to set for this Item.
      */
-    public void setAuthorName(String authorName)
+    public void setAuthorFirstname(String authorFirstname)
     {
-        this.authorName = authorName; //Validation is the responsibility of the Author class
+        this.authorFirstname = authorFirstname; //Validation is the responsibility of the Author class
+    }
+
+    /**
+     * Gets the author last name of this Item.
+     *
+     * @return The author last name of this Item.
+     */
+    public String getAuthorLastname()
+    {
+        return authorLastname;
+    }
+
+    /**
+     * Sets the author last name of this Item.
+     *
+     * @param authorLastname The author name to set for this Item.
+     */
+    public void setAuthorLastname(String authorLastname)
+    {
+        this.authorLastname = authorLastname; //Validation is the responsibility of the Author class
     }
 
     /**
