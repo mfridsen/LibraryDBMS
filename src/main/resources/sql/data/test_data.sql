@@ -1,6 +1,12 @@
--- //TODO add Author test data
+-- @author Mattias Fridsén
+-- @project LibraryDBMS
+-- @date 2/28/2023
+-- @contact matfir-1@student.ltu.se
+
+-- Fills tables in database with test data
+
 -- (, '', '', '', ),
-INSERT INTO authors (authorID, authorFirstname, authorLastName, biography, deleted) VALUES
+INSERT INTO authors (authorID, authorFirstname, authorLastname, biography, deleted) VALUES
 (1, 'author1', 'lastname1', 'is the first author', 0),
 (2, 'author2', 'lastname2', 'is the second author', 0),
 (3, 'author3', 'lastname3', 'is the third author', 0),
@@ -75,32 +81,6 @@ INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES
 (9, 16, 'Spain', 'Actor10, Actor11, Actor12'),
 (10, 18, 'UK', 'Actor13, Actor14, Actor15');
 
--- literature_item (, ),
-INSERT INTO literature_item (literatureID, itemID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(11, 11),
-(12, 12),
-(13, 13),
-(14, 14),
-(15, 15),
-(16, 16),
-(17, 17),
-(18, 18),
-(19, 19),
-(20, 20);
-
--- film_item (, ),
-INSERT INTO film_item (filmID, itemID) VALUES
-(6, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10);
-
 -- users (, '', '', , , , , , ),
 INSERT INTO users (userID, username, password, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) VALUES
 (1, 'user1', 'password1', 5, 0, 0.0, 1, 0),
@@ -114,4 +94,4 @@ INSERT INTO users (userID, username, password, allowedRentals, currentRentals, l
 (9, 'user9', 'password9', 5, 0, 0.0, 1, 0),
 (10, 'user10', 'password10', 5, 0, 0.0, 1, 0);
 
--- //TODO add Rental test data here
+-- No rental test data because not needed, we create rentals during tests or at runtime

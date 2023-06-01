@@ -70,9 +70,12 @@ public class CreateNewFilmTest extends BaseHandlerTest
             assertEquals(classificationId, film.getClassificationID());
             assertEquals(barcode, film.getBarcode());
             assertEquals(ageRating, film.getAgeRating());
+
+            Film retrievedFilm = (Film) ItemHandler.getItemByID(film.getItemID());
+            System.out.println("Retrieved film ID: " + retrievedFilm.getItemID());
         } catch (Exception e) {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -275,8 +278,8 @@ public class CreateNewFilmTest extends BaseHandlerTest
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");

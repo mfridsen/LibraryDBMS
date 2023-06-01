@@ -64,7 +64,7 @@ public class FilmCreationTest
                     "AuthorID should be set correctly in constructor");
             assertEquals(1, film.getClassificationID(),
                     "ClassificationID should be set correctly in constructor");
-            assertNull(film.getAuthorName(),
+            assertNull(film.getAuthorFirstname(),
                     "New Film items should have null authorName by default");
             assertNull(film.getClassificationName(),
                     "New Film items should have null classificationName by default");

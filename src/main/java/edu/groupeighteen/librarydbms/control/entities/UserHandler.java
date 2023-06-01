@@ -63,8 +63,7 @@ public class UserHandler
      */
     public static void syncUsernames()
     {
-        if (!storedUsernames.isEmpty())
-            storedUsernames.clear();
+        reset();
         retrieveUsernamesFromTable();
     }
 
@@ -537,24 +536,13 @@ public class UserHandler
     {
         checkEmptyUsername(username);
         checkUsernameTaken(username);
-        if (username.length() < User.MIN_USERNAME_LENGTH)
-            throw new InvalidNameException("Username too short. Must be at least " + User.MIN_USERNAME_LENGTH +
-                    " characters, received " + username.length());
-        if (username.length() > User.MAX_USERNAME_LENGTH)
-            throw new InvalidNameException("Username too long. Must be at most " + User.MAX_USERNAME_LENGTH +
-                    " characters, received " + username.length());
     }
 
     private static void validatePassword(String password)
     throws InvalidPasswordException
     {
         checkEmptyPassword(password);
-        if (password.length() < User.MIN_PASSWORD_LENGTH)
-            throw new InvalidPasswordException("Password too short. Must be at least " + User.MIN_PASSWORD_LENGTH +
-                    " characters, received " + password.length());
-        if (password.length() > User.MAX_PASSWORD_LENGTH)
-            throw new InvalidPasswordException("Password too long. Must be at most " + User.MAX_PASSWORD_LENGTH +
-                    " characters, received " + password.length());
+
     }
 
 

@@ -36,8 +36,8 @@ public class FilmRetrievalTest
         try
         {
             Film film = new Film(false, 1, "Film Title", Item.ItemType.FILM,
-                    "1234567890123", 1,1, "Director Name",
-                    "Genre Name", 7, true,15,
+                    "1234567890123", 1,1, "Director FName",
+                    "Director LName","Genre Name", 7, true,15,
                     "USA", "Actor1, Actor2, Actor3");
             assertFalse(film.isDeleted());
             assertEquals(1, film.getItemID());
@@ -46,7 +46,7 @@ public class FilmRetrievalTest
             assertEquals("1234567890123", film.getBarcode());
             assertEquals(1, film.getAuthorID());
             assertEquals(1, film.getClassificationID());
-            assertEquals("Director Name", film.getAuthorName());
+            assertEquals("Director Name", film.getAuthorFirstname());
             assertEquals("Genre Name", film.getClassificationName());
             assertEquals(7, film.getAllowedRentalDays());
             assertTrue(film.isAvailable());
@@ -70,7 +70,8 @@ public class FilmRetrievalTest
         assertThrows(ConstructionException.class, () ->
         {
             new Film(false, 1, null, Item.ItemType.FILM, "1234567890123", 1,
-                    1, "Director Name", "Genre Name", 7, true,
+                    1, "Director FName",
+                    "Director LName", "Genre Name", 7, true,
                     15, "USA", "Actor1, Actor2, Actor3");
         });
     }
@@ -85,7 +86,8 @@ public class FilmRetrievalTest
         assertThrows(ConstructionException.class, () ->
         {
             new Film(false, 1, "", Item.ItemType.FILM, "1234567890123", 1,
-                    1, "Director Name", "Genre Name", 7, true,
+                    1, "Director FName",
+                    "Director LName", "Genre Name", 7, true,
                     15, "USA", "Actor1, Actor2, Actor3");
         });
     }
@@ -102,7 +104,8 @@ public class FilmRetrievalTest
         assertThrows(ConstructionException.class, () ->
         {
             new Film(false, 1, tooLongTitle, Item.ItemType.FILM, "1234567890123", 1,
-                    1, "Director Name", "Genre Name", 7, true,
+                    1, "Director FName",
+                    "Director LName", "Genre Name", 7, true,
                     15, "USA", "Actor1, Actor2, Actor3");
         });
     }
@@ -117,7 +120,8 @@ public class FilmRetrievalTest
         assertThrows(ConstructionException.class, () ->
         {
             new Film(false, 1, "Film Title", Item.ItemType.FILM, null, 1,
-                    1, "Director Name", "Genre Name", 7, true,
+                    1, "Director FName",
+                    "Director LName", "Genre Name", 7, true,
                     15, "USA", "Actor1, Actor2, Actor3");
         });
     }
@@ -132,7 +136,8 @@ public class FilmRetrievalTest
         assertThrows(ConstructionException.class, () ->
         {
             new Film(false, 1, "Film Title", Item.ItemType.FILM, "", 1,
-                    1, "Director Name", "Genre Name", 7, true,
+                    1, "Director FName",
+                    "Director LName", "Genre Name", 7, true,
                     15, "USA", "Actor1, Actor2, Actor3");
         });
     }
@@ -149,7 +154,8 @@ public class FilmRetrievalTest
         assertThrows(ConstructionException.class, () ->
         {
             new Film(false, 1, "Film Title", Item.ItemType.FILM, tooLongBarcode, 1,
-                    1, "Director Name", "Genre Name", 7, true,
+                    1, "Director FName",
+                    "Director LName", "Genre Name", 7, true,
                     15, "USA", "Actor1, Actor2, Actor3");
         });
     }
@@ -163,7 +169,8 @@ public class FilmRetrievalTest
     {
         assertThrows(ConstructionException.class, () ->
                 new Film(false, -1, "Film Title", Item.ItemType.FILM, "123456789", 1,
-                        1, "Author Name", "Classification Name",
+                        1, "Director FName",
+                        "Director LName", "Classification Name",
                         10, true, 15,
                         "USA", "Actor1, Actor2"));
     }
@@ -177,7 +184,8 @@ public class FilmRetrievalTest
     {
         assertThrows(ConstructionException.class, () ->
                 new Film(false, 1, "Film Title", Item.ItemType.FILM, "123456789", -1,
-                        1, "Author Name", "Classification Name",
+                        1, "Director FName",
+                        "Director LName", "Classification Name",
                         10, true, 15,
                         "USA", "Actor1, Actor2"));
     }
@@ -191,7 +199,8 @@ public class FilmRetrievalTest
     {
         assertThrows(ConstructionException.class, () ->
                 new Film(false, 1, "Film Title", Item.ItemType.FILM, "123456789", 1,
-                        -1, "Author Name", "Classification Name",
+                        -1, "Director FName",
+                        "Director LName", "Classification Name",
                         10, true, 15,
                         "USA", "Actor1, Actor2"));
     }
@@ -205,7 +214,8 @@ public class FilmRetrievalTest
     {
         assertThrows(ConstructionException.class, () ->
                 new Film(false, 1, "Film Title", Item.ItemType.FILM, "123456789", 1,
-                        1, "Author Name", "Classification Name",
+                        1, "Director FName",
+                        "Director LName", "Classification Name",
                         -1, true, 15,
                         "USA", "Actor1, Actor2"));
     }
@@ -219,7 +229,8 @@ public class FilmRetrievalTest
     {
         assertThrows(ConstructionException.class, () ->
                 new Film(false, 1, "Film Title", Item.ItemType.FILM, "123456789", 1,
-                        1, "Author Name", "Classification Name",
+                        1, "Director FName",
+                        "Director LName", "Classification Name",
                         10, true, -1,
                         "USA", "Actor1, Actor2"));
     }
@@ -233,7 +244,8 @@ public class FilmRetrievalTest
     {
         assertThrows(ConstructionException.class, () ->
                 new Film(false, 1, "Film Title", Item.ItemType.FILM, "123456789", 1,
-                        1, "Author Name", "Classification Name",
+                        1, "Director FName",
+                        "Director LName", "Classification Name",
                         10, true, 19,
                         "USA", "Actor1, Actor2"));
     }
@@ -247,7 +259,8 @@ public class FilmRetrievalTest
     {
         assertThrows(ConstructionException.class, () ->
                 new Film(false, 1, "Film Title", Item.ItemType.FILM, "123456789", 1,
-                        1, "Author Name", "Classification Name",
+                        1, "Director FName",
+                        "Director LName", "Classification Name",
                         10, true, 15,
                         "A".repeat(101), "Actor1, Actor2"));
     }

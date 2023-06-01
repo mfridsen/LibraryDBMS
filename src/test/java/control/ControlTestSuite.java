@@ -2,9 +2,11 @@ package control;
 
 import control.db.DatabaseHandlerMetaDataTest;
 import control.db.DatabaseHandlerTest;
-import control.entities.item.ItemHandlerTest;
+import control.entities.item.ItemHandlerTestSuite;
 import control.entities.rental.RentalHandlerTest;
 import control.entities.user.UserHandlerTest;
+import edu.groupeighteen.librarydbms.control.entities.AuthorHandler;
+import edu.groupeighteen.librarydbms.control.entities.ClassificationHandler;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -23,8 +25,10 @@ import org.junit.platform.suite.api.Suite;
         //Control tests
         DatabaseHandlerTest.class,
         DatabaseHandlerMetaDataTest.class,
+        AuthorHandler.class,
+        ClassificationHandler.class,
+        ItemHandlerTestSuite.class,
         UserHandlerTest.class,
-        ItemHandlerTest.class,
         RentalHandlerTest.class,
 })
 

@@ -33,7 +33,8 @@ public class LiteratureCopyTest
         try
         {
             Literature literature = new Literature(new Literature(false, 1, "Title",
-                    Item.ItemType.OTHER_BOOKS,"Barcode", 1, 1, "AuthorName",
+                    Item.ItemType.OTHER_BOOKS,"Barcode", 1, 1, "AuthorFName",
+                    "AuthorLName",
                     "ClassificationName", 10, true, "1234567890123"));
 
             // Verify that all fields are correctly initialized
@@ -51,8 +52,10 @@ public class LiteratureCopyTest
                     "AuthorID should be 1.");
             assertEquals(1, literature.getClassificationID(),
                     "ClassificationID should be 1.");
-            assertEquals("AuthorName", literature.getAuthorName(),
-                    "AuthorName should be 'AuthorName'.");
+            assertEquals("AuthorFName", literature.getAuthorFirstname(),
+                    "AuthorName should be 'AuthorFName'.");
+            assertEquals("AuthorLName",
+                    literature.getAuthorLastname());
             assertEquals("ClassificationName", literature.getClassificationName(),
                     "ClassificationName should be 'ClassificationName'.");
             assertEquals(10, literature.getAllowedRentalDays(),

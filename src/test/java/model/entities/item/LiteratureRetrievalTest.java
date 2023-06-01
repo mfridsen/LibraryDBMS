@@ -46,7 +46,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName", 10, true, "1234567890123");
 
             // Verify that all fields are correctly initialized
@@ -64,8 +64,10 @@ public class LiteratureRetrievalTest
                     "AuthorID should be 1.");
             assertEquals(1, literature.getClassificationID(),
                     "ClassificationID should be 1.");
-            assertEquals("AuthorName", literature.getAuthorName(),
-                    "AuthorName should be 'AuthorName'.");
+            assertEquals("AuthorFName", literature.getAuthorFirstname(),
+                    "AuthorName should be 'AuthorFName'.");
+            assertEquals("AuthorLName",
+                    literature.getAuthorLastname());
             assertEquals("ClassificationName", literature.getClassificationName(),
                     "ClassificationName should be 'ClassificationName'.");
             assertEquals(10, literature.getAllowedRentalDays(),
@@ -97,7 +99,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(true, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName", 10, true, "1234567890123");
 
             // Verify that all fields are correctly initialized
@@ -115,7 +117,7 @@ public class LiteratureRetrievalTest
                     "AuthorID should be 1.");
             assertEquals(1, literature.getClassificationID(),
                     "ClassificationID should be 1.");
-            assertEquals("AuthorName", literature.getAuthorName(),
+            assertEquals("AuthorName", literature.getAuthorFirstname(),
                     "AuthorName should be 'AuthorName'.");
             assertEquals("ClassificationName", literature.getClassificationName(),
                     "ClassificationName should be 'ClassificationName'.");
@@ -148,7 +150,7 @@ public class LiteratureRetrievalTest
         assertThrows(ConstructionException.class, () ->
         {
             new Literature(true, -1, "Test Title", Item.ItemType.OTHER_BOOKS, "1234567890",
-                    1, 1, "Author Name", "Classification Name",
+                    1, 1, "AuthorFName", "AuthorLName", "Classification Name",
                     7, true, "1234567890");
         }, "ConstructionException was expected due to invalid itemID.");
 
@@ -168,7 +170,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, null, Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to null title.");
         }
@@ -193,7 +195,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to empty title.");
         }
@@ -220,7 +222,7 @@ public class LiteratureRetrievalTest
         {
             String tooLongTitle = String.format("%0" + (Item.ITEM_TITLE_MAX_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, tooLongTitle, Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to too long title.");
         }
@@ -245,7 +247,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", null,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to null ItemType.");
         }
@@ -270,7 +272,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    null, 1, 1, "AuthorName", "ClassificationName",
+                    null, 1, 1, "AuthorFName", "AuthorLName", "ClassificationName",
                     10, true, "1234567890123");
             fail("ConstructionException expected due to null barcode.");
         }
@@ -295,7 +297,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "", 1, 1, "AuthorName", "ClassificationName",
+                    "", 1, 1, "AuthorFName", "AuthorLName", "ClassificationName",
                     10, true, "1234567890123");
             fail("ConstructionException expected due to empty barcode.");
         }
@@ -322,7 +324,7 @@ public class LiteratureRetrievalTest
         {
             String tooLongBarcode = String.format("%0" + (Item.ITEM_BARCODE_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    tooLongBarcode, 1, 1, "AuthorName",
+                    tooLongBarcode, 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to too long title.");
         }
@@ -347,7 +349,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", -1, 1, "AuthorName",
+                    "Barcode", -1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to negative authorID.");
         }
@@ -372,7 +374,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, -1, "AuthorName",
+                    "Barcode", 1, -1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to negative classificationID.");
         }
@@ -397,7 +399,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",-1, true, "1234567890123");
             fail("ConstructionException expected due to negative allowedRentalDays.");
         }
@@ -422,7 +424,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, null);
             fail("ConstructionException expected due to null ISBN.");
         }
@@ -447,7 +449,7 @@ public class LiteratureRetrievalTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "");
             fail("ConstructionException expected due to empty ISBN.");
         }
@@ -474,7 +476,7 @@ public class LiteratureRetrievalTest
         {
             String tooLongISBN = String.format("%0" + (Literature.LITERATURE_ISBN_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "Barcode", 1, 1, "AuthorName",
+                    "Barcode", 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, tooLongISBN);
             fail("ConstructionException expected due to too long ISBN.");
         }

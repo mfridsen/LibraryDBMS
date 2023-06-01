@@ -78,7 +78,8 @@ public class Film extends Item
      * @param barcode            the barcode of the film
      * @param authorID           the ID of the author
      * @param classificationID   the ID of the classification
-     * @param authorName         the name of the author
+     * @param authorFirstname    Name of the author or director of the item.
+     * @param authorLastname     Last name of the author or director of the item.
      * @param classificationName the name of the classification
      * @param allowedRentalDays  the number of allowed rental days
      * @param available          true if the film is available, false otherwise
@@ -88,12 +89,13 @@ public class Film extends Item
      * @throws ConstructionException if the construction fails
      */
     public Film(boolean deleted, int itemID, String title, ItemType type, String barcode, int authorID,
-                int classificationID, String authorName, String classificationName, int allowedRentalDays,
-                boolean available, int ageRating, String countryOfProduction, String listOfActors)
+                int classificationID, String authorFirstname, String authorLastname, String classificationName,
+                int allowedRentalDays, boolean available, int ageRating, String countryOfProduction,
+                String listOfActors)
     throws ConstructionException
     {
-        super(deleted, itemID, title, type, barcode, authorID, classificationID, authorName, classificationName,
-                allowedRentalDays, available);
+        super(deleted, itemID, title, type, barcode, authorID, classificationID, authorFirstname, authorLastname,
+                classificationName, allowedRentalDays, available);
         try
         {
             setAgeRating(ageRating);
@@ -159,7 +161,7 @@ public class Film extends Item
      * @throws InvalidNameException if the publisher country name is invalid
      */
     public void setCountryOfProduction(String countryOfProduction) throws InvalidNameException {
-        if (countryOfProduction.length() > FILM_COUNTRY_LENGTH)
+        if (countryOfProduction != null && countryOfProduction.length() > FILM_COUNTRY_LENGTH)
             throw new InvalidNameException("Film country name cannot be greater than " + FILM_COUNTRY_LENGTH + ".");
         this.countryOfProduction = countryOfProduction;
     }

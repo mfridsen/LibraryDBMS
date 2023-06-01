@@ -60,7 +60,7 @@ public class LiteratureCreationTest
                     "AuthorID should be set correctly in constructor");
             assertEquals(1, literature.getClassificationID(),
                     "ClassificationID should be set correctly in constructor");
-            assertNull(literature.getAuthorName(),
+            assertNull(literature.getAuthorFirstname(),
                     "New Literature items should have null authorName by default");
             assertNull(literature.getClassificationName(),
                     "New Literature items should have null classificationName by default");
@@ -283,8 +283,8 @@ public class LiteratureCreationTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    null, 1, 1, "AuthorName", "ClassificationName",
-                    10, true, "1234567890123");
+                    null, 1, 1, "AuthorFName", "AuthorLName",
+                    "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to null barcode.");
         }
         catch (ConstructionException e)
@@ -308,8 +308,8 @@ public class LiteratureCreationTest
         try
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    "", 1, 1, "AuthorName", "ClassificationName",
-                    10, true, "1234567890123");
+                    "", 1, 1, "AuthorFName", "AuthorLName",
+                    "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to empty barcode.");
         }
         catch (ConstructionException e)
@@ -335,7 +335,7 @@ public class LiteratureCreationTest
         {
             String tooLongBarcode = String.format("%0" + (Item.ITEM_BARCODE_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
-                    tooLongBarcode, 1, 1, "AuthorName",
+                    tooLongBarcode, 1, 1, "AuthorFName", "AuthorLName",
                     "ClassificationName",10, true, "1234567890123");
             fail("ConstructionException expected due to too long title.");
         }

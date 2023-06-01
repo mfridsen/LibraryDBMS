@@ -75,7 +75,8 @@ public class Literature extends Item
      * @param barcode            The unique barcode for this item.
      * @param authorID           The ID of the author of this Literature item.
      * @param classificationID   The ID of the classification of this Literature item.
-     * @param authorName         The name of the author of this Literature item.
+     * @param authorFirstname    Name of the author or director of the item.
+     * @param authorLastname     Last name of the author or director of the item.
      * @param classificationName The name of the classification of this Literature item.
      * @param allowedRentalDays  The number of days this item is allowed to be rented.
      * @param available          Indicates whether this item is currently available for rent.
@@ -83,12 +84,13 @@ public class Literature extends Item
      * @throws ConstructionException If any of the parameters do not meet the requirements.
      */
     public Literature(boolean deleted, int itemID, String title,
-                      ItemType type, String barcode, int authorID, int classificationID, String authorName,
-                      String classificationName, int allowedRentalDays, boolean available, String ISBN)
+                      ItemType type, String barcode, int authorID, int classificationID, String authorFirstname,
+                      String authorLastname, String classificationName, int allowedRentalDays, boolean available,
+                      String ISBN)
     throws ConstructionException
     {
-        super(deleted, itemID, title, type, barcode, authorID, classificationID, authorName, classificationName,
-                allowedRentalDays, available);
+        super(deleted, itemID, title, type, barcode, authorID, classificationID, authorFirstname, authorLastname,
+                classificationName, allowedRentalDays, available);
         try
         {
             setISBN(ISBN);

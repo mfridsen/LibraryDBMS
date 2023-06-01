@@ -3,6 +3,7 @@ package view.entities.item;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.view.entities.item.ItemGUI;
 
 /**
@@ -16,7 +17,7 @@ public class ItemCreateGUITest {
         LibraryManager.setup();
         try {
             new ItemGUI(null, ItemHandler.getItemByID(1));
-        } catch (InvalidIDException e) {
+        } catch (InvalidIDException | RetrievalException e) {
             throw new RuntimeException(e);
         }
     }

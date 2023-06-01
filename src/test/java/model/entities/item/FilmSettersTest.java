@@ -36,7 +36,7 @@ public class FilmSettersTest
         try
         {
             film = new Film(false, 1, "Film", Item.ItemType.FILM,
-                    "1", 1,1, "D",
+                    "1", 1,1, "D", "F",
                     "G", 1, true,1,
                     "U", "Actor1");
         }

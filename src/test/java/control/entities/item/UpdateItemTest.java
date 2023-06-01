@@ -59,10 +59,10 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle1", updatedLit.getTitle());
             assertEquals("UpdatedISBN1", updatedLit.getISBN());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -89,8 +89,8 @@ public class UpdateItemTest extends BaseHandlerTest
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -107,7 +107,7 @@ public class UpdateItemTest extends BaseHandlerTest
         try
         {
             // Create a new Film item
-            Film newFilm = ItemHandler.createNewFilm("Title3", 3, 3, "barcode3", 15);
+            Film newFilm = ItemHandler.createNewFilm("Title3", 3, 3, "barcode37", 15);
             int itemID = newFilm.getItemID();
 
             // Change some fields
@@ -125,10 +125,10 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle3", updatedFilm.getTitle());
             assertEquals(18, updatedFilm.getAgeRating());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidAgeRatingException | NullEntityException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidAgeRatingException | NullEntityException | RetrievalException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -145,7 +145,7 @@ public class UpdateItemTest extends BaseHandlerTest
         try
         {
             // Create a new Literature item
-            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode4", "ISBN4");
+            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode47", "ISBN4");
             int itemID = newLit.getItemID();
 
             // Change some fields
@@ -157,15 +157,16 @@ public class UpdateItemTest extends BaseHandlerTest
 
             // Retrieve the updated item
             Literature updatedLit = (Literature) ItemHandler.getItemByID(itemID);
+            assertNotNull(updatedLit);
 
             // Verify that the fields have the expected changed values
             assertEquals("UpdatedTitle4", updatedLit.getTitle());
             assertEquals("UpdatedISBN4", updatedLit.getISBN());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
