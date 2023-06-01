@@ -2,7 +2,7 @@ package control;
 
 import control.db.DatabaseHandlerMetaDataTest;
 import control.db.DatabaseHandlerTest;
-import control.entities.item.ItemHandlerTest;
+import control.entities.item.ItemHandlerTestSuite;
 import control.entities.rental.RentalHandlerTest;
 import control.entities.user.UserHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.AuthorHandler;
@@ -27,7 +27,7 @@ import org.junit.platform.suite.api.Suite;
         DatabaseHandlerMetaDataTest.class,
         AuthorHandler.class,
         ClassificationHandler.class,
-        ItemHandlerTest.class,
+        ItemHandlerTestSuite.class,
         UserHandlerTest.class,
         RentalHandlerTest.class,
 })

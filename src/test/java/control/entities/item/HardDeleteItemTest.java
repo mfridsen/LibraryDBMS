@@ -41,7 +41,9 @@ public class HardDeleteItemTest
     protected static final String testDatabaseName = "test_database";
 
     //BeforeEach can't be static
-    static void setupConnectionAndTables() throws SQLException, ClassNotFoundException {
+    static void setupConnectionAndTables()
+    throws SQLException, ClassNotFoundException
+    {
         connection = DatabaseConnection.setup();
         DatabaseHandler.setConnection(connection);
         DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
@@ -52,13 +54,15 @@ public class HardDeleteItemTest
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
     }
 
-    static void setupTestData() {
+    static void setupTestData()
+    {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         DatabaseHandler.setVerbose(true);
     }
 
     @BeforeAll
-    static void setup() {
+    static void setup()
+    {
         System.out.println("\nSetting up test data...");
 
         try
@@ -82,18 +86,23 @@ public class HardDeleteItemTest
     }
 
     @AfterAll
-    static void cleanup() {
+    static void cleanup()
+    {
         System.out.println("\nCleaning up test data...");
 
-        try {
+        try
+        {
             // Drop the test database
             DatabaseHandler.executeCommand("DROP DATABASE IF EXISTS " + testDatabaseName);
 
             // Close the database connection
-            if (connection != null && !connection.isClosed()) {
+            if (connection != null && !connection.isClosed())
+            {
                 connection.close();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.err.println("An error occurred during cleanup: " + e.getMessage());
             e.printStackTrace();
         }
@@ -111,7 +120,8 @@ public class HardDeleteItemTest
         System.out.println("\n1: Testing hardDeleteItem method with null item...");
 
         // Attempt to delete null item
-        assertThrows(NullEntityException.class, () -> {
+        assertThrows(NullEntityException.class, () ->
+        {
             ItemHandler.hardDeleteItem(null);
         }, "Deleting null item should throw NullEntityException");
 
@@ -128,7 +138,8 @@ public class HardDeleteItemTest
         System.out.println("\n2: Testing hardDeleteItem method with non-existing item...");
 
         // Attempt to delete non-existing item
-        assertThrows(EntityNotFoundException.class, () -> {
+        assertThrows(EntityNotFoundException.class, () ->
+        {
             ItemHandler.hardDeleteItem(new Literature(
                     false,
                     999,
@@ -159,7 +170,8 @@ public class HardDeleteItemTest
         try
         {
             // Delete the literature
-            assertDoesNotThrow(() -> ItemHandler.hardDeleteItem(literature), "Deleting existing literature should not throw exception");
+            assertDoesNotThrow(() -> ItemHandler.hardDeleteItem(literature),
+                    "Deleting existing literature should not throw exception");
 
             // Try to get the deleted literature, should return null
             assertNull(ItemHandler.getItemByID(literature.getItemID()));
@@ -192,7 +204,8 @@ public class HardDeleteItemTest
         try
         {
             // Delete the film
-            assertDoesNotThrow(() -> ItemHandler.hardDeleteItem(film), "Deleting existing film should not throw exception");
+            assertDoesNotThrow(() -> ItemHandler.hardDeleteItem(film),
+                    "Deleting existing film should not throw exception");
 
             // Try to get the deleted film, should return null
             assertNull(ItemHandler.getItemByID(film.getItemID()));

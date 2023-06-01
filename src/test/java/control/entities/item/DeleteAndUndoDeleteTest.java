@@ -36,7 +36,9 @@ public class DeleteAndUndoDeleteTest
     protected static Connection connection = null;
     protected static final String testDatabaseName = "test_database";
 
-    static void setupConnectionAndTables() throws SQLException, ClassNotFoundException {
+    static void setupConnectionAndTables()
+    throws SQLException, ClassNotFoundException
+    {
         connection = DatabaseConnection.setup();
         DatabaseHandler.setConnection(connection);
         DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
@@ -47,13 +49,15 @@ public class DeleteAndUndoDeleteTest
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
     }
 
-    static void setupTestData() {
+    static void setupTestData()
+    {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         DatabaseHandler.setVerbose(true);
     }
 
     @BeforeAll
-    static void setup() {
+    static void setup()
+    {
         System.out.println("\nSetting up test data...");
 
         try
@@ -75,18 +79,23 @@ public class DeleteAndUndoDeleteTest
     }
 
     @AfterAll
-    static void cleanup() {
+    static void cleanup()
+    {
         System.out.println("\nCleaning up test data...");
 
-        try {
+        try
+        {
             // Drop the test database
             DatabaseHandler.executeCommand("DROP DATABASE IF EXISTS " + testDatabaseName);
 
             // Close the database connection
-            if (connection != null && !connection.isClosed()) {
+            if (connection != null && !connection.isClosed())
+            {
                 connection.close();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.err.println("An error occurred during cleanup: " + e.getMessage());
             e.printStackTrace();
         }
@@ -99,7 +108,8 @@ public class DeleteAndUndoDeleteTest
      */
     @Test
     @Order(1)
-    void testDeleteItem_ValidItem() {
+    void testDeleteItem_ValidItem()
+    {
         System.out.println("\n1: Testing deleteItem method with valid item...");
 
         try
@@ -117,8 +127,9 @@ public class DeleteAndUndoDeleteTest
 
             // Verify that the deleted field is set to true
             assertTrue(retrievedFilm.isDeleted(), "Film item should be marked as deleted after calling deleteItem.");
-            assertTrue(retrievedLiterature.isDeleted(), "Literature item should not be marked as deleted after calling " +
-                    "undoDeleteItem.");
+            assertTrue(retrievedLiterature.isDeleted(),
+                    "Literature item should not be marked as deleted after calling " +
+                            "undoDeleteItem.");
         }
         catch (InvalidIDException e)
         {
@@ -134,7 +145,8 @@ public class DeleteAndUndoDeleteTest
      */
     @Test
     @Order(2)
-    void testUndoDeleteItem_ValidItem() {
+    void testUndoDeleteItem_ValidItem()
+    {
         System.out.println("\n2: Testing undoDeleteItem method with valid item...");
 
         try
@@ -152,7 +164,8 @@ public class DeleteAndUndoDeleteTest
 
             // Verify that the deleted field is set to false
             assertFalse(retrievedFilm.isDeleted(), "Film item should be marked as deleted after calling deleteItem.");
-            assertFalse(retrievedLiterature.isDeleted(), "Literature item should not be marked as deleted after calling undoDeleteItem.");
+            assertFalse(retrievedLiterature.isDeleted(),
+                    "Literature item should not be marked as deleted after calling undoDeleteItem.");
         }
         catch (InvalidIDException e)
         {

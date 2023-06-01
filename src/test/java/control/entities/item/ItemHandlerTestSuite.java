@@ -23,6 +23,6 @@ import org.junit.platform.suite.api.Suite;
         HardDeleteItemTest.class,
 
 })
-public class ItemHandlerTest extends BaseHandlerTest
+public class ItemHandlerTestSuite extends BaseHandlerTest
 {
 }

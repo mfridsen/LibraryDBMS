@@ -822,6 +822,11 @@ public class ItemHandler
         }
     }
 
+    /**
+     * Deletes a film from the database based on the provided item.
+     *
+     * @param item The item object representing the film to be deleted.
+     */
     private static void deleteFilm(Item item)
     {
         // Prepare SQL command to delete a film by filmID
@@ -832,6 +837,11 @@ public class ItemHandler
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
+    /**
+     * Deletes literature from the database based on the provided item.
+     *
+     * @param item The item object representing the literature to be deleted.
+     */
     private static void deleteLiterature(Item item)
     {
         // Prepare SQL command to delete a literature by literatureID
@@ -842,6 +852,14 @@ public class ItemHandler
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
+    /**
+     * Retrieves the old title of an item from the database.
+     *
+     * @param item The item object representing the item for which the old title is to be retrieved.
+     * @return The old title of the item.
+     * @throws InvalidIDException      If the item ID is invalid.
+     * @throws EntityNotFoundException If the item with the specified ID is not found in the database.
+     */
     private static String retrieveOldTitle(Item item)
     throws InvalidIDException, EntityNotFoundException
     {
@@ -853,6 +871,11 @@ public class ItemHandler
         return oldItem.getTitle();
     }
 
+    /**
+     * Decrements the counts of stored titles and available titles based on the provided old title.
+     *
+     * @param oldTitle The old title of the item.
+     */
     private static void decrementTitle(String oldTitle)
     {
         if (storedTitles.get(oldTitle) != null)
@@ -861,7 +884,6 @@ public class ItemHandler
             decrementAvailableTitles(oldTitle);
         }
     }
-
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
