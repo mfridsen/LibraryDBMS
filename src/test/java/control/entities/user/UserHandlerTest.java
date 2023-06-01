@@ -161,8 +161,8 @@ public class UserHandlerTest extends BaseHandlerTest {
      */
     @Test
     @Order(8)
-    void testSetup_WithSomeItemsInDatabase() {
-        System.out.println("\n8: Testing setup method with some items in the database...");
+    void testSetup_WithSomeUsersInDatabase() {
+        System.out.println("\n8: Testing setup method with some users in the database...");
 
         //Check that storedUsernames is empty
         assertEquals(0, UserHandler.getStoredUsernames().size());

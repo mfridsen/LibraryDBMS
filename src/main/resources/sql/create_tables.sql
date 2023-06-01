@@ -5,13 +5,11 @@
 
 -- Creates all tables in the database
 
--- BASE TABLES ---------------------------------------------------------------------------------------------------------
-
 -- Author, depended on by Item
 CREATE TABLE `authors` (
     authorID INT AUTO_INCREMENT UNIQUE NOT NULL,
     authorFirstname VARCHAR(100) NOT NULL,
-    authorLastName VARCHAR(100),
+    authorLastname VARCHAR(100),
     biography TEXT,
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (authorID)
@@ -30,29 +28,31 @@ CREATE TABLE `classifications` (
 CREATE TABLE items (
     itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
-    -- ENUM TYPE
+    itemType ENUM('REFERENCE_LITERATURE', 'MAGAZINE', 'FILM', 'COURSE_LITERATURE', 'OTHER_BOOKS'),
     barcode VARCHAR(255) UNIQUE NOT NULL,
-    -- authorID INT NOT NULL,
-    -- classificationID INT NOT NULL,
+    authorID INT NOT NULL,
+    classificationID INT NOT NULL,
     allowedRentalDays INT NOT NULL,
     available TINYINT(1) NOT NULL,
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (itemID)
 );
 
--- //TODO LOOK OVER
+-- Literature
 CREATE TABLE literature (
     literatureID INT PRIMARY KEY,
     ISBN VARCHAR(13) NOT NULL
 );
--- //TODO LOOK OVER
+
+-- Film
 CREATE TABLE films (
     filmID INT PRIMARY KEY,
+    ageRating INT NOT NULL,
     countryOfProduction VARCHAR(100),
     actors TEXT
 );
 
--- //TODO LOOK OVER
+-- Join table, depends on items and literature
 CREATE TABLE literature_item (
     literatureID INT,
     itemID INT,
@@ -60,7 +60,8 @@ CREATE TABLE literature_item (
     FOREIGN KEY (literatureID) REFERENCES literature(literatureID),
     FOREIGN KEY (itemID) REFERENCES items(itemID)
 );
--- //TODO LOOK OVER
+
+-- Join table, depends on items and films
 CREATE TABLE film_item (
     filmID INT,
     itemID INT,
@@ -97,4 +98,3 @@ CREATE TABLE rentals (
     FOREIGN KEY (userID) REFERENCES users (userID),
     FOREIGN KEY (itemID) REFERENCES items (itemID)
 );
--- JOIN TABLES ---------------------------------------------------------------------------------------------------------
