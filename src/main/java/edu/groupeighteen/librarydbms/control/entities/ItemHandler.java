@@ -777,6 +777,13 @@ public class ItemHandler
         String[] params = {title};
 
         return getItems(suffix, params, 0);
+
+        //Null title
+        //Empty title
+        //Non-existent item
+        //1 item exists
+        //Multiple items exist, different types
+        //== 5 tests
     }
 
 
@@ -870,7 +877,7 @@ public class ItemHandler
         //author exists, but no titles for some reason
         //author exists and has title
         //Multiple Items exist for author
-        //== 6 test cases
+        //== 10 test cases
     }
 
     //TODO OPTIONAL
