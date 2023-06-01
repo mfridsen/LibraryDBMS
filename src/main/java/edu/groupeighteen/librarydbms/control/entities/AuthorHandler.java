@@ -9,6 +9,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -146,6 +147,21 @@ public class AuthorHandler {
     }
 
     public static void deleteAuthor(Author author) {
+        try {
+            // Validate the input author
+            validateAuthor(author);
+
+            // Prepare a SQL command to update the 'deleted' flag of the author in the database
+            String sql = "UPDATE authors SET deleted = true WHERE authorID = ?";
+            String[] params = { String.valueOf(author.getAuthorID()) };
+
+            // Execute the update.
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+        } catch (NullEntityException | EntityNotFoundException | InvalidIDException e) {
+            ExceptionHandler.HandleFatalException("Failed to delete author from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
 
     }
 
@@ -170,77 +186,68 @@ public class AuthorHandler {
         }
     }
     //RETRIEVING -------------------------------------------------------------------------------------------------------
-    public static Author getAuthorByAuthorName(String authorFirstname, String authorLastName) throws InvalidNameException {
+    public static List<Author> getAuthorByAuthorName(String authorFirstname, String authorLastname) throws InvalidNameException {
+        //both names cant be null or empty, only one can be
+        if ((authorFirstname == null || authorFirstname.isEmpty()) && (authorLastname == null || authorLastname.isEmpty()))
+            throw new InvalidNameException("Both first and last name can not be empty at the same time.");
+
         try {
-            // No point in getting invalid authors, throws InvalidNameException
-            checkEmptyAuthorname(authorFirstname, authorLastName);
+            List<Author> authors = new ArrayList<>();
 
+            // Prepare a SQL query to select a author by authorFirstname and authorLastname
+            String query = "SELECT authorID, authorFirstname, authorLastname, biography, deleted FROM authors WHERE";
+            List<String> params = new ArrayList<>();
 
-            // Prepare a SQL query to select a author by authorFirstname and authorLastName
-            String query = "SELECT ID, biography, deleted FROM authors " +
-                    "WHERE authorName = ?";
-            String[] params = {authorFirstname, authorLastName};
+            if (authorFirstname != null && !authorFirstname.trim().isEmpty()) {
+                query += " LOWER(authorFirstname) = ?";
+                params.add(authorFirstname.toLowerCase());
+            }
 
+            if (authorLastname != null && !authorLastname.trim().isEmpty()) {
+                if (!params.isEmpty()) {
+                    query += " AND";
+                }
+                query += " LOWER(authorLastname) = ?";
+                params.add(authorLastname.toLowerCase());
+            }
+
+            String[] paramsArray = params.toArray(new String[0]);
 
             // Execute the query and store the result in a ResultSet
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, paramsArray)) {
                 ResultSet resultSet = queryResult.getResultSet();
                 // If the ResultSet contains data, create a new Author object using the retrieved ,
                 // and set the author's authorID
-                if (resultSet.next()) { //TODO-PRIO UPDATE
-                    Author author = new Author(authorFirstname, resultSet.getString("Author First Name"));
-                    author.setAuthorID(resultSet.getInt("authorID"));
-                    return author;
-                    //TODO-gör samma som ovan fast med 'authorLastName'
+                while (resultSet.next()) {
+                    Author author = new Author(
+                            resultSet.getInt("authorID"),
+                            resultSet.getString("authorFirstname"),
+                            resultSet.getString("authorLastname"),
+                            resultSet.getString("biography"),
+                            resultSet.getBoolean("deleted")
+                    );
+                    authors.add(author);
                 }
             }
-        }/* catch (SQLException | InvalidIDException | InvalidLateFeeException | ConstructionException |
-                 AuthorNotAllowedException | InvalidNameException e) {
-            ExceptionHandler.HandleFatalException("Failed to retrieve user by username from database due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }*/ catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidNameException | ConstructionException | InvalidIDException e) {
-            throw new RuntimeException(e);
+            return authors;
+        } catch (SQLException | ConstructionException e) {
+            throw new RuntimeException(e);//TODO-ändra
         }
-
-        // Return null if not found
-        return null;
     }
-
-
-
-
-    public static List<Author> getAuthorsByFirstname(String firstname) {
-        //Invalid authorFirstname
-        //No such authors
-        //One valid author
-        //Multiple valid authors
-        // == 4
-        return null;
-    }
-
-    public static List<Author> getAuthorsByLastname(String lastname) {
-        //Invalid authorLastName
-        //No such authors
-        //One valid author
-        //Multiple valid authors
-        // == 4
-        return null;
-    }
-
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 
     private static void validateAuthorname(String authorFirstname, String authorLastName) throws InvalidNameException {
-        checkEmptyAuthorname(authorFirstname, authorLastName);
-        if (authorFirstname.length() > Author.AUTHOR_FIRST_NAME_LENGTH && authorLastName.length() > Author.AUTHOR_LAST_NAME_LENGTH)
+        checkEmptyName(authorFirstname);
+        checkEmptyName(authorLastName);
+        if (authorFirstname.length() > Author.AUTHOR_FIRST_NAME_LENGTH)
             throw new InvalidNameException("Author first name too long. Must be at most "+ Author.AUTHOR_FIRST_NAME_LENGTH +
                     " characters, received " + authorFirstname.length());
+        if (authorLastName.length() > Author.AUTHOR_LAST_NAME_LENGTH)
             throw new InvalidNameException("Author last name too long. Must be at most "+ Author.AUTHOR_LAST_NAME_LENGTH +
                 " characters, received " + authorLastName.length());
     }
-    private static void checkEmptyAuthorname(String authorFirstname, String authorLastName) throws InvalidNameException {
-        if (authorFirstname == null || authorFirstname.isEmpty() && authorLastName == null || authorLastName.isEmpty()) {
+    private static void checkEmptyName(String authorName) throws InvalidNameException {
+        if (authorName == null || authorName.isEmpty()) {
             throw new InvalidNameException("Author Name is null or empty.");
         }
     }
