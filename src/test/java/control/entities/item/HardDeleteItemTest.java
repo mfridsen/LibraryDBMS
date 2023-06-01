@@ -2,7 +2,6 @@ package control.entities.item;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;

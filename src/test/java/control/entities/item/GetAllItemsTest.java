@@ -1,11 +1,9 @@
 package control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 
 import edu.groupeighteen.librarydbms.control.entities.ItemHandlerUtils;
+import control.BaseHandlerTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

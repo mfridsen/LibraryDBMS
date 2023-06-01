@@ -9,8 +9,6 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

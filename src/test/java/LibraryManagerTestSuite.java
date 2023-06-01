@@ -1,6 +1,6 @@
+import control.*;
+import model.*;
 
-import control.ControlTestSuite;
-import model.ModelTestSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 

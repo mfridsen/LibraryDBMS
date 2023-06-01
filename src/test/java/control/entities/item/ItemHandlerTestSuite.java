@@ -1,6 +1,5 @@
 package control.entities.item;
 
-import control.BaseHandlerTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -23,6 +22,6 @@ import org.junit.platform.suite.api.Suite;
         HardDeleteItemTest.class,
         GetAllItemsTest.class,
 })
-public class ItemHandlerTestSuite extends BaseHandlerTest
+public class ItemHandlerTestSuite
 {
 }

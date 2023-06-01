@@ -11,7 +11,6 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import org.junit.jupiter.api.*;
 
-import java.sql.SQLException;
 import java.util.Collections;
 
 /**
