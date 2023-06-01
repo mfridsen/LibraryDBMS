@@ -2,15 +2,14 @@ package edu.groupeighteen.librarydbms.control.entities;
 
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.entities.*;
-import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import static edu.groupeighteen.librarydbms.control.entities.ItemHandler.getItemByID;
 
 /**
  * @author Mattias Fridsén
@@ -120,6 +119,28 @@ public class ItemHandlerUtils
         if (classification == null)
             throw new EntityNotFoundException("Classification with ID " + classificationID + " not found.");
         return classification;
+    }
+
+    public static String retrieveOldTitle(Item item)
+    throws InvalidIDException, EntityNotFoundException, RetrievalException
+    {
+        // Get the old item
+        Item oldItem = getItemByID(item.getItemID());
+        // Check if the item exists in the database
+        if (oldItem == null)
+            throw new EntityNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
+        return oldItem.getTitle();
+    }
+
+    public static String retrieveOldBarcode(Item item)
+    throws InvalidIDException, RetrievalException, EntityNotFoundException
+    {
+        // Get the old item
+        Item oldItem = getItemByID(item.getItemID());
+        // Check if the item exists in the database
+        if (oldItem == null)
+            throw new EntityNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
+        return oldItem.getBarcode();
     }
 
     public static Literature constructRetrievedLiterature(ResultSet itemResultSet, ResultSet literatureResultSet) {

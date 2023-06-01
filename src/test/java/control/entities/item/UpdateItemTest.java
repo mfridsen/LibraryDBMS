@@ -107,7 +107,7 @@ public class UpdateItemTest extends BaseHandlerTest
         try
         {
             // Create a new Film item
-            Film newFilm = ItemHandler.createNewFilm("Title3", 3, 3, "barcode3", 15);
+            Film newFilm = ItemHandler.createNewFilm("Title3", 3, 3, "barcode37", 15);
             int itemID = newFilm.getItemID();
 
             // Change some fields
@@ -145,7 +145,7 @@ public class UpdateItemTest extends BaseHandlerTest
         try
         {
             // Create a new Literature item
-            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode4", "ISBN4");
+            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode47", "ISBN4");
             int itemID = newLit.getItemID();
 
             // Change some fields

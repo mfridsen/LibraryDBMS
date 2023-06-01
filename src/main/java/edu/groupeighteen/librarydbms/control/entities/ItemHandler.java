@@ -166,6 +166,20 @@ public class ItemHandler
     }
 
     /**
+     * Decrements the counts of stored titles and available titles based on the provided old title.
+     *
+     * @param oldTitle The old title of the item.
+     */
+    private static void decrementTitle(String oldTitle)
+    {
+        if (storedTitles.get(oldTitle) != null)
+        {
+            decrementStoredTitles(oldTitle);
+            decrementAvailableTitles(oldTitle);
+        }
+    }
+
+    /**
      * Increments the count of registered barcodes by adding the specified barcode.
      *
      * @param barcode The barcode to be added.
@@ -253,8 +267,6 @@ public class ItemHandler
         availableTitles.clear();
         registeredBarcodes.clear();
     }
-
-
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
@@ -692,6 +704,7 @@ public class ItemHandler
 
             //Retrieve old title, throws EntityNotFoundException and InvalidIDException
             String oldTitle = retrieveOldTitle(item);
+            String oldBarcode = retrieveOldBarcode(item);
 
             // Delete from child tables (Film or Literature) first
             if (item instanceof Film)
@@ -712,6 +725,9 @@ public class ItemHandler
 
             // Decrement the count of the old title. Remove the entry if the count reaches 0
             decrementTitle(oldTitle);
+
+            //Remove old barcode
+            decrementRegisteredBarcodes(oldBarcode);
         }
         catch (InvalidIDException | RetrievalException e)
         {
@@ -750,38 +766,7 @@ public class ItemHandler
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-    /**
-     * Retrieves the old title of an item from the database.
-     *
-     * @param item The item object representing the item for which the old title is to be retrieved.
-     * @return The old title of the item.
-     * @throws InvalidIDException      If the item ID is invalid.
-     * @throws EntityNotFoundException If the item with the specified ID is not found in the database.
-     */
-    private static String retrieveOldTitle(Item item)
-    throws InvalidIDException, EntityNotFoundException, RetrievalException
-    {
-        // Get the old item
-        Item oldItem = getItemByID(item.getItemID());
-        // Check if the item exists in the database
-        if (oldItem == null)
-            throw new EntityNotFoundException("Delete failed: could not find Item with ID " + item.getItemID());
-        return oldItem.getTitle();
-    }
 
-    /**
-     * Decrements the counts of stored titles and available titles based on the provided old title.
-     *
-     * @param oldTitle The old title of the item.
-     */
-    private static void decrementTitle(String oldTitle)
-    {
-        if (storedTitles.get(oldTitle) != null)
-        {
-            decrementStoredTitles(oldTitle);
-            decrementAvailableTitles(oldTitle);
-        }
-    }
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
