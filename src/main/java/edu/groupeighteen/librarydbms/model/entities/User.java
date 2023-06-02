@@ -2,11 +2,10 @@ package edu.groupeighteen.librarydbms.model.entities;
 
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidRentalStatusChangeException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 
 /**
  * @author Mattias Fridsén
@@ -48,28 +47,47 @@ public class User extends Entity
     //TODO-future add more fields and methods
     //TODO-comment everything
 
+    public enum UserType
+    {
+        ADMIN,
+        STAFF,
+        PATRON,
+        STUDENT,
+        TEACHER,
+        RESEARCHER
+    }
+
     public static final int DEFAULT_ALLOWED_RENTALS = 5;
     public static final int MIN_USERNAME_LENGTH = 3;
-    public static final int MAX_USERNAME_LENGTH;
+    public static final int MAX_USERNAME_LENGTH; //20
     public static final int MIN_PASSWORD_LENGTH = 8;
-    public static final int MAX_PASSWORD_LENGTH;
+    public static final int MAX_PASSWORD_LENGTH; //50
+    public static final int MIN_EMAIL_LENGTH = 6;
+    public static final int MAX_EMAIL_LENGTH; //255
+    //An email address needs to have a minimum of six characters:
+    // One character for the user name.
+    // The @ symbol.
+    // One character for the domain name.
+    // The dot symbol (.)
+    // Two characters for the top level domain (like .com, .org, .io, .us).
 
     /*
-      So we don't have to update both create_tables.sql AND this file when we want to change the allowed size
-      of usernames and passwords
+      So we don't have to update both create_tables.sql AND this file when we want to change the rules.
      */
     static
     {
         int[] metaData = DatabaseHandler.getUserMetaData();
         MAX_USERNAME_LENGTH = metaData[0];
         MAX_PASSWORD_LENGTH = metaData[1];
+        MAX_EMAIL_LENGTH = metaData[2];
     }
 
     private int userID; //Primary key
-    private String username;
+    private String username; //UNIQUE
     private String password; //TODO-future hash and salt
-    //ENUM TYPE
-    private final int allowedRentals;
+    private UserType userType;
+    private String email; //UNIQUE //TODO-future REGEX
+    private int allowedRentals;
     private int currentRentals;
     private double lateFee; //TODO-future implement logic
     boolean allowedToRent; //TODO-PRIO UPDATE USERTEST, USERHANDLER, RENTALHANDLER AND TESTS AS WELL AS SETTERS
@@ -84,21 +102,28 @@ public class User extends Entity
      * @param password the password for the new User
      * @throws ConstructionException if the username or password is invalid
      */
-    public User(String username, String password)
+    public User(String username, String password, UserType userType, String email)
     throws ConstructionException
     {
         super();
         try
         {
             this.userID = 0;
-            setUsername(username); //InvalidNameException
-            setPassword(password); //InvalidPasswordException
-            this.allowedRentals = DEFAULT_ALLOWED_RENTALS;
-            this.currentRentals = 0;
-            this.lateFee = 0.0;
-            this.allowedToRent = true;
+            setUsername(username); //Throws InvalidNameException
+            setPassword(password); //Throws InvalidPasswordException
+            setUserType(userType); //Throws InvalidTypeException
+            setEmail(email); //Throws InvalidEmailException
+            setAllowedRentals(getDefaultAllowedRentals(userType)); //Throws InvalidUserRentalsException
+            setCurrentRentals(0); //Throws InvalidUserRentalsException
+            setLateFee(0); //Throws InvalidLateFeeException
+            switch (userType) //Throws InvalidRentalStatusChangeException
+            {
+                case ADMIN, STAFF -> setAllowedToRent(false);
+                default -> setAllowedToRent(true);
+            }
         }
-        catch (InvalidNameException | InvalidPasswordException e)
+        catch (InvalidNameException | InvalidPasswordException | InvalidTypeException | InvalidEmailException
+                | InvalidUserRentalsException | InvalidLateFeeException | InvalidRentalStatusChangeException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -113,29 +138,34 @@ public class User extends Entity
      * @param userID         Unique identifier for the user.
      * @param username       The username of the user.
      * @param password       The password of the user.
+     * @param userType       The type of the user.
+     * @param email          The users email address
      * @param allowedRentals The maximum number of rentals allowed for the user.
      * @param currentRentals The number of rentals the user currently has.
      * @param lateFee        Any late fee applicable to the user.
      * @param deleted        Boolean indicating whether the user is marked as deleted.
      * @throws ConstructionException If there are issues validating the provided data.
      */
-    public User(int userID, String username, String password, int allowedRentals, int currentRentals,
-                double lateFee, boolean allowedToRent, boolean deleted)
+    public User(int userID, String username, String password, UserType userType, String email, int allowedRentals,
+                int currentRentals, double lateFee, boolean allowedToRent, boolean deleted)
     throws ConstructionException
     {
         super(deleted);
         try
         {
-            setUserID(userID); //Throws InvalidIDException
-            setUsername(username); //Throws InvalidNameException
-            setPassword(password); //Throws InvalidPasswordException
-            this.allowedRentals = allowedRentals;
-            setCurrentRentals(currentRentals); //Throws InvalidRentalException
-            setLateFee(lateFee); //Throws InvalidLateFeeException
-            setAllowedToRent(allowedToRent);
+            setUserID(userID);                  //Throws InvalidIDException
+            setUsername(username);              //Throws InvalidNameException
+            setPassword(password);              //Throws InvalidPasswordException
+            setUserType(userType);              //Throws InvalidTypeException
+            setEmail(email);                    //Throws InvalidEmailException
+            setAllowedRentals(allowedRentals);  //Throws InvalidUserRentalsException
+            setCurrentRentals(currentRentals);  //Throws InvalidUserRentalsException
+            setLateFee(lateFee);                //Throws InvalidLateFeeException
+            setAllowedToRent(allowedToRent);    //Throws InvalidRentalStatusChangeException
         }
-        catch (InvalidIDException | InvalidNameException | InvalidPasswordException | RentalNotAllowedException
-                | InvalidLateFeeException | InvalidRentalStatusChangeException e)
+        catch (InvalidIDException | InvalidNameException | InvalidPasswordException | InvalidLateFeeException
+                | InvalidRentalStatusChangeException | InvalidUserRentalsException | InvalidTypeException
+                | InvalidEmailException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -155,10 +185,30 @@ public class User extends Entity
         this.userID = other.userID;
         this.username = other.username;
         this.password = other.password;
+        this.userType = other.userType;
+        this.email = other.email;
         this.allowedRentals = other.allowedRentals;
         this.currentRentals = other.currentRentals;
         this.lateFee = other.lateFee;
         this.allowedToRent = other.allowedToRent;
+    }
+
+    /**
+     * Retrieves the default number of rentals for a given UserType.
+     *
+     * @param type The UserType for which to get the default rentals.
+     * @return An integer representing the default number of rentals.
+     */
+    public static int getDefaultAllowedRentals(UserType type)
+    {
+        return switch (type)
+                {
+                    case ADMIN, STAFF -> 0;
+                    case PATRON -> 3;
+                    case STUDENT -> 5;
+                    case TEACHER -> 10;
+                    case RESEARCHER -> 20;
+                };
     }
 
     /**
@@ -239,10 +289,42 @@ public class User extends Entity
         if (password.length() < MIN_PASSWORD_LENGTH)
             throw new InvalidPasswordException("Password too short, must be at least " + MIN_PASSWORD_LENGTH +
                     " characters. Received: " + password.length());
-        if (password.length() > 50)
+        if (password.length() > MAX_PASSWORD_LENGTH)
             throw new InvalidPasswordException("Password too long, must be at most " + MAX_PASSWORD_LENGTH +
                     " characters. Received: " + password.length());
         this.password = password;
+    }
+
+    public UserType getUserType()
+    {
+        return userType;
+    }
+
+    public void setUserType(UserType userType)
+    throws InvalidTypeException
+    {
+        if (userType == null)
+            throw new InvalidTypeException("User Type cannot be null.");
+        this.userType = userType;
+    }
+
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail(String email)
+    throws InvalidEmailException
+    {
+        if (email == null || email.isEmpty())
+            throw new InvalidEmailException("Email cannot be null or empty.");
+        if (email.length() < MIN_EMAIL_LENGTH)
+            throw new InvalidEmailException("Email cannot be shorter than " + MIN_EMAIL_LENGTH + " characters. " +
+                    "Received: " + email.length());
+        if (email.length() > MAX_EMAIL_LENGTH)
+            throw new InvalidEmailException("Email cannot be longer than " + MAX_EMAIL_LENGTH + " characters. " +
+                    "Received: " + email.length());
+        this.email = email;
     }
 
     /**
@@ -253,6 +335,15 @@ public class User extends Entity
     public int getAllowedRentals()
     {
         return allowedRentals;
+    }
+
+    //TODO-comment //TODO-test
+    public void setAllowedRentals(int allowedRentals)
+    throws InvalidUserRentalsException
+    {
+        if (allowedRentals < 0)
+            throw new InvalidUserRentalsException("Allowed Rentals can't be less than 0. Received: " + allowedRentals);
+        this.allowedRentals = allowedRentals;
     }
 
     /**
@@ -272,18 +363,18 @@ public class User extends Entity
      * If the user has as many rentals as allowed, they can't rent until at least one item is returned.
      *
      * @param currentRentals The number of current rentals to set.
-     * @throws RentalNotAllowedException If the provided number of current rentals is lower than 0 or
-     *                                   greater than the allowed number of rentals.
+     * @throws InvalidUserRentalsException If the provided number of current rentals is lower than 0 or
+     *                                     greater than the allowed number of rentals.
      */
     public void setCurrentRentals(int currentRentals)
-    throws RentalNotAllowedException
+    throws InvalidUserRentalsException
     {
         //Can't be less than zero
         if (currentRentals < 0)
-            throw new RentalNotAllowedException("Current rentals can't be lower than 0. Received: " + currentRentals);
+            throw new InvalidUserRentalsException("Current rentals can't be lower than 0. Received: " + currentRentals);
         //Current rentals can't be greater than allowed
         if (currentRentals > allowedRentals)
-            throw new RentalNotAllowedException("Current rentals can't be greater than allowed rentals. Received: " +
+            throw new InvalidUserRentalsException("Current rentals can't be greater than allowed rentals. Received: " +
                     currentRentals + ", allowed: " + allowedRentals);
         //User is still allowed to rent
         if (currentRentals < allowedRentals)
@@ -350,27 +441,38 @@ public class User extends Entity
     public void setAllowedToRent(boolean allowedToRent)
     throws InvalidRentalStatusChangeException
     {
-        //No late fee and not maximum allowed rentals means user should be allowed to rent
-        if (lateFee == 0.0 && allowedRentals > currentRentals && !allowedToRent)
-            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                    "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
-                    "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
-                    ", Allowed rentals: " + allowedRentals);
+        int defaultAllowedRentals = getDefaultAllowedRentals(userType);
 
-        //Not allowed to rent with late fee
-        if (lateFee > 0.0 && allowedToRent)
-            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                    "User has late fee: " + lateFee);
+        // No late fee and fewer rentals than allowed
+        if (lateFee == 0.0 && allowedRentals > currentRentals)
+        {
+            if (!allowedToRent)
+            {
+                throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                        "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
+                        "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
+                        ", Allowed rentals: " + allowedRentals);
+            }
+        }
+        else
+        {
+            // Late fee or maximum rentals reached
+            if (lateFee > 0.0 || currentRentals >= defaultAllowedRentals)
+            {
+                if (allowedToRent)
+                {
+                    throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                            "User has late fee: " + lateFee + " or has rented to capacity.");
+                }
+            }
+        }
 
-        //Not allowed to rent when at max rentals
-        if (currentRentals >= allowedRentals && allowedToRent)
-            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                    "User has already rented to capacity.");
-
-        //Being deleted makes it hard to rent
+        // Being deleted prevents renting
         if (deleted && allowedToRent)
+        {
             throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                    "User who is deleted cannot be allowed to rent.");
+                    "A deleted user cannot be allowed to rent.");
+        }
 
         this.allowedToRent = allowedToRent;
     }

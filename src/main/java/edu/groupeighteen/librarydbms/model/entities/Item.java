@@ -158,7 +158,7 @@ public abstract class Item extends Entity
             this.authorFirstname = null; //Retrieved after creation
             this.authorLastname = null; //Retrieved after creation
             this.classificationName = null; //Retrieved after creation
-            setAllowedRentalDays(getDefaultAllowedDays(type)); //Throws InvalidDateException
+            setAllowedRentalDays(getDefaultAllowedRentalDays(type)); //Throws InvalidDateException
             this.available = true;
         }
         catch (InvalidTitleException | InvalidIDException | InvalidDateException | InvalidBarcodeException
@@ -241,9 +241,9 @@ public abstract class Item extends Entity
      * Retrieves the default number of rental days for a given ItemType.
      *
      * @param type The ItemType for which to get the default rental days.
-     * @return An integer representing the default number of rental days.
+     * @return An int representing the default number of rental days.
      */
-    public static int getDefaultAllowedDays(ItemType type)
+    public static int getDefaultAllowedRentalDays(ItemType type)
     {
         return switch (type)
                 {

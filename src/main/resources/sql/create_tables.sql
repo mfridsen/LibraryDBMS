@@ -60,6 +60,8 @@ CREATE TABLE `users` (
     userID INT AUTO_INCREMENT UNIQUE NOT NULL,
     username VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(50) NOT NULL,
+    userType ENUM('ADMIN', 'STAFF', 'PATRON', 'STUDENT', 'TEACHER', 'RESEARCHER'),
+    email VARCHAR(255) UNIQUE NOT NULL,
     allowedRentals INT NOT NULL,
     currentRentals INT NOT NULL,
     lateFee DOUBLE NOT NULL,

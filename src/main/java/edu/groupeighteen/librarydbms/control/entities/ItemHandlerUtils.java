@@ -19,11 +19,7 @@ import static edu.groupeighteen.librarydbms.control.entities.ItemHandler.getItem
  * @contact matfir-1@student.ltu.se
  * @date 6/1/2023
  * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
- * Brought to you by enough nicotine to kill a large horse.
+ * Class containing static utility methods for the ItemHandler class.
  */
 public class ItemHandlerUtils
 {
@@ -34,24 +30,41 @@ public class ItemHandlerUtils
      * @param title the title to check.
      * @throws InvalidTitleException if title is null or empty.
      */
-    public static void checkEmptyTitle(String title)
+    static void checkEmptyTitle(String title)
     throws InvalidTitleException
     {
         if (title == null || title.isEmpty())
             throw new InvalidTitleException("Empty title.");
     }
 
-    public static void checkEmptyISBN(String ISBN)
+    /**
+     * Validates the given ISBN.
+     *
+     * @param ISBN the ISBN to validate
+     * @throws InvalidISBNException if the ISBN is empty or exceeds the maximum length
+     */
+    static void validateISBN(String ISBN)
     throws InvalidISBNException
     {
-        if (ISBN == null || ISBN.isEmpty()) throw new InvalidISBNException("Empty ISBN");
+        if (ISBN == null || ISBN.isEmpty())
+            throw new InvalidISBNException("Empty ISBN.");
+        if (ISBN.length() > Literature.LITERATURE_ISBN_LENGTH)
+            throw new InvalidISBNException("Too long ISBN.");
     }
 
-    public static void checkEmptyClassificationName(String classificationName)
+    /**
+     * Validates the given classification name.
+     *
+     * @param classificationName the classification name to validate
+     * @throws InvalidNameException if the classification name is empty or exceeds the maximum length
+     */
+    static void validateEmptyClassificationName(String classificationName)
     throws InvalidNameException
     {
         if (classificationName == null || classificationName.isEmpty())
             throw new InvalidNameException("Classification name is empty.");
+        if (classificationName.length() > Classification.CLASSIFICATION_NAME_LENGTH)
+            throw new InvalidNameException("Classification name is too long.");
     }
 
     /**
@@ -61,7 +74,7 @@ public class ItemHandlerUtils
      * @param itemID the ID to check.
      * @throws InvalidIDException if itemID <= 0.
      */
-    public static void checkValidItemID(int itemID)
+    static void checkValidItemID(int itemID)
     throws InvalidIDException
     {
         if (itemID <= 0)
@@ -74,7 +87,7 @@ public class ItemHandlerUtils
      * @param item the item to check.
      * @throws NullEntityException if item is null.
      */
-    public static void checkNullItem(Item item)
+    static void checkNullItem(Item item)
     throws NullEntityException
     {
         if (item == null)
@@ -87,7 +100,7 @@ public class ItemHandlerUtils
      * @param ID The ID to be checked.
      * @return True if the ID is invalid, false otherwise.
      */
-    public static boolean invalidID(int ID)
+    static boolean invalidID(int ID)
     {
         return (ID <= 0);
     }
@@ -98,7 +111,7 @@ public class ItemHandlerUtils
      * @param barcode The barcode to be checked.
      * @return True if the barcode is already registered, false otherwise.
      */
-    public static boolean barcodeTaken(String barcode)
+    static boolean barcodeTaken(String barcode)
     {
         return (ItemHandler.getRegisteredBarcodes().contains(barcode));
     }
@@ -110,7 +123,7 @@ public class ItemHandlerUtils
      * @return The retrieved Author object.
      * @throws EntityNotFoundException If no author with the given ID is found.
      */
-    public static Author getExistingAuthor(int authorID)
+    static Author getExistingAuthor(int authorID)
     throws EntityNotFoundException
     {
         Author author = AuthorHandler.getAuthorByID(authorID);
@@ -126,7 +139,7 @@ public class ItemHandlerUtils
      * @return The retrieved Classification object.
      * @throws EntityNotFoundException If no classification with the given ID is found.
      */
-    public static Classification getExistingClassification(int classificationID)
+    static Classification getExistingClassification(int classificationID)
     throws EntityNotFoundException
     {
         Classification classification = ClassificationHandler.getClassificationByID(classificationID);
@@ -135,7 +148,16 @@ public class ItemHandlerUtils
         return classification;
     }
 
-    public static String retrieveOldTitle(Item item)
+    /**
+     * Retrieves the old title of the given item from the database.
+     *
+     * @param item the item to retrieve the old title for
+     * @return the old title of the item
+     * @throws InvalidIDException         if the item ID is invalid
+     * @throws EntityNotFoundException   if the item is not found in the database
+     * @throws RetrievalException        if an error occurs during retrieval
+     */
+    static String retrieveOldTitle(Item item)
     throws InvalidIDException, EntityNotFoundException, RetrievalException
     {
         // Get the old item
@@ -146,7 +168,16 @@ public class ItemHandlerUtils
         return oldItem.getTitle();
     }
 
-    public static String retrieveOldBarcode(Item item)
+    /**
+     * Retrieves the old barcode of the given item from the database.
+     *
+     * @param item the item to retrieve the old barcode for
+     * @return the old barcode of the item
+     * @throws InvalidIDException         if the item ID is invalid
+     * @throws RetrievalException        if an error occurs during retrieval
+     * @throws EntityNotFoundException   if the item is not found in the database
+     */
+    static String retrieveOldBarcode(Item item)
     throws InvalidIDException, RetrievalException, EntityNotFoundException
     {
         // Get the old item
@@ -157,7 +188,13 @@ public class ItemHandlerUtils
         return oldItem.getBarcode();
     }
 
-    public static Literature constructRetrievedLiterature(ResultSet resultSet)
+    /**
+     * Constructs a Literature object using the data from the given ResultSet.
+     *
+     * @param resultSet the ResultSet containing the literature data
+     * @return the constructed Literature object
+     */
+    static Literature constructRetrievedLiterature(ResultSet resultSet)
     {
         Literature literature = null;
 
@@ -189,8 +226,13 @@ public class ItemHandlerUtils
         return literature;
     }
 
-
-    public static Film constructRetrievedFilm(ResultSet resultSet)
+    /**
+     * Constructs a Film object using the data from the given ResultSet.
+     *
+     * @param resultSet the ResultSet containing the film data
+     * @return the constructed Film object
+     */
+    static Film constructRetrievedFilm(ResultSet resultSet)
     {
         Film film = null;
 
@@ -227,10 +269,11 @@ public class ItemHandlerUtils
     /**
      * Prints the stored titles and their counts.
      */
-    public static void printTitles()
+    static void printTitles()
     {
         System.out.println("\nTitles:");
-        ItemHandler.getStoredTitles().forEach((title, count) -> System.out.println("Title: " + title + " Copies: " + count));
+        ItemHandler.getStoredTitles().forEach(
+                (title, count) -> System.out.println("Title: " + title + " Copies: " + count));
     }
 
     /**
