@@ -28,6 +28,42 @@ void testSetup_EmptyDatabase()
     System.out.println("\nTEST FINISHED.");
 }
 
+Setup method format:
+
+/**
+ * <Javadoc providing brief description of what the setup does>
+ /*
+@BeforeAll
+static void setUp()
+{
+    System.out.println("Performing pre-test setup...");
+
+    <SETUP WORK HERE>
+
+    System.out.println("\nSETUP FINISHED.");
+}
+
+Example:
+
+    @BeforeAll
+    static void setUp()
+    {
+        System.out.println("\n1: Setting up User object for tests...");
+
+        try
+        {
+            user = new User(validUserID1, validUsername, validPassword, userType, validEmail, allowedRentals,
+                    currentRentals, lateFee, allowedToRent, deleted);
+        }
+        catch (ConstructionException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
+
+        System.out.println("\nSETUP FINISHED.");
+    }
+
 If exceptions can be thrown, either catch or assert them depending on the test case. No need to assert messages
 in exceptions:
 
@@ -59,7 +95,7 @@ Example 1:
 
 Example 2, use lambda expressions and for gods sake use .repeat to generate too-long strings:
 
-@Test
+    @Test
     @Order(19)
     void testUser_LongEmail()
     {
@@ -78,14 +114,14 @@ For Model classes, create one test class per constructor and then one for the se
 Example:
 
 /**
- * Javadoc providing brief description of what the class tests.
+ * <Javadoc providing brief description of what the class tests.>
  /*
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AuthorCreationTest
 {
 
     /**
-     * Javadoc providing a brief description of what the method tests.
+     * <Javadoc providing a brief description of what the method tests.>
      */
     @Test
     @Order(1)

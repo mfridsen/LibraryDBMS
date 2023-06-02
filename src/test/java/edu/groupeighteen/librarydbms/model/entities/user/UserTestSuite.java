@@ -17,6 +17,7 @@ import org.junit.platform.suite.api.Suite;
         UserCreationTest.class,
         UserRetrievalTest.class,
         UserCopyTest.class,
+        UserSettersTest.class
 })
 public class UserTestSuite
 {
