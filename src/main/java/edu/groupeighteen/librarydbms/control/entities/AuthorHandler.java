@@ -59,16 +59,6 @@ public class AuthorHandler {
         return newAuthor;
     }
 
-    /**
-     * Saves a author to the database. The method prepares an SQL insert query with the user's details such as
-     * username, password, allowed rentals, current rentals and late fee. The query is executed and the
-     * auto-generated user ID from the database is retrieved and returned. If the query execution fails, the method
-     * handles the SQLException and returns 0.
-     *
-     * @param author The user object to be saved.
-     * @return The auto-generated ID of the user from the database.
-     *          Returns 0 if an SQLException occurs. This won't happen because the exception will be thrown first.
-     */
     private static int saveAuthor(Author author) {
         try {
             // Prepare query
@@ -146,8 +136,7 @@ public class AuthorHandler {
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-    public static void deleteAuthor(Author authorToDelete) {
-       throws AuthorDeleteException
+    public static void deleteAuthor(Author authorToDelete) throws DeleteException {
         {
             //Validate input
             try
@@ -156,7 +145,7 @@ public class AuthorHandler {
             }
             catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
             {
-                throw new AuthorDeleteException("Author Delete failed: " + e.getMessage(), e);
+                throw new DeleteException("Author Delete failed: " + e.getMessage(), e);
             }
 
             //Set deleted to true (doesn't need to be set before calling this method)
@@ -293,7 +282,7 @@ public class AuthorHandler {
     private static void validateAuthor(Author author) throws EntityNotFoundException, InvalidIDException, NullEntityException {
         checkNullAuthor(author);
         int ID = author.getAuthorID();
-        if (UserHandler.getUserByID(ID) == null)
+        if (AuthorHandler.getAuthorByID(ID) == null)
             throw new EntityNotFoundException("Author with ID " + author + "not found in database.");
     }
 
