@@ -41,17 +41,22 @@ public class ItemHandlerUtils
             throw new InvalidTitleException("Empty title.");
     }
 
-    static void checkEmptyISBN(String ISBN)
+    static void validateISBN(String ISBN)
     throws InvalidISBNException
     {
-        if (ISBN == null || ISBN.isEmpty()) throw new InvalidISBNException("Empty ISBN");
+        if (ISBN == null || ISBN.isEmpty())
+            throw new InvalidISBNException("Empty ISBN.");
+        if (ISBN.length() > Literature.LITERATURE_ISBN_LENGTH)
+            throw new InvalidISBNException("Too long ISBN.");
     }
 
-    static void checkEmptyClassificationName(String classificationName)
+    static void validateEmptyClassificationName(String classificationName)
     throws InvalidNameException
     {
         if (classificationName == null || classificationName.isEmpty())
             throw new InvalidNameException("Classification name is empty.");
+        if (classificationName.length() > Classification.CLASSIFICATION_NAME_LENGTH)
+            throw new InvalidNameException("Classification name is too long.");
     }
 
     /**

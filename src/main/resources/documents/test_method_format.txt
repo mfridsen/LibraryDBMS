@@ -11,7 +11,7 @@ void test<MethodName>_<TestCase>()
 Example:
 
 /**
- * Javadoc providing a brief description of what the method tests.
+ * <Javadoc providing a brief description of what the method tests.>
  */
 @Test
 @Order(7)

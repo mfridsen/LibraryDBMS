@@ -710,7 +710,7 @@ public class ItemHandler
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
-    public static List<Item> getItems(String sqlSuffix, String[] params, int settings)
+    public static List<Item> getItems(String sqlSuffix, String[] params, int settings) //TODO-comment
     {
         List<Item> items = new ArrayList<>();
 
@@ -742,13 +742,14 @@ public class ItemHandler
         return items;
     }
 
+    //TODO-comment
     public static List<Item> getAllItems()
     {
         return getItems(null, null, 0);
     }
 
 
-    public static Item getItemByID(int itemID)
+    public static Item getItemByID(int itemID) //TODO-comment
     throws InvalidIDException, RetrievalException
     {
         // Validate the provided ID
@@ -766,7 +767,7 @@ public class ItemHandler
     }
 
 
-    public static List<Item> getItemsByTitle(String title) //TODO-test //TODO-comment
+    public static List<Item> getItemsByTitle(String title) //TODO-comment
     throws InvalidTitleException
     {
         //No point getting invalid Items
@@ -780,6 +781,7 @@ public class ItemHandler
 
         //Null title
         //Empty title
+        //TODO-future TOO LONG TITLE ( > Item.ITEM_TITLE_MAX_LENGTH)
         //Non-existent item
         //1 item exists
         //Multiple items exist, different types
@@ -791,7 +793,7 @@ public class ItemHandler
     throws InvalidISBNException
     {
         //No point getting invalid Items
-        checkEmptyISBN(ISBN);
+        validateISBN(ISBN);
 
         //Prepare a SQL suffix to select an item by title
         String suffix = "WHERE literature.ISBN = ?";
@@ -801,7 +803,7 @@ public class ItemHandler
 
         //Empty ISBN
         //Null ISBN
-        //Incorrect format ISBN
+        //Too long ISBN (> Literature.LITERATURE_ISBN_LENGTH)
         //Item does not exist
         //Item does exist
         //Multiple Items exist
@@ -810,10 +812,10 @@ public class ItemHandler
 
 
     public static List<Item> getItemsByClassification(String classificationName)
-    throws InvalidNameException //TODO-test //TODO-comment
+    throws InvalidNameException  //TODO-comment
     {
         //No point getting invalid Items
-        checkEmptyClassificationName(classificationName);
+        validateEmptyClassificationName(classificationName);
 
         //Prepare a SQL suffix to select an item by classification
         String suffix = "LEFT JOIN classifications ON items.classificationID = classifications.classificationID " +
@@ -822,13 +824,14 @@ public class ItemHandler
 
         return getItems(suffix, params, 0);
 
-        //Empty genre
-        //Null genre
-        //genre does not exist
-        //Items don't exist in genre
+        //Empty classificationName
+        //Null classificationName
+        //classificationName too long (> Classification.CLASSIFICATION_NAME_LENGTH)
+        //classificationName does not exist
+        //Items don't exist in classificationName
         //Item does exist
         //Multiple Items exist
-        //== 6 test cases
+        //== 7 test cases
     }
 
 

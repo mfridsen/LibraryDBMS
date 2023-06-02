@@ -22,6 +22,7 @@ import org.junit.platform.suite.api.Suite;
         HardDeleteItemTest.class,
         GetAllItemsTest.class,
         GetItemsByTitleTest.class,
+        GetItemsByClassificationTest.class,
 
 })
 public class ItemHandlerTestSuite
