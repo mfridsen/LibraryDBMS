@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RentalHandlerTest extends BaseHandlerTest
+public class RentalHandlerTestSuite extends BaseHandlerTest
 {
 
     //TODO-future make all tests more verbose
