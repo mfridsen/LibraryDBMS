@@ -100,6 +100,104 @@ public class UserHandlerSetupTest extends BaseUserHandlerTest
 
             assertEquals(numberOfUsers, UserHandler.getStoredUsernames().size());
             assertEquals(numberOfUsers, UserHandler.getRegisteredEmails().size());
+
+            //Reset table
+            resetUsersTable();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(4)
+    void testReset_WithTestData()
+    {
+        System.out.println("\n4: Testing reset method with test data in the database...");
+
+        try
+        {
+            //Fill with test data and setup UserHandler
+            setupTestData();
+            setupUserHandler();
+
+            //Retrieve number of rows in users table
+            int numberOfUsers = 0;
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery("SELECT COUNT(*) FROM users;", null);
+            ResultSet resultSet = queryResult.getResultSet();
+            if (resultSet.next()) {
+                numberOfUsers = resultSet.getInt(1);
+                System.out.println("Number of rows in users: " + numberOfUsers);
+            } else fail("There should be users in the table.");
+
+            //Assert lists are set
+            assertEquals(numberOfUsers, UserHandler.getStoredUsernames().size());
+            assertEquals(numberOfUsers, UserHandler.getRegisteredEmails().size());
+
+            //Call reset
+            UserHandler.reset();
+
+            //Assert lists are empty
+            assertEquals(0, UserHandler.getStoredUsernames().size());
+            assertEquals(0, UserHandler.getRegisteredEmails().size());
+
+            //Reset table
+            resetUsersTable();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    @Test
+    @Order(5)
+    void testSync_WithTestData()
+    {
+        System.out.println("\n5: Testing sync method with test data in the database...");
+
+        try
+        {
+            //Fill with test data and setup UserHandler
+            setupTestData();
+            setupUserHandler();
+
+            //Retrieve number of rows in users table
+            int numberOfUsers = 0;
+            QueryResult queryResult = DatabaseHandler.executePreparedQuery("SELECT COUNT(*) FROM users;", null);
+            ResultSet resultSet = queryResult.getResultSet();
+            if (resultSet.next()) {
+                numberOfUsers = resultSet.getInt(1);
+                System.out.println("Number of rows in users: " + numberOfUsers);
+            } else fail("There should be users in the table.");
+
+            //Assert lists are set
+            assertEquals(numberOfUsers, UserHandler.getStoredUsernames().size());
+            assertEquals(numberOfUsers, UserHandler.getRegisteredEmails().size());
+
+            //Call reset
+            UserHandler.reset();
+
+            //Assert lists are empty
+            assertEquals(0, UserHandler.getStoredUsernames().size());
+            assertEquals(0, UserHandler.getRegisteredEmails().size());
+
+            //Call sync
+            UserHandler.sync();
+
+            //Assert lists are set
+            assertEquals(numberOfUsers, UserHandler.getStoredUsernames().size());
+            assertEquals(numberOfUsers, UserHandler.getRegisteredEmails().size());
+
+            //Reset table
+            resetUsersTable();
         }
         catch (SQLException e)
         {

@@ -41,10 +41,13 @@ import java.util.List;
 public class UserHandler
 {
     /**
-     * Used to make the process of verifying if a username is taken or not, faster.
+     * Used to make the process of verifying if a username is taken or not faster.
      */
     private static final ArrayList<String> storedUsernames = new ArrayList<>();
 
+    /**
+     * Used to make the process of verifying if an email is registered or not faster.
+     */
     private static final ArrayList<String> registeredEmails = new ArrayList<>();
 
     /**
@@ -55,33 +58,17 @@ public class UserHandler
         sync();
     }
 
-
-    public static void reset()
-    {
-        resetUsernames();
-        resetUsernames();
-    }
-
-    public static void resetEmails()
-    {
-        registeredEmails.clear();
-    }
-
-    public static void resetUsernames()
-    {
-        storedUsernames.clear();
-    }
-
-
-    public static void sync()
+    /**
+     * Clears and syncs the both lists against the Users table.
+     */
+    public static void sync() //TODO-test
     {
         syncUsernames();
         syncEmails();
     }
 
-
     /**
-     * Syncs the storedUsernames list against the usernames in the Users table.
+     * Clears and syncs the storedUsernames list against the usernames in the Users table.
      */
     public static void syncUsernames()
     {
@@ -89,13 +76,14 @@ public class UserHandler
         retrieveUsernamesFromTable();
     }
 
-
+    /**
+     * Clears and syncs the registeredEmails list against the emails in the Users table.
+     */
     public static void syncEmails()
     {
         resetEmails();
         retrieveEmailsFromTable();
     }
-
 
     /**
      * Method that retrieves the usernames in the Users table and stores them in the static ArrayList.
@@ -124,6 +112,10 @@ public class UserHandler
         }
     }
 
+    /**
+     * Method that retrieves the emails in the Users table and stores them in the static ArrayList.
+     * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
+     */
     private static void retrieveEmailsFromTable()
     {
         try
@@ -148,6 +140,31 @@ public class UserHandler
     }
 
     /**
+     * Clears both lists.
+     */
+    public static void reset() //TODO-test
+    {
+        resetUsernames();
+        resetEmails();
+    }
+
+    /**
+     * Clears the list of storedUsernames.
+     */
+    public static void resetUsernames()
+    {
+        storedUsernames.clear();
+    }
+
+    /**
+     * Clears the list of registeredEmails.
+     */
+    public static void resetEmails()
+    {
+        registeredEmails.clear();
+    }
+
+    /**
      * Prints all usernames in the ArrayList.
      */
     public static void printUsernames()
@@ -161,7 +178,9 @@ public class UserHandler
         }
     }
 
-
+    /**
+     * Prints all emails in the ArrayList.
+     */
     public static void printEmails()
     {
         System.out.println("\nEmails:");
@@ -173,7 +192,6 @@ public class UserHandler
         }
     }
 
-
     /**
      * Returns the ArrayList of usernames.
      *
@@ -184,6 +202,11 @@ public class UserHandler
         return storedUsernames;
     }
 
+    /**
+     * Returns the ArrayList of emails.
+     *
+     * @return the ArrayList of emails
+     */
     public static ArrayList<String> getRegisteredEmails()
     {
         return registeredEmails;

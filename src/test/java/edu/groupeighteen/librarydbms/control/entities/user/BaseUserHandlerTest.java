@@ -65,7 +65,7 @@ public abstract class BaseUserHandlerTest
      * This method sets up test data for use in the test cases.
      */
     protected static void setupTestData() {
-        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/user_test_data.sql");
         DatabaseHandler.setVerbose(true);
     }
 
