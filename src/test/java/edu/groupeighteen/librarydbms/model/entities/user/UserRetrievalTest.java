@@ -20,6 +20,37 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserRetrievalTest
 {
+    //Valid retrieval
+    //Invalid ID
+
+    //Null username
+    //Empty username
+    //Short username
+    //Long username
+
+    //Null password
+    //Empty password
+    //Short password
+    //Long password
+
+    //Null userType
+
+    //Null email
+    //Empty email
+    //Short email
+    //Long email
+
+    //Invalid allowedRentals
+    // < 0 currentRentals
+    // currentRentals > allowedRentals
+
+    // < 0 lateFee
+
+    // lateFee == 0.0 && allowedRentals > currentRentals AND allowedToRent = false
+    // lateFee > 0.0 AND allowedToRent = true
+    // currentRentals >= defaultAllowedRentals
+    // deleted == true and allowedToRent == true
+
     /**
      *
      */
