@@ -498,7 +498,7 @@ public class UserHandler
         return null;
     }
 
-
+    //TODO OPTIONAL
     public static List<User> getUsersByFirstname(String firstname)
     {
         //Invalid firstname
@@ -509,6 +509,7 @@ public class UserHandler
         return null;
     }
 
+    //TODO OPTIONAL
     public static List<User> getUsersByLastname(String lastname)
     {
         //Invalid lastname
@@ -519,6 +520,7 @@ public class UserHandler
         return null;
     }
 
+    //TODO OPTIONAL
     public static User getUserByEmail(String email)
     {
         //Invalid email
@@ -531,6 +533,7 @@ public class UserHandler
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 
+    //TODO-comment
     private static void validateUsername(String username)
     throws InvalidNameException
     {
@@ -538,13 +541,13 @@ public class UserHandler
         checkUsernameTaken(username);
     }
 
+    //TODO-comment
     private static void validatePassword(String password)
     throws InvalidPasswordException
     {
         checkEmptyPassword(password);
 
     }
-
 
     /**
      * Checks whether a given username is null or empty. If so, throws an UsernameEmptyException
