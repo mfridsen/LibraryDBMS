@@ -3,11 +3,13 @@ package edu.groupeighteen.librarydbms.control.entities.user;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
+import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -87,10 +89,10 @@ public abstract class BaseUserHandlerTest
 
         try
         {
-            // Drop the test database
+            //Drop the test database
             DatabaseHandler.executeCommand("DROP DATABASE IF EXISTS " + testDatabaseName);
 
-            // Close the database connection
+            //Close the database connection
             if (connection != null && !connection.isClosed())
             {
                 DatabaseHandler.closeDatabaseConnection();
@@ -109,13 +111,38 @@ public abstract class BaseUserHandlerTest
      * This method is called after each test case. It resets the UserHandler to its default state.
      */
     @AfterEach
-    protected void resetUserHandler()
+    protected void reset()
+    {
+        resetUserHandler();
+    }
+
+    protected static void resetUserHandler()
     {
         UserHandler.reset();
     }
 
     protected static void resetUsersTable()
     {
+        //When a new record is inserted into the table, MySQL automatically increments the userID value, 
+        //regardless of whether old records are deleted. So, if the first user is deleted, the next user that is 
+        //created will have userID equal to 2, not 1.
         DatabaseHandler.executeCommand("DELETE FROM users;");
+        DatabaseHandler.executeCommand("ALTER TABLE users AUTO_INCREMENT = 1;");
+    }
+
+    protected static int getNumberOfUsers() {
+        int numberOfUsers = 0;
+
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery("SELECT COUNT(*) FROM users;", null)) {
+            ResultSet resultSet = queryResult.getResultSet();
+            if (resultSet.next()) {
+                numberOfUsers = resultSet.getInt(1);
+                System.out.println("Number of rows in users: " + numberOfUsers);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return numberOfUsers;
     }
 }

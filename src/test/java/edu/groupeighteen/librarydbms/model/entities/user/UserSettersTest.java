@@ -66,6 +66,7 @@ public class UserSettersTest
         {
             user = new User(validUserID1, validUsername, validPassword, userType, validEmail, allowedRentals,
                     currentRentals, lateFee, allowedToRent, deleted);
+            assertNotNull(user);
         }
         catch (ConstructionException e)
         {
@@ -85,6 +86,7 @@ public class UserSettersTest
         {
             user = new User(validUserID1, validUsername, validPassword, userType, validEmail, allowedRentals,
                     currentRentals, lateFee, allowedToRent, deleted);
+            assertNotNull(user);
         }
         catch (ConstructionException e)
         {

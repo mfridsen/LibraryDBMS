@@ -247,8 +247,9 @@ public class UserHandler
             newUser = new User(username, password, userType, email);
             newUser.setUserID(saveUser(newUser));
 
-            // Need to remember to add to the list
-            storedUsernames.add(newUser.getUsername());
+            // Need to remember to add to the lists
+            storedUsernames.add(username);
+            registeredEmails.add(email);
         }
         catch (ConstructionException | InvalidIDException e)
         {

@@ -1,0 +1,6 @@
+Strings:
+    Null String
+    Empty String
+    Too Short String
+    Too Long String
+    Incorrect Regex String
