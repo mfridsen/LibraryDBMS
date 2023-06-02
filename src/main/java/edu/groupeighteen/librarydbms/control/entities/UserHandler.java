@@ -61,7 +61,7 @@ public class UserHandler
     /**
      * Clears and syncs the both lists against the Users table.
      */
-    public static void sync() //TODO-test
+    public static void sync()
     {
         syncUsernames();
         syncEmails();
@@ -142,7 +142,7 @@ public class UserHandler
     /**
      * Clears both lists.
      */
-    public static void reset() //TODO-test
+    public static void reset()
     {
         resetUsernames();
         resetEmails();
@@ -790,8 +790,11 @@ public class UserHandler
     throws InvalidEmailException
     {
         checkEmailEmpty(email);
+        checkEmailTaken(email);
         checkEmailLength(email);
     }
+
+
 
 
     private static void checkEmailEmpty(String email)
@@ -799,6 +802,13 @@ public class UserHandler
     {
         if (email == null || email.isEmpty())
             throw new InvalidEmailException("Email cannot be null or empty.");
+    }
+
+    private static void checkEmailTaken(String email)
+    throws InvalidEmailException
+    {
+        if (registeredEmails.contains(email))
+            throw new InvalidEmailException("Email is already registered.");
     }
 
 

@@ -1,0 +1,28 @@
+//Test cases:
+
+    //Valid ADMIN VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid STAFF VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid PATRON VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid STUDENT VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid TEACHER VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid RESEARCHER VERIFY ALL FIELDS AND USERHANDLER LISTS
+
+    //Duplicate username
+    //Duplicate email
+
+    //Null username
+    //Empty username
+    //Short username 3
+    //Long username 20
+
+    //Null password
+    //Empty password
+    //Short password 8
+    //Long password 50
+
+    //Null email
+    //Empty email
+    //Short email 6
+    //Long email 255
+
+    //Null userType

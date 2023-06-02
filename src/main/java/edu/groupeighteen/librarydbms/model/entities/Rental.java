@@ -24,7 +24,7 @@ import java.time.temporal.ChronoUnit;
  * RentalDates cannot be null, and must be equal or less than LocalDateTime.now().
  * Usernames cannot be null or empty.
  * Titles cannot be null or empty.
- * RentalDueDates cannot be null or before rentalDate.
+ * RentalDueDates cannot be null or before rentalDate. TODO-Move up in hierarchy
  * RentalReturnDates cannot be before rentalDate.
  * LateFees cannot be negative.
  */
@@ -32,6 +32,10 @@ public class Rental extends Entity
 {
 
     //TODO ADD DELETED IN CONSTRUCTORS
+
+    //TODO-PRIO ADD RECEIPT
+
+    //TODO-FUTURE implement actual receipt printing via own printer
 
     /**
      *
