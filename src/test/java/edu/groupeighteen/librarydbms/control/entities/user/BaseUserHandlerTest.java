@@ -1,0 +1,121 @@
+package edu.groupeighteen.librarydbms.control.entities.user;
+
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
+import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+/**
+ * @author Mattias Fridsén
+ * @project LibraryDBMS
+ * @package edu.groupeighteen.librarydbms.control.entities.user
+ * @contact matfir-1@student.ltu.se
+ * @date 6/2/2023
+ * <p>
+ * We plan as much as we can (based on the knowledge available),
+ * When we can (based on the time and resources available),
+ * But not before.
+ * <p>
+ * Brought to you by enough nicotine to kill a large horse.
+ */
+public abstract class BaseUserHandlerTest
+{
+    protected static Connection connection = null;
+    protected static final String testDatabaseName = "test_database";
+
+    /**
+     * This method sets up the test environment before all test cases are executed.
+     * It sets up a connection to the database and creates the necessary tables for testing.
+     */
+    @BeforeAll
+    protected static void setUp()
+    {
+        //The connection and tables need to be set up before tests can commence.
+        setupConnectionAndTables();
+        //Test data and userhandler setups are optional
+    }
+
+    /**
+     * This method sets up a connection to the database and creates necessary tables for testing.
+     */
+    protected static void setupConnectionAndTables() {
+        try
+        {
+            connection = DatabaseConnection.setup();
+            DatabaseHandler.setConnection(connection);
+            DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
+            DatabaseHandler.executeCommand("drop database if exists " + testDatabaseName);
+            DatabaseHandler.executeCommand("create database " + testDatabaseName);
+            DatabaseHandler.executeCommand("use " + testDatabaseName);
+            DatabaseHandler.setVerbose(false);
+            DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
+        }
+        catch (SQLException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method sets up test data for use in the test cases.
+     */
+    protected static void setupTestData() {
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
+        DatabaseHandler.setVerbose(true);
+    }
+
+    /**
+     * This method sets up UserHandler for use in the test cases.
+     */
+    protected static void setupUserHandler()
+    {
+        UserHandler.setup();
+    }
+
+    /**
+     * This method is called after all test cases are executed. It drops the test database and closes the connection.
+     */
+    @AfterAll
+    static void tearDown()
+    {
+        System.out.println("\nCleaning up test data...");
+
+        try
+        {
+            // Drop the test database
+            DatabaseHandler.executeCommand("DROP DATABASE IF EXISTS " + testDatabaseName);
+
+            // Close the database connection
+            if (connection != null && !connection.isClosed())
+            {
+                DatabaseHandler.closeDatabaseConnection();
+            }
+        }
+        catch (SQLException e)
+        {
+            System.err.println("An error occurred during cleanup: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nCLEANUP FINISHED.");
+    }
+
+    /**
+     * This method is called after each test case. It resets the UserHandler to its default state.
+     */
+    @AfterEach
+    protected void resetUserHandler()
+    {
+        UserHandler.reset();
+    }
+
+    protected static void resetUsersTable()
+    {
+        DatabaseHandler.executeCommand("DELETE FROM users;");
+    }
+}

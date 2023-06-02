@@ -52,7 +52,7 @@ public class UserHandler
      */
     public static void setup()
     {
-        syncUsernames();
+        sync();
     }
 
 

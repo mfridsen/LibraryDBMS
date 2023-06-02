@@ -1,7 +1,6 @@
 package edu.groupeighteen.librarydbms.control.entities.user;
 
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
-import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
@@ -10,6 +9,8 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import org.junit.jupiter.api.*;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 import java.sql.SQLException;
 
@@ -25,6 +26,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Suite
+@SelectClasses({
+        UserHandlerSetupTest.class,
+})
 public class UserHandlerTestSuite extends BaseHandlerTest
 {
 
@@ -162,53 +167,6 @@ public class UserHandlerTestSuite extends BaseHandlerTest
 
     //SETUP-------------------------------------------------------------------------------------------------------------
 
-    @Test
-    @Order(7)
-    void testSetup_EmptyDatabase()
-    {
-        System.out.println("\n7: Testing setup method with an empty database...");
-
-        //Call the setup method
-        UserHandler.setup();
-
-        //Verify that the storedTitles and availableTitles maps are empty
-        assertEquals(0, UserHandler.getStoredUsernames().size(),
-                "storedUsernames list should be empty after setup with an empty database");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    /**
-     * Test case for the setup method with some users in the database.
-     * This test verifies the behavior of the setup method when there are existing users in the database.
-     */
-    @Test
-    @Order(8)
-    void testSetup_WithSomeUsersInDatabase()
-    {
-        System.out.println("\n8: Testing setup method with some users in the database...");
-
-        //Check that storedUsernames is empty
-        assertEquals(0, UserHandler.getStoredUsernames().size());
-
-        //Insert some users into the database without using createNewUser (which automatically increments storedUsernames)
-        String query = "INSERT INTO users (username, password, null, null, allowedRentals, currentRentals, lateFee, " +
-                "allowedToRent, deleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        String[] params1 = {"user1", "pass1", "5", "0", "0.0", "0", "0"};
-        String[] params2 = {"user2", "pass1", "5", "0", "0.0", "0", "0"};
-        String[] params3 = {"user3", "pass1", "5", "0", "0.0", "0", "0"};
-        DatabaseHandler.executePreparedQuery(query, params1);
-        DatabaseHandler.executePreparedQuery(query, params2);
-        DatabaseHandler.executePreparedQuery(query, params3);
-
-        //Call the setup method
-        UserHandler.setup();
-
-        //Verify that there are the expected amount of users in stored usernames
-        assertEquals(3, UserHandler.getStoredUsernames().size());
-
-        System.out.println("\nTEST FINISHED.");
-    }
 
     //GET BY ID---------------------------------------------------------------------------------------------------------
 
