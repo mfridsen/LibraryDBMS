@@ -235,8 +235,8 @@ public class UserHandler
             checkValidUserID(userID);
 
             // Prepare a SQL query to select a user by userID.
-            String query = "SELECT username, password, allowedRentals, currentRentals, " +
-                    "lateFee, allowedToRent, deleted FROM users WHERE userID = ?";
+            String query = "SELECT username, password, userType, email, allowedRentals, currentRentals, lateFee, " +
+                    "allowedToRent, deleted FROM users WHERE userID = ?";
             String[] params = {String.valueOf(userID)};
 
             // Execute the query and store the result in a ResultSet.

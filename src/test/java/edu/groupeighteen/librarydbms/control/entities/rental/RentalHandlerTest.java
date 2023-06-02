@@ -356,7 +356,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             //Change users number of rentals to maximum allowed
             User maxRentalUser = UserHandler.getUserByID(validUserID);
             assertNotNull(maxRentalUser);
-            maxRentalUser.setCurrentRentals(User.DEFAULT_ALLOWED_RENTALS);
+            maxRentalUser.setCurrentRentals(5);
             UserHandler.updateUser(maxRentalUser);
 
             //Tracer to find bug

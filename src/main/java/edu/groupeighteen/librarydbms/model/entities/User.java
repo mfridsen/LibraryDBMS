@@ -57,7 +57,6 @@ public class User extends Entity
         RESEARCHER
     }
 
-    public static final int DEFAULT_ALLOWED_RENTALS = 5;
     public static final int MIN_USERNAME_LENGTH = 3;
     public static final int MAX_USERNAME_LENGTH; //20
     public static final int MIN_PASSWORD_LENGTH = 8;
