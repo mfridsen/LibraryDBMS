@@ -99,6 +99,8 @@ public class User extends Entity
      *
      * @param username the username for the new User
      * @param password the password for the new User
+     * @param userType The type of the user.
+     * @param email    The users email address
      * @throws ConstructionException if the username or password is invalid
      */
     public User(String username, String password, UserType userType, String email)

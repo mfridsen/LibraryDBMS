@@ -8,10 +8,7 @@ import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
-import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import org.junit.jupiter.api.*;
 
@@ -131,7 +128,7 @@ public class DeleteAndUndoDeleteTest
                     "Literature item should not be marked as deleted after calling " +
                             "undoDeleteItem.");
         }
-        catch (InvalidIDException | RetrievalException e)
+        catch (InvalidIDException | RetrievalException | DeletionException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -175,4 +172,7 @@ public class DeleteAndUndoDeleteTest
 
         System.out.println("\nTEST FINISHED.");
     }
+
+    //TODO-future Delete Null item
+    //TODO-future Undo Delete Null item
 }
