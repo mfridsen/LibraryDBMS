@@ -150,6 +150,7 @@ public class User extends Entity
     throws ConstructionException
     {
         super(deleted);
+
         try
         {
             setUserID(userID);                  //Throws InvalidIDException
@@ -300,10 +301,14 @@ public class User extends Entity
     }
 
     public void setUserType(UserType userType)
-    throws InvalidTypeException
+    throws InvalidTypeException, InvalidUserRentalsException
     {
         if (userType == null)
             throw new InvalidTypeException("User Type cannot be null.");
+
+        //Update allowedRentals and allowedToRent
+        setAllowedRentals(getDefaultAllowedRentals(userType));
+
         this.userType = userType;
     }
 
@@ -342,6 +347,10 @@ public class User extends Entity
     {
         if (allowedRentals < 0)
             throw new InvalidUserRentalsException("Allowed Rentals can't be less than 0. Received: " + allowedRentals);
+
+        //Updates allowedToRent
+        setCurrentRentals(currentRentals);
+
         this.allowedRentals = allowedRentals;
     }
 

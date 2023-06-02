@@ -15,7 +15,8 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
         UserCreationTest.class,
-
+        UserRetrievalTest.class,
+        UserCopyTest.class,
 })
 public class UserTestSuite
 {

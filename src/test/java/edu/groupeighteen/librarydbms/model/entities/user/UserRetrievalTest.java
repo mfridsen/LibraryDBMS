@@ -73,7 +73,8 @@ public class UserRetrievalTest
             boolean allowedToRent = true;
             boolean deleted = false;
 
-            User user = new User(userId, username, password, userType, email, allowedRentals, currentRentals, lateFee, allowedToRent, deleted);
+            User user = new User(userId, username, password, userType, email, allowedRentals, currentRentals, lateFee,
+                    allowedToRent, deleted);
 
             assertNotNull(user);
             assertEquals(userId, user.getUserID());
@@ -365,7 +366,8 @@ public class UserRetrievalTest
     @Order(20)
     void testUser_LateFeeZeroNotAllowedToRent()
     {
-        System.out.println("\n20: Testing User constructor with lateFee == 0.0 && allowedRentals > currentRentals AND allowedToRent = false...");
+        System.out.println(
+                "\n20: Testing User constructor with lateFee == 0.0 && allowedRentals > currentRentals AND allowedToRent = false...");
 
         assertThrows(ConstructionException.class, () ->
                 new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
@@ -397,7 +399,8 @@ public class UserRetrievalTest
 
         assertThrows(ConstructionException.class, () ->
                 new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
-                        User.getDefaultAllowedRentals(User.UserType.PATRON), User.getDefaultAllowedRentals(User.UserType.PATRON), 0.0, true, false));
+                        User.getDefaultAllowedRentals(User.UserType.PATRON),
+                        User.getDefaultAllowedRentals(User.UserType.PATRON), 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
     }
