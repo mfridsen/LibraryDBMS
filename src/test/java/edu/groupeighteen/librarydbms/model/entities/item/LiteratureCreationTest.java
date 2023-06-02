@@ -64,7 +64,7 @@ public class LiteratureCreationTest
                     "New Literature items should have null authorName by default");
             assertNull(literature.getClassificationName(),
                     "New Literature items should have null classificationName by default");
-            assertEquals(Item.getDefaultAllowedDays(Item.ItemType.OTHER_BOOKS), literature.getAllowedRentalDays(),
+            assertEquals(Item.getDefaultAllowedRentalDays(Item.ItemType.OTHER_BOOKS), literature.getAllowedRentalDays(),
                     "AllowedRentalDays should be set correctly in constructor");
         }
         catch (ConstructionException e)

@@ -12,6 +12,7 @@ import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -399,7 +400,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             RentalHandler.setVerbose(false);
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidNameException | RentalNotAllowedException | RetrievalException e)
+        catch (InvalidIDException | NullEntityException | InvalidNameException | RetrievalException | InvalidUserRentalsException | EntityNotFoundException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -443,7 +444,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             assertTrue(actualMessage.contains(expectedMessage));
 
         }
-        catch (InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | InvalidNameException | InvalidLateFeeException e)
+        catch (InvalidIDException | NullEntityException | InvalidNameException | InvalidLateFeeException | EntityNotFoundException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

@@ -54,7 +54,7 @@ public class DatabaseHandler
         catch (SQLException | ClassNotFoundException e)
         {
             ExceptionHandler.HandleFatalException("Failed to setup databse due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         /*
@@ -87,7 +87,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to verify that database exists due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
             return false;
         }
     }
@@ -133,7 +133,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to execute command due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -172,7 +172,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to execute prepared update due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, but needed to compile
@@ -204,7 +204,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to execute query due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
         return new QueryResult(resultSet, statement);
     }
@@ -247,7 +247,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to execute prepared query due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
         return new QueryResult(resultSet, preparedStatement);
     }
@@ -281,7 +281,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to execute update due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         return rowsAffected;
@@ -365,18 +365,18 @@ public class DatabaseHandler
         {
             DatabaseMetaData metaData = connection.getMetaData();
 
-            // Get metadata for authorFirstname column
+            //Get metadata for authorFirstname column
             ResultSet resultSet = metaData.getColumns(null, null,
-                                                      "authors", "authorFirstname");
+                    "authors", "authorFirstname");
             int firstnameColumnSize = 0;
             if (resultSet.next())
             {
                 firstnameColumnSize = resultSet.getInt("COLUMN_SIZE");
             }
 
-            // Get metadata for authorLastName column
+            //Get metadata for authorLastName column
             resultSet = metaData.getColumns(null, null,
-                                            "authors", "authorLastName");
+                    "authors", "authorLastName");
             int lastnameColumnSize = 0;
             if (resultSet.next())
             {
@@ -389,7 +389,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve Author Meta data due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, but needed to compile
@@ -410,10 +410,10 @@ public class DatabaseHandler
         {
             DatabaseMetaData metaData = connection.getMetaData();
 
-            // Get metadata for classificationName column
+            //Get metadata for classificationName column
             ResultSet resultSet = metaData.getColumns(null, null,
-                                                      "classifications",
-                                                      "classificationName");
+                    "classifications",
+                    "classificationName");
             int classificationNameColumnSize = 0;
             if (resultSet.next())
             {
@@ -425,7 +425,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve Classification Meta data due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, but needed to compile
@@ -447,7 +447,7 @@ public class DatabaseHandler
 
             //Get metadata for title column
             ResultSet resultSet = metaData.getColumns(null, null,
-                                                      "items", "title");
+                    "items", "title");
             int titleColumnSize = 0;
             if (resultSet.next())
             {
@@ -456,7 +456,7 @@ public class DatabaseHandler
 
             //Get metadata for barcode column
             resultSet = metaData.getColumns(null, null,
-                                            "items", "barcode");
+                    "items", "barcode");
             int barcodeColumnSize = 0;
             if (resultSet.next())
             {
@@ -469,7 +469,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve Item Meta data due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, but needed to compile
@@ -491,7 +491,7 @@ public class DatabaseHandler
 
             //Get metadata for title column
             ResultSet resultSet = metaData.getColumns(null, null,
-                                                      "literature", "isbn");
+                    "literature", "isbn");
             int ISBNColumnSize = 0;
             if (resultSet.next())
             {
@@ -503,7 +503,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve Literature Meta data due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, but needed to compile
@@ -525,7 +525,7 @@ public class DatabaseHandler
 
             //Get metadata for title column
             ResultSet resultSet = metaData.getColumns(null, null,
-                                                      "films", "countryOfProduction");
+                    "films", "countryOfProduction");
             int countryOfProductionColumnSize = 0;
             if (resultSet.next())
             {
@@ -537,7 +537,7 @@ public class DatabaseHandler
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve Literature Meta data due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, but needed to compile
@@ -559,35 +559,52 @@ public class DatabaseHandler
         {
             DatabaseMetaData metaData = connection.getMetaData();
 
-            // Get metadata for username column
+            //Get metadata for username column
             ResultSet resultSet = metaData.getColumns(null, null,
-                                                      "users", "username");
+                    "users", "username");
             int usernameColumnSize = 0;
             if (resultSet.next())
             {
                 usernameColumnSize = resultSet.getInt("COLUMN_SIZE");
             }
 
-            // Get metadata for password column
+            //Get metadata for password column
             resultSet = metaData.getColumns(null, null,
-                                            "users", "password");
+                    "users", "password");
             int passwordColumnSize = 0;
             if (resultSet.next())
             {
                 passwordColumnSize = resultSet.getInt("COLUMN_SIZE");
             }
 
-            return new int[]{usernameColumnSize, passwordColumnSize};
+            //Get metadata for email column
+            resultSet = metaData.getColumns(null, null,
+                    "users", "email");
+            int emailColumnSize = 0;
+            if (resultSet.next())
+            {
+                emailColumnSize = resultSet.getInt("COLUMN_SIZE");
+            }
+
+            return new int[]{usernameColumnSize, passwordColumnSize, emailColumnSize};
 
         }
         catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Couldn't retrieve User Meta data due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Won't reach, but needed to compile
         return new int[0];
+    }
+
+    private static void checkConnection()
+    {
+        if (connection == null)
+        {
+            setup(false);
+        }
     }
 
     /**
@@ -617,13 +634,5 @@ public class DatabaseHandler
     public static void setVerbose(boolean verbose)
     {
         DatabaseHandler.verbose = verbose;
-    }
-
-    private static void checkConnection()
-    {
-        if (connection == null)
-        {
-            setup(false);
-        }
     }
 }

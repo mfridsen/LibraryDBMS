@@ -6,7 +6,7 @@ import edu.groupeighteen.librarydbms.model.entities.rental.RentalTest;
 import edu.groupeighteen.librarydbms.model.entities.classification.ClassificationTest;
 import edu.groupeighteen.librarydbms.model.entities.item.FilmTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.item.LiteratureTestSuite;
-import edu.groupeighteen.librarydbms.model.entities.user.UserTest;
+import edu.groupeighteen.librarydbms.model.entities.user.UserTestSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -32,7 +32,7 @@ import org.junit.platform.suite.api.Suite;
         ClassificationTest.class,
         LiteratureTestSuite.class,
         FilmTestSuite.class,
-        UserTest.class,
+        UserTestSuite.class,
         RentalTest.class,
 })
 

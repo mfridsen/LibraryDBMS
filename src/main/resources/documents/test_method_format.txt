@@ -28,8 +28,10 @@ void testSetup_EmptyDatabase()
     System.out.println("\nTEST FINISHED.");
 }
 
-If exceptions can be thrown, all non-asserted methods should be handled by placing the entire test in a try-catch
-block and failing like so:
+If exceptions can be thrown, either catch or assert them depending on the test case. No need to assert messages
+in exceptions:
+
+Example 1:
 
     /**
      * Test case for the setPublisherName method with valid data.
@@ -51,6 +53,22 @@ block and failing like so:
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
         }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+Example 2, use lambda expressions and for gods sake use .repeat to generate too-long strings:
+
+@Test
+    @Order(19)
+    void testUser_LongEmail()
+    {
+        System.out.println("\n19: Testing User constructor with long email...");
+
+        String longEmail = "a".repeat(User.MAX_EMAIL_LENGTH + 1); // More than MAX_EMAIL_LENGTH
+
+        assertThrows(ConstructionException.class, () ->
+                new User("username", "password", User.UserType.PATRON, longEmail));
 
         System.out.println("\nTEST FINISHED.");
     }

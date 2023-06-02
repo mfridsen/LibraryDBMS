@@ -45,6 +45,8 @@ public class UserHandler
      */
     private static final ArrayList<String> storedUsernames = new ArrayList<>();
 
+    private static final ArrayList<String> registeredEmails = new ArrayList<>();
+
     /**
      * Performs setup tasks. In this case, syncing storedUsernames against the database.
      */
@@ -137,17 +139,8 @@ public class UserHandler
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Creates a new user with the specified username and password. The method first checks if the provided username is
-     * already taken. If the username is unique, a new User object is created and saved to the database. The User's ID
-     * from the database is set in the User object before it is returned. The method also handles any potential
-     * InvalidPasswordException or InvalidIDException.
-     *
-     * @param username The username for the new user.
-     * @param password The password for the new user.
-     * @return A User object representing the newly created user.
-     */
-    public static User createNewUser(String username, String password)
+
+    public static User createNewUser(String username, String password, User.UserType userType, String email)
     throws InvalidNameException,
            InvalidPasswordException
     {
@@ -160,7 +153,7 @@ public class UserHandler
             validatePassword(password);
 
             // Create and save the new user, retrieving the ID
-            newUser = new User(username, password);
+            newUser = new User(username, password, userType, email);
             newUser.setUserID(saveUser(newUser));
 
             // Need to remember to add to the list
@@ -254,16 +247,17 @@ public class UserHandler
                 // and set the user's userID.
                 if (resultSet.next())
                 {
-
-                    return new User(userID,
+                    return new User(
+                            userID,
                             resultSet.getString("username"),
                             resultSet.getString("password"),
+                            User.UserType.valueOf(resultSet.getString("userType")),
+                            resultSet.getString("email"),
                             resultSet.getInt("allowedRentals"),
                             resultSet.getInt("currentRentals"),
                             resultSet.getFloat("lateFee"),
                             resultSet.getBoolean("allowedToRent"),
-                            resultSet.getBoolean("deleted")
-                    );
+                            resultSet.getBoolean("deleted"));
                 }
             }
         }
@@ -289,13 +283,13 @@ public class UserHandler
      * @param updatedUser The User object containing the updated user data.
      */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
     public static void updateUser(User updatedUser)
-    throws NullEntityException, InvalidNameException
+    throws NullEntityException, InvalidNameException, InvalidIDException, EntityNotFoundException
     {
+        //Validate input
+        validateUser(updatedUser);
+
         try
         {
-            //Let's check if the user exists in the database before we go on
-            validateUser(updatedUser);
-
             //Retrieve old username
             String oldUsername = getUserByID(updatedUser.getUserID()).getUsername();
 
@@ -324,7 +318,7 @@ public class UserHandler
             // Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
         }
-        catch (EntityNotFoundException | InvalidIDException e)
+        catch (InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to update user in database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -479,16 +473,22 @@ public class UserHandler
                 // If the ResultSet contains data, create a new User object using the retrieved username and password,
                 // and set the user's userID
                 if (resultSet.next())
-                { //TODO-PRIO UPDATE
-                    User user = new User(username, resultSet.getString("password"));
-                    user.setUserID(resultSet.getInt("userID"));
-                    user.setCurrentRentals(resultSet.getInt("currentRentals"));
-                    user.setLateFee(resultSet.getFloat("lateFee"));
-                    return user;
+                {
+                    return new User(
+                            resultSet.getInt("userID"),
+                            username,
+                            resultSet.getString("password"),
+                            User.UserType.valueOf(resultSet.getString("userType")),
+                            resultSet.getString("email"),
+                            resultSet.getInt("allowedRentals"),
+                            resultSet.getInt("currentRentals"),
+                            resultSet.getFloat("lateFee"),
+                            resultSet.getBoolean("allowedToRent"),
+                            resultSet.getBoolean("deleted"));
                 }
             }
         }
-        catch (SQLException | InvalidIDException | InvalidLateFeeException | ConstructionException | RentalNotAllowedException e)
+        catch (SQLException | ConstructionException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve user by username from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -529,7 +529,6 @@ public class UserHandler
         // == 3
         return null;
     }
-
 
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 

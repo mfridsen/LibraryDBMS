@@ -60,7 +60,7 @@ public class UserHandlerTest extends BaseHandlerTest
         {
             String username = "ValidUser";
             String password = "validPassword123";
-            User newUser = UserHandler.createNewUser(username, password);
+            User newUser = UserHandler.createNewUser(username, password, null, null);
 
             assertNotNull(newUser, "New user should be created");
             assertEquals(username, newUser.getUsername(), "Username should match input");
@@ -91,10 +91,10 @@ public class UserHandlerTest extends BaseHandlerTest
             //Insert first user
             String username = "ValidUser";
             String password = "validPassword123";
-            UserHandler.createNewUser(username, password);
+            UserHandler.createNewUser(username, password, null, null);
 
             //Check that attempting to create another with same name doesn't work
-            assertThrows(InvalidNameException.class, () -> UserHandler.createNewUser(username, password),
+            assertThrows(InvalidNameException.class, () -> UserHandler.createNewUser(username, password, null, null),
                     "Exception should be thrown for duplicate username");
         }
         catch (InvalidNameException | InvalidPasswordException e)
@@ -113,7 +113,7 @@ public class UserHandlerTest extends BaseHandlerTest
 
         String username = "ab";
         String password = "validPassword123";
-        assertThrows(ConstructionException.class, () -> UserHandler.createNewUser(username, password),
+        assertThrows(ConstructionException.class, () -> UserHandler.createNewUser(username, password, null, null),
                 "Exception should be thrown for short username");
 
         System.out.println("\nTEST FINISHED.");
@@ -127,7 +127,7 @@ public class UserHandlerTest extends BaseHandlerTest
 
         String username = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
         String password = "validPassword123";
-        assertThrows(ConstructionException.class, () -> UserHandler.createNewUser(username, password),
+        assertThrows(ConstructionException.class, () -> UserHandler.createNewUser(username, password, null, null),
                 "Exception should be thrown for long username");
 
         System.out.println("\nTEST FINISHED.");
@@ -141,7 +141,7 @@ public class UserHandlerTest extends BaseHandlerTest
 
         String username = "ValidUser";
         String password = "short";
-        assertThrows(InvalidPasswordException.class, () -> UserHandler.createNewUser(username, password),
+        assertThrows(InvalidPasswordException.class, () -> UserHandler.createNewUser(username, password, null, null),
                 "Exception should be thrown for short password");
 
         System.out.println("\nTEST FINISHED.");
@@ -155,7 +155,7 @@ public class UserHandlerTest extends BaseHandlerTest
 
         String username = "ValidUser";
         String password = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
-        assertThrows(InvalidPasswordException.class, () -> UserHandler.createNewUser(username, password),
+        assertThrows(InvalidPasswordException.class, () -> UserHandler.createNewUser(username, password, null, null),
                 "Exception should be thrown for long password");
 
         System.out.println("\nTEST FINISHED.");
@@ -193,7 +193,7 @@ public class UserHandlerTest extends BaseHandlerTest
         assertEquals(0, UserHandler.getStoredUsernames().size());
 
         //Insert some users into the database without using createNewUser (which automatically increments storedUsernames)
-        String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, lateFee, " +
+        String query = "INSERT INTO users (username, password, null, null, allowedRentals, currentRentals, lateFee, " +
                 "allowedToRent, deleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String[] params1 = {"user1", "pass1", "5", "0", "0.0", "0", "0"};
         String[] params2 = {"user2", "pass1", "5", "0", "0.0", "0", "0"};
@@ -224,7 +224,7 @@ public class UserHandlerTest extends BaseHandlerTest
             String username = "username";
             String password = "password";
             //Insert a user into the database
-            UserHandler.createNewUser(username, password);
+            UserHandler.createNewUser(username, password, null, null);
 
             //Call the getUserByUsername method and get ID
             User user1 = UserHandler.getUserByUsername(username);
@@ -266,7 +266,7 @@ public class UserHandlerTest extends BaseHandlerTest
         {
             int nonExistentID = 99999;
             //Insert a user into the database
-            UserHandler.createNewUser("username", "password");
+            UserHandler.createNewUser("username", "password", null, null);
 
             //Verify it exists and doesn't have nonExistentID as ID
             User existingUser = UserHandler.getUserByUsername("username");
@@ -324,7 +324,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a newUser object
-            User newUser = UserHandler.createNewUser("user1", "password1");
+            User newUser = UserHandler.createNewUser("user1", "password1", null, null);
 
             //Verify newUsers username exists in storedUsernames
             assertEquals(1, UserHandler.getStoredUsernames().size());
@@ -337,7 +337,7 @@ public class UserHandlerTest extends BaseHandlerTest
             assertEquals(1, UserHandler.getStoredUsernames().size());
             assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
         }
-        catch (NullEntityException | InvalidNameException | InvalidPasswordException e)
+        catch (NullEntityException | InvalidNameException | InvalidPasswordException | InvalidIDException | EntityNotFoundException e)
         {
             fail("Should not get exception for valid test.");
             e.printStackTrace();
@@ -356,11 +356,11 @@ public class UserHandlerTest extends BaseHandlerTest
         {
             //Create our first user, 'taking' that username
             String firstUsername = "user1";
-            UserHandler.createNewUser(firstUsername, "password1");
+            UserHandler.createNewUser(firstUsername, "password1", null, null);
 
             //Create a newUser object with a second username
             String secondUsername = "user2";
-            User newUser = UserHandler.createNewUser(secondUsername, "password1");
+            User newUser = UserHandler.createNewUser(secondUsername, "password1", null, null);
 
             //Assert that two usernames exist in storedUsernames, and they are the correct names
             assertEquals(2, UserHandler.getStoredUsernames().size());
@@ -400,11 +400,11 @@ public class UserHandlerTest extends BaseHandlerTest
         {
             //Create our first user, 'taking' that username
             String firstUsername = "user1";
-            UserHandler.createNewUser(firstUsername, "password1");
+            UserHandler.createNewUser(firstUsername, "password1", null, null);
 
             //Create a newUser object with a second username
             String secondUsername = "user2";
-            User newUser = UserHandler.createNewUser(secondUsername, "password1");
+            User newUser = UserHandler.createNewUser(secondUsername, "password1", null, null);
 
             //Set username of newUser to firstUsername (which is already taken)
             newUser.setUsername(firstUsername);
@@ -435,7 +435,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a new User
-            User newUser = UserHandler.createNewUser("user1", "password1");
+            User newUser = UserHandler.createNewUser("user1", "password1", null, null);
 
             //Change password
             newUser.setPassword("newPassword");
@@ -452,7 +452,8 @@ public class UserHandlerTest extends BaseHandlerTest
             UserHandler.updateUser(newUser);
             assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
         }
-        catch (NullEntityException | InvalidNameException | InvalidLateFeeException | InvalidPasswordException | RentalNotAllowedException e)
+        catch (NullEntityException | InvalidNameException | InvalidLateFeeException | InvalidPasswordException
+                | InvalidIDException | EntityNotFoundException | InvalidUserRentalsException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -491,7 +492,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a User object with an ID that does not exist in the database
-            User nonExistingUser = new User("nonExistingUsername", "password");
+            User nonExistingUser = new User("nonExistingUsername", "password", null, null);
             nonExistingUser.setUserID(1);
 
             //Assert User doesn't exist in database
@@ -519,7 +520,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a new User
-            User newUser = UserHandler.createNewUser("user1", "password1");
+            User newUser = UserHandler.createNewUser("user1", "password1", null, null);
 
             //Assert that a username exists in storedUsernames
             assertEquals(1, UserHandler.getStoredUsernames().size());
@@ -619,7 +620,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a new user
-            UserHandler.createNewUser("user1", "password1");
+            UserHandler.createNewUser("user1", "password1", null, null);
             //Attempt to login with the correct username but incorrect password
             assertFalse(UserHandler.login("user1", "incorrectPassword"),
                     "Login should return false when password is incorrect.");
@@ -642,7 +643,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a new user
-            UserHandler.createNewUser("user2", "password2");
+            UserHandler.createNewUser("user2", "password2", null, null);
 
             //Attempt to login with the correct username and password
             assertTrue(UserHandler.login("user2", "password2"),
@@ -680,7 +681,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a new User
-            User user = UserHandler.createNewUser("user1", "password1");
+            User user = UserHandler.createNewUser("user1", "password1", null, null);
 
             //Call validateUser with null password
             assertThrows(InvalidPasswordException.class, () -> UserHandler.validate(user, null),
@@ -706,7 +707,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a new user
-            User user = new User("user1", "password1");
+            User user = new User("user1", "password1", null, null);
 
             //Call validateUser with correct password and expect true to be returned
             assertTrue(UserHandler.validate(user, "password1"),
@@ -730,7 +731,7 @@ public class UserHandlerTest extends BaseHandlerTest
         try
         {
             //Create a new user
-            User user = new User("user1", "password1");
+            User user = new User("user1", "password1", null, null);
 
             //Call validateUser with incorrect password and expect false to be returned
             assertFalse(UserHandler.validate(user, "password2"),
@@ -758,7 +759,7 @@ public class UserHandlerTest extends BaseHandlerTest
             String username = "username";
             String password = "password";
             //Insert a user into the database
-            UserHandler.createNewUser(username, password);
+            UserHandler.createNewUser(username, password, null, null);
 
             //Call the getUserByUsername method with a valid username
             User user = UserHandler.getUserByUsername(username);

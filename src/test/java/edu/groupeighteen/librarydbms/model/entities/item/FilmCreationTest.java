@@ -68,7 +68,7 @@ public class FilmCreationTest
                     "New Film items should have null authorName by default");
             assertNull(film.getClassificationName(),
                     "New Film items should have null classificationName by default");
-            assertEquals(Item.getDefaultAllowedDays(Item.ItemType.FILM), film.getAllowedRentalDays(),
+            assertEquals(Item.getDefaultAllowedRentalDays(Item.ItemType.FILM), film.getAllowedRentalDays(),
                     "AllowedRentalDays should be set correctly in constructor");
         }
         catch (ConstructionException e)

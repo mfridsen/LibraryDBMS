@@ -13,6 +13,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -152,7 +153,7 @@ public class RentalHandler
             return newRental;
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException | InvalidTitleException | RetrievalException e)
+        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException | InvalidTitleException | RetrievalException | InvalidUserRentalsException e)
         {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
