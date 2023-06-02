@@ -19,11 +19,7 @@ import static edu.groupeighteen.librarydbms.control.entities.ItemHandler.getItem
  * @contact matfir-1@student.ltu.se
  * @date 6/1/2023
  * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
- * Brought to you by enough nicotine to kill a large horse.
+ * Class containing static utility methods for the ItemHandler class.
  */
 public class ItemHandlerUtils
 {
@@ -41,6 +37,12 @@ public class ItemHandlerUtils
             throw new InvalidTitleException("Empty title.");
     }
 
+    /**
+     * Validates the given ISBN.
+     *
+     * @param ISBN the ISBN to validate
+     * @throws InvalidISBNException if the ISBN is empty or exceeds the maximum length
+     */
     static void validateISBN(String ISBN)
     throws InvalidISBNException
     {
@@ -50,6 +52,12 @@ public class ItemHandlerUtils
             throw new InvalidISBNException("Too long ISBN.");
     }
 
+    /**
+     * Validates the given classification name.
+     *
+     * @param classificationName the classification name to validate
+     * @throws InvalidNameException if the classification name is empty or exceeds the maximum length
+     */
     static void validateEmptyClassificationName(String classificationName)
     throws InvalidNameException
     {
@@ -140,6 +148,15 @@ public class ItemHandlerUtils
         return classification;
     }
 
+    /**
+     * Retrieves the old title of the given item from the database.
+     *
+     * @param item the item to retrieve the old title for
+     * @return the old title of the item
+     * @throws InvalidIDException         if the item ID is invalid
+     * @throws EntityNotFoundException   if the item is not found in the database
+     * @throws RetrievalException        if an error occurs during retrieval
+     */
     static String retrieveOldTitle(Item item)
     throws InvalidIDException, EntityNotFoundException, RetrievalException
     {
@@ -151,6 +168,15 @@ public class ItemHandlerUtils
         return oldItem.getTitle();
     }
 
+    /**
+     * Retrieves the old barcode of the given item from the database.
+     *
+     * @param item the item to retrieve the old barcode for
+     * @return the old barcode of the item
+     * @throws InvalidIDException         if the item ID is invalid
+     * @throws RetrievalException        if an error occurs during retrieval
+     * @throws EntityNotFoundException   if the item is not found in the database
+     */
     static String retrieveOldBarcode(Item item)
     throws InvalidIDException, RetrievalException, EntityNotFoundException
     {
@@ -162,6 +188,12 @@ public class ItemHandlerUtils
         return oldItem.getBarcode();
     }
 
+    /**
+     * Constructs a Literature object using the data from the given ResultSet.
+     *
+     * @param resultSet the ResultSet containing the literature data
+     * @return the constructed Literature object
+     */
     static Literature constructRetrievedLiterature(ResultSet resultSet)
     {
         Literature literature = null;
@@ -194,7 +226,12 @@ public class ItemHandlerUtils
         return literature;
     }
 
-
+    /**
+     * Constructs a Film object using the data from the given ResultSet.
+     *
+     * @param resultSet the ResultSet containing the film data
+     * @return the constructed Film object
+     */
     static Film constructRetrievedFilm(ResultSet resultSet)
     {
         Film film = null;
@@ -235,7 +272,8 @@ public class ItemHandlerUtils
     static void printTitles()
     {
         System.out.println("\nTitles:");
-        ItemHandler.getStoredTitles().forEach((title, count) -> System.out.println("Title: " + title + " Copies: " + count));
+        ItemHandler.getStoredTitles().forEach(
+                (title, count) -> System.out.println("Title: " + title + " Copies: " + count));
     }
 
     /**

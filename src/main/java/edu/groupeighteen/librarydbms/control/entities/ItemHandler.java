@@ -83,7 +83,7 @@ public class ItemHandler
     /**
      * Returns the registeredBarcodes list.
      *
-     * @return the registeredBarcodes list. //TODO-PRIO TEST
+     * @return the registeredBarcodes list.
      */
     public static ArrayList<String> getRegisteredBarcodes()
     {
@@ -125,7 +125,6 @@ public class ItemHandler
     {
         availableTitles.put(title, availableTitles.getOrDefault(title, 0) + 1);
     }
-
 
     /**
      * Decrements the count of a title in the stored titles map. If the count reaches 0, the title is removed from both stored and available titles maps.
@@ -452,6 +451,11 @@ public class ItemHandler
                         literature.getISBN()});
     }
 
+    /**
+     * Saves a Film object to the films table in the database.
+     *
+     * @param film the Film object to save
+     */
     private static void saveFilm(Film film)
     {
         // Check if countryOfProduction or listOfActors are null
@@ -710,7 +714,15 @@ public class ItemHandler
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
-    public static List<Item> getItems(String sqlSuffix, String[] params, int settings) //TODO-comment
+    /**
+     * Retrieves a list of items based on the provided SQL suffix, parameters, and settings.
+     *
+     * @param sqlSuffix the SQL suffix to append to the main SQL command
+     * @param params    the parameters to use in the prepared statement
+     * @param settings  the settings for executing the prepared query
+     * @return a list of items matching the query criteria
+     */
+    public static List<Item> getItems(String sqlSuffix, String[] params, int settings)
     {
         List<Item> items = new ArrayList<>();
 
@@ -742,14 +754,25 @@ public class ItemHandler
         return items;
     }
 
-    //TODO-comment
+    /**
+     * Retrieves all items from the database.
+     *
+     * @return a list of all items
+     */
     public static List<Item> getAllItems()
     {
         return getItems(null, null, 0);
     }
 
-
-    public static Item getItemByID(int itemID) //TODO-comment
+    /**
+     * Retrieves an item with the specified item ID.
+     *
+     * @param itemID the ID of the item to retrieve
+     * @return the item object matching the provided ID, or null if not found
+     * @throws InvalidIDException if the provided item ID is invalid
+     * @throws RetrievalException if there is an error retrieving the item
+     */
+    public static Item getItemByID(int itemID)
     throws InvalidIDException, RetrievalException
     {
         // Validate the provided ID
@@ -766,8 +789,14 @@ public class ItemHandler
         else return items.get(0);
     }
 
-
-    public static List<Item> getItemsByTitle(String title) //TODO-comment
+    /**
+     * Retrieves items with the specified title.
+     *
+     * @param title the title of the items to retrieve
+     * @return a list of items matching the provided title
+     * @throws InvalidTitleException if the provided title is invalid
+     */
+    public static List<Item> getItemsByTitle(String title)
     throws InvalidTitleException
     {
         //No point getting invalid Items
@@ -778,18 +807,16 @@ public class ItemHandler
         String[] params = {title};
 
         return getItems(suffix, params, 0);
-
-        //Null title
-        //Empty title
-        //TODO-future TOO LONG TITLE ( > Item.ITEM_TITLE_MAX_LENGTH)
-        //Non-existent item
-        //1 item exists
-        //Multiple items exist, different types
-        //== 5 tests
     }
 
-
-    public static List<Item> getItemsByISBN(String ISBN) //TODO-test //TODO-comment
+    /**
+     * Retrieves a list of items by ISBN.
+     *
+     * @param ISBN the ISBN of the items to retrieve
+     * @return a list of items matching the given ISBN
+     * @throws InvalidISBNException if the provided ISBN is invalid
+     */
+    public static List<Item> getItemsByISBN(String ISBN)
     throws InvalidISBNException
     {
         //No point getting invalid Items
@@ -800,19 +827,17 @@ public class ItemHandler
         String[] params = {ISBN};
 
         return getItems(suffix, params, 0);
-
-        //Empty ISBN
-        //Null ISBN
-        //Too long ISBN (> Literature.LITERATURE_ISBN_LENGTH)
-        //Item does not exist
-        //Item does exist
-        //Multiple Items exist
-        //== 6 test cases
     }
 
-
+    /**
+     * Retrieves items with the specified classification name.
+     *
+     * @param classificationName the name of the classification
+     * @return a list of items matching the provided classification name
+     * @throws InvalidNameException if the provided classification name is invalid
+     */
     public static List<Item> getItemsByClassification(String classificationName)
-    throws InvalidNameException  //TODO-comment
+    throws InvalidNameException
     {
         //No point getting invalid Items
         validateEmptyClassificationName(classificationName);
@@ -823,19 +848,17 @@ public class ItemHandler
         String[] params = {classificationName};
 
         return getItems(suffix, params, 0);
-
-        //Empty classificationName
-        //Null classificationName
-        //classificationName too long (> Classification.CLASSIFICATION_NAME_LENGTH)
-        //classificationName does not exist
-        //Items don't exist in classificationName
-        //Item does exist
-        //Multiple Items exist
-        //== 7 test cases
     }
 
-
-    public static List<Item> getItemsByAuthor(String authorFirstname, String authorLastname) //TODO-test //TODO-comment
+    /**
+     * Retrieves items with the specified author's first name and last name.
+     *
+     * @param authorFirstname the first name of the author
+     * @param authorLastname  the last name of the author
+     * @return a list of items matching the provided author's name
+     * @throws InvalidNameException if the provided author's name is invalid
+     */
+    public static List<Item> getItemsByAuthor(String authorFirstname, String authorLastname)
     throws InvalidNameException
     {
         //Validate input, one name can be null, not both
@@ -869,18 +892,6 @@ public class ItemHandler
         }
 
         return getItems(suffix, params, 0);
-
-        //empty authorFirstname
-        //null authorFirstname
-        //empty authorLastname
-        //null authorLastname
-        //empty both
-        //null both
-        //no such author
-        //author exists, but no titles for some reason
-        //author exists and has title
-        //Multiple Items exist for author
-        //== 10 test cases
     }
 
     //TODO OPTIONAL

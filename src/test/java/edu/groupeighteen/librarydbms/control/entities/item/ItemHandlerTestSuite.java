@@ -23,7 +23,8 @@ import org.junit.platform.suite.api.Suite;
         GetAllItemsTest.class,
         GetItemsByTitleTest.class,
         GetItemsByClassificationTest.class,
-
+        GetItemsByISBNTest.class,
+        GetItemsByAuthorTest.class,
 })
 public class ItemHandlerTestSuite
 {
