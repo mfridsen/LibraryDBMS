@@ -1,4 +1,12 @@
-//Test cases:
+//setup:
+
+    //Empty Database
+    //Some Users in Database
+    //With Test Data
+    //Reset With Test Data
+    //Sync With Test Data
+
+//createNewUser:
 
     //Valid ADMIN VERIFY ALL FIELDS AND USERHANDLER LISTS
     //Valid STAFF VERIFY ALL FIELDS AND USERHANDLER LISTS
@@ -26,3 +34,35 @@
     //Long email 255
 
     //Null userType
+
+//getUserByID:
+
+    //ValidUserPresent
+    //ValidUserNotPresent
+    //InvalidUserID
+
+//updateUser:
+
+    //Username Unchanged
+    //Username Not Taken
+    //Email Unchanged
+    //Email Not Taken
+    //Null User
+    //New Username Taken
+    //New Email Taken
+
+//deleteAndUndoDelete:
+
+    //
+
+//hardDelete:
+
+    //
+
+//loginAndValidation:
+
+    //
+
+//getUserByUsername:
+
+    //

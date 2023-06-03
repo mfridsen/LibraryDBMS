@@ -389,6 +389,8 @@ public class UserHandler
             //Validate input
             validateUser(updatedUser);
 
+            //TODO-PRIO VALIDATE NEW USERNAME AND/OR PASSWORD NOT TAKEN
+
             //Retrieve old username
             String oldUsername = getUserByID(updatedUser.getUserID()).getUsername(); //Ignore warning, user is not null
 
@@ -399,7 +401,7 @@ public class UserHandler
                 checkUsernameTaken(updatedUser.getUsername());
                 //... and is not taken: remove old username from and add new username to storedUsernames
                 storedUsernames.remove(oldUsername);
-                storedUsernames.add(updatedUser.getUsername());
+                storedUsernames.add(updatedUser.getUsername()); //TODO-PRIO MOVE
             }
 
             // Prepare a SQL command to update a updatedUser's data by userID.

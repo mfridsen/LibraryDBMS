@@ -15,7 +15,7 @@ import org.junit.jupiter.api.*;
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class HardDeleteTest
+public class HardDeleteUserTest
 {
     @BeforeAll
     static void setUp()

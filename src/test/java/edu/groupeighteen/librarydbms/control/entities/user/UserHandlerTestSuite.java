@@ -29,35 +29,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @Suite
 @SelectClasses({
         UserHandlerSetupTest.class,
+        CreateNewUserTest.class,
+        GetUserByIDTest.class,
+        UpdateUserTest.class,
+        DeleteAndUndoDeleteUserTest.class,
+        HardDeleteUserTest.class,
+        LoginAndValidationTest.class,
+        GetUserByUsernameTest.class
 })
 public class UserHandlerTestSuite extends BaseHandlerTest
 {
-
-    @BeforeEach
-    @Override
-    protected void setupAndReset()
-    {
-        try
-        {
-            setupConnectionAndTables();
-            UserHandler.resetUsernames();
-        }
-        catch (SQLException | ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    //TODO-future make all tests more verbose
-    //TODO-future javadoc all tests properly
-
-    //TODO-PRIO CHANGE ORDER OF TESTS TO MATCH ORDER OF METHODS
-
-
-
-
-    //SETUP-------------------------------------------------------------------------------------------------------------
-
 
     //GET BY ID---------------------------------------------------------------------------------------------------------
 

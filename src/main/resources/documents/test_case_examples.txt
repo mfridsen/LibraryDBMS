@@ -1,6 +1,32 @@
 Strings:
+
     Null String
     Empty String
     Too Short String
     Too Long String
     Incorrect Regex String
+
+    Example:
+
+        /**
+         * Testing createNewItem method with null username.
+         */
+        @Test
+        @Order(4)
+        void testCreateNewItem_NullUsername()
+        {
+            System.out.println("\n4: Testing createNewItem method with null username...");
+
+            Exception e = assertThrows(CreationException.class, () -> UserHandler.createNewUser(null,
+                    validPassword, userType, validEmail));
+
+            assertTrue(e.getCause() instanceof InvalidNameException);
+
+            System.out.println("\nTEST FINISHED.");
+        }
+
+Numbers:
+
+    0
+    Too Low
+    Too Large
