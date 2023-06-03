@@ -5,8 +5,6 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalDeleteException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalRecoveryException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +37,7 @@ public class AuthorHandler {
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-    public static Author createNewAuthor(String authorFirstname, String authorLastName ) throws InvalidNameException{
+    public static Author createNewAuthor(String authorFirstname, String authorLastName) throws InvalidNameException {
         Author newAuthor = null;
 
         try {
@@ -87,8 +85,7 @@ public class AuthorHandler {
         return 0;
     }
 
-    public static Author getAuthorByID(int authorID)
-    {
+    public static Author getAuthorByID(int authorID) {
         Author author = null;
 
         //Prepare statement
@@ -107,9 +104,7 @@ public class AuthorHandler {
                         resultSet.getString("biography"),
                         resultSet.getBoolean("deleted")
                 );
-        }
-        catch (SQLException | ConstructionException e)
-        {
+        } catch (SQLException | ConstructionException e) {
             ExceptionHandler.HandleFatalException("Failed to retrieve author by ID from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -136,15 +131,13 @@ public class AuthorHandler {
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-    public static void deleteAuthor(Author authorToDelete) throws DeleteException {
+    public static void deleteAuthor(Author authorToDelete) throws DeleteException, RecoveryException {
         {
             //Validate input
-            try
-            {
+            try {
                 validateAuthor(authorToDelete);
-            }
-            catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
-            {
+            } catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException |
+                     edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e) {
                 throw new DeleteException("Author Delete failed: " + e.getMessage(), e);
             }
 
@@ -161,38 +154,33 @@ public class AuthorHandler {
             //Executor-class Star Dreadnought
             DatabaseHandler.executePreparedUpdate(query, params);
         }
+    }
 
-        public static void undoDeleteAuthor(Author authorToRecover){
-           throws AuthorRecoveryException
-            {
-                //Validate input
-                try
-                {
-                    validateAuthor(authorToRecover);
-                }
-                catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
-                {
-                    throw new AuthorRecoveryException("Author Recovery failed: " + e.getMessage(), e);
-                }
-
-                //Set deleted to false
-                authorToRecover.setDeleted(false);
-
-                //Prepare a SQL query to update the rental details
-                String query = "UPDATE rentals SET deleted = ? WHERE rentalID = ?";
-                String[] params = {
-                        authorToRecover.isDeleted() ? "1" : "0",
-                        String.valueOf(authorToRecover.getAuthorID())
-                };
-
-                //Executor-class Star Dreadnought
-                DatabaseHandler.executePreparedUpdate(query, params);
+        public static void undoDeleteAuthor (Author authorToRecover) throws RecoveryException {
+            // Validate input
+            try {
+                validateAuthor(authorToRecover);
+            } catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException |
+                     edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e) {
+                throw new RecoveryException("Author Recovery failed: " + e.getMessage(), e);
             }
+
+            // Set deleted to false
+            authorToRecover.setDeleted(false);
+
+            // Prepare a SQL query to update the author details
+            String query = "UPDATE authors SET deleted = ? WHERE authorID = ?";
+            String[] params = {
+                    authorToRecover.isDeleted() ? "1" : "0",
+                    String.valueOf(authorToRecover.getAuthorID())
+            };
+
+            // Executor-class Star Dreadnought
+            DatabaseHandler.executePreparedUpdate(query, params);
         }
 
-    }
-    public static void hardDeleteAuthor(Author authorToDelete) throws NullEntityException, EntityNotFoundException {
-        throws AuthorDeleteException
+
+    public static void hardDeleteAuthor(Author authorToDelete) throws NullEntityException, EntityNotFoundException, DeleteException {
         {
             //Validate input
             try
@@ -201,7 +189,7 @@ public class AuthorHandler {
             }
             catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
             {
-                throw new AuthorDeleteException("Author Delete failed: " + e.getMessage(), e);
+                throw new DeleteException("Author Delete failed: " + e.getMessage(), e);
             }
 
             //Prepare a SQL query to update the rentalToDelete details
