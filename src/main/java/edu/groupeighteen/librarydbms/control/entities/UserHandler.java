@@ -339,7 +339,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
 
     /**
      * Retrieves a user from the database by the specified userID.
-     *
+     * <p>
      * Does not retrieve deleted users.
      *
      * @param userID the ID of the user to retrieve
@@ -408,7 +408,14 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
 
     // DELETE AND RECOVER ----------------------------------------------------------------------------------------------
 
-    //Does not remove username and email from lists due to integrity
+    /**
+     * Deletes a user by marking them as deleted in the database.
+     * Sets the 'deleted' field to true and 'allowedToRent' field to false for the specified user.
+     * Does not remove username and email from lists due to integrity.
+     *
+     * @param userToDelete the user to be deleted
+     * @throws DeletionException if an error occurs during the deletion process
+     */
     //TODO-PRIO if userToDelete != STAFF, ADMIN, currentUser must be STAFF or ADMIN and must be validated
     //TODO-PRIO userToDelete == STAFF, ADMIN, currentUser must be ADMIN and must be validated
     public static void deleteUser(User userToDelete) //TODO-test //TODO-comment
@@ -443,8 +450,13 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         }
     }
 
-
-
+    /**
+     * Recovers a deleted user by setting their 'deleted' field to false in the database.
+     * Updates the 'deleted' and 'allowedToRent' fields of the specified user based on their recovery eligibility.
+     *
+     * @param userToRecover the user to be recovered
+     * @throws RecoveryException if an error occurs during the recovery process
+     */
     //TODO-PRIO if userToRecover != STAFF or ADMIN, currentUser must be STAFF or ADMIN and must be validated
     //TODO-PRIO userToRecover == STAFF or ADMIN, currentUser must be ADMIN and must be validated
     public static void recoverUser(User userToRecover) //TODO-test //TODO-comment
@@ -478,22 +490,17 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
     }
 
     /**
-     * Deletes a userToDelete from the database.
-     * <p>
-     * This method first checks if the provided User object is not null and if
-     * the userToDelete with the ID of the provided User object exists in the database. If the userToDelete does not exist,
-     * a EntityNotFoundException is thrown.
-     * <p>
-     * If the userToDelete exists, an SQL command is prepared to delete the userToDelete from the database,
-     * and this command is executed.
-     * <p>
-     * The username of the deleted userToDelete is then removed from the storedUsernames list.
+     * Performs a hard delete of a user by removing their data from the database.
+     * This operation is irreversible and removes the user's data completely.
+     * Performs necessary validations to ensure the user can be hard deleted.
      *
-     * @param userToDelete The User object representing the userToDelete to be deleted.
+     * @param userToDelete the user to be hard deleted
+     * @throws DeletionException if an error occurs during the hard deletion process
      */
     //TODO-PRIO if userToDelete != STAFF, ADMIN, currentUser must be ADMIN and must be validated
     //TODO-PRIO userToDelete == STAFF, ADMIN, currentUser must be ADMIN and must be validated
-    public static void hardDeleteUser(User userToDelete) //TODO-test //TODO-prio handle cascades in rentals //TODO-comment
+    public static void hardDeleteUser(
+            User userToDelete) //TODO-test //TODO-prio handle cascades in rentals //TODO-comment
     throws DeletionException
     {
         try
@@ -546,9 +553,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //TODO-PRIO VALIDATE NOT DELETED
 
             //Retrieve old username
-            String oldUsername = getUserByID(updatedUser.getUserID()).getUsername(); //Ignore warning, user is
-            //not
-            //null
+            String oldUsername = getUserByID(updatedUser.getUserID()).getUsername();
 
             //If username has been changed...
             if (!updatedUser.getUsername().equals(oldUsername))

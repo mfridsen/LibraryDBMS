@@ -104,7 +104,20 @@
 
 //LoginAndValidationTest:
 
-    //
+    //testLogin_ValidUserAndPassword : Expected outcome: returns true.
+    //testLogin_ValidUserInvalidPassword : Expected outcome: throws InvalidPasswordException.
+    //testLogin_InvalidUserValidPassword : Expected outcome: throws EntityNotFoundException.
+    //testLogin_InvalidUserInvalidPassword : Expected outcome: throws EntityNotFoundException.
+    //testLogin_ValidUserEmptyPassword : Expected outcome: throws InvalidPasswordException.
+    //testLogin_EmptyUserValidPassword : Expected outcome: throws InvalidNameException.
+    //testLogin_NullUserOrPassword : Expected outcome: throws NullPointerException.
+
+    //testValidate_ValidUserMatchingPassword : Expected outcome: returns true.
+    //testValidate_ValidUserNonMatchingPassword : Expected outcome: returns false.
+    //testValidate_ValidUserEmptyPassword : Expected outcome: throws InvalidPasswordException.
+    //testValidate_NullUserValidPassword : Expected outcome: throws NullEntityException.
+    //testValidate_InvalidUserValidPassword : Expected outcome: throws UserValidationException.
+    //testValidate_NullPassword : Expected outcome: throws NullPointerException.
 
 //GetUserByUsernameTest:
 
