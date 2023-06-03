@@ -38,7 +38,7 @@ import java.util.List;
  * Meaning, createNewUser (as an example) should NEVER be called with an empty or null String as argument.
  * If it is, that IS exceptional.
  */
-public class UserHandler
+public class UserHandler //TODO-future rewrite Get-methods according to ItemHandler and RentalHandler, re-test
 {
     /**
      * Used to make the process of verifying if a username is taken or not faster.
