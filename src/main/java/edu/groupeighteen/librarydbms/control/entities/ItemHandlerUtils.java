@@ -94,6 +94,23 @@ public class ItemHandlerUtils
             throw new NullEntityException("Invalid item: item is null.");
     }
 
+    static void validateItem(Item item)
+    throws EntityNotFoundException, InvalidIDException, NullEntityException
+    {
+        try
+        {
+            checkNullItem(item);
+
+            if (getItemByID(item.getItemID()) == null)
+                throw new EntityNotFoundException("Item with ID " + item.getItemID() + " not found in table.");
+        }
+        catch (RetrievalException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to validate Item by due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
+
     /**
      * Checks if the given ID is invalid.
      *

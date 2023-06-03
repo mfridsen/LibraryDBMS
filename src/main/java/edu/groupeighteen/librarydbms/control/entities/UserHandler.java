@@ -5,7 +5,7 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidEmailException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.*;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
@@ -37,14 +37,20 @@ import java.util.List;
  * <p>
  * Meaning, createNewUser (as an example) should NEVER be called with an empty or null String as argument.
  * If it is, that IS exceptional.
+ * <p>
+ * And, it's a good way of reminding myself that I do, in fact, need to verify user input before performing
+ * unnecessary method calls.
  */
-public class UserHandler
+public class UserHandler //TODO-future rewrite Get-methods according to ItemHandler and RentalHandler, re-test
 {
     /**
-     * Used to make the process of verifying if a username is taken or not, faster.
+     * Used to make the process of verifying if a username is taken or not faster.
      */
     private static final ArrayList<String> storedUsernames = new ArrayList<>();
 
+    /**
+     * Used to make the process of verifying if an email is registered or not faster.
+     */
     private static final ArrayList<String> registeredEmails = new ArrayList<>();
 
     /**
@@ -52,21 +58,34 @@ public class UserHandler
      */
     public static void setup()
     {
-        syncUsernames();
-    }
-
-    public static void reset()
-    {
-        storedUsernames.clear();
+        sync();
     }
 
     /**
-     * Syncs the storedUsernames list against the usernames in the Users table.
+     * Clears and syncs the both lists against the Users table.
+     */
+    public static void sync()
+    {
+        syncUsernames();
+        syncEmails();
+    }
+
+    /**
+     * Clears and syncs the storedUsernames list against the usernames in the Users table.
      */
     public static void syncUsernames()
     {
-        reset();
+        resetUsernames();
         retrieveUsernamesFromTable();
+    }
+
+    /**
+     * Clears and syncs the registeredEmails list against the emails in the Users table.
+     */
+    public static void syncEmails()
+    {
+        resetEmails();
+        retrieveEmailsFromTable();
     }
 
     /**
@@ -77,12 +96,12 @@ public class UserHandler
     {
         try
         {
-            // Execute the query to retrieve all usernames
+            //Execute the query to retrieve all usernames
             String query = "SELECT username FROM users ORDER BY userID ASC";
             try (QueryResult result = DatabaseHandler.executeQuery(query))
             {
 
-                // Add the retrieved usernames to the ArrayList
+                //Add the retrieved usernames to the ArrayList
                 while (result.getResultSet().next())
                 {
                     storedUsernames.add(result.getResultSet().getString("username"));
@@ -94,6 +113,58 @@ public class UserHandler
             ExceptionHandler.HandleFatalException("Failed to retrieve usernames from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Method that retrieves the emails in the Users table and stores them in the static ArrayList.
+     * Query needs to be ORDER BY user_id ASC or ids will be in the order of 10, 1, 2, ...
+     */
+    private static void retrieveEmailsFromTable()
+    {
+        try
+        {
+            //Execute the query to retrieve all emails
+            String query = "SELECT email FROM users ORDER BY userID ASC";
+            try (QueryResult result = DatabaseHandler.executeQuery(query))
+            {
+
+                //Add the retrieved usernames to the ArrayList
+                while (result.getResultSet().next())
+                {
+                    registeredEmails.add(result.getResultSet().getString("email"));
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to retrieve emails from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Clears both lists.
+     */
+    public static void reset()
+    {
+        resetUsernames();
+        resetEmails();
+    }
+
+    /**
+     * Clears the list of storedUsernames.
+     */
+    public static void resetUsernames()
+    {
+        storedUsernames.clear();
+    }
+
+    /**
+     * Clears the list of registeredEmails.
+     */
+    public static void resetEmails()
+    {
+        registeredEmails.clear();
     }
 
     /**
@@ -111,6 +182,20 @@ public class UserHandler
     }
 
     /**
+     * Prints all emails in the ArrayList.
+     */
+    public static void printEmails()
+    {
+        System.out.println("\nEmails:");
+        int num = 1;
+        for (String email : registeredEmails)
+        {
+            System.out.println(num + ": " + email);
+            num++;
+        }
+    }
+
+    /**
      * Returns the ArrayList of usernames.
      *
      * @return the ArrayList of usernames
@@ -120,7 +205,15 @@ public class UserHandler
         return storedUsernames;
     }
 
-    //TODO-prio update when User class is finished
+    /**
+     * Returns the ArrayList of emails.
+     *
+     * @return the ArrayList of emails
+     */
+    public static ArrayList<String> getRegisteredEmails()
+    {
+        return registeredEmails;
+    }
 
     /**
      * Prints all non-sensitive data for all Users in a list.
@@ -139,10 +232,26 @@ public class UserHandler
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-
+    /**
+     * Creates a new User with the provided username, password, userType, and email, then stores it.
+     * <p>
+     * This method validates the input parameters, constructs a new User object, and saves it.
+     * It also adds the username and email to the respective lists in UserHandler.
+     * If an exception is encountered during the construction or saving process, it will be
+     * handled accordingly.
+     *
+     * @param username the username for the new user. Must be a unique, non-null, non-empty string
+     *                 with length between the limits set in User class.
+     * @param password the password for the new user. Must be a non-null, non-empty string
+     *                 with length between the limits set in User class.
+     * @param userType the UserType of the new user. Must be a non-null value from UserType enum.
+     * @param email    the email for the new user. Must be a unique, non-null, non-empty string
+     *                 with length between the limits set in User class, and properly formatted.
+     * @return the newly created User object.
+     * @throws CreationException if validation of input parameters fails.
+     */
     public static User createNewUser(String username, String password, User.UserType userType, String email)
-    throws InvalidNameException,
-           InvalidPasswordException
+    throws CreationException
     {
         User newUser = null;
 
@@ -151,18 +260,26 @@ public class UserHandler
             //Validate input
             validateUsername(username);
             validatePassword(password);
+            validateEmail(email);
+            validateUserType(userType);
 
-            // Create and save the new user, retrieving the ID
+            //Create and save the new user, retrieving the ID
             newUser = new User(username, password, userType, email);
             newUser.setUserID(saveUser(newUser));
 
-            // Need to remember to add to the list
-            storedUsernames.add(newUser.getUsername());
+            //Need to remember to add to the lists
+            storedUsernames.add(username);
+            registeredEmails.add(email);
         }
         catch (ConstructionException | InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException(String.format("Failed to create User with username: " +
                     "'%s' due to %s: %s", username, e.getClass().getName(), e.getMessage()), e);
+        }
+        catch (InvalidEmailException | InvalidNameException | InvalidPasswordException | InvalidTypeException e)
+        {
+            throw new CreationException("Failed to create User due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         return newUser;
@@ -170,34 +287,36 @@ public class UserHandler
 
     /**
      * Saves a user to the database. The method prepares an SQL insert query with the user's details such as
-     * username, password, allowed rentals, current rentals and late fee. The query is executed and the
-     * auto-generated user ID from the database is retrieved and returned. If the query execution fails, the method
-     * handles the SQLException and returns 0.
+     * username, password, userType, email, allowed rentals, current rentals, late fee, allowedToRent and deleted status.
+     * The query is executed and the auto-generated user ID from the database is retrieved and returned. If the query
+     * execution fails, the method handles the SQLException and terminates the application.
      *
      * @param user The user object to be saved.
      * @return The auto-generated ID of the user from the database.
-     * Returns 0 if an SQLException occurs. This won't happen because the exception will be thrown first.
+     * Returns 0 if an SQLException occurs. This won't happen because the application will terminate first.
      */
     private static int saveUser(User user)
     {
         try
         {
-            // Prepare query
-            String query = "INSERT INTO users (username, password, allowedRentals, currentRentals, " +
-                    "lateFee, allowedToRent, deleted) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            //Prepare query
+            String query = "INSERT INTO users (username, password, userType, email, allowedRentals, " +
+                    "currentRentals, lateFee, allowedToRent, deleted) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             String[] params = {
                     user.getUsername(),
                     user.getPassword(),
+                    user.getUserType().toString(),
+                    user.getEmail(),
                     String.valueOf(user.getAllowedRentals()),
                     String.valueOf(user.getCurrentRentals()),
                     String.valueOf(user.getLateFee()),
-                    "1", //allowedToRent is true by default
-                    "0" //deleted is false by default
+                    user.isAllowedToRent() ? "1" : "0",
+                    user.isDeleted() ? "1" : "0"
             };
 
-            // Execute query and get the generated userID, using try-with-resources
+            //Execute query and get the generated userID, using try-with-resources
             try (QueryResult queryResult =
                          DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS))
             {
@@ -219,32 +338,48 @@ public class UserHandler
     }
 
     /**
-     * Retrieves a User object from the database using the provided userID. The method first validates the provided
-     * userID. It then prepares and executes an SQL query to select the user's details from the database. If a user
-     * with the provided userID exists, a new User object is created with the retrieved details and returned.
+     * Retrieves a user from the database by the specified userID.
      *
-     * @param userID The userID of the user to be retrieved.
-     * @return A User object representing the user with the provided userID. Returns null if the user does not exist.
+     * Does not retrieve deleted users.
+     *
+     * @param userID the ID of the user to retrieve
+     * @return the User object representing the retrieved user, or null if not found
+     * @throws InvalidIDException if the provided userID is invalid
      */
     public static User getUserByID(int userID)
     throws InvalidIDException
     {
+        return getUserByID(userID, false);
+    }
+
+    /**
+     * Retrieves a user from the database by the specified userID, with an option to include deleted users.
+     *
+     * @param userID     the ID of the user to retrieve
+     * @param getDeleted specifies whether to include deleted users in the retrieval
+     * @return the User object representing the retrieved user, or null if not found
+     * @throws InvalidIDException if the provided userID is invalid
+     */
+    public static User getUserByID(int userID, boolean getDeleted) //TODO-test
+    throws InvalidIDException
+    {
         try
         {
-            // No point getting invalid Users, throws InvalidIDException
+            //No point getting invalid Users, throws InvalidIDException
             checkValidUserID(userID);
 
-            // Prepare a SQL query to select a user by userID.
-            String query = "SELECT username, password, allowedRentals, currentRentals, " +
-                    "lateFee, allowedToRent, deleted FROM users WHERE userID = ?";
+            //Prepare a SQL query to select a user by userID. Include deleted condition based on getDeleted
+            String query = getDeleted ?
+                    "SELECT * FROM users WHERE userID = ?" :
+                    "SELECT * FROM users WHERE userID = ? AND deleted = false";
             String[] params = {String.valueOf(userID)};
 
-            // Execute the query and store the result in a ResultSet.
+            //Execute the query and store the result in a ResultSet.
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
             {
                 ResultSet resultSet = queryResult.getResultSet();
-                // If the ResultSet contains data, create a new User object using the retrieved username and password,
-                // and set the user's userID.
+                //If the ResultSet contains data, create a new User object using the retrieved username and password,
+                //and set the user's userID.
                 if (resultSet.next())
                 {
                     return new User(
@@ -267,31 +402,29 @@ public class UserHandler
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
-        // Return null if not found.
+        //Return null if not found.
         return null;
     }
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Updates the data of an existing user in the database with the data of the provided User object. Before updating,
-     * the method validates that the provided User object is not null and the old username is not empty.
-     * If the username of the provided User object differs from the old username, the method checks if the new username
-     * is taken and updates the username in the storedUsernames list if it isn't. The method then prepares an
-     * SQL command to update the user's data in the database and executes the update.
-     *
-     * @param updatedUser The User object containing the updated user data.
-     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void updateUser(User updatedUser)
-    throws NullEntityException, InvalidNameException, InvalidIDException, EntityNotFoundException
-    {
-        //Validate input
-        validateUser(updatedUser);
 
+    public static void updateUser(User updatedUser) //TODO-test //TODO-fix
+    throws NullEntityException, UpdateException
+    {
         try
         {
+            //Validate input
+            validateUserObject(updatedUser);
+
+            //TODO-PRIO VALIDATE NEW USERNAME AND/OR PASSWORD NOT TAKEN
+
+            //TODO-PRIO VALIDATE NOT DELETED
+
             //Retrieve old username
-            String oldUsername = getUserByID(updatedUser.getUserID()).getUsername();
+            String oldUsername = getUserByID(updatedUser.getUserID()).getUsername(); //Ignore warning, user is
+            //not
+            //null
 
             //If username has been changed...
             if (!updatedUser.getUsername().equals(oldUsername))
@@ -300,39 +433,84 @@ public class UserHandler
                 checkUsernameTaken(updatedUser.getUsername());
                 //... and is not taken: remove old username from and add new username to storedUsernames
                 storedUsernames.remove(oldUsername);
-                storedUsernames.add(updatedUser.getUsername());
+                storedUsernames.add(updatedUser.getUsername()); //TODO-PRIO MOVE
             }
 
-            // Prepare a SQL command to update a updatedUser's data by userID.
-            String sql = "UPDATE users SET username = ?, password = ?, currentRentals = ?, " +
-                    "lateFee = ?, allowedToRent = ? " + "WHERE userID = ?";
+            //Prepare a SQL command to update a updatedUser's data by userID.
+            String sql = "UPDATE users SET username = ?, password = ?, userType = ?, email = ?, allowedRentals = ?, " +
+                    "currentRentals = ?, lateFee = ?, allowedToRent = ? WHERE userID = ?";
             String[] params = {
                     updatedUser.getUsername(),
                     updatedUser.getPassword(),
+                    updatedUser.getUserType().toString(),
+                    updatedUser.getEmail(),
+                    String.valueOf(updatedUser.getAllowedRentals()),
                     String.valueOf(updatedUser.getCurrentRentals()),
                     String.valueOf(updatedUser.getLateFee()),
                     updatedUser.isAllowedToRent() ? "1" : "0",
                     String.valueOf(updatedUser.getUserID())
             };
 
-            // Execute the update.
+            //Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
         }
-        catch (InvalidIDException e)
+        catch (InvalidIDException | InvalidNameException | EntityNotFoundException e)
         {
-            ExceptionHandler.HandleFatalException("Failed to update user in database due to " +
+            throw new UpdateException("Failed to update user in database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
-    public static void deleteUser(User user)
+    //Does not remove username and email from lists due to integrity
+    public static void deleteUser(User userToDelete) //TODO-test //TODO-comment
+    throws DeletionException
     {
+        try
+        {
+            //Validate user
+            validateUserObject(userToDelete);
 
+            //Prepare a SQL command to set deleted to true for the specified user.
+            String sql = "UPDATE users SET deleted = 1 WHERE userID = ?";
+            String[] params = {String.valueOf(userToDelete.getUserID())};
+
+            //Execute the update.
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            //Update the deleted field of the user object
+            userToDelete.setDeleted(true);
+        }
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+        {
+            throw new DeletionException("Failed to delete User due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
-    public static void undoDeleteUser(User user)
-    {
 
+    public static void undoDeleteUser(User userToRecover) //TODO-test //TODO-comment
+    throws RecoveryException
+    {
+        try
+        {
+            //Validate user
+            validateUserObject(userToRecover);
+
+            //Prepare a SQL command to set deleted to false for the specified user.
+            String sql = "UPDATE users SET deleted = 0 WHERE userID = ?";
+            String[] params = {String.valueOf(userToRecover.getUserID())};
+
+            //Execute the update.
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            //Update the deleted field of the user object
+            userToRecover.setDeleted(false);
+        }
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+        {
+            throw new RecoveryException("Failed to recover User due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -348,33 +526,44 @@ public class UserHandler
      * The username of the deleted user is then removed from the storedUsernames list.
      *
      * @param user The User object representing the user to be deleted.
-     */ //TODO-PRIO UPDATE EXCEPTION AND TESTS
-    public static void hardDeleteUser(User user)
-    throws NullEntityException, EntityNotFoundException
+     */
+    public static void hardDeleteUser(User user) //TODO-test //TODO-prio handle cascades in rentals
+    throws DeletionException
     {
         try
         {
             //Validate the input. Throws NullEntityException
-            validateUser(user);
+            validateUserObject(user);
+
+            //Validate that user has no current rentals and no late fee
+            if (user.getCurrentRentals() > 0 || user.getLateFee() > 0)
+                throw new DeletionException("Failed to delete user from database due to active rentals or non-zero " +
+                        "late fee. User current rentals: " + user.getCurrentRentals() + ", user late fee: " +
+                        user.getLateFee());
+
+            //Retrieve the unique username and email
+            String username = user.getUsername();
+            String email = user.getEmail();
 
             //Prepare a SQL command to delete a user by userID.
             String sql = "DELETE FROM users WHERE userID = ?";
             String[] params = {String.valueOf(user.getUserID())};
 
-            //Execute the update. //TODO-prio handle cascades in rentals
+            //Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
 
-            //Remove the deleted user's username from the usernames ArrayList.
-            storedUsernames.remove(user.getUsername());
+            //Remove the deleted user's username and email from the lists
+            storedUsernames.remove(username);
+            registeredEmails.remove(email);
         }
-        catch (InvalidIDException e)
+        catch (EntityNotFoundException | NullEntityException | InvalidIDException e)
         {
-            ExceptionHandler.HandleFatalException("Failed to delete user from database due to " +
+            throw new DeletionException("Failed to delete user from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
-    // VALIDATION STUFF -----------------------------------------------------------------------------------------------
+    //VALIDATION STUFF -----------------------------------------------------------------------------------------------
 
     /**
      * Basic login method. Checks whether username exists in storedUsernames. If it does, check whether password
@@ -384,12 +573,12 @@ public class UserHandler
      * @param password the password attempting to login
      * @return true if successful, otherwise false
      */
-    public static boolean login(String username, String password)
+    public static boolean login(String username, String password) //TODO-test //TODO-deleted
     throws InvalidNameException, EntityNotFoundException, InvalidPasswordException
     {
         try
         {
-            // No point verifying empty strings, throws UsernameEmptyException
+            //No point verifying empty strings, throws UsernameEmptyException
             checkEmptyUsername(username);
             //Throws PasswordEmptyException
             checkEmptyPassword(password);
@@ -401,7 +590,7 @@ public class UserHandler
             String query = "SELECT password FROM users WHERE username = ?";
             String[] params = {username};
 
-            // Execute the query and check if the input password matches the retrieved password
+            //Execute the query and check if the input password matches the retrieved password
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
             {
                 ResultSet resultSet = queryResult.getResultSet();
@@ -435,43 +624,52 @@ public class UserHandler
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
-    public static boolean validate(User user, String password)
-    throws NullEntityException, InvalidPasswordException
+    public static boolean validate(User user, String password) //TODO-test //TODO-deleted
+    throws UserValidationException, InvalidPasswordException, NullEntityException
     {
-        checkNullUser(user);
-        checkEmptyPassword(password);
+        try
+        {
+            validateUserObject(user);
+            checkEmptyPassword(password);
+        }
+        catch (EntityNotFoundException | InvalidIDException e)
+        {
+            throw new UserValidationException("Validation failed due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
         return user.getPassword().equals(password);
     }
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
-    /**
-     * Retrieves a User object from the database using the provided username. The method first validates the provided
-     * username. It then prepares and executes an SQL query to select the user's details from the database. If a user
-     * with the provided username exists, a new User object is created with the retrieved details and returned.
-     *
-     * @param username The username of the user to be retrieved.
-     * @return A User object representing the user with the provided username. Returns null if the user does not exist.
-     */
     public static User getUserByUsername(String username)
+    throws InvalidNameException
+    {
+        return getUserByUsername(username, false);
+    }
+
+
+    public static User getUserByUsername(String username, boolean getDeleted) //TODO-test
     throws InvalidNameException
     {
         try
         {
-            // No point in getting invalid Users, throws InvalidNameException
+            //No point in getting invalid Users, throws InvalidNameException
             checkEmptyUsername(username);
 
-            // Prepare a SQL query to select a user by username
-            String query = "SELECT userID, password, allowedRentals, currentRentals, lateFee FROM users " +
-                    "WHERE username = ?";
+            //Prepare a SQL query to select a user by username. Include deleted condition based on getDeleted
+            String query = getDeleted ?
+                    "SELECT * FROM users WHERE username = ?" :
+                    "SELECT * FROM users WHERE username = ? AND deleted = false";
+
             String[] params = {username};
 
-            // Execute the query and store the result in a ResultSet
+            //Execute the query and store the result in a ResultSet
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
             {
                 ResultSet resultSet = queryResult.getResultSet();
-                // If the ResultSet contains data, create a new User object using the retrieved username and password,
-                // and set the user's userID
+                //If the ResultSet contains data, create a new User object using the retrieved username and password,
+                //and set the user's userID
                 if (resultSet.next())
                 {
                     return new User(
@@ -494,7 +692,7 @@ public class UserHandler
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
-        // Return null if not found
+        //Return null if not found
         return null;
     }
 
@@ -505,7 +703,7 @@ public class UserHandler
         //No such Users
         //One valid user
         //Multiple valid Users
-        // == 4
+        //== 4
         return null;
     }
 
@@ -516,7 +714,7 @@ public class UserHandler
         //No such Users
         //One valid user
         //Multiple valid Users
-        // == 4
+        //== 4
         return null;
     }
 
@@ -526,7 +724,7 @@ public class UserHandler
         //Invalid email
         //No such user
         //Valid user
-        // == 3
+        //== 3
         return null;
     }
 
@@ -538,14 +736,7 @@ public class UserHandler
     {
         checkEmptyUsername(username);
         checkUsernameTaken(username);
-    }
-
-    //TODO-comment
-    private static void validatePassword(String password)
-    throws InvalidPasswordException
-    {
-        checkEmptyPassword(password);
-
+        checkUsernameLength(username);
     }
 
     /**
@@ -578,7 +769,101 @@ public class UserHandler
             throw new InvalidNameException("Username " + username + " already taken.");
     }
 
-    private static void validateUser(User user)
+    //TODO-comment
+    private static void checkUsernameLength(String username)
+    throws InvalidNameException
+    {
+        if (username.length() < User.MIN_USERNAME_LENGTH)
+            throw new InvalidNameException("Username too short, must be at least " + User.MIN_USERNAME_LENGTH +
+                    " characters. Received: " + username);
+        if (username.length() > User.MAX_USERNAME_LENGTH)
+            throw new InvalidNameException("Username too long, must be at most " + User.MAX_USERNAME_LENGTH +
+                    " characters. Received: " + username);
+    }
+
+
+    //TODO-comment
+    private static void validatePassword(String password)
+    throws InvalidPasswordException
+    {
+        checkEmptyPassword(password);
+        checkPasswordLength(password);
+    }
+
+    /**
+     * Checks whether a given password is null or empty. If so, throws an PasswordEmptyException
+     * which must be handled.
+     *
+     * @param password the password to check.
+     * @throws InvalidPasswordException if password is null or empty.
+     */
+    private static void checkEmptyPassword(String password)
+    throws InvalidPasswordException
+    {
+        if (password == null || password.isEmpty())
+            throw new InvalidPasswordException("Password is empty.");
+    }
+
+    //TODO-comment
+    private static void checkPasswordLength(String password)
+    throws InvalidPasswordException
+    {
+        if (password.length() < User.MIN_PASSWORD_LENGTH)
+            throw new InvalidPasswordException("Password too short, must be at least " + User.MIN_PASSWORD_LENGTH +
+                    " characters. Received: " + password.length());
+        if (password.length() > User.MAX_PASSWORD_LENGTH)
+            throw new InvalidPasswordException("Password too long, must be at most " + User.MAX_PASSWORD_LENGTH +
+                    " characters. Received: " + password.length());
+    }
+
+    //TODO-comment
+    private static void validateEmail(String email)
+    throws InvalidEmailException
+    {
+        checkEmailEmpty(email);
+        checkEmailTaken(email);
+        checkEmailLength(email);
+    }
+
+
+    //TODO-comment
+    private static void checkEmailEmpty(String email)
+    throws InvalidEmailException
+    {
+        if (email == null || email.isEmpty())
+            throw new InvalidEmailException("Email cannot be null or empty.");
+    }
+
+    //TODO-comment
+    private static void checkEmailTaken(String email)
+    throws InvalidEmailException
+    {
+        if (registeredEmails.contains(email))
+            throw new InvalidEmailException("Email is already registered.");
+    }
+
+    //TODO-comment
+    private static void checkEmailLength(String email)
+    throws InvalidEmailException
+    {
+        if (email.length() < User.MIN_EMAIL_LENGTH)
+            throw new InvalidEmailException("Email cannot be shorter than " + User.MIN_EMAIL_LENGTH + " characters. " +
+                    "Received: " + email.length());
+        if (email.length() > User.MAX_EMAIL_LENGTH)
+            throw new InvalidEmailException("Email cannot be longer than " + User.MAX_EMAIL_LENGTH + " characters. " +
+                    "Received: " + email.length());
+    }
+
+    //TODO-comment
+    private static void validateUserType(User.UserType userType)
+    throws InvalidTypeException
+    {
+        if (userType == null)
+            throw new InvalidTypeException("User Type cannot be null.");
+    }
+
+    //TODO-comment
+    private static void validateUserObject(User user)
     throws EntityNotFoundException, InvalidIDException, NullEntityException
     {
         checkNullUser(user);
@@ -614,19 +899,5 @@ public class UserHandler
         {
             throw new InvalidIDException("Invalid userID: " + userID);
         }
-    }
-
-    /**
-     * Checks whether a given password is null or empty. If so, throws an PasswordEmptyException
-     * which must be handled.
-     *
-     * @param password the password to check.
-     * @throws InvalidPasswordException if password is null or empty.
-     */
-    private static void checkEmptyPassword(String password)
-    throws InvalidPasswordException
-    {
-        if (password == null || password.isEmpty())
-            throw new InvalidPasswordException("Password is empty.");
     }
 }

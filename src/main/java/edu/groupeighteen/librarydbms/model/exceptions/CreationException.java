@@ -5,18 +5,18 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * @project LibraryDBMS
  * @package edu.groupeighteen.librarydbms.model.exceptions
  * @contact matfir-1@student.ltu.se
- * @date 6/1/2023
+ * @date 6/2/2023
  * <p>
- * Custom DeleteException class. Used to make Exceptions clearer.
+ * Custom CreationException class. Used to make Exceptions clearer.
  */
-public class DeleteException extends Exception
+public class CreationException extends Exception
 {
-    public DeleteException(String message, Throwable cause)
+    public CreationException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
-    public DeleteException(String message)
+    public CreationException(String message)
     {
         super(message);
     }

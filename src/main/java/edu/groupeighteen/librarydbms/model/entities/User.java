@@ -40,13 +40,19 @@ import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsExc
  */
 public class User extends Entity
 {
-
-    //TODO ADD DELETED IN CONSTRUCTORS
-    //TODO-PRIO DELETING USERS WITH FEES AND ACTIVE RENTALS SHOULD NOT BE POSSIBLE
-
-    //TODO-future add more fields and methods
-    //TODO-comment everything
-
+    /**
+     * Represents the different types of users in the system.
+     * <p>
+     * ADMIN: Has full control over the system and can perform any operation.
+     * STAFF: Can perform most operations, but may be restricted in some areas.
+     * PATRON: A regular user of the system, with the least privileges.
+     * STUDENT: Represents a student in an educational setting. May have extra privileges related to educational
+     * materials.
+     * TEACHER: Represents a teacher in an educational setting. May have extra privileges related to educational
+     * materials.
+     * RESEARCHER: Represents a researcher in an educational or corporate setting. May have extra privileges related
+     * to research materials.
+     */
     public enum UserType
     {
         ADMIN,
@@ -57,12 +63,34 @@ public class User extends Entity
         RESEARCHER
     }
 
-    public static final int DEFAULT_ALLOWED_RENTALS = 5;
+    /**
+     * The minimum length for a username. Shorter usernames will be considered invalid.
+     */
     public static final int MIN_USERNAME_LENGTH = 3;
+
+    /**
+     * The maximum length for a username. Longer usernames will be considered invalid.
+     */
     public static final int MAX_USERNAME_LENGTH; //20
+
+    /**
+     * The minimum length for a password. Shorter passwords will be considered invalid.
+     */
     public static final int MIN_PASSWORD_LENGTH = 8;
+
+    /**
+     * The maximum length for a password. Longer passwords will be considered invalid.
+     */
     public static final int MAX_PASSWORD_LENGTH; //50
+
+    /**
+     * The minimum length for an email address. Shorter email addresses will be considered invalid.
+     */
     public static final int MIN_EMAIL_LENGTH = 6;
+
+    /**
+     * The maximum length for an email address. Longer email addresses will be considered invalid.
+     */
     public static final int MAX_EMAIL_LENGTH; //255
     //An email address needs to have a minimum of six characters:
     // One character for the user name.
@@ -72,7 +100,8 @@ public class User extends Entity
     // Two characters for the top level domain (like .com, .org, .io, .us).
 
     /*
-      So we don't have to update both create_tables.sql AND this file when we want to change the rules.
+     * Initializes the maximum length fields for username, password and email.
+     * The lengths are fetched from the database.
      */
     static
     {
@@ -82,15 +111,52 @@ public class User extends Entity
         MAX_EMAIL_LENGTH = metaData[2];
     }
 
+    /**
+     * The unique identifier for this user in the database.
+     */
     private int userID; //Primary key
+
+    /**
+     * The unique username of this user. It must be between MIN_USERNAME_LENGTH and MAX_USERNAME_LENGTH characters long.
+     */
     private String username; //UNIQUE
+
+    /**
+     * The password for this user. It must be between MIN_PASSWORD_LENGTH and MAX_PASSWORD_LENGTH characters long.
+     */
     private String password; //TODO-future hash and salt
+
+    /**
+     * The type of this user, as defined in the UserType enum.
+     */
     private UserType userType;
+
+    /**
+     * The unique email of this user. It must be between MIN_EMAIL_LENGTH and MAX_EMAIL_LENGTH characters long.
+     */
     private String email; //UNIQUE //TODO-future REGEX
+
+    /**
+     * The maximum number of items this user can rent at once.
+     */
     private int allowedRentals;
+
+    /**
+     * The current number of items this user has rented.
+     */
     private int currentRentals;
-    private double lateFee; //TODO-future implement logic
-    boolean allowedToRent; //TODO-PRIO UPDATE USERTEST, USERHANDLER, RENTALHANDLER AND TESTS AS WELL AS SETTERS
+
+    /**
+     * The amount of late fee this user owes.
+     */
+    private double lateFee;
+
+    /**
+     * Whether this user is allowed to rent items.
+     */
+    boolean allowedToRent;
+
+    //TODO-future private boolean activeRentals;
 
     /**
      * Constructs a new User with the specified username and password. This is
@@ -100,6 +166,8 @@ public class User extends Entity
      *
      * @param username the username for the new User
      * @param password the password for the new User
+     * @param userType The type of the user.
+     * @param email    The users email address
      * @throws ConstructionException if the username or password is invalid
      */
     public User(String username, String password, UserType userType, String email)
@@ -151,6 +219,7 @@ public class User extends Entity
     throws ConstructionException
     {
         super(deleted);
+
         try
         {
             setUserID(userID);                  //Throws InvalidIDException
@@ -295,24 +364,51 @@ public class User extends Entity
         this.password = password;
     }
 
+    /**
+     * Returns the user type of this user.
+     *
+     * @return The user type of this user.
+     */
     public UserType getUserType()
     {
         return userType;
     }
 
+    /**
+     * Sets the user type of this user and updates the user's allowed rentals accordingly.
+     *
+     * @param userType The user type to set for this user.
+     * @throws InvalidTypeException if the given userType is null.
+     * @throws InvalidUserRentalsException if updating allowed rentals fails for some reason.
+     */
     public void setUserType(UserType userType)
-    throws InvalidTypeException
+    throws InvalidTypeException, InvalidUserRentalsException
     {
         if (userType == null)
             throw new InvalidTypeException("User Type cannot be null.");
+
+        //Update allowedRentals and allowedToRent
+        setAllowedRentals(getDefaultAllowedRentals(userType));
+
         this.userType = userType;
     }
 
+    /**
+     * Returns the email address of this user.
+     *
+     * @return The email address of this user.
+     */
     public String getEmail()
     {
         return email;
     }
 
+    /**
+     * Sets the email address of this user.
+     *
+     * @param email The email address to set for this user.
+     * @throws InvalidEmailException if the given email is null, empty, shorter than MIN_EMAIL_LENGTH or longer than MAX_EMAIL_LENGTH.
+     */
     public void setEmail(String email)
     throws InvalidEmailException
     {
@@ -337,12 +433,21 @@ public class User extends Entity
         return allowedRentals;
     }
 
-    //TODO-comment //TODO-test
+    /**
+     * Sets the number of rentals allowed for this user and updates the allowedToRent attribute accordingly.
+     *
+     * @param allowedRentals The number of rentals to be set for this user.
+     * @throws InvalidUserRentalsException if the given allowedRentals is less than zero.
+     */
     public void setAllowedRentals(int allowedRentals)
     throws InvalidUserRentalsException
     {
         if (allowedRentals < 0)
             throw new InvalidUserRentalsException("Allowed Rentals can't be less than 0. Received: " + allowedRentals);
+
+        //Updates allowedToRent
+        setCurrentRentals(currentRentals);
+
         this.allowedRentals = allowedRentals;
     }
 

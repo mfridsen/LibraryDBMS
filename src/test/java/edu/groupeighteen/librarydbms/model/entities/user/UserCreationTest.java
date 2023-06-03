@@ -64,7 +64,7 @@ public class UserCreationTest
             User user = new User(username, password, userType, email);
             assertNotNull(user);
 
-            // Verify ALL fields
+            //Verify ALL fields
             assertEquals(0, user.getUserID());
             assertEquals(username, user.getUsername(), "Username should be the same as the one set");
             assertEquals(password, user.getPassword(), "Password should be the same as the one set");
@@ -101,7 +101,7 @@ public class UserCreationTest
             User user = new User(username, password, userType, email);
             assertNotNull(user);
 
-            // Verify ALL fields
+            //Verify ALL fields
             assertEquals(0, user.getUserID());
             assertEquals(username, user.getUsername(), "Username should be the same as the one set");
             assertEquals(password, user.getPassword(), "Password should be the same as the one set");
@@ -138,7 +138,7 @@ public class UserCreationTest
             User user = new User(username, password, userType, email);
             assertNotNull(user);
 
-            // Verify ALL fields
+            //Verify ALL fields
             assertEquals(0, user.getUserID());
             assertEquals(username, user.getUsername(), "Username should be the same as the one set");
             assertEquals(password, user.getPassword(), "Password should be the same as the one set");
@@ -175,7 +175,7 @@ public class UserCreationTest
             User user = new User(username, password, userType, email);
             assertNotNull(user);
 
-            // Verify ALL fields
+            //Verify ALL fields
             assertEquals(0, user.getUserID());
             assertEquals(username, user.getUsername(), "Username should be the same as the one set");
             assertEquals(password, user.getPassword(), "Password should be the same as the one set");
@@ -212,7 +212,7 @@ public class UserCreationTest
             User user = new User(username, password, userType, email);
             assertNotNull(user);
 
-            // Verify ALL fields
+            //Verify ALL fields
             assertEquals(0, user.getUserID());
             assertEquals(username, user.getUsername(), "Username should be the same as the one set");
             assertEquals(password, user.getPassword(), "Password should be the same as the one set");
@@ -249,7 +249,7 @@ public class UserCreationTest
             User user = new User(username, password, userType, email);
             assertNotNull(user);
 
-            // Verify ALL fields
+            //Verify ALL fields
             assertEquals(0, user.getUserID());
             assertEquals(username, user.getUsername(), "Username should be the same as the one set");
             assertEquals(password, user.getPassword(), "Password should be the same as the one set");
@@ -300,7 +300,7 @@ public class UserCreationTest
     {
         System.out.println("\n9: Testing User constructor with short username...");
 
-        String shortUsername = "ab"; // less than MIN_USERNAME_LENGTH
+        String shortUsername = "ab"; //less than MIN_USERNAME_LENGTH
 
         assertThrows(ConstructionException.class, () ->
                 new User(shortUsername, "password", User.UserType.PATRON, "patron@example.com"));
@@ -315,7 +315,7 @@ public class UserCreationTest
         System.out.println("\n10: Testing User constructor with long username...");
 
         String longUsername = String.join("",
-                Collections.nCopies(User.MAX_USERNAME_LENGTH + 1, "a")); // More than MAX_USERNAME_LENGTH
+                Collections.nCopies(User.MAX_USERNAME_LENGTH + 1, "a")); //More than MAX_USERNAME_LENGTH
 
         assertThrows(ConstructionException.class, () ->
                 new User(longUsername, "password", User.UserType.PATRON, "patron@example.com"));
@@ -354,7 +354,7 @@ public class UserCreationTest
     {
         System.out.println("\n13: Testing User constructor with short password...");
 
-        String shortPassword = "abc1234"; // less than MIN_PASSWORD_LENGTH
+        String shortPassword = "abc1234"; //less than MIN_PASSWORD_LENGTH
 
         assertThrows(ConstructionException.class, () ->
                 new User("username", shortPassword, User.UserType.PATRON, "patron@example.com"));
@@ -369,7 +369,7 @@ public class UserCreationTest
         System.out.println("\n14: Testing User constructor with long password...");
 
         String longPassword = String.join("",
-                Collections.nCopies(User.MAX_PASSWORD_LENGTH + 1, "a")); // More than MAX_PASSWORD_LENGTH
+                Collections.nCopies(User.MAX_PASSWORD_LENGTH + 1, "a")); //More than MAX_PASSWORD_LENGTH
 
         assertThrows(ConstructionException.class, () ->
                 new User("username", longPassword, User.UserType.PATRON, "patron@example.com"));
@@ -419,7 +419,7 @@ public class UserCreationTest
     {
         System.out.println("\n18: Testing User constructor with short email...");
 
-        String shortEmail = "a@b.c"; // less than MIN_EMAIL_LENGTH
+        String shortEmail = "a@b.c"; //less than MIN_EMAIL_LENGTH
 
         assertThrows(ConstructionException.class, () ->
                 new User("username", "password", User.UserType.PATRON, shortEmail));
@@ -433,7 +433,7 @@ public class UserCreationTest
     {
         System.out.println("\n19: Testing User constructor with long email...");
 
-        String longEmail = "a".repeat(User.MAX_EMAIL_LENGTH + 1); // More than MAX_EMAIL_LENGTH
+        String longEmail = "a".repeat(User.MAX_EMAIL_LENGTH + 1); //More than MAX_EMAIL_LENGTH
 
         assertThrows(ConstructionException.class, () ->
                 new User("username", "password", User.UserType.PATRON, longEmail));

@@ -605,16 +605,29 @@ public class ItemHandler
      * @param itemToDelete The item object to be deleted.
      */
     public static void deleteItem(Item itemToDelete)
+    throws DeletionException
     {
-        // Prepare a SQL command to set deleted to true for the specified item.
-        String sql = "UPDATE items SET deleted = 1 WHERE itemID = ?";
-        String[] params = {String.valueOf(itemToDelete.getItemID())};
+        try
+        {
+            //Validate item
+            checkNullItem(itemToDelete);
+            validateItem(itemToDelete);
 
-        // Execute the update.
-        DatabaseHandler.executePreparedUpdate(sql, params);
+            // Prepare a SQL command to set deleted to true for the specified item.
+            String sql = "UPDATE items SET deleted = 1 WHERE itemID = ?";
+            String[] params = {String.valueOf(itemToDelete.getItemID())};
 
-        // Update the deleted field of the item object
-        itemToDelete.setDeleted(true);
+            // Execute the update.
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            // Update the deleted field of the item object
+            itemToDelete.setDeleted(true);
+        }
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+        {
+            throw new DeletionException("Failed to delete Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -623,16 +636,28 @@ public class ItemHandler
      * @param itemToRecover The item object to be recovered.
      */
     public static void undoDeleteItem(Item itemToRecover)
+    throws RetrievalException
     {
-        // Prepare a SQL command to set deleted to false for the specified item.
-        String sql = "UPDATE items SET deleted = 0 WHERE itemID = ?";
-        String[] params = {String.valueOf(itemToRecover.getItemID())};
+        try
+        {
+            //Validate item
+            validateItem(itemToRecover);
 
-        // Execute the update.
-        DatabaseHandler.executePreparedUpdate(sql, params);
+            // Prepare a SQL command to set deleted to false for the specified item.
+            String sql = "UPDATE items SET deleted = 0 WHERE itemID = ?";
+            String[] params = {String.valueOf(itemToRecover.getItemID())};
 
-        // Update the deleted field of the item object
-        itemToRecover.setDeleted(false);
+            // Execute the update.
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            // Update the deleted field of the item object
+            itemToRecover.setDeleted(false);
+        }
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+        {
+            throw new RetrievalException("Failed to recover Item due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -646,7 +671,7 @@ public class ItemHandler
         try
         {
             // Validate the input, throws NullEntityException
-            checkNullItem(item);
+            validateItem(item);
 
             //Retrieve old title, throws EntityNotFoundException and InvalidIDException
             String oldTitle = retrieveOldTitle(item);
@@ -666,7 +691,7 @@ public class ItemHandler
             String sql = "DELETE FROM items WHERE itemID = ?";
             String[] params = new String[]{String.valueOf(item.getItemID())};
 
-            // Execute the update
+            // Execute the update //TODO-prio handle cascades in rentals
             DatabaseHandler.executePreparedUpdate(sql, params);
 
             // Decrement the count of the old title. Remove the entry if the count reaches 0

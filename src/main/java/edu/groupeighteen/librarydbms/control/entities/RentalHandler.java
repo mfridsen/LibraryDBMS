@@ -408,13 +408,13 @@ public class RentalHandler
     /**
      * Softly deletes a rental, by marking it as deleted in the database.
      * The rental object is expected to be not null, with a valid rental ID.
-     * If the rental object is invalid, a DeleteException is thrown.
+     * If the rental object is invalid, a DeletionException is thrown.
      *
      * @param rentalToDelete the rental object to be softly deleted
-     * @throws DeleteException if rental object is invalid
+     * @throws DeletionException if rental object is invalid
      */
     public static void deleteRental(Rental rentalToDelete)
-    throws DeleteException
+    throws DeletionException
     {
         //Validate input
         try
@@ -423,7 +423,7 @@ public class RentalHandler
         }
         catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
         {
-            throw new DeleteException("Rental Delete failed: " + e.getMessage(), e);
+            throw new DeletionException("Rental Delete failed: " + e.getMessage(), e);
         }
 
         //Set deleted to true (doesn't need to be set before calling this method)
@@ -483,13 +483,13 @@ public class RentalHandler
     /**
      * Completely removes a rental from the database.
      * The rental object is expected to be not null, with a valid rental ID.
-     * If the rental object is invalid, a DeleteException is thrown.
+     * If the rental object is invalid, a DeletionException is thrown.
      *
      * @param rentalToDelete the rental object to be removed from the database
-     * @throws DeleteException if rental object is invalid
+     * @throws DeletionException if rental object is invalid
      */
     public static void hardDeleteRental(Rental rentalToDelete)
-    throws DeleteException
+    throws DeletionException
     {
         //Validate input
         try
@@ -498,7 +498,7 @@ public class RentalHandler
         }
         catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
         {
-            throw new DeleteException("Rental Delete failed: " + e.getMessage(), e);
+            throw new DeletionException("Rental Delete failed: " + e.getMessage(), e);
         }
 
         //Prepare a SQL query to update the rentalToDelete details

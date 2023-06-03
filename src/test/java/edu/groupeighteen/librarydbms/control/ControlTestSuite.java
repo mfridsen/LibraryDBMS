@@ -3,10 +3,8 @@ package edu.groupeighteen.librarydbms.control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandlerMetaDataTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.item.ItemHandlerTestSuite;
-import edu.groupeighteen.librarydbms.control.entities.rental.RentalHandlerTest;
-import edu.groupeighteen.librarydbms.control.entities.user.UserHandlerTest;
-import edu.groupeighteen.librarydbms.control.entities.AuthorHandler;
-import edu.groupeighteen.librarydbms.control.entities.ClassificationHandler;
+import edu.groupeighteen.librarydbms.control.entities.rental.RentalHandlerTestSuite;
+import edu.groupeighteen.librarydbms.control.entities.user.UserHandlerTestSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -25,11 +23,11 @@ import org.junit.platform.suite.api.Suite;
         //Control tests
         DatabaseHandlerTest.class,
         DatabaseHandlerMetaDataTest.class,
-        AuthorHandler.class,
-        ClassificationHandler.class,
+        //AuthorHandlerTestSuite.class,
+        //ClassificationHandlerTestSuite.class,
         ItemHandlerTestSuite.class,
-        UserHandlerTest.class,
-        RentalHandlerTest.class,
+        UserHandlerTestSuite.class,
+        RentalHandlerTestSuite.class,
 })
 
 public class ControlTestSuite

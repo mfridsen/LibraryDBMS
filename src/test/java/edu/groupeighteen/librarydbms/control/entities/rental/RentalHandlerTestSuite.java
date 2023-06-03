@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RentalHandlerTest extends BaseHandlerTest
+public class RentalHandlerTestSuite extends BaseHandlerTest
 {
 
     //TODO-future make all tests more verbose
@@ -356,7 +356,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             //Change users number of rentals to maximum allowed
             User maxRentalUser = UserHandler.getUserByID(validUserID);
             assertNotNull(maxRentalUser);
-            maxRentalUser.setCurrentRentals(User.DEFAULT_ALLOWED_RENTALS);
+            maxRentalUser.setCurrentRentals(5);
             UserHandler.updateUser(maxRentalUser);
 
             //Tracer to find bug
@@ -400,7 +400,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             RentalHandler.setVerbose(false);
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidNameException | RetrievalException | InvalidUserRentalsException | EntityNotFoundException e)
+        catch (InvalidIDException | NullEntityException | RetrievalException | InvalidUserRentalsException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -444,7 +444,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             assertTrue(actualMessage.contains(expectedMessage));
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidNameException | InvalidLateFeeException | EntityNotFoundException e)
+        catch (InvalidIDException | NullEntityException | InvalidLateFeeException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -1020,7 +1020,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             {
                 RentalHandler.deleteRental(rentalToDelete);
             }
-            catch (DeleteException e)
+            catch (DeletionException e)
             {
                 fail("An unexpected exception occurred: " + e.getMessage());
             }
@@ -1044,7 +1044,7 @@ public class RentalHandlerTest extends BaseHandlerTest
     /**
      * Test method for {@link RentalHandler#deleteRental(Rental)}.
      * Case: A null Rental object is passed as argument.
-     * The method is expected to throw a DeleteException.
+     * The method is expected to throw a DeletionException.
      */
     @Test
     @Order(25)
@@ -1053,10 +1053,10 @@ public class RentalHandlerTest extends BaseHandlerTest
         System.out.println("\n25: Testing softDeleteRental method with a null rental...");
 
         // Attempt to softly delete a null rental
-        Exception e = assertThrows(DeleteException.class, () -> RentalHandler.deleteRental(null),
-                                   "A DeleteException should be thrown when attempting to softly delete a null rental.");
+        Exception e = assertThrows(DeletionException.class, () -> RentalHandler.deleteRental(null),
+                                   "A DeletionException should be thrown when attempting to softly delete a null rental.");
         assertTrue(e.getCause() instanceof edu.groupeighteen.librarydbms.model.exceptions.NullEntityException,
-                   "The cause of the DeleteException should be a NullEntityException.");
+                   "The cause of the DeletionException should be a NullEntityException.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -1064,7 +1064,7 @@ public class RentalHandlerTest extends BaseHandlerTest
     /**
      * Test method for {@link RentalHandler#deleteRental(Rental)}.
      * Case: A Rental object that doesn't exist in the database is passed as argument.
-     * The method is expected to throw a DeleteException.
+     * The method is expected to throw a DeletionException.
      */
     @Test
     @Order(26)
@@ -1079,10 +1079,10 @@ public class RentalHandlerTest extends BaseHandlerTest
             nonExistentRental.setRentalID(1); //Make sure the rental has a valid ID
 
             // Attempt to softly delete the non-existent rental
-            Exception e = assertThrows(DeleteException.class, () -> RentalHandler.deleteRental(nonExistentRental),
-                                       "A DeleteException should be thrown when attempting to softly delete a non-existent rental.");
+            Exception e = assertThrows(DeletionException.class, () -> RentalHandler.deleteRental(nonExistentRental),
+                                       "A DeletionException should be thrown when attempting to softly delete a non-existent rental.");
             assertTrue(e.getCause() instanceof EntityNotFoundException,
-                       "The cause of the DeleteException should be a EntityNotFoundException.");
+                       "The cause of the DeletionException should be a EntityNotFoundException.");
         }
         catch (ConstructionException | InvalidIDException e)
         {
@@ -1120,7 +1120,7 @@ public class RentalHandlerTest extends BaseHandlerTest
                     "econd soft delete.");
         }
         catch (EntityNotFoundException | RentalNotAllowedException
-                | InvalidIDException | DeleteException e)
+                | InvalidIDException | DeletionException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -1157,7 +1157,7 @@ public class RentalHandlerTest extends BaseHandlerTest
                         "The rental should not be marked as deleted after undoing the soft delete.");
         }
         catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-                | DeleteException | RecoveryException e)
+                | DeletionException | RecoveryException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -1248,7 +1248,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             assertNull(deletedRental, "The rental should be null after being deleted.");
         }
         catch (EntityNotFoundException | RentalNotAllowedException
-                | InvalidIDException | DeleteException e)
+                | InvalidIDException | DeletionException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -1260,7 +1260,7 @@ public class RentalHandlerTest extends BaseHandlerTest
     /**
      * Test method for {@link RentalHandler#hardDeleteRental(Rental)}.
      * Case: A null Rental object is passed as argument.
-     * The method is expected to throw a DeleteException.
+     * The method is expected to throw a DeletionException.
      */
     @Test
     @Order(32)
@@ -1269,12 +1269,12 @@ public class RentalHandlerTest extends BaseHandlerTest
         System.out.println("\n32: Testing deleteRental method with a null rental...");
 
         // Attempt to delete a null rental
-        Exception e = assertThrows(DeleteException.class,
+        Exception e = assertThrows(DeletionException.class,
                                    () -> RentalHandler.hardDeleteRental(null),
-                                   "A DeleteException should be thrown " +
+                                   "A DeletionException should be thrown " +
                                            "when attempting to delete a null rental.");
         assertTrue(e.getCause() instanceof edu.groupeighteen.librarydbms.model.exceptions.NullEntityException,
-                   "The cause of the DeleteException should be a NullEntityException.");
+                   "The cause of the DeletionException should be a NullEntityException.");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -1282,7 +1282,7 @@ public class RentalHandlerTest extends BaseHandlerTest
     /**
      * Test method for {@link RentalHandler#hardDeleteRental(Rental)}.
      * Case: A Rental object that doesn't exist in the database is passed as argument.
-     * The method is expected to throw a DeleteException.
+     * The method is expected to throw a DeletionException.
      */
     @Test
     @Order(33)
@@ -1295,11 +1295,11 @@ public class RentalHandlerTest extends BaseHandlerTest
             // Attempt to delete a rental that doesn't exist in the database
             Rental nonExistentRental = new Rental(1, 1);
             nonExistentRental.setRentalID(1); //Needs a valid ID
-            Exception e = assertThrows(DeleteException.class,
+            Exception e = assertThrows(DeletionException.class,
                                        () -> RentalHandler.hardDeleteRental(nonExistentRental),
-                                       "A DeleteException should be thrown when attempting to delete a non-existent rental.");
+                                       "A DeletionException should be thrown when attempting to delete a non-existent rental.");
             assertTrue(e.getCause() instanceof EntityNotFoundException,
-                       "The cause of the DeleteException should be a EntityNotFoundException.");
+                       "The cause of the DeletionException should be a EntityNotFoundException.");
         }
         catch (ConstructionException | InvalidIDException e)
         {
@@ -1335,7 +1335,7 @@ public class RentalHandlerTest extends BaseHandlerTest
                     "even if it was softly deleted before.");
         }
         catch (EntityNotFoundException | RentalNotAllowedException
-                | InvalidIDException | DeleteException e)
+                | InvalidIDException | DeletionException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -1347,7 +1347,7 @@ public class RentalHandlerTest extends BaseHandlerTest
     /**
      * Test method for {@link RentalHandler#deleteRental(Rental)}.
      * Case: A Rental object that was hard deleted is passed as argument.
-     * An exception of type DeleteException should be thrown, with its cause being a EntityNotFoundException, since the rental
+     * An exception of type DeletionException should be thrown, with its cause being a EntityNotFoundException, since the rental
      * has been hard deleted and doesn't exist in the database anymore.
      */
     @Test
@@ -1363,15 +1363,15 @@ public class RentalHandlerTest extends BaseHandlerTest
             RentalHandler.hardDeleteRental(rentalToDelete);
 
             // Attempt to softly delete the hard deleted rental
-            Exception e = assertThrows(DeleteException.class,
+            Exception e = assertThrows(DeletionException.class,
                                        () -> RentalHandler.deleteRental(rentalToDelete),
-                                       "A DeleteException should be thrown when attempting to softly delete a " +
+                                       "A DeletionException should be thrown when attempting to softly delete a " +
                                                "hard deleted rental.");
             assertTrue(e.getCause() instanceof EntityNotFoundException,
-                       "The cause of the DeleteException should be a EntityNotFoundException.");
+                       "The cause of the DeletionException should be a EntityNotFoundException.");
         }
         catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-                | DeleteException e)
+                | DeletionException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -1406,7 +1406,7 @@ public class RentalHandlerTest extends BaseHandlerTest
             assertTrue(e.getCause() instanceof EntityNotFoundException,
                        "The cause of the RecoveryException should be a EntityNotFoundException.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeleteException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();

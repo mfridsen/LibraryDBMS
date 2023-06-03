@@ -1,0 +1,41 @@
+//List of test cases
+
+    //validUserID2
+    //userID 0
+
+    //validUsername
+    //Null username
+    //Empty username
+    //Short username 3
+    //Long username 20
+
+    //validPassword2
+    //Null password
+    //Empty password
+    //Short password 8
+    //Long password 50
+
+    //userType2, change currentRentals to 5, verify allowedToRent false, update,
+    //          verify allowedRentals == 20 and allowedToRent true //TODO RESET
+    //Null userType
+
+    //validEmail2
+    //Null email
+    //Empty email
+    //Short email 6
+    //Long email 255
+
+    //Valid allowedRentals (7)
+    // < 0 allowedRentals
+
+    //Valid currentRentals (2)
+    // < 0 currentRentals
+    // currentRentals > allowedRentals (5)
+
+    //Valid lateFee (2)
+    // < 0 lateFee
+
+    // lateFee == 0.0 && allowedRentals > currentRentals AND allowedToRent = false
+    // lateFee > 0.0 AND allowedToRent = true
+    // currentRentals >= defaultAllowedRentals, allowedToRent = true
+    // deleted == true and allowedToRent == true
