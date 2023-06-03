@@ -37,8 +37,8 @@
 
 //getUserByID:
 
-    //ValidUserPresent
-    //ValidUserNotPresent
+    //Valid User Present
+    //Valid User Not Present
     //InvalidUserID
 
 //updateUser:
@@ -57,7 +57,9 @@
 
 //hardDelete:
 
-    //
+    //Valid Existing User
+    //Valid Non-Existing User
+    //Null User
 
 //loginAndValidation:
 

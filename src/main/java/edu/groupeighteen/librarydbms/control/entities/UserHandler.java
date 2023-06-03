@@ -37,6 +37,9 @@ import java.util.List;
  * <p>
  * Meaning, createNewUser (as an example) should NEVER be called with an empty or null String as argument.
  * If it is, that IS exceptional.
+ * <p>
+ * And, it's a good way of reminding myself that I do, in fact, need to verify user input before performing
+ * unnecessary method calls.
  */
 public class UserHandler //TODO-future rewrite Get-methods according to ItemHandler and RentalHandler, re-test
 {
@@ -231,7 +234,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
 
     /**
      * Creates a new User with the provided username, password, userType, and email, then stores it.
-     *
+     * <p>
      * This method validates the input parameters, constructs a new User object, and saves it.
      * It also adds the username and email to the respective lists in UserHandler.
      * If an exception is encountered during the construction or saving process, it will be
@@ -244,7 +247,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
      * @param userType the UserType of the new user. Must be a non-null value from UserType enum.
      * @param email    the email for the new user. Must be a unique, non-null, non-empty string
      *                 with length between the limits set in User class, and properly formatted.
-     * @return         the newly created User object.
+     * @return the newly created User object.
      * @throws CreationException if validation of input parameters fails.
      */
     public static User createNewUser(String username, String password, User.UserType userType, String email)
@@ -812,7 +815,6 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         checkEmailTaken(email);
         checkEmailLength(email);
     }
-
 
 
     //TODO-comment
