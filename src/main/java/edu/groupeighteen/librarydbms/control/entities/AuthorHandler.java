@@ -144,7 +144,7 @@ public class AuthorHandler {
             //Set deleted to true (doesn't need to be set before calling this method)
             authorToDelete.setDeleted(true);
 
-            //Prepare a SQL query to update the rental details
+            //Prepare a SQL query to update the author details
             String query = "UPDATE authors SET deleted = ? WHERE authorID = ?";
             String[] params = {
                     authorToDelete.isDeleted() ? "1" : "0",
@@ -160,10 +160,9 @@ public class AuthorHandler {
             // Validate input
             try {
                 validateAuthor(authorToRecover);
-            } catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException |
-                     edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e) {
-                throw new RecoveryException("Author Recovery failed: " + e.getMessage(), e);
-            }
+            } catch (EntityNotFoundException | InvalidIDException | NullEntityException e) {
+                throw new RecoveryException("Author Recovery failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
+            } //TODO- alla 'throw new' skall göras som ovan
 
             // Set deleted to false
             authorToRecover.setDeleted(false);
@@ -187,12 +186,12 @@ public class AuthorHandler {
             {
                 validateAuthor(authorToDelete);
             }
-            catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
+            catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
             {
                 throw new DeleteException("Author Delete failed: " + e.getMessage(), e);
             }
 
-            //Prepare a SQL query to update the rentalToDelete details
+            //Prepare a SQL query to update the authorToDelete details
             String query = "DELETE FROM authors WHERE authorID = ?";
             String[] params = {String.valueOf(authorToDelete.getAuthorID())};
 

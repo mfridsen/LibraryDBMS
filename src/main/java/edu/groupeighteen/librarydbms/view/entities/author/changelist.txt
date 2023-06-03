@@ -1,0 +1,7 @@
+authorGUI
+create
+update
+Search
+SearchResult + table + button editor
+delete
+handler
