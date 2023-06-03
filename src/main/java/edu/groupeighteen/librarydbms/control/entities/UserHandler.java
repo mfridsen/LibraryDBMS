@@ -244,13 +244,13 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
      *                 with length between the limits set in User class.
      * @param password the password for the new user. Must be a non-null, non-empty string
      *                 with length between the limits set in User class.
-     * @param userType the UserType of the new user. Must be a non-null value from UserType enum.
      * @param email    the email for the new user. Must be a unique, non-null, non-empty string
      *                 with length between the limits set in User class, and properly formatted.
+     * @param userType the UserType of the new user. Must be a non-null value from UserType enum.
      * @return the newly created User object.
      * @throws CreationException if validation of input parameters fails.
      */
-    public static User createNewUser(String username, String password, User.UserType userType, String email)
+    public static User createNewUser(String username, String password, String email, User.UserType userType)
     throws CreationException
     {
         User newUser = null;
@@ -264,7 +264,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             validateUserType(userType);
 
             //Create and save the new user, retrieving the ID
-            newUser = new User(username, password, userType, email);
+            newUser = new User(username, password, email, userType);
             newUser.setUserID(saveUser(newUser));
 
             //Need to remember to add to the lists
@@ -386,8 +386,8 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
                             userID,
                             resultSet.getString("username"),
                             resultSet.getString("password"),
-                            User.UserType.valueOf(resultSet.getString("userType")),
                             resultSet.getString("email"),
+                            User.UserType.valueOf(resultSet.getString("userType")),
                             resultSet.getInt("allowedRentals"),
                             resultSet.getInt("currentRentals"),
                             resultSet.getFloat("lateFee"),
@@ -676,8 +676,8 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
                             resultSet.getInt("userID"),
                             username,
                             resultSet.getString("password"),
-                            User.UserType.valueOf(resultSet.getString("userType")),
                             resultSet.getString("email"),
+                            User.UserType.valueOf(resultSet.getString("userType")),
                             resultSet.getInt("allowedRentals"),
                             resultSet.getInt("currentRentals"),
                             resultSet.getFloat("lateFee"),

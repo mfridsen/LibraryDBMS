@@ -64,7 +64,7 @@ public class UserSettersTest
 
         try
         {
-            user = new User(validUserID1, validUsername, validPassword, userType, validEmail, allowedRentals,
+            user = new User(validUserID1, validUsername, validPassword, validEmail, userType, allowedRentals,
                     currentRentals, lateFee, allowedToRent, deleted);
             assertNotNull(user);
         }
@@ -84,7 +84,7 @@ public class UserSettersTest
     {
         try
         {
-            user = new User(validUserID1, validUsername, validPassword, userType, validEmail, allowedRentals,
+            user = new User(validUserID1, validUsername, validPassword, validEmail, userType, allowedRentals,
                     currentRentals, lateFee, allowedToRent, deleted);
             assertNotNull(user);
         }

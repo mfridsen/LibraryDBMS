@@ -400,7 +400,7 @@ public class RentalHandlerTestSuite extends BaseHandlerTest
             RentalHandler.setVerbose(false);
 
         }
-        catch (InvalidIDException | NullEntityException | RetrievalException | InvalidUserRentalsException e)
+        catch (InvalidIDException | NullEntityException | RetrievalException | InvalidUserRentalsException | UpdateException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
@@ -444,7 +444,7 @@ public class RentalHandlerTestSuite extends BaseHandlerTest
             assertTrue(actualMessage.contains(expectedMessage));
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidLateFeeException e)
+        catch (InvalidIDException | NullEntityException | InvalidLateFeeException | UpdateException e)
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();

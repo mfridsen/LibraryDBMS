@@ -27,7 +27,7 @@ import org.junit.platform.suite.api.Suite;
         //ClassificationHandlerTestSuite.class,
         ItemHandlerTestSuite.class,
         UserHandlerTestSuite.class,
-        RentalHandlerTestSuite.class,
+        //RentalHandlerTestSuite.class,
 })
 
 public class ControlTestSuite

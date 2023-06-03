@@ -61,7 +61,7 @@ public class UserCreationTest
             User.UserType userType = User.UserType.ADMIN;
             String email = "admin@example.com";
 
-            User user = new User(username, password, userType, email);
+            User user = new User(username, password, email, userType);
             assertNotNull(user);
 
             //Verify ALL fields
@@ -98,7 +98,7 @@ public class UserCreationTest
             User.UserType userType = User.UserType.STAFF;
             String email = "staff@example.com";
 
-            User user = new User(username, password, userType, email);
+            User user = new User(username, password, email, userType);
             assertNotNull(user);
 
             //Verify ALL fields
@@ -135,7 +135,7 @@ public class UserCreationTest
             User.UserType userType = User.UserType.PATRON;
             String email = "patron@example.com";
 
-            User user = new User(username, password, userType, email);
+            User user = new User(username, password, email, userType);
             assertNotNull(user);
 
             //Verify ALL fields
@@ -172,7 +172,7 @@ public class UserCreationTest
             User.UserType userType = User.UserType.STUDENT;
             String email = "student@example.com";
 
-            User user = new User(username, password, userType, email);
+            User user = new User(username, password, email, userType);
             assertNotNull(user);
 
             //Verify ALL fields
@@ -209,7 +209,7 @@ public class UserCreationTest
             User.UserType userType = User.UserType.TEACHER;
             String email = "teacher@example.com";
 
-            User user = new User(username, password, userType, email);
+            User user = new User(username, password, email, userType);
             assertNotNull(user);
 
             //Verify ALL fields
@@ -246,7 +246,7 @@ public class UserCreationTest
             User.UserType userType = User.UserType.RESEARCHER;
             String email = "researcher@example.com";
 
-            User user = new User(username, password, userType, email);
+            User user = new User(username, password, email, userType);
             assertNotNull(user);
 
             //Verify ALL fields
@@ -277,7 +277,7 @@ public class UserCreationTest
         System.out.println("\n7: Testing User constructor with null username...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(null, "password", User.UserType.PATRON, "patron@example.com"));
+                new User(null, "password", "patron@example.com", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -289,7 +289,7 @@ public class UserCreationTest
         System.out.println("\n8: Testing User constructor with empty username...");
 
         assertThrows(ConstructionException.class, () ->
-                new User("", "password", User.UserType.PATRON, "patron@example.com"));
+                new User("", "password", "patron@example.com", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -303,7 +303,7 @@ public class UserCreationTest
         String shortUsername = "ab"; //less than MIN_USERNAME_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(shortUsername, "password", User.UserType.PATRON, "patron@example.com"));
+                new User(shortUsername, "password", "patron@example.com", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -318,7 +318,7 @@ public class UserCreationTest
                 Collections.nCopies(User.MAX_USERNAME_LENGTH + 1, "a")); //More than MAX_USERNAME_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(longUsername, "password", User.UserType.PATRON, "patron@example.com"));
+                new User(longUsername, "password", "patron@example.com", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -330,7 +330,7 @@ public class UserCreationTest
         System.out.println("\n11: Testing User constructor with null password...");
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", null, User.UserType.PATRON, "patron@example.com"));
+                new User("username", null, "patron@example.com", User.UserType.PATRON));
 
 
         System.out.println("\nTEST FINISHED.");
@@ -343,7 +343,7 @@ public class UserCreationTest
         System.out.println("\n12: Testing User constructor with empty password...");
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", "", User.UserType.PATRON, "patron@example.com"));
+                new User("username", "", "patron@example.com", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -357,7 +357,7 @@ public class UserCreationTest
         String shortPassword = "abc1234"; //less than MIN_PASSWORD_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", shortPassword, User.UserType.PATRON, "patron@example.com"));
+                new User("username", shortPassword, "patron@example.com", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -372,7 +372,7 @@ public class UserCreationTest
                 Collections.nCopies(User.MAX_PASSWORD_LENGTH + 1, "a")); //More than MAX_PASSWORD_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", longPassword, User.UserType.PATRON, "patron@example.com"));
+                new User("username", longPassword, "patron@example.com", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -384,7 +384,7 @@ public class UserCreationTest
         System.out.println("\n15: Testing User constructor with null userType...");
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", "password", null, "patron@example.com"));
+                new User("username", "password", "patron@example.com", null));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -396,7 +396,7 @@ public class UserCreationTest
         System.out.println("\n16: Testing User constructor with null email...");
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", "password", User.UserType.PATRON, null));
+                new User("username", "password", null, User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -408,7 +408,7 @@ public class UserCreationTest
         System.out.println("\n17: Testing User constructor with empty email...");
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", "password", User.UserType.PATRON, ""));
+                new User("username", "password", "", User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -422,7 +422,7 @@ public class UserCreationTest
         String shortEmail = "a@b.c"; //less than MIN_EMAIL_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", "password", User.UserType.PATRON, shortEmail));
+                new User("username", "password", shortEmail, User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -436,7 +436,7 @@ public class UserCreationTest
         String longEmail = "a".repeat(User.MAX_EMAIL_LENGTH + 1); //More than MAX_EMAIL_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User("username", "password", User.UserType.PATRON, longEmail));
+                new User("username", "password", longEmail, User.UserType.PATRON));
 
         System.out.println("\nTEST FINISHED.");
     }

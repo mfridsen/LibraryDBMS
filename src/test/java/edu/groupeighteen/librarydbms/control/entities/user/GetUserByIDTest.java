@@ -51,16 +51,16 @@ public class GetUserByIDTest extends BaseUserHandlerTest
     {
         try
         {
-            User existingUser = UserHandler.createNewUser(validUsername, validPassword, userType, validEmail);
+            User existingUser = UserHandler.createNewUser(validUsername, validPassword, validEmail, userType);
             existingUserID = existingUser.getUserID();
 
-            User nonExistingUser = new User(validUsername2, validPassword2, userType, validEmail2);
+            User nonExistingUser = new User(validUsername2, validPassword2, validEmail2, userType);
 
             //userID is set to 0 by default by constructor, which is invalid
             nonExistingUser.setUserID(9999);
             nonExistingUserID = nonExistingUser.getUserID();
 
-            User deletedUser = UserHandler.createNewUser(validUsername3, validPassword3, userType, validEmail3);
+            User deletedUser = UserHandler.createNewUser(validUsername3, validPassword3, validEmail3, userType);
             deletedUserID = deletedUser.getUserID();
 
             //Soft delete deletedUser

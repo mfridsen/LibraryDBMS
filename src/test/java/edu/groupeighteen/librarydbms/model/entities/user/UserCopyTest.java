@@ -46,7 +46,7 @@ public class UserCopyTest
             boolean deleted = false;
 
             //Create original
-            User user = new User(userId, username, password, userType, email, allowedRentals, currentRentals, lateFee,
+            User user = new User(userId, username, password, email, userType, allowedRentals, currentRentals, lateFee,
                     allowedToRent, deleted);
 
             //Copy

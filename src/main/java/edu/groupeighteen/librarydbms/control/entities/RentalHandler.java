@@ -153,7 +153,8 @@ public class RentalHandler
             return newRental;
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException | InvalidTitleException | RetrievalException | InvalidUserRentalsException e)
+        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException
+                | InvalidTitleException | RetrievalException | InvalidUserRentalsException | UpdateException e)
         {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);

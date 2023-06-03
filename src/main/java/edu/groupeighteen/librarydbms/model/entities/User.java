@@ -127,14 +127,14 @@ public class User extends Entity
     private String password; //TODO-future hash and salt
 
     /**
-     * The type of this user, as defined in the UserType enum.
-     */
-    private UserType userType;
-
-    /**
      * The unique email of this user. It must be between MIN_EMAIL_LENGTH and MAX_EMAIL_LENGTH characters long.
      */
     private String email; //UNIQUE //TODO-future REGEX
+
+    /**
+     * The type of this user, as defined in the UserType enum.
+     */
+    private UserType userType;
 
     /**
      * The maximum number of items this user can rent at once.
@@ -166,11 +166,11 @@ public class User extends Entity
      *
      * @param username the username for the new User
      * @param password the password for the new User
-     * @param userType The type of the user.
      * @param email    The users email address
+     * @param userType The type of the user.
      * @throws ConstructionException if the username or password is invalid
      */
-    public User(String username, String password, UserType userType, String email)
+    public User(String username, String password, String email, UserType userType)
     throws ConstructionException
     {
         super();
@@ -179,8 +179,8 @@ public class User extends Entity
             this.userID = 0;
             setUsername(username); //Throws InvalidNameException
             setPassword(password); //Throws InvalidPasswordException
-            setUserType(userType); //Throws InvalidTypeException
             setEmail(email); //Throws InvalidEmailException
+            setUserType(userType); //Throws InvalidTypeException
             setAllowedRentals(getDefaultAllowedRentals(userType)); //Throws InvalidUserRentalsException
             setCurrentRentals(0); //Throws InvalidUserRentalsException
             setLateFee(0); //Throws InvalidLateFeeException
@@ -206,15 +206,15 @@ public class User extends Entity
      * @param userID         Unique identifier for the user.
      * @param username       The username of the user.
      * @param password       The password of the user.
-     * @param userType       The type of the user.
      * @param email          The users email address
+     * @param userType       The type of the user.
      * @param allowedRentals The maximum number of rentals allowed for the user.
      * @param currentRentals The number of rentals the user currently has.
      * @param lateFee        Any late fee applicable to the user.
      * @param deleted        Boolean indicating whether the user is marked as deleted.
      * @throws ConstructionException If there are issues validating the provided data.
      */
-    public User(int userID, String username, String password, UserType userType, String email, int allowedRentals,
+    public User(int userID, String username, String password, String email, UserType userType, int allowedRentals,
                 int currentRentals, double lateFee, boolean allowedToRent, boolean deleted)
     throws ConstructionException
     {
@@ -254,8 +254,8 @@ public class User extends Entity
         this.userID = other.userID;
         this.username = other.username;
         this.password = other.password;
-        this.userType = other.userType;
         this.email = other.email;
+        this.userType = other.userType;
         this.allowedRentals = other.allowedRentals;
         this.currentRentals = other.currentRentals;
         this.lateFee = other.lateFee;

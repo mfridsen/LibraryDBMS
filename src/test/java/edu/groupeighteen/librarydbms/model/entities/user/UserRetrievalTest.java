@@ -65,23 +65,23 @@ public class UserRetrievalTest
             int userId = 1;
             String username = "validusername";
             String password = "validpassword";
-            User.UserType userType = User.UserType.PATRON;
             String email = "validuser@example.com";
+            User.UserType userType = User.UserType.PATRON;
             int allowedRentals = User.getDefaultAllowedRentals(User.UserType.PATRON);
             int currentRentals = 0;
             double lateFee = 0.0;
             boolean allowedToRent = true;
             boolean deleted = false;
 
-            User user = new User(userId, username, password, userType, email, allowedRentals, currentRentals, lateFee,
+            User user = new User(userId, username, password,  email, userType, allowedRentals, currentRentals, lateFee,
                     allowedToRent, deleted);
 
             assertNotNull(user);
             assertEquals(userId, user.getUserID());
             assertEquals(username, user.getUsername());
             assertEquals(password, user.getPassword());
-            assertEquals(userType, user.getUserType());
             assertEquals(email, user.getEmail());
+            assertEquals(userType, user.getUserType());
             assertEquals(allowedRentals, user.getAllowedRentals());
             assertEquals(currentRentals, user.getCurrentRentals());
             assertEquals(lateFee, user.getLateFee());
@@ -105,7 +105,7 @@ public class UserRetrievalTest
         System.out.println("\n2: Testing User constructor with invalid ID...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(-1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(-1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -119,7 +119,7 @@ public class UserRetrievalTest
         System.out.println("\n3: Testing User constructor with null username...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, null, "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, null, "validpassword","validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -133,7 +133,7 @@ public class UserRetrievalTest
         System.out.println("\n4: Testing User constructor with empty username...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -149,7 +149,7 @@ public class UserRetrievalTest
         String shortUsername = "ab"; // less than MIN_USERNAME_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, shortUsername, "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, shortUsername, "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -165,7 +165,7 @@ public class UserRetrievalTest
         String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1); // More than MAX_USERNAME_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, longUsername, "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, longUsername, "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -179,7 +179,7 @@ public class UserRetrievalTest
         System.out.println("\n7: Testing User constructor with null password...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", null, User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", null, "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -193,7 +193,7 @@ public class UserRetrievalTest
         System.out.println("\n8: Testing User constructor with empty password...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -209,7 +209,7 @@ public class UserRetrievalTest
         String shortPassword = "abc1234"; // less than MIN_PASSWORD_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", shortPassword, User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", shortPassword, "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -225,7 +225,7 @@ public class UserRetrievalTest
         String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1); // More than MAX_PASSWORD_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", longPassword, User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", longPassword, "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -239,7 +239,7 @@ public class UserRetrievalTest
         System.out.println("\n11: Testing User constructor with null userType...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", null, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com",null,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -253,7 +253,7 @@ public class UserRetrievalTest
         System.out.println("\n12: Testing User constructor with null email...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, null,
+                new User(1, "validusername", "validpassword", null, User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -267,7 +267,7 @@ public class UserRetrievalTest
         System.out.println("\n13: Testing User constructor with empty email...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "",
+                new User(1, "validusername", "validpassword", "", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -283,7 +283,7 @@ public class UserRetrievalTest
         String shortEmail = "a@b.c"; // less than MIN_EMAIL_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, shortEmail,
+                new User(1, "validusername", "validpassword", shortEmail, User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -299,7 +299,7 @@ public class UserRetrievalTest
         String longEmail = "a@b." + "a".repeat(User.MAX_EMAIL_LENGTH + 1); // More than MAX_EMAIL_LENGTH
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, longEmail,
+                new User(1, "validusername", "validpassword", longEmail, User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -313,7 +313,7 @@ public class UserRetrievalTest
         System.out.println("\n16: Testing User constructor with invalid allowedRentals...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         -1, 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -327,7 +327,7 @@ public class UserRetrievalTest
         System.out.println("\n17: Testing User constructor with negative currentRentals...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), -1, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -341,7 +341,7 @@ public class UserRetrievalTest
         System.out.println("\n18: Testing User constructor with currentRentals exceeding allowedRentals...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         5, 6, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -355,7 +355,7 @@ public class UserRetrievalTest
         System.out.println("\n19: Testing User constructor with negative lateFee...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, -1.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -370,7 +370,7 @@ public class UserRetrievalTest
                 "\n20: Testing User constructor with lateFee == 0.0 && allowedRentals > currentRentals AND allowedToRent = false...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         5, 4, 0.0, false, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -384,7 +384,7 @@ public class UserRetrievalTest
         System.out.println("\n21: Testing User constructor with lateFee > 0.0 AND allowedToRent = true...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 1.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -398,7 +398,7 @@ public class UserRetrievalTest
         System.out.println("\n22: Testing User constructor with currentRentals >= defaultAllowedRentals...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON),
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0.0, true, false));
 
@@ -413,7 +413,7 @@ public class UserRetrievalTest
         System.out.println("\n23: Testing User constructor with deleted == true and allowedToRent == true...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", User.UserType.PATRON, "validuser@example.com",
+                new User(1, "validusername", "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, true));
 
         System.out.println("\nTEST FINISHED.");
