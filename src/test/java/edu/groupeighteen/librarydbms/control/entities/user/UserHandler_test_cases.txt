@@ -45,15 +45,31 @@
 
 //updateUser:
 
+    ------------Valid--------------
+
+    //Password Changed
+    //User Type Changed
+    //Allowed Rentals Changed
+    //Current Rentals Changed
+    //Late Fee Changed
+    //Allowed To Rent Changed
     //Username Unchanged
     //Username Changed Not Taken
     //Email Unchanged
     //Email Changed Not Taken
-    //Valid User Deleted
+
+    ----------Invalid--------------
+
+    //Valid User Soft Deleted
+    //Valid User Hard Deleted
     //Null User
     //Valid Non-Existing User
     //New Username Taken
     //New Email Taken
+
+    ----------Future--------------
+    //Concurrency Two Concurrent Attempts To Update Same User
+    //DB Connection Lost
 
 //deleteAndUndoDelete:
 

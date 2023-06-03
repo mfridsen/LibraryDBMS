@@ -1,3 +1,8 @@
+General:
+
+    Concurrency
+    Database is down or unreachable
+
 Strings:
 
     <At least one valid string>

@@ -408,17 +408,9 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Updates the data of an existing user in the database with the data of the provided User object. Before updating,
-     * the method validates that the provided User object is not null and the old username is not empty.
-     * If the username of the provided User object differs from the old username, the method checks if the new username
-     * is taken and updates the username in the storedUsernames list if it isn't. The method then prepares an
-     * SQL command to update the user's data in the database and executes the update.
-     *
-     * @param updatedUser The User object containing the updated user data.
-     */
+
     public static void updateUser(User updatedUser) //TODO-test //TODO-fix
-    throws NullEntityException
+    throws NullEntityException, UpdateException
     {
         try
         {
@@ -464,7 +456,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         }
         catch (InvalidIDException | InvalidNameException | EntityNotFoundException e)
         {
-            ExceptionHandler.HandleFatalException("Failed to update user in database due to " +
+            throw new UpdateException("Failed to update user in database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
@@ -564,12 +556,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             storedUsernames.remove(username);
             registeredEmails.remove(email);
         }
-        catch (InvalidIDException e)
-        {
-            ExceptionHandler.HandleFatalException("Failed to delete user from database due to " +
-                    e.getClass().getName() + ": " + e.getMessage(), e);
-        }
-        catch (EntityNotFoundException | NullEntityException e)
+        catch (EntityNotFoundException | NullEntityException | InvalidIDException e)
         {
             throw new DeletionException("Failed to delete user from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
