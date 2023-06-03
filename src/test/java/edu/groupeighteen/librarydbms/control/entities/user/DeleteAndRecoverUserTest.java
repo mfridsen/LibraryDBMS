@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.CreationException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 import org.junit.jupiter.api.*;
@@ -34,7 +35,7 @@ public class DeleteAndRecoverUserTest
     private static User currentRentalsUser;
     private static User nonExistingUser; //CONSTRUCTOR NOT createNewUser
 
-    private static User[] users = new User[]{admin, staff, patron, student, teacher, researcher};
+    private static User[] users;
 
     /**
      * Let's setup the needed users ahead of time.
@@ -56,8 +57,10 @@ public class DeleteAndRecoverUserTest
     /**
      * Initializes the batch and prepares them for testing. Further preparation might be needed in specific tests.
      */
-    private static void initializeUsers()
+    protected static void initializeUsers()
     {
+        System.out.println("\nInitializing users...");
+
         try
         {
             admin = UserHandler.createNewUser("admin", "adminPass",
@@ -72,6 +75,9 @@ public class DeleteAndRecoverUserTest
                     "teacher@mail.com", User.UserType.TEACHER);
             researcher = UserHandler.createNewUser("researcher", "researcherPass",
                     "researcher@mail.com", User.UserType.RESEARCHER);
+
+            users = new User[]{admin, staff, patron, student, teacher, researcher};
+
             lateFeeUser = UserHandler.createNewUser("lateFeeUser", "lateFeeUserPass",
                     "lateFeeUser@mail.com", User.UserType.PATRON);
             currentRentalsUser = UserHandler.createNewUser("currentRentalsUser", "currentRentalsUserPass",
@@ -86,7 +92,11 @@ public class DeleteAndRecoverUserTest
         catch (CreationException | ConstructionException | InvalidLateFeeException | InvalidUserRentalsException e)
         {
             e.printStackTrace();
+            fail("User initialization failed due to: " + e.getCause().getClass().getName()
+            + ". Message: " + e.getMessage());
         }
+
+        System.out.println("\nUSERS INITIALIZED.");
     }
 
     /**
@@ -96,9 +106,37 @@ public class DeleteAndRecoverUserTest
     @Order(1)
     void testDeleteUser_validExistingUsers()
     {
-        System.out.println("\n1: Testing deleteUser method with valid existing users of each type...");
+        System.out.println("\n1: Testing deleteUser method with valid existing users of each type...\n");
 
-        // implementation goes here
+        for (User user : users)
+        {
+            try
+            {
+                System.out.println("Testing to delete " + user.getUsername());
+                //Assert user is NOT deleted
+                assertFalse(user.isDeleted());
+                assertNotNull(UserHandler.getUserByID(user.getUserID()));
+
+                //Delete user
+                assertDoesNotThrow(() -> UserHandler.deleteUser(user));
+
+                //Assert user is deleted
+                assertTrue(user.isDeleted());
+
+                //Standard retrieval should NOT return user since it's deleted
+                assertNull(UserHandler.getUserByID(user.getUserID()));
+
+                //getDeleted true retrieval should return user
+                User retrievedUser = UserHandler.getUserByID(user.getUserID(), true);
+                assertNotNull(retrievedUser);
+                assertTrue(retrievedUser.isDeleted());
+            }
+            catch (InvalidIDException e)
+            {
+                e.printStackTrace();
+                fail("Exception thrown when testing to delete user " + user.getUsername() + ": " + e.getMessage());
+            }
+        }
 
         System.out.println("\nTEST FINISHED.");
     }

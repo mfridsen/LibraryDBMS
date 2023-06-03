@@ -69,6 +69,7 @@ public class GetUserByIDTest extends BaseUserHandlerTest
         catch (CreationException | ConstructionException | InvalidIDException e)
         {
             e.printStackTrace();
+            Assertions.fail("Failed due to exception in GetUserByIDTest.customSetup: ", e);
         }
     }
 

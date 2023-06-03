@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.sql.Connection;
@@ -27,7 +28,7 @@ import java.sql.SQLException;
  */
 public abstract class BaseUserHandlerTest
 {
-    protected static Connection connection = null;
+    protected static Connection connection;
     protected static final String testDatabaseName = "test_database";
 
     /**
@@ -69,6 +70,7 @@ public abstract class BaseUserHandlerTest
         catch (SQLException | ClassNotFoundException e)
         {
             e.printStackTrace();
+            Assertions.fail("Failed due to exception in setupConnectionAndTables: ", e);
         }
     }
 

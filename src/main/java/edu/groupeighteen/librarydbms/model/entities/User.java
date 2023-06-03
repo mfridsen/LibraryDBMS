@@ -543,40 +543,30 @@ public class User extends Entity
      *                                            library's rules. The rules being, a user with no late fee and with fewer current rentals
      *                                            than permitted should be allowed to rent.
      */
-    public void setAllowedToRent(boolean allowedToRent)
-    throws InvalidRentalStatusChangeException
+    public void setAllowedToRent(boolean allowedToRent) throws InvalidRentalStatusChangeException
     {
-        int defaultAllowedRentals = getDefaultAllowedRentals(userType);
-
-        // No late fee and fewer rentals than allowed
-        if (lateFee == 0.0 && allowedRentals > currentRentals)
-        {
-            if (!allowedToRent)
-            {
+        // If the user is deleted, they can't rent.
+        if (deleted) {
+            if (allowedToRent) {
+                throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                        "A deleted user cannot be allowed to rent.");
+            }
+        }
+        // If the user has no late fee and fewer rentals than allowed, they can rent.
+        else if (lateFee == 0.0 && currentRentals < allowedRentals) {
+            if (!allowedToRent) {
                 throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
                         "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
                         "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
                         ", Allowed rentals: " + allowedRentals);
             }
         }
-        else
-        {
-            // Late fee or maximum rentals reached
-            if (lateFee > 0.0 || currentRentals >= defaultAllowedRentals)
-            {
-                if (allowedToRent)
-                {
-                    throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                            "User has late fee: " + lateFee + " or has rented to capacity.");
-                }
+        // If the user has a late fee or has reached the maximum rentals, they can't rent.
+        else if (lateFee > 0.0 || currentRentals >= allowedRentals) {
+            if (allowedToRent) {
+                throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
+                        "User has late fee: " + lateFee + " or has rented to capacity.");
             }
-        }
-
-        // Being deleted prevents renting
-        if (deleted && allowedToRent)
-        {
-            throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
-                    "A deleted user cannot be allowed to rent.");
         }
 
         this.allowedToRent = allowedToRent;

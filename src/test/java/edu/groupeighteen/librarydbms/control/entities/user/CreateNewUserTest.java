@@ -26,7 +26,6 @@ public class CreateNewUserTest extends BaseUserHandlerTest
     private static final String validUsername2 = "validusername2";
 
     private static final String validPassword = "validpassword";
-    private static final String validPassword2 = "validpassword2";
 
     private static final String validEmail = "validuser@example.com";
     private static final String validEmail2 = "validuser2@example.com";
@@ -41,17 +40,6 @@ public class CreateNewUserTest extends BaseUserHandlerTest
     private static final String longEmail = "a".repeat(User.MAX_EMAIL_LENGTH + 1);
 
     private static final User.UserType userType = User.UserType.ADMIN;
-
-    /**
-     * Before every test, ensure table and lists have been reset.
-     */
-    @BeforeEach
-    void assertEmptyTableAndLists()
-    {
-        assertEquals(0, getNumberOfUsers());
-        assertEquals(0, UserHandler.getStoredUsernames().size());
-        assertEquals(0, UserHandler.getRegisteredEmails().size());
-    }
 
     /**
      * Clear lists and table.
@@ -74,9 +62,9 @@ public class CreateNewUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n1: Testing createNewItem method with valid Users of all UserTypes...");
 
-        try
+        for (User.UserType userType : User.UserType.values())
         {
-            for (User.UserType userType : User.UserType.values())
+            try
             {
                 System.out.println("\nTesting valid user of userType " + userType.toString());
 
@@ -102,14 +90,16 @@ public class CreateNewUserTest extends BaseUserHandlerTest
                 assertEquals(1, UserHandler.getRegisteredEmails().size());
 
                 //Reset table and lists after each test
-                resetUsersTable();
-                resetUserHandler();
+                reset();
+                assertEquals(0, getNumberOfUsers());
+                assertEquals(0, UserHandler.getStoredUsernames().size());
+                assertEquals(0, UserHandler.getRegisteredEmails().size());
             }
-        }
-        catch (CreationException e)
-        {
-            e.printStackTrace();
-            fail("Valid operations should not throw exceptions.");
+            catch (CreationException e)
+            {
+                e.printStackTrace();
+                fail("Valid operations should not throw exceptions.");
+            }
         }
 
         System.out.println("\nTEST FINISHED.");

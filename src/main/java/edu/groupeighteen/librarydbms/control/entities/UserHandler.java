@@ -419,8 +419,13 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //Validate user
             validateUserObject(userToDelete);
 
+            //Check if user has lateFee or currentRentals
+            if (userToDelete.getLateFee() > 0 || userToDelete.getCurrentRentals() > 0)
+                throw new DeletionException("User with late fee or current rentals cannot be deleted. " +
+                        "Late fee: " + userToDelete.getLateFee() + ", current rentals: " + userToDelete.getCurrentRentals());
+
             //Prepare a SQL command to set deleted to true for the specified user.
-            String sql = "UPDATE users SET deleted = 1 WHERE userID = ?";
+            String sql = "UPDATE users SET allowedToRent = 0, deleted = 1 WHERE userID = ?";
             String[] params = {String.valueOf(userToDelete.getUserID())};
 
             //Execute the update.
@@ -428,8 +433,11 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
 
             //Update the deleted field of the user object
             userToDelete.setDeleted(true);
+
+            //Update allowedToRent field
+            userToDelete.setAllowedToRent(false);
         }
-        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException | InvalidRentalStatusChangeException e)
         {
             throw new DeletionException("Failed to delete User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -446,17 +454,22 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //Validate user
             validateUserObject(userToRecover);
 
+            //Update the deleted field of the user object
+            userToRecover.setDeleted(false);
+
+            //Update allowedToRent field
+            if ((userToRecover.getLateFee() == 0) && userToRecover.getCurrentRentals() < userToRecover.getAllowedRentals())
+                userToRecover.setAllowedToRent(true);
+
             //Prepare a SQL command to set deleted to false for the specified user.
-            String sql = "UPDATE users SET deleted = 0 WHERE userID = ?";
-            String[] params = {String.valueOf(userToRecover.getUserID())};
+            String sql = "UPDATE users SET allowedToRent = ?, deleted = 0 WHERE userID = ?";
+            String[] params = {userToRecover.isAllowedToRent() ? "1" : "0",
+                    String.valueOf(userToRecover.getUserID())};
 
             //Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
-
-            //Update the deleted field of the user object
-            userToRecover.setDeleted(false);
         }
-        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException | InvalidRentalStatusChangeException e)
         {
             throw new RecoveryException("Failed to recover User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
