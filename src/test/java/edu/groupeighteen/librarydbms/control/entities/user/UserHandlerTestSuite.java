@@ -4,15 +4,14 @@ import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.user.*;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
-import org.junit.jupiter.api.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserValidationException;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,168 +39,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserHandlerTestSuite extends BaseHandlerTest
 {
 
-    //UPDATE------------------------------------------------------------------------------------------------------------
-
-    @Test
-    @Order(27)
-    void testUpdateUser_NullNewUser()
-    {
-        System.out.println("\n27: Testing updateUser method with null newUser...");
-
-        //Verify that an NullEntityException is thrown when newUser is null
-        assertThrows(NullEntityException.class, () -> UserHandler.updateUser(null),
-                "An IllegalArgumentException should be thrown when newUser is null.");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-
-    @Test
-    @Order(29)
-    void testUpdateUser_SameUsername()
-    {
-        System.out.println("\n29: Testing updateUser method with same new and old usernames...");
-
-        try
-        {
-            //Create a newUser object
-            User newUser = UserHandler.createNewUser("user1", "password1", null, null);
-
-            //Verify newUsers username exists in storedUsernames
-            assertEquals(1, UserHandler.getStoredUsernames().size());
-            assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
-
-            //Update newUser
-            UserHandler.updateUser(newUser);
-
-            //Verify only one username exists in storedUsernames, and it's the same
-            assertEquals(1, UserHandler.getStoredUsernames().size());
-            assertEquals(newUser.getUsername(), UserHandler.getStoredUsernames().get(0));
-        }
-        catch (NullEntityException | CreationException e)
-        {
-            fail("Should not get exception for valid test.");
-            e.printStackTrace();
-        }
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(30)
-    void testUpdateUser_NewUsernameNotTaken()
-    {
-        System.out.println("\n30: Testing updateUser method with a new username not taken...");
-
-        try
-        {
-            //Create our first user, 'taking' that username
-            String firstUsername = "user1";
-            UserHandler.createNewUser(firstUsername, "password1", null, null);
-
-            //Create a newUser object with a second username
-            String secondUsername = "user2";
-            User newUser = UserHandler.createNewUser(secondUsername, "password1", null, null);
-
-            //Assert that two usernames exist in storedUsernames, and they are the correct names
-            assertEquals(2, UserHandler.getStoredUsernames().size());
-            assertEquals(firstUsername, UserHandler.getStoredUsernames().get(0));
-            assertEquals(secondUsername, UserHandler.getStoredUsernames().get(1));
-
-            //Set username of newUser to third username
-            String thirdUsername = "user3";
-            newUser.setUsername(thirdUsername);
-
-            //Assert no exception is thrown when newUser's username is changed to a third username
-            assertDoesNotThrow(() -> UserHandler.updateUser(newUser),
-                    "No exception should be thrown when the new username is not taken.");
-
-            //Assert that still only two usernames exist in storedUsernames, and that they are the correct names
-            assertEquals(2, UserHandler.getStoredUsernames().size());
-            assertEquals(firstUsername, UserHandler.getStoredUsernames().get(0));
-            assertEquals(thirdUsername, UserHandler.getStoredUsernames().get(1));
-            assertEquals(newUser.getUsername(), thirdUsername);
-        }
-        catch (InvalidNameException | CreationException e)
-        {
-            fail("Should not get exception for valid test.");
-            e.printStackTrace();
-        }
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(31)
-    void testUpdateUser_NewUsernameTaken()
-    {
-        System.out.println("\n31: Testing updateUser method with a new username already taken...");
-
-        try
-        {
-            //Create our first user, 'taking' that username
-            String firstUsername = "user1";
-            UserHandler.createNewUser(firstUsername, "password1", null, null);
-
-            //Create a newUser object with a second username
-            String secondUsername = "user2";
-            User newUser = UserHandler.createNewUser(secondUsername, "password1", null, null);
-
-            //Set username of newUser to firstUsername (which is already taken)
-            newUser.setUsername(firstUsername);
-
-            //Assert that an UsernameTakenException is thrown when newUser's username is changed to a username that's already taken
-            assertThrows(InvalidNameException.class, () -> UserHandler.updateUser(newUser),
-                    "An IllegalArgumentException should be thrown when the new username is already taken.");
-
-            //Assert that still only two usernames exist in storedUsernames, and that they are the correct names
-            assertEquals(2, UserHandler.getStoredUsernames().size());
-            assertEquals(firstUsername, UserHandler.getStoredUsernames().get(0));
-            assertEquals(secondUsername, UserHandler.getStoredUsernames().get(1));
-        }
-        catch (InvalidNameException | CreationException e)
-        {
-            e.printStackTrace();
-        }
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(32)
-    void testUpdateUser_ChangeFields()
-    {
-        System.out.println("\n32: Testing updateUser method by changing fields...");
-
-        try
-        {
-            //Create a new User
-            User newUser = UserHandler.createNewUser("user1", "password1", null, null);
-
-            //Change password
-            newUser.setPassword("newPassword");
-            UserHandler.updateUser(newUser);
-            assertEquals("newPassword", newUser.getPassword(), "Password should be updated to 'newPassword'.");
-
-            //Change currentRentals
-            newUser.setCurrentRentals(3);
-            UserHandler.updateUser(newUser);
-            assertEquals(3, newUser.getCurrentRentals(), "Current rentals should be updated to 3.");
-
-            //Change lateFee
-            newUser.setLateFee(15.5);
-            UserHandler.updateUser(newUser);
-            assertEquals(15.5, newUser.getLateFee(), "Late fee should be updated to 15.5.");
-        }
-        catch (NullEntityException | InvalidLateFeeException | InvalidPasswordException |
-                InvalidUserRentalsException | CreationException e)
-        {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
-        }
-
-        System.out.println("\nTEST FINISHED.");
-    }
 
     //SOFT DELETE ------------------------------------------------------------------------------------------------------
 
