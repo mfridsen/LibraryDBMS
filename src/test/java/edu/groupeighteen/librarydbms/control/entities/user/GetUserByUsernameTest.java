@@ -19,18 +19,8 @@ import org.junit.jupiter.api.*;
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GetUserByUsernameTest
+public class GetUserByUsernameTest extends BaseUserHandlerTest
 {
-    @BeforeAll
-    static void setUp()
-    {
-    }
-
-    @AfterAll
-    static void tearDown()
-    {
-    }
-
     /**
      *
      */

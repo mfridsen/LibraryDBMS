@@ -22,7 +22,7 @@ import org.junit.jupiter.api.*;
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DeleteAndRecoverUserTest
+public class DeleteAndRecoverUserTest extends BaseUserHandlerTest
 {
     //A nice batch of user objects to use over and over
     private static User admin;
@@ -49,8 +49,12 @@ public class DeleteAndRecoverUserTest
     /**
      * And now we can reset them back to original states after tests.
      */
-    void resetUsers()
+    @Override
+    @AfterEach
+    protected void reset()
     {
+        super.reset();
+        resetUsersTable();
         initializeUsers();
     }
 
@@ -61,8 +65,7 @@ public class DeleteAndRecoverUserTest
     {
         System.out.println("\nInitializing users...");
 
-        try
-        {
+        try {
             admin = UserHandler.createNewUser("admin", "adminPass",
                     "admin@mail.com", User.UserType.ADMIN);
             staff = UserHandler.createNewUser("staff", "staffPass",

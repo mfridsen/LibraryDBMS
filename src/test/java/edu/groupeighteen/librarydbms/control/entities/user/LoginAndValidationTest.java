@@ -20,18 +20,8 @@ import org.junit.jupiter.api.*;
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LoginAndValidationTest
+public class LoginAndValidationTest extends BaseUserHandlerTest
 {
-    @BeforeAll
-    static void setUp()
-    {
-    }
-
-    @AfterAll
-    static void tearDown()
-    {
-    }
-
     /**
      *
      */
