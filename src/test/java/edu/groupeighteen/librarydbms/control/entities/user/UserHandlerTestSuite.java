@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
         CreateNewUserTest.class,
         GetUserByIDTest.class,
         UpdateUserTest.class,
-        DeleteAndUndoDeleteUserTest.class,
+        DeleteAndRecoverUserTest.class,
         HardDeleteUserTest.class,
         LoginAndValidationTest.class,
         GetUserByUsernameTest.class

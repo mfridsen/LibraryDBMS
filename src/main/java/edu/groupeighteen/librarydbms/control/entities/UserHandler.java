@@ -488,7 +488,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
     }
 
 
-    public static void undoDeleteUser(User userToRecover) //TODO-test //TODO-comment
+    public static void recoverUser(User userToRecover) //TODO-test //TODO-comment
     throws RecoveryException
     {
         try

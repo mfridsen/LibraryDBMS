@@ -635,7 +635,7 @@ public class ItemHandler
      *
      * @param itemToRecover The item object to be recovered.
      */
-    public static void undoDeleteItem(Item itemToRecover)
+    public static void recoverItem(Item itemToRecover)
     throws RetrievalException
     {
         try

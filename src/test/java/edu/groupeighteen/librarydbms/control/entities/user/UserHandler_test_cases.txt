@@ -56,17 +56,17 @@
         (Current Rentals Changed    0 -> 5)
         (Allowed To Rent Changed    true -> false)
 
-
     //Late Fee, Allowed To Rent Changed
     //Username Unchanged
     //Email Unchanged
 
     ----------Invalid--------------
 
-    //Valid User Soft Deleted
-    //Valid User Hard Deleted
     //Null User
-    //Valid Non-Existing User
+    //Valid User Soft Deleted
+    //Valid User Recovered
+    //Valid User Hard Deleted
+    //Valid User Does Not Exist In Database
     //New Username Taken
     //New Email Taken
 

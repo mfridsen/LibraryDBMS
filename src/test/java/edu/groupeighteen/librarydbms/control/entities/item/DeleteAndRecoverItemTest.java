@@ -24,7 +24,7 @@ import java.sql.SQLException;
  * Unit Test for the deleteFilm and undoDeleteFilm methods.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DeleteAndUndoDeleteTest
+public class DeleteAndRecoverItemTest
 {
     // Declare these at the class level so all tests can access them
     static Film film;
@@ -149,8 +149,8 @@ public class DeleteAndUndoDeleteTest
         try
         {
             // Call the undoDeleteItem method on the Literature object
-            ItemHandler.undoDeleteItem(film);
-            ItemHandler.undoDeleteItem(literature);
+            ItemHandler.recoverItem(film);
+            ItemHandler.recoverItem(literature);
 
             // Retrieve the literature from the database
             Film retrievedFilm = (Film) ItemHandler.getItemByID(film.getItemID());

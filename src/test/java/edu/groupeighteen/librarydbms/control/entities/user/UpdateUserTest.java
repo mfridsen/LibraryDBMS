@@ -2,7 +2,12 @@ package edu.groupeighteen.librarydbms.control.entities.user;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
+import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
+import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
+import edu.groupeighteen.librarydbms.model.exceptions.CreationException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import org.junit.jupiter.api.*;
 
 /**
@@ -32,9 +37,20 @@ public class UpdateUserTest
 
     private static final User.UserType userType = User.UserType.PATRON;
 
+    /**
+     * Let's setup the three different needed users ahead of time.
+     */
     @BeforeAll
-    static void setUp()
+    protected static void customSetup()
     {
+        try
+        {
+
+        }
+        catch (CreationException | ConstructionException | InvalidIDException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @AfterAll
