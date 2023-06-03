@@ -337,15 +337,24 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         return 0;
     }
 
+    public static User getUserByID(int userID)
+    throws InvalidIDException
+    {
+        return getUserByID(userID, false);
+    }
+
     /**
      * Retrieves a User object from the database using the provided userID. The method first validates the provided
      * userID. It then prepares and executes an SQL query to select the user's details from the database. If a user
      * with the provided userID exists, a new User object is created with the retrieved details and returned.
+     * <p>
+     * if getDeleted is true, it will ignore the deleted status of the user. If getDeleted is false,
+     * it will only select users where deleted = false.
      *
      * @param userID The userID of the user to be retrieved.
      * @return A User object representing the user with the provided userID. Returns null if the user does not exist.
      */
-    public static User getUserByID(int userID) //TODO-test
+    public static User getUserByID(int userID, boolean getDeleted) //TODO-test
     throws InvalidIDException
     {
         try
@@ -353,8 +362,10 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             // No point getting invalid Users, throws InvalidIDException
             checkValidUserID(userID);
 
-            // Prepare a SQL query to select a user by userID.
-            String query = "SELECT * FROM users WHERE userID = ?";
+            // Prepare a SQL query to select a user by userID. Include deleted condition based on getDeleted
+            String query = getDeleted ?
+                    "SELECT * FROM users WHERE userID = ?" :
+                    "SELECT * FROM users WHERE userID = ? AND deleted = false";
             String[] params = {String.valueOf(userID)};
 
             // Execute the query and store the result in a ResultSet.
@@ -411,7 +422,9 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //TODO-PRIO VALIDATE NEW USERNAME AND/OR PASSWORD NOT TAKEN
 
             //Retrieve old username
-            String oldUsername = getUserByID(updatedUser.getUserID()).getUsername(); //Ignore warning, user is not null
+            String oldUsername = getUserByID(updatedUser.getUserID()).getUsername(); //Ignore warning, user is
+            // not
+            // null
 
             //If username has been changed...
             if (!updatedUser.getUsername().equals(oldUsername))
@@ -448,7 +461,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         }
     }
 
-
+    //Does not remove username and email from lists due to integrity
     public static void deleteUser(User userToDelete) //TODO-test //TODO-comment
     throws DeletionException
     {
@@ -634,6 +647,12 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
+    public static User getUserByUsername(String username)
+    throws InvalidNameException
+    {
+        return getUserByUsername(username, false);
+    }
+
     /**
      * Retrieves a User object from the database using the provided username. The method first validates the provided
      * username. It then prepares and executes an SQL query to select the user's details from the database. If a user
@@ -642,7 +661,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
      * @param username The username of the user to be retrieved.
      * @return A User object representing the user with the provided username. Returns null if the user does not exist.
      */
-    public static User getUserByUsername(String username) //TODO-test
+    public static User getUserByUsername(String username, boolean getDeleted) //TODO-test
     throws InvalidNameException
     {
         try
@@ -650,9 +669,11 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             // No point in getting invalid Users, throws InvalidNameException
             checkEmptyUsername(username);
 
-            // Prepare a SQL query to select a user by username
-            String query = "SELECT userID, password, allowedRentals, currentRentals, lateFee FROM users " +
-                    "WHERE username = ?";
+            // Prepare a SQL query to select a user by username. Include deleted condition based on getDeleted
+            String query = getDeleted ?
+                    "SELECT * FROM users WHERE username = ?" :
+                    "SELECT * FROM users WHERE username = ? AND deleted = false";
+
             String[] params = {username};
 
             // Execute the query and store the result in a ResultSet

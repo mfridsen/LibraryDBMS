@@ -1,5 +1,6 @@
 Strings:
 
+    <At least one valid string>
     Null String
     Empty String
     Too Short String
@@ -27,6 +28,9 @@ Strings:
 
 Numbers:
 
+    <At least one valid number>
     0
     Too Low
     Too Large
+    <Any other numbers that are invalid (meaning too low < num < too large>
+
