@@ -423,9 +423,11 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         try
         {
             //Validate input
-            validateUser(updatedUser);
+            validateUserObject(updatedUser);
 
             //TODO-PRIO VALIDATE NEW USERNAME AND/OR PASSWORD NOT TAKEN
+
+            //TODO-PRIO VALIDATE NOT DELETED
 
             //Retrieve old username
             String oldUsername = getUserByID(updatedUser.getUserID()).getUsername(); //Ignore warning, user is
@@ -474,7 +476,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         try
         {
             //Validate user
-            validateUser(userToDelete);
+            validateUserObject(userToDelete);
 
             //Prepare a SQL command to set deleted to true for the specified user.
             String sql = "UPDATE users SET deleted = 1 WHERE userID = ?";
@@ -500,7 +502,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         try
         {
             //Validate user
-            validateUser(userToRecover);
+            validateUserObject(userToRecover);
 
             //Prepare a SQL command to set deleted to false for the specified user.
             String sql = "UPDATE users SET deleted = 0 WHERE userID = ?";
@@ -539,7 +541,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         try
         {
             //Validate the input. Throws NullEntityException
-            validateUser(user);
+            validateUserObject(user);
 
             //Validate that user has no current rentals and no late fee
             if (user.getCurrentRentals() > 0 || user.getLateFee() > 0)
@@ -640,7 +642,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
     {
         try
         {
-            validateUser(user);
+            validateUserObject(user);
             checkEmptyPassword(password);
         }
         catch (EntityNotFoundException | InvalidIDException e)
@@ -874,7 +876,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
     }
 
     //TODO-comment
-    private static void validateUser(User user)
+    private static void validateUserObject(User user)
     throws EntityNotFoundException, InvalidIDException, NullEntityException
     {
         checkNullUser(user);

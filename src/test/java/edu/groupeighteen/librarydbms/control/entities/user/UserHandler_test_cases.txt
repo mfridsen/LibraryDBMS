@@ -46,10 +46,12 @@
 //updateUser:
 
     //Username Unchanged
-    //Username Not Taken
+    //Username Changed Not Taken
     //Email Unchanged
-    //Email Not Taken
+    //Email Changed Not Taken
+    //Valid User Deleted
     //Null User
+    //Valid Non-Existing User
     //New Username Taken
     //New Email Taken
 
