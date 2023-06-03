@@ -40,6 +40,15 @@ public abstract class BaseUserHandlerTest
         //The connection and tables need to be set up before tests can commence.
         setupConnectionAndTables();
         //Test data and userhandler setups are optional
+        customSetup();
+    }
+
+    /**
+     * To be overridden when needed.
+     */
+    protected static void customSetup()
+    {
+
     }
 
     /**

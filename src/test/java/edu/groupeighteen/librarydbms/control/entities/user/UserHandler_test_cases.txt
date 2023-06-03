@@ -39,7 +39,8 @@
 
     //Valid ID Existing User
     //Valid ID Non-Existing User
-    //Valid ID Deleted User
+    //Valid ID Deleted User getDeleted false
+    //Valid ID Deleted User getDeleted true
     //InvalidUserID
 
 //updateUser:
