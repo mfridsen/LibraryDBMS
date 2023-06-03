@@ -59,226 +59,218 @@ public class UpdateUserTest
     }
 
     /**
-     * Test case for the updateUser method with a valid user where all fields are changed.
+     * Test to update a User's username to a not taken one.
      */
     @Test
     @Order(1)
-    void testUpdateUser_AllFieldsChanged()
+    void testUpdateUser_UsernameChangedNotTaken()
     {
-        System.out.println("\n1: Testing updateUser method with a valid user where all fields are changed...");
+        System.out.println("\n1: Testing updateUser method with new valid and unique username...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where password is changed.
+     * Test to update a User's password.
      */
     @Test
     @Order(2)
     void testUpdateUser_PasswordChanged()
     {
-        System.out.println("\n2: Testing updateUser method with a valid user where the password is changed...");
+        System.out.println("\n2: Testing updateUser method with new password...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where userType is changed.
+     * Test to update a User's email to a not taken one.
      */
     @Test
     @Order(3)
-    void testUpdateUser_UserTypeChanged()
+    void testUpdateUser_EmailChangedNotTaken()
     {
-        System.out.println("\n3: Testing updateUser method with a valid user where the userType is changed...");
+        System.out.println("\n3: Testing updateUser method with new valid and unique email...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where allowedRentals is changed.
+     * Test to update a User's userType.
      */
     @Test
     @Order(4)
-    void testUpdateUser_AllowedRentalsChanged()
+    void testUpdateUser_UserTypeChanged()
     {
-        System.out.println("\n4: Testing updateUser method with a valid user where the allowedRentals is changed...");
+        System.out.println("\n4: Testing updateUser method with new user type...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where currentRentals is changed.
+     * Test to update a User's allowedRentals.
      */
     @Test
     @Order(5)
-    void testUpdateUser_CurrentRentalsChanged()
+    void testUpdateUser_AllowedRentalsChanged()
     {
-        System.out.println("\n5: Testing updateUser method with a valid user where the currentRentals is changed...");
+        System.out.println("\n5: Testing updateUser method with updated allowed rentals...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where the lateFee and allowedToRent are changed.
+     * Test to update a User's currentRentals.
      */
     @Test
     @Order(6)
-    void testUpdateUser_LateFee_AllowedToRent_Changed()
+    void testUpdateUser_CurrentRentalsChanged()
     {
-        System.out.println("\n6: Testing updateUser method with a valid user where the lateFee and allowedToRent" +
-                "are changed...");
+        System.out.println("\n6: Testing updateUser method with updated current rentals...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where the username is unchanged.
+     * Test to update a User's lateFee and allowedToRent.
      */
     @Test
     @Order(7)
-    void testUpdateUser_UsernameUnchanged()
+    void testUpdateUser_LateFeeAndAllowedToRentChanged()
     {
-        System.out.println("\n7: Testing updateUser method with a valid user where the username is unchanged...");
+        System.out.println("\n7: Testing updateUser method with updated late fee and allowed to rent...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where the username is changed and not taken.
+     * Test to update all fields of a User.
      */
     @Test
     @Order(8)
-    void testUpdateUser_UsernameChangedNotTaken()
+    void testUpdateUser_AllFieldsChanged()
     {
-        System.out.println("\n8: Testing updateUser method with a valid user where the username is changed and not taken...");
+        System.out.println("\n8: Testing updateUser method with all fields updated...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
+        // (Username Changed, Not Taken "validUsername" -> "changedUsername")
+        // (Password Changed           "validPassword" -> "changedPassword")
+        // (Email Changed Not Taken    "validEmail@example.com" -> "changedEmail@example.com")
+        // (User Type Changed          PATRON -> STUDENT)
+        // (Allowed Rentals Changed    3 -> 5)
+        // (Current Rentals Changed    0 -> 5)
+        // (Allowed To Rent Changed    true -> false)
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where the email is unchanged.
+     * Test to update a null User.
      */
     @Test
     @Order(9)
-    void testUpdateUser_EmailUnchanged()
+    void testUpdateUser_NullUser()
     {
-        System.out.println("\n9: Testing updateUser method with a valid user where the email is unchanged...");
+        System.out.println("\n9: Testing updateUser method with null user...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user where the email is changed and not taken.
+     * Test to update a User that is soft deleted.
      */
     @Test
     @Order(10)
-    void testUpdateUser_EmailChangedNotTaken()
+    void testUpdateUser_ValidUserSoftDeleted()
     {
-        System.out.println("\n10: Testing updateUser method with a valid user where the email is changed and not taken...");
+        System.out.println("\n10: Testing updateUser method with valid user that has been soft deleted...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user that has been soft deleted.
+     * Test to update a User that was soft deleted and then recovered.
      */
     @Test
     @Order(11)
-    void testUpdateUser_ValidUserSoftDeleted()
+    void testUpdateUser_ValidUserRecovered()
     {
-        System.out.println("\n11: Testing updateUser method with a valid user that has been soft deleted...");
+        System.out.println("\n11: Testing updateUser method with valid user that was soft deleted and then recovered...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid user that has been hard deleted.
+     * Test to update a User that is hard deleted.
      */
     @Test
     @Order(12)
     void testUpdateUser_ValidUserHardDeleted()
     {
-        System.out.println("\n12: Testing updateUser method with a valid user that has been hard deleted...");
+        System.out.println("\n12: Testing updateUser method with valid user that has been hard deleted...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a null user.
+     * Test to update a valid User that does not exist in the database.
      */
     @Test
     @Order(13)
-    void testUpdateUser_NullUser()
+    void testUpdateUser_ValidUserDoesNotExistInDatabase()
     {
-        System.out.println("\n13: Testing updateUser method with a null user...");
+        System.out.println("\n13: Testing updateUser method with valid user that does not exist in database...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a valid non-existing user.
+     * Test to update a User's username to a taken one.
      */
     @Test
     @Order(14)
-    void testUpdateUser_ValidNonExistingUser()
+    void testUpdateUser_NewUsernameTaken()
     {
-        System.out.println("\n14: Testing updateUser method with a valid non-existing user...");
+        System.out.println("\n14: Testing updateUser method with new username that is already taken...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }
 
     /**
-     * Test case for the updateUser method with a new username that is taken.
+     * Test to update a User's email to a taken one.
      */
     @Test
     @Order(15)
-    void testUpdateUser_NewUsernameTaken()
-    {
-        System.out.println("\n15: Testing updateUser method with a new username that is taken...");
-
-        // TODO: Implement test logic here
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    /**
-     * Test case for the updateUser method with a new email that is taken.
-     */
-    @Test
-    @Order(16)
     void testUpdateUser_NewEmailTaken()
     {
-        System.out.println("\n16: Testing updateUser method with a new email that is taken...");
+        System.out.println("\n15: Testing updateUser method with new email that is already taken...");
 
-        // TODO: Implement test logic here
+        // TODO: Implement test logic.
 
         System.out.println("\nTEST FINISHED.");
     }

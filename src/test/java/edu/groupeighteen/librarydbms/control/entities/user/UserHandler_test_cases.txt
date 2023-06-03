@@ -47,18 +47,22 @@
 
     ------------Valid--------------
 
-    //All Fields Changed
-        (Username Changed, Not Taken "validUsername" -> "changedUsername")
-        (Password Changed           "validPassword" -> "changedPassword")
-        (Email Changed Not Taken    "validEmail@example.com" -> "changedEmail@example.com")
-        (User Type Changed          PATRON -> STUDENT)
-        (Allowed Rentals Changed    3 -> 5)
-        (Current Rentals Changed    0 -> 5)
-        (Allowed To Rent Changed    true -> false)
-
+    //Username Changed Not Taken
+    //Password Changed
+    //Email Changed Not Taken
+    //User Type Changed
+    //Allowed Rentals Changed
+    //Current Rentals Changed
     //Late Fee, Allowed To Rent Changed
-    //Username Unchanged
-    //Email Unchanged
+
+    //All Fields Changed
+            (Username Changed, Not Taken "validUsername" -> "changedUsername")
+            (Password Changed           "validPassword" -> "changedPassword")
+            (Email Changed Not Taken    "validEmail@example.com" -> "changedEmail@example.com")
+            (User Type Changed          PATRON -> STUDENT)
+            (Allowed Rentals Changed    3 -> 5)
+            (Current Rentals Changed    0 -> 5)
+            (Allowed To Rent Changed    true -> false)
 
     ----------Invalid--------------
 
