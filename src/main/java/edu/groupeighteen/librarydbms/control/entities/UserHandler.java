@@ -416,13 +416,11 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
     {
         try
         {
-            //Validate user
+            //Validate user, throws NullEntityException/EntityNotFoundException
             validateUserObject(userToDelete);
 
-            //Check if user has lateFee or currentRentals
-            if (userToDelete.getLateFee() > 0 || userToDelete.getCurrentRentals() > 0)
-                throw new DeletionException("User with late fee or current rentals cannot be deleted. " +
-                        "Late fee: " + userToDelete.getLateFee() + ", current rentals: " + userToDelete.getCurrentRentals());
+            //Check if user has lateFee or currentRentals, throws InvalidUserRentalsException/InvalidLateFeeException
+            validateAllowedToDeleteUser(userToDelete);
 
             //Prepare a SQL command to set deleted to true for the specified user.
             String sql = "UPDATE users SET allowedToRent = 0, deleted = 1 WHERE userID = ?";
@@ -437,12 +435,15 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //Update allowedToRent field
             userToDelete.setAllowedToRent(false);
         }
-        catch (NullEntityException | EntityNotFoundException | InvalidIDException | InvalidRentalStatusChangeException e)
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException | InvalidRentalStatusChangeException
+                | InvalidUserRentalsException | InvalidLateFeeException e)
         {
             throw new DeletionException("Failed to delete User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
+
+
 
     //TODO-PRIO if userToRecover != STAFF or ADMIN, currentUser must be STAFF or ADMIN and must be validated
     //TODO-PRIO userToRecover == STAFF or ADMIN, currentUser must be ADMIN and must be validated
@@ -452,13 +453,13 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         try
         {
             //Validate user
-            validateUserObject(userToRecover);
+            validateRecoverableUserObject(userToRecover);
 
             //Update the deleted field of the user object
             userToRecover.setDeleted(false);
 
             //Update allowedToRent field
-            if ((userToRecover.getLateFee() == 0) && userToRecover.getCurrentRentals() < userToRecover.getAllowedRentals())
+            if ((userToRecover.getLateFee() == 0) && (userToRecover.getCurrentRentals() < userToRecover.getAllowedRentals()))
                 userToRecover.setAllowedToRent(true);
 
             //Prepare a SQL command to set deleted to false for the specified user.
@@ -477,53 +478,55 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
     }
 
     /**
-     * Deletes a user from the database.
+     * Deletes a userToDelete from the database.
      * <p>
      * This method first checks if the provided User object is not null and if
-     * the user with the ID of the provided User object exists in the database. If the user does not exist,
+     * the userToDelete with the ID of the provided User object exists in the database. If the userToDelete does not exist,
      * a EntityNotFoundException is thrown.
      * <p>
-     * If the user exists, an SQL command is prepared to delete the user from the database,
+     * If the userToDelete exists, an SQL command is prepared to delete the userToDelete from the database,
      * and this command is executed.
      * <p>
-     * The username of the deleted user is then removed from the storedUsernames list.
+     * The username of the deleted userToDelete is then removed from the storedUsernames list.
      *
-     * @param user The User object representing the user to be deleted.
+     * @param userToDelete The User object representing the userToDelete to be deleted.
      */
     //TODO-PRIO if userToDelete != STAFF, ADMIN, currentUser must be ADMIN and must be validated
     //TODO-PRIO userToDelete == STAFF, ADMIN, currentUser must be ADMIN and must be validated
-    public static void hardDeleteUser(User user) //TODO-test //TODO-prio handle cascades in rentals //TODO-comment
+    public static void hardDeleteUser(User userToDelete) //TODO-test //TODO-prio handle cascades in rentals //TODO-comment
     throws DeletionException
     {
         try
         {
             //Validate the input. Throws NullEntityException
-            validateUserObject(user);
+            validateDeletableUserObject(userToDelete);
 
-            //Validate that user has no current rentals and no late fee
-            if (user.getCurrentRentals() > 0 || user.getLateFee() > 0)
-                throw new DeletionException("Failed to delete user from database due to active rentals or non-zero " +
-                        "late fee. User current rentals: " + user.getCurrentRentals() + ", user late fee: " +
-                        user.getLateFee());
+            //Validate that userToDelete has no current rentals and no late fee
+            validateAllowedToDeleteUser(userToDelete);
 
             //Retrieve the unique username and email
-            String username = user.getUsername();
-            String email = user.getEmail();
+            String username = userToDelete.getUsername();
+            String email = userToDelete.getEmail();
 
-            //Prepare a SQL command to delete a user by userID.
+            //Prepare a SQL command to delete a userToDelete by userID.
             String sql = "DELETE FROM users WHERE userID = ?";
-            String[] params = {String.valueOf(user.getUserID())};
+            String[] params = {String.valueOf(userToDelete.getUserID())};
 
             //Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
 
-            //Remove the deleted user's username and email from the lists
+            //Set booleans
+            userToDelete.setDeleted(true);
+            userToDelete.setAllowedToRent(false);
+
+            //Remove the deleted userToDelete's username and email from the lists
             storedUsernames.remove(username);
             registeredEmails.remove(email);
         }
-        catch (EntityNotFoundException | NullEntityException | InvalidIDException e)
+        catch (EntityNotFoundException | NullEntityException | InvalidIDException |
+                InvalidRentalStatusChangeException | InvalidUserRentalsException | InvalidLateFeeException e)
         {
-            throw new DeletionException("Failed to delete user from database due to " +
+            throw new DeletionException("Failed to delete userToDelete from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
@@ -891,6 +894,24 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             throw new EntityNotFoundException("User with ID " + user + "not found in database.");
     }
 
+    private static void validateDeletableUserObject(User user)
+    throws EntityNotFoundException, InvalidIDException, NullEntityException
+    {
+        checkNullUser(user);
+        int ID = user.getUserID();
+        if (UserHandler.getUserByID(ID, true) == null)
+            throw new EntityNotFoundException("User with ID " + user + "not found in database.");
+    }
+
+    private static void validateRecoverableUserObject(User user)
+    throws EntityNotFoundException, InvalidIDException, NullEntityException
+    {
+        checkNullUser(user);
+        int ID = user.getUserID();
+        if (UserHandler.getUserByID(ID, true) == null)
+            throw new EntityNotFoundException("User with ID " + user + "not found in database.");
+    }
+
     /**
      * Checks if a given user is null. If so, throws a NullEntityException which must be handled.
      *
@@ -918,5 +939,16 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
         {
             throw new InvalidIDException("Invalid userID: " + userID);
         }
+    }
+
+    private static void validateAllowedToDeleteUser(User userToDelete)
+    throws InvalidUserRentalsException, InvalidLateFeeException
+    {
+        if (userToDelete.getLateFee() > 0)
+            throw new InvalidLateFeeException("User with late fee cannot be deleted. Late fee: " +
+                    userToDelete.getLateFee());
+        if (userToDelete.getCurrentRentals() > 0)
+            throw new InvalidUserRentalsException("User with current rentals cannot be deleted. Current rentals: " +
+                    userToDelete.getCurrentRentals());
     }
 }
