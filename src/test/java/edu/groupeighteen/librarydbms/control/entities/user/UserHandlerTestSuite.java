@@ -30,10 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
         UserHandlerSetupTest.class,
         CreateNewUserTest.class,
         GetUserByIDTest.class,
-        UpdateUserTest.class,
         DeleteAndRecoverUserTest.class,
-        HardDeleteUserTest.class,
         LoginAndValidationTest.class,
+        UpdateUserTest.class,
         GetUserByUsernameTest.class
 })
 public class UserHandlerTestSuite extends BaseHandlerTest

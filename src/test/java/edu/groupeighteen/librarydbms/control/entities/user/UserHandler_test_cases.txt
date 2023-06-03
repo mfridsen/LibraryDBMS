@@ -1,4 +1,4 @@
-//setup:
+//SetupTest:
 
     //Empty Database
     //Some Users in Database
@@ -6,7 +6,7 @@
     //Reset With Test Data
     //Sync With Test Data (Kinda already tested by proxy via setup, but whatevs)
 
-//createNewUser:
+//CreateNewUserTest:
 
     //Valid ADMIN VERIFY ALL FIELDS AND USERHANDLER LISTS
     //Valid STAFF VERIFY ALL FIELDS AND USERHANDLER LISTS
@@ -35,7 +35,7 @@
 
     //Null userType
 
-//getUserByID:
+//GetUserByIDTest:
 
     //Valid ID Existing User
     //Valid ID Non-Existing User
@@ -43,7 +43,74 @@
     //Valid ID Deleted User getDeleted true
     //InvalidUserID
 
-//updateUser:
+//DeleteAndRecoverUserTest:
+
+    //Delete Valid Existing PATRON as ADMIN
+    //Delete Valid Existing PATRON as STAFF
+    //Delete Valid Existing PATRON as PATRON (!STAFF && !ADMIN)
+
+    //Delete Valid Existing STUDENT as ADMIN
+    //Delete Valid Existing STUDENT as STAFF
+
+    //Delete Valid Existing TEACHER as ADMIN
+    //Delete Valid Existing TEACHER as STAFF
+
+    //Delete Valid Existing RESEARCHER as ADMIN
+    //Delete Valid Existing RESEARCHER as STAFF
+
+    //Delete Valid Existing STAFF as ADMIN
+    //Delete Valid Existing STAFF as STAFF
+
+    //Delete Valid Existing ADMIN as ADMIN
+    //Delete Valid Existing ADMIN as STAFF
+
+
+    //Delete Valid Existing User Of Each Type
+    //Delete Deleted User
+    //Delete Valid Non-Existing User
+    //Delete Null User
+    //Delete User With Late Fee
+    //Delete User With Current Rentals
+
+    //Recover Deleted User Of Each Type
+    //Recover Non-Deleted User
+    //Recover Non-Existing User
+    //Recover Null User
+
+    //Hard Delete Valid Existing User Of Each Type
+    //Hard Delete Deleted User
+    //Hard Delete Valid Non-Existing User
+    //Hard Delete Null User
+    //Hard Delete User With Late Fee
+    //Hard Delete User With Current Rentals
+
+
+    //Hard Delete Valid Existing PATRON as ADMIN
+    //Hard Delete Valid Existing PATRON as STAFF
+    //Hard Delete Valid Existing PATRON as PATRON (!STAFF && !ADMIN)
+
+    //Hard Delete Valid Existing STAFF as ADMIN
+    //Hard Delete Valid Existing STAFF as STAFF
+    //Hard Delete Valid Existing STAFF as PATRON (!STAFF && !ADMIN)
+
+    //Hard Delete Valid Existing ADMIN as ADMIN
+    //Hard Delete Valid Existing ADMIN as STAFF
+    //Hard Delete Valid Existing ADMIN as PATRON (!STAFF && !ADMIN)
+
+    //Hard Delete Valid Non-Existing User
+    //Hard Delete Null User
+    //Delete User With Late Fee
+    //Delete User With Current Rentals
+
+//LoginAndValidationTest:
+
+    //
+
+//GetUserByUsernameTest:
+
+    //
+
+//UpdateUserTest:
 
     ------------Valid--------------
 
@@ -77,21 +144,3 @@
     ----------Future--------------
     //Concurrency Two Concurrent Attempts To Update Same User
     //DB Connection Lost
-
-//deleteAndUndoDelete:
-
-    //
-
-//hardDelete:
-
-    //Valid Existing User
-    //Valid Non-Existing User
-    //Null User
-
-//loginAndValidation:
-
-    //
-
-//getUserByUsername:
-
-    //

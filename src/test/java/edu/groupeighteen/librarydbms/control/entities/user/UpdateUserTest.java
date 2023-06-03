@@ -21,7 +21,7 @@ import org.junit.jupiter.api.*;
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UpdateUserTest
+public class UpdateUserTest extends BaseUserHandlerTest
 {
     //Variables to be used in tests
     private static final String validUsername = "validUsername";
@@ -37,25 +37,39 @@ public class UpdateUserTest
 
     private static final User.UserType userType = User.UserType.PATRON;
 
+    private static User baseUser;
+
     /**
-     * Let's setup the three different needed users ahead of time.
+     * Let's setup the needed users ahead of time.
      */
     @BeforeAll
     protected static void customSetup()
     {
         try
         {
-
+            baseUser = UserHandler.createNewUser(validUsername, validPassword, validEmail, userType);
         }
-        catch (CreationException | ConstructionException | InvalidIDException e)
+        catch (CreationException e)
         {
             e.printStackTrace();
         }
     }
 
-    @AfterAll
-    static void tearDown()
+    @AfterEach
+    @Override
+    protected void reset()
     {
+        super.reset();
+        resetUsersTable();
+
+        try //Reset user
+        {
+            baseUser = UserHandler.createNewUser(validUsername, validPassword, validEmail, userType);
+        }
+        catch (CreationException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
