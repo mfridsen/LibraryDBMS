@@ -4,7 +4,7 @@
     //Some Users in Database
     //With Test Data
     //Reset With Test Data
-    //Sync With Test Data
+    //Sync With Test Data (Kinda already tested by proxy via setup, but whatevs)
 
 //createNewUser:
 

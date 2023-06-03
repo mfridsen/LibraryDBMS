@@ -229,7 +229,24 @@ public class UserHandler
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-
+    /**
+     * Creates a new User with the provided username, password, userType, and email, then stores it.
+     *
+     * This method validates the input parameters, constructs a new User object, and saves it.
+     * It also adds the username and email to the respective lists in UserHandler.
+     * If an exception is encountered during the construction or saving process, it will be
+     * handled accordingly.
+     *
+     * @param username the username for the new user. Must be a unique, non-null, non-empty string
+     *                 with length between the limits set in User class.
+     * @param password the password for the new user. Must be a non-null, non-empty string
+     *                 with length between the limits set in User class.
+     * @param userType the UserType of the new user. Must be a non-null value from UserType enum.
+     * @param email    the email for the new user. Must be a unique, non-null, non-empty string
+     *                 with length between the limits set in User class, and properly formatted.
+     * @return         the newly created User object.
+     * @throws CreationException if validation of input parameters fails.
+     */
     public static User createNewUser(String username, String password, User.UserType userType, String email)
     throws CreationException
     {
@@ -317,7 +334,6 @@ public class UserHandler
         return 0;
     }
 
-
     /**
      * Retrieves a User object from the database using the provided userID. The method first validates the provided
      * userID. It then prepares and executes an SQL query to select the user's details from the database. If a user
@@ -326,7 +342,7 @@ public class UserHandler
      * @param userID The userID of the user to be retrieved.
      * @return A User object representing the user with the provided userID. Returns null if the user does not exist.
      */
-    public static User getUserByID(int userID)
+    public static User getUserByID(int userID) //TODO-test
     throws InvalidIDException
     {
         try
@@ -381,7 +397,7 @@ public class UserHandler
      *
      * @param updatedUser The User object containing the updated user data.
      */
-    public static void updateUser(User updatedUser)
+    public static void updateUser(User updatedUser) //TODO-test //TODO-fix
     throws NullEntityException
     {
         try
@@ -430,7 +446,7 @@ public class UserHandler
     }
 
 
-    public static void deleteUser(User userToDelete)
+    public static void deleteUser(User userToDelete) //TODO-test //TODO-comment
     throws DeletionException
     {
         try
@@ -456,7 +472,7 @@ public class UserHandler
     }
 
 
-    public static void undoDeleteUser(User userToRecover)
+    public static void undoDeleteUser(User userToRecover) //TODO-test //TODO-comment
     throws RecoveryException
     {
         try
@@ -494,8 +510,8 @@ public class UserHandler
      * The username of the deleted user is then removed from the storedUsernames list.
      *
      * @param user The User object representing the user to be deleted.
-     */ //TODO-prio handle cascades in rentals
-    public static void hardDeleteUser(User user)
+     */
+    public static void hardDeleteUser(User user) //TODO-test //TODO-prio handle cascades in rentals
     throws DeletionException
     {
         try
@@ -546,7 +562,7 @@ public class UserHandler
      * @param password the password attempting to login
      * @return true if successful, otherwise false
      */
-    public static boolean login(String username, String password)
+    public static boolean login(String username, String password) //TODO-test
     throws InvalidNameException, EntityNotFoundException, InvalidPasswordException
     {
         try
@@ -597,7 +613,7 @@ public class UserHandler
      * @param password The password to validate.
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
-    public static boolean validate(User user, String password)
+    public static boolean validate(User user, String password) //TODO-test
     throws UserValidationException, InvalidPasswordException, NullEntityException
     {
         try
@@ -623,7 +639,7 @@ public class UserHandler
      * @param username The username of the user to be retrieved.
      * @return A User object representing the user with the provided username. Returns null if the user does not exist.
      */
-    public static User getUserByUsername(String username)
+    public static User getUserByUsername(String username) //TODO-test
     throws InvalidNameException
     {
         try
@@ -741,7 +757,7 @@ public class UserHandler
             throw new InvalidNameException("Username " + username + " already taken.");
     }
 
-
+    //TODO-comment
     private static void checkUsernameLength(String username)
     throws InvalidNameException
     {
@@ -776,7 +792,7 @@ public class UserHandler
             throw new InvalidPasswordException("Password is empty.");
     }
 
-
+    //TODO-comment
     private static void checkPasswordLength(String password)
     throws InvalidPasswordException
     {
@@ -788,7 +804,7 @@ public class UserHandler
                     " characters. Received: " + password.length());
     }
 
-
+    //TODO-comment
     private static void validateEmail(String email)
     throws InvalidEmailException
     {
@@ -799,7 +815,7 @@ public class UserHandler
 
 
 
-
+    //TODO-comment
     private static void checkEmailEmpty(String email)
     throws InvalidEmailException
     {
@@ -807,6 +823,7 @@ public class UserHandler
             throw new InvalidEmailException("Email cannot be null or empty.");
     }
 
+    //TODO-comment
     private static void checkEmailTaken(String email)
     throws InvalidEmailException
     {
@@ -814,7 +831,7 @@ public class UserHandler
             throw new InvalidEmailException("Email is already registered.");
     }
 
-
+    //TODO-comment
     private static void checkEmailLength(String email)
     throws InvalidEmailException
     {
@@ -826,7 +843,7 @@ public class UserHandler
                     "Received: " + email.length());
     }
 
-
+    //TODO-comment
     private static void validateUserType(User.UserType userType)
     throws InvalidTypeException
     {
@@ -834,7 +851,7 @@ public class UserHandler
             throw new InvalidTypeException("User Type cannot be null.");
     }
 
-
+    //TODO-comment
     private static void validateUser(User user)
     throws EntityNotFoundException, InvalidIDException, NullEntityException
     {
@@ -872,6 +889,4 @@ public class UserHandler
             throw new InvalidIDException("Invalid userID: " + userID);
         }
     }
-
-
 }
