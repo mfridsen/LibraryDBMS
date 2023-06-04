@@ -18,7 +18,7 @@ import org.junit.platform.suite.api.Suite;
         GetUserByIDTest.class,
         DeleteAndRecoverUserTest.class,
         LoginAndValidationTest.class,
-        //UpdateUserTest.class,
+        UpdateUserTest.class,
         GetUserByUsernameTest.class
 })
 public class UserHandlerTestSuite

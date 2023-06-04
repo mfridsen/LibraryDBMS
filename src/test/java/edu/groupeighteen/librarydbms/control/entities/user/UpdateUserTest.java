@@ -44,6 +44,8 @@ public class UpdateUserTest extends BaseUserHandlerTest
     private static final int changedCurrentRentals = 2;
 
     private static User baseUser;
+    private static User takenUser;
+    private static User nonExistingUser; //CONSTRUCTOR NOT createNewUser
 
     /**
      * Let's setup the needed users ahead of time.
@@ -51,28 +53,36 @@ public class UpdateUserTest extends BaseUserHandlerTest
     @BeforeAll
     protected static void customSetup()
     {
-        try
-        {
-            baseUser = UserHandler.createNewUser(validUsername, validPassword, validEmail, userType);
-        }
-        catch (CreationException e)
-        {
-            e.printStackTrace();
-        }
+        initializeUsers();
     }
 
+    /**
+     * Resets the UserHandler, the tables, and the users.
+     */
     @AfterEach
     @Override
     protected void reset()
     {
         super.reset(); //Resets UserHandler lists
         resetUsersTable();
+        initializeUsers();
+    }
 
-        try //Reset user
+    /**
+     * Sets up the needed users.
+     */
+    protected static void initializeUsers()
+    {
+        try
         {
             baseUser = UserHandler.createNewUser(validUsername, validPassword, validEmail, userType);
+            takenUser = UserHandler.createNewUser(takenUsername, validPassword, takenEmail, userType);
+            nonExistingUser = new User("nonExistingUser", "nonExistingPassword",
+                    "nonExisting@mail.com", User.UserType.TEACHER); //CONSTRUCTOR NOT createNewUser
+            //Make sure our users are set correctly
+            nonExistingUser.setUserID(9999);
         }
-        catch (CreationException e)
+        catch (CreationException | ConstructionException | InvalidIDException e)
         {
             e.printStackTrace();
         }
@@ -338,8 +348,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n10: Testing updateUser method with valid user that has been soft deleted...");
 
-        Exception e = assertThrows(NullEntityException.class, () -> UserHandler.updateUser(null));
-        assertTrue(e.getCause() instanceof NullEntityException);
+        try
+        {
+            UserHandler.deleteUser(baseUser);
+            assertTrue(baseUser.isDeleted());
+            assertNull(UserHandler.getUserByID(baseUser.getUserID()));
+            Exception e = assertThrows(UpdateException.class, () -> UserHandler.updateUser(baseUser));
+            assertTrue(e.getCause() instanceof EntityNotFoundException);
+        }
+        catch (DeletionException | InvalidIDException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -353,7 +374,23 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n11: Testing updateUser method with valid user that was soft deleted and then recovered...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            UserHandler.deleteUser(baseUser);
+            assertTrue(baseUser.isDeleted());
+            assertNull(UserHandler.getUserByID(baseUser.getUserID()));
+
+            UserHandler.recoverUser(baseUser);
+            assertFalse(baseUser.isDeleted());
+            assertNotNull(UserHandler.getUserByID(baseUser.getUserID()));
+
+            UserHandler.updateUser(baseUser);
+        }
+        catch (DeletionException | InvalidIDException | RecoveryException | NullEntityException | UpdateException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -367,7 +404,21 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n12: Testing updateUser method with valid user that has been hard deleted...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            UserHandler.hardDeleteUser(baseUser);
+            assertTrue(baseUser.isDeleted());
+            assertNull(UserHandler.getUserByID(baseUser.getUserID()));
+            assertNull(UserHandler.getUserByID(baseUser.getUserID(), true));
+
+            Exception e = assertThrows(UpdateException.class, () -> UserHandler.updateUser(baseUser));
+            assertTrue(e.getCause() instanceof EntityNotFoundException);
+        }
+        catch (DeletionException | InvalidIDException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -381,7 +432,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n13: Testing updateUser method with valid user that does not exist in database...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            assertNull(UserHandler.getUserByID(nonExistingUser.getUserID()));
+            assertNull(UserHandler.getUserByID(nonExistingUser.getUserID(), true));
+
+            Exception e = assertThrows(UpdateException.class, () -> UserHandler.updateUser(nonExistingUser));
+            assertTrue(e.getCause() instanceof EntityNotFoundException);
+        }
+        catch (InvalidIDException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -395,7 +458,17 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n14: Testing updateUser method with new username that is already taken...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setUsername(takenUsername);
+            Exception e = assertThrows(UpdateException.class, () -> UserHandler.updateUser(baseUser));
+            assertTrue(e.getCause() instanceof InvalidNameException);
+        }
+        catch (InvalidNameException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -409,7 +482,17 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n15: Testing updateUser method with new email that is already taken...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setEmail(takenEmail);
+            Exception e = assertThrows(UpdateException.class, () -> UserHandler.updateUser(baseUser));
+            assertTrue(e.getCause() instanceof InvalidEmailException);
+        }
+        catch (InvalidEmailException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
