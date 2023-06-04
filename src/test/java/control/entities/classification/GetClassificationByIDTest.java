@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ClassificationHandler;
 import edu.groupeighteen.librarydbms.model.entities.Classification;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -32,12 +33,17 @@ public class GetClassificationByIDTest extends BaseHandlerTest
     {
         System.out.println("\n1: Testing GetClassificationByID...");
 
-        Classification classification = ClassificationHandler.getClassificationByID(1);
-        assertNotNull(classification);
-        assertEquals(1, classification.getClassificationID());
-        assertEquals("Physics", classification.getClassificationName());
-        assertEquals("Scientific literature on the topic of physics.", classification.getDescription());
-        assertFalse(classification.isDeleted());
+        try {
+            Classification classification = ClassificationHandler.getClassificationByID(1);
+            assertNotNull(classification);
+            assertEquals(1, classification.getClassificationID());
+            assertEquals("Physics", classification.getClassificationName());
+            assertEquals("Scientific literature on the topic of physics.", classification.getDescription());
+            assertFalse(classification.isDeleted());
+        } catch (InvalidIDException e) {
+            fail("Valid operations should not throw exceptions.");
+            e.printStackTrace();
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
