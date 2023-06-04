@@ -2,10 +2,8 @@ package edu.groupeighteen.librarydbms.control.entities.rental;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import edu.groupeighteen.librarydbms.model.entities.Rental;
+import org.junit.jupiter.api.*;
 
 /**
  * @author Mattias Fridsén
@@ -20,6 +18,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GetOverdueRentalsTest extends BaseRentalHandlerTest
 {
+    /**
+     * Creates
+     */
+    @BeforeEach
+    void setupTestRentals()
+    {
+        createAndSaveRentalsWithDifferentDateAndDueDates(8);
+    }
 
     /**
      *

@@ -37,6 +37,17 @@ public abstract class BaseRentalHandlerTest
     protected static Connection connection;
     protected static final String testDatabaseName = "test_database";
 
+    protected static final int[] validUserIDs = new int[]{3, 4, 5, 6, 8, 10};
+    protected static final int[] validItemIDs = new int[18];
+
+    static
+    {
+        for (int i = 0; i < validItemIDs.length; i++)
+        {
+            validItemIDs[i] = i + 3; // Initialize elements with numbers 3-20
+        }
+    }
+
     @BeforeAll
     protected static void setup()
     {
@@ -149,11 +160,11 @@ public abstract class BaseRentalHandlerTest
                 assertNotNull(rental);
 
                 //This will give different days to all the offset rentals
-                LocalDateTime offsetDate = now.minusDays(i);
+                LocalDateTime offsetRentalDate = now.minusDays(i);
 
                 String query = "UPDATE rentals SET rentalDate = ? WHERE rentalID = ?";
                 String[] params = {
-                        String.valueOf(offsetDate),
+                        String.valueOf(offsetRentalDate),
                         String.valueOf(rental.getRentalID())
                 };
 
@@ -164,6 +175,63 @@ public abstract class BaseRentalHandlerTest
         catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates a specific number of Rental instances and saves them to the database with different rentalDates and
+     * rentalDueDates.
+     * Each rental date is offset by an increasing number of days, and the rentalDueDate is
+     *
+     * @param offsetRentals The number of Rental instances whose rental dates should be offset.
+     */
+    protected static void createAndSaveRentalsWithDifferentDateAndDueDates(int offsetRentals)
+    {
+        LocalDateTime now = LocalDateTime.now();
+        int numOfRentals = validItemIDs.length;
+
+        //Create numOfRentals number of rentals
+        for (int i = 0; i < numOfRentals; i++)
+        {
+            try
+            {
+                RentalHandler.createNewRental(validUserIDs[i % validUserIDs.length], validItemIDs[i]);
+            }
+            catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+            {
+                System.err.println("Error creating rentals with different rentalDates and rentalDueDates: " +
+                        e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        //Change rentalDates on desired amount of rentals
+        for (int i = 0; i < offsetRentals; i++)
+        {
+            try
+            {
+                Rental rental = RentalHandler.getRentalByID(i + 1); // Rental IDs start from 1
+                assertNotNull(rental);
+
+                //This will give different days to all the offset rentals
+                LocalDateTime offsetRentalDate = now.minusDays(i + 7);
+                LocalDateTime offsetRentalDueDate = offsetRentalDate.plusDays(7);
+
+                String query = "UPDATE rentals SET rentalDate = ?, rentalDueDate = ? WHERE rentalID = ?";
+                String[] params = {
+                        String.valueOf(offsetRentalDate),
+                        String.valueOf(offsetRentalDueDate),
+                        String.valueOf(rental.getRentalID())
+                };
+
+                DatabaseHandler.executePreparedUpdate(query, params);
+            }
+            catch (InvalidIDException e)
+            {
+                System.err.println("Error creating offset rentals with different rentalDates and rentalDueDates: " +
+                        e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 

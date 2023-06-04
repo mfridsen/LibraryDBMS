@@ -28,8 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GetRentalByIDTest extends BaseRentalHandlerTest
 {
-    private static final int[] validUserIDs = new int[]{3, 4, 5, 6, 8, 10};
-
     @BeforeEach
     void setupRentals()
     {
