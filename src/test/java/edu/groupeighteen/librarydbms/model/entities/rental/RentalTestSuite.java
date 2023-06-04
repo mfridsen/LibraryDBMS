@@ -29,7 +29,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RentalTest {
+public class RentalTestSuite
+{
 
     /**
      * This test case validates the behavior of the Rental constructor for creation with valid input.

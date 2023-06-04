@@ -1,9 +1,9 @@
 package edu.groupeighteen.librarydbms.model;
 
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnectionTest;
-import edu.groupeighteen.librarydbms.model.entities.author.AuthorTest;
-import edu.groupeighteen.librarydbms.model.entities.rental.RentalTest;
-import edu.groupeighteen.librarydbms.model.entities.classification.ClassificationTest;
+import edu.groupeighteen.librarydbms.model.entities.author.AuthorTestSuite;
+import edu.groupeighteen.librarydbms.model.entities.rental.RentalTestSuite;
+import edu.groupeighteen.librarydbms.model.entities.classification.ClassificationTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.item.FilmTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.item.LiteratureTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.user.UserTestSuite;
@@ -28,12 +28,12 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
         //Model tests
         DatabaseConnectionTest.class,
-        AuthorTest.class,
-        ClassificationTest.class,
+        AuthorTestSuite.class,
+        ClassificationTestSuite.class,
         LiteratureTestSuite.class,
         FilmTestSuite.class,
         UserTestSuite.class,
-        RentalTest.class,
+        RentalTestSuite.class,
 })
 
 public class ModelTestSuite

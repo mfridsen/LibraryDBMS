@@ -214,7 +214,7 @@ public class RentalHandler
 
             //Execute query and get the generated rentalID, using try-with-resources
             try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params,
-                                                                                Statement.RETURN_GENERATED_KEYS))
+                    Statement.RETURN_GENERATED_KEYS))
             {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
                 if (generatedKeys.next()) return generatedKeys.getInt(1);
@@ -223,14 +223,14 @@ public class RentalHandler
         catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to save Rental due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Cannot be reached, but needed for compilation
         return 0;
     }
 
-
+    //TODO-prio update according to getUsers, getItems, to take a wider variety of suffixes
     /**
      * Fetches all rentals from the database matching the provided SQL suffix and parameters. This allows for the execution
      * of complex and dynamic SQL queries, depending on the provided suffix and parameters. The ResultSet from the query
@@ -280,7 +280,7 @@ public class RentalHandler
                     int itemID = resultSet.getInt("itemID");
                     Item item = ItemHandler.getItemByID(itemID);
                     if (item == null) throw new NullEntityException("Rental retrieval failed: NullEntityException " +
-                                                                            "thrown for valid item with ID " + itemID);
+                            "thrown for valid item with ID " + itemID);
                     String itemTitle = item.getTitle();
 
                     LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
@@ -298,7 +298,7 @@ public class RentalHandler
                     boolean deleted = resultSet.getBoolean("deleted");
 
                     Rental rental = new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle,
-                                               rentalDueDate, rentalReturnDate, lateFee, deleted);
+                            rentalDueDate, rentalReturnDate, lateFee, deleted);
                     rental.setRentalID(rentalID);
                     rental.setRentalDate(rentalDate);
                     rental.setUsername(user.getUsername());
@@ -315,7 +315,7 @@ public class RentalHandler
         catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException | RetrievalException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve rentals from database due to " +
-                                                          e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
         //Return the List of rentals
@@ -359,13 +359,26 @@ public class RentalHandler
         //Check results, this first option should not happen and will be considered fatal
         if (rentals.size() > 1)
             ExceptionHandler.HandleFatalException(new InvalidIDException("There should not be more than 1 rental " +
-                                                                                 "with ID " + rentalID + ", received: " + rentals.size()));
+                    "with ID " + rentalID + ", received: " + rentals.size()));
 
             //Found something
         else if (rentals.size() == 1) return rentals.get(0);
 
         //Found nothing
         return null;
+    }
+
+    public static List<Rental> getOverdueRentals()
+    {
+        // Prepare a SQL suffix to select rentals that are overdue
+        String suffix = "WHERE rentalDueDate < ? AND rentalReturnDate IS NULL";
+
+        // Prepare parameters for query
+        String[] params = { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").
+                format(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)) };
+
+        //Executor-class Star Dreadnought
+        return getRentals(suffix, params, 0); //No settings
     }
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
@@ -378,7 +391,7 @@ public class RentalHandler
      *
      * @param updatedRental the rental object with updated details.
      * @throws UpdateException if the updatedRental is null, or if a rental with the provided rentalID
-     *                               doesn't exist in the database.
+     *                         doesn't exist in the database.
      */
     public static void updateRental(Rental updatedRental)
     throws UpdateException
@@ -454,7 +467,7 @@ public class RentalHandler
      * @param rentalToRecover the rental object to be recovered from soft delete
      * @throws RecoveryException if rental object is invalid
      */
-    public static void undoDeleteRental(Rental rentalToRecover)
+    public static void recoverRental(Rental rentalToRecover)
     throws RecoveryException
     {
         //Validate input
@@ -512,6 +525,7 @@ public class RentalHandler
 
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
+    //TODO OPTIONAL
     /**
      * Retrieves all rental instances associated with a given rental date.
      * More than one rental can be created within one second, hence this method returns a list of rentals.
@@ -529,9 +543,6 @@ public class RentalHandler
         //No point getting invalid rentals
         validateRentalDate(rentalDate); //Throws InvalidDateException if null or future
 
-        //Create a list to store the Rental objects (more than one can be created within one second)
-        List<Rental> rentals = new ArrayList<>();
-
         //Need to truncate to seconds
         rentalDate = rentalDate.truncatedTo(ChronoUnit.SECONDS);
 
@@ -542,12 +553,10 @@ public class RentalHandler
         String[] params = {rentalDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))};
 
         //Executor-class Star Dreadnought
-        rentals = getRentals(suffix, params, 0); //No settings
-
-        //Return results (empty list if nothing found)
-        return rentals;
+        return getRentals(suffix, params, 0); //No settings
     }
 
+    //TODO OPTIONAL
     /**
      * Retrieves a list of rental objects whose rentalDate matches the given LocalDate.
      * The rentalDate is checked to be the same day, but not necessarily the exact same time.
@@ -562,9 +571,6 @@ public class RentalHandler
         //Validate the input
         validateRentalDay(rentalDay); //Throws InvalidDateException if null or future
 
-        //Create an empty list to store the rentals.
-        List<Rental> rentals = new ArrayList<>();
-
         //Create startOfDay and startOfDayPlusOne from rentalDay
         LocalDateTime startOfDay = rentalDay.atStartOfDay().truncatedTo(ChronoUnit.SECONDS);
         LocalDateTime startOfDayPlusOne = startOfDay.plusDays(1);
@@ -577,317 +583,99 @@ public class RentalHandler
                 startOfDayPlusOne.toString()};
 
         //Executor-class Star Dreadnought
-        rentals = getRentals(suffix, params, 0); //No settings
-
-        //Return results (empty list if nothing found)
-        return rentals;
+        return getRentals(suffix, params, 0); //No settings
     }
 
-
-
-
-/*
-    public static List<Rental> getRentalsByTimePeriod(LocalDate startDate, LocalDate endDate) throws SQLException {
+    //TODO OPTIONAL
+    public static List<Rental> getRentalsByTimePeriod(LocalDate startDate, LocalDate endDate)
+    throws InvalidDateException
+    {
         //Validate the inputs
-        if (startDate == null ||  startDate.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("Invalid dates: Start date cannot be null or in the future.");
+        if (startDate == null || startDate.isAfter(LocalDate.now()))
+            throw new InvalidDateException("Invalid dates: Start date cannot be null or in the future.");
         if (endDate == null || endDate.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("Invalid dates: End date cannot be null or in the future.");
+            throw new InvalidDateException("Invalid dates: End date cannot be null or in the future.");
         if (startDate.isAfter(endDate))
-            throw new IllegalArgumentException("Invalid dates: Start date must be before or equal to end date.");
+            throw new InvalidDateException("Invalid dates: Start date must be before or equal to end date.");
 
         //Convert the LocalDate to LocalDateTime for database comparison
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.plusDays(1).atTime(23, 59, 59);
 
         //Prepare a SQL query to select rentals by rentalDate within a given period
-        String query = "SELECT * FROM rentals WHERE rentalDate >= ? AND rentalDate <= ?";
+        String suffix = "WHERE rentalDate >= ? AND rentalDate <= ?";
         String[] params = {startDateTime.toString(), endDateTime.toString()};
 
-        //Create an empty list to store the rentals
-        List<Rental> rentals = new ArrayList<>();
-
-        //Execute the query and store the result in a ResultSet
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-            ResultSet resultSet = queryResult.getResultSet();
-
-            //Loop through the ResultSet
-            while (resultSet.next()) {
-                //For each row in the ResultSet, create a new Rental object and add it to the list
-                int rentalID = resultSet.getInt("rentalID");
-                int userID = resultSet.getInt("userID");
-                int itemID = resultSet.getInt("itemID");
-                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
-
-                //Get user by ID
-                User user = UserHandler.getUserByID(userID);
-                if (user == null) {
-                    throw new SQLException("Error retrieving user from database by ID: username null.");
-                }
-
-                //Get item by ID
-                Item item = ItemHandler.getItemByID(itemID);
-                if (item == null) {
-                    throw new SQLException("Error retrieving item from database by ID: title null.");
-                }
-
-                Rental rental = new Rental(userID, itemID, rentalDate);
-                rental.setRentalID(rentalID);
-                rental.setUsername(user.getUsername());
-                rental.setItemTitle(item.getTitle());
-
-                rentals.add(rental);
-            }
-        }
         //Return the list of rentals
-        return rentals;
+        return getRentals(suffix, params, 0);
     }
 
-    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
-    //to make error handling more consistent
-    *//**
- * This method retrieves all rentals that are associated with a specific user, creates a Rental object for each one,
- * and adds it to a list. The list of rentals is then returned. If no rentals are found for the specified user,
- * an empty list is returned.
- *
- * Usage: check if returned list is not empty.
- *
- * @param userID the ID of the user whose rentals are to be retrieved.
- * @return The list of rentals if found, otherwise an empty list.
- * @throws SQLException If an error occurs while interacting with the database.
- *//*
-    public static List<Rental> getRentalsByUserID(int userID) throws SQLException {
+    //TODO OPTIONAL
+    public static List<Rental> getRentalsByUserID(int userID)
+    throws InvalidIDException
+    {
         //Validate the input
         if (userID <= 0)
-            throw new IllegalArgumentException("Invalid userID: " + userID + ". userID must be greater than 0.");
+            throw new InvalidIDException("Invalid userID: " + userID + ". userID must be greater than 0.");
 
         //Prepare a SQL query to select rentals by userID
-        String query = "SELECT * FROM rentals WHERE userID = ?";
+        String suffix = "WHERE userID = ?";
         String[] params = {String.valueOf(userID)};
 
-        //Create an empty list to store the rentals
-        List<Rental> rentals = new ArrayList<>();
-
-        //Execute the query and store the result in a ResultSet
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-            ResultSet resultSet = queryResult.getResultSet();
-
-            //Loop through the ResultSet
-            while (resultSet.next()) {
-                //For each row in the ResultSet, create a new Rental object and add it to the list
-                int rentalID = resultSet.getInt("rentalID");
-                int itemID = resultSet.getInt("itemID");
-                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
-
-                //Get user by ID
-                User user = UserHandler.getUserByID(userID);
-                if (user == null) {
-                    throw new SQLException("Error retrieving user from database by ID: username null.");
-                }
-
-                //Get item by ID
-                Item item = ItemHandler.getItemByID(itemID);
-                if (item == null) {
-                    throw new SQLException("Error retrieving item from database by ID: title null.");
-                }
-
-                Rental rental = new Rental(userID, itemID, rentalDate);
-                rental.setRentalID(rentalID);
-                rental.setUsername(user.getUsername());
-                rental.setItemTitle(item.getTitle());
-
-                rentals.add(rental);
-            }
-        }
         //Return the list of rentals
-        return rentals;
+        return getRentals(suffix, params, 0);
     }
 
-    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
-    //to make error handling more consistent
-    *//**
- * This method retrieves all rentals that have the specified item ID, creates a Rental object for each one,
- * and adds it to a list. The list of rentals is then returned. If no rentals with the specified item ID are found,
- * an empty list is returned.
- *
- * Usage: check if returned list is not empty.
- *
- * @param itemID the ID of the item.
- * @return The list of rentals if found, otherwise an empty list.
- * @throws SQLException If an error occurs while interacting with the database.
- * @throws IllegalArgumentException If the itemID is less than or equal to 0.
- *//*
-    public static List<Rental> getRentalsByItemID(int itemID) throws SQLException {
+    //TODO OPTIONAL
+    public static List<Rental> getRentalsByItemID(int itemID)
+    {
         //Validate the input
         if (itemID <= 0)
             throw new IllegalArgumentException("Invalid itemID: " + itemID + ". itemID must be greater than 0.");
 
         //Prepare a SQL query to select rentals by itemID
-        String query = "SELECT * FROM rentals WHERE itemID = ?";
+        String suffix = "WHERE itemID = ?";
         String[] params = {Integer.toString(itemID)};
 
-        //Create an empty list to store the rentals
-        List<Rental> rentals = new ArrayList<>();
-
-        //Execute the query and store the result in a ResultSet
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-            ResultSet resultSet = queryResult.getResultSet();
-
-            //Loop through the ResultSet
-            while (resultSet.next()) {
-                //For each row in the ResultSet, create a new Rental object and add it to the list
-                int rentalID = resultSet.getInt("rentalID");
-                int userID = resultSet.getInt("userID");
-                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
-
-                //Get user by ID
-                User user = UserHandler.getUserByID(userID);
-                if (user == null) {
-                    throw new SQLException("Error retrieving user from database by ID: username null.");
-                }
-
-                //Get item by ID
-                Item item = ItemHandler.getItemByID(itemID);
-                if (item == null) {
-                    throw new SQLException("Error retrieving item from database by ID: title null.");
-                }
-
-                Rental rental = new Rental(userID, itemID, rentalDate);
-                rental.setRentalID(rentalID);
-                rental.setUsername(user.getUsername());
-                rental.setItemTitle(item.getTitle());
-
-                rentals.add(rental);
-            }
-        }
         //Return the list of rentals
-        return rentals;
+        return getRentals(suffix, params, 0);
     }
 
-    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
-    //to make error handling more consistent
-    *//**
- * This method retrieves all rentals for the specified username, creates a Rental object for each one,
- * and adds it to a list. The list of rentals is then returned. If no rentals for the specified username are found,
- * an empty list is returned.
- *
- * Usage: check if returned list is not empty.
- *
- * @param username the username for which the rentals are to be retrieved.
- * @return The list of rentals if found, otherwise an empty list.
- * @throws SQLException If an error occurs while interacting with the database.
- * @throws IllegalArgumentException If the provided username is null or empty.
- *//*
-    public static List<Rental> getRentalsByUsername(String username) throws SQLException {
+    //TODO OPTIONAL
+    //TODO-PRIO won't work with getRentals
+    public static List<Rental> getRentalsByUsername(String username)
+    throws InvalidNameException
+    {
         //Validate the input
         if (username == null || username.isEmpty())
-            throw new IllegalArgumentException("Invalid username: username can't be null or empty.");
+            throw new InvalidNameException("Invalid username: username can't be null or empty.");
 
         //Prepare a SQL query to select rentals by username
-        String query = "SELECT rentals.* FROM rentals INNER JOIN users ON rentals.userID = users.userID WHERE users.username = ?";
+        String suffix = "SELECT rentals.* FROM rentals INNER JOIN users ON rentals.userID = users.userID WHERE users" +
+                ".username = ?";
         String[] params = {username};
 
-        //Create an empty list to store the rentals
-        List<Rental> rentals = new ArrayList<>();
-
-        //Execute the query and store the result in a ResultSet
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-            ResultSet resultSet = queryResult.getResultSet();
-
-            //Loop through the ResultSet
-            while (resultSet.next()) {
-                //For each row in the ResultSet, create a new Rental object and add it to the list
-                int rentalID = resultSet.getInt("rentalID");
-                int userID = resultSet.getInt("userID");
-                int itemID = resultSet.getInt("itemID");
-                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
-
-                //Get user by ID
-                User user = UserHandler.getUserByID(userID);
-                if (user == null) {
-                    throw new SQLException("Error retrieving user from database by ID: username null.");
-                }
-
-                //Get item by ID
-                Item item = ItemHandler.getItemByID(itemID);
-                if (item == null) {
-                    throw new SQLException("Error retrieving item from database by ID: title null.");
-                }
-
-                Rental rental = new Rental(userID, itemID, rentalDate);
-                rental.setRentalID(rentalID);
-                rental.setUsername(user.getUsername());
-                rental.setItemTitle(item.getTitle());
-
-                rentals.add(rental);
-            }
-        }
         //Return the list of rentals
-        return rentals;
+        return getRentals(suffix, params, 0);
     }
 
-    //TODO-exception might want to throw a custom exception (like EntityNotFoundException) instead of returning null,
-    //to make error handling more consistent
-    *//**
- * This method retrieves all rentals for the specified item title, creates a Rental object for each one,
- * and adds it to a list. The list of rentals is then returned. If no rentals for the specified item title are found,
- * an empty list is returned.
- *
- * Usage: check if returned list is not empty.
- *
- * @param title the title of the item for which the rentals are to be retrieved.
- * @return The list of rentals if found, otherwise an empty list.
- * @throws SQLException If an error occurs while interacting with the database.
- * @throws IllegalArgumentException If the provided title is null or empty.
- *//*
-    public static List<Rental> getRentalsByItemTitle(String title) throws SQLException {
+    //TODO OPTIONAL
+    //TODO-PRIO won't work with getRentals
+    public static List<Rental> getRentalsByItemTitle(String title)
+    throws InvalidTitleException
+    {
         //Validate the input
         if (title == null || title.isEmpty())
-            throw new IllegalArgumentException("Invalid title: title can't be null or empty.");
+            throw new InvalidTitleException("Invalid title: title can't be null or empty.");
 
         //Prepare a SQL query to select rentals by item title
-        String query = "SELECT rentals.* FROM rentals INNER JOIN items ON rentals.itemID = items.itemID WHERE items.title = ?";
+        String suffix = "SELECT rentals.* FROM rentals INNER JOIN items ON rentals.itemID = items.itemID WHERE items" +
+                ".title = ?";
         String[] params = {title};
 
-        //Create an empty list to store the rentals
-        List<Rental> rentals = new ArrayList<>();
-
-        //Execute the query and store the result in a ResultSet
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
-            ResultSet resultSet = queryResult.getResultSet();
-
-            //Loop through the ResultSet
-            while (resultSet.next()) {
-                //For each row in the ResultSet, create a new Rental object and add it to the list
-                int rentalID = resultSet.getInt("rentalID");
-                int userID = resultSet.getInt("userID");
-                int itemID = resultSet.getInt("itemID");
-                LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
-
-                //Get user by ID
-                User user = UserHandler.getUserByID(userID);
-                if (user == null) {
-                    throw new SQLException("Error retrieving user from database by ID: username null.");
-                }
-
-                //Get item by ID
-                Item item = ItemHandler.getItemByID(itemID);
-                if (item == null) {
-                    throw new SQLException("Error retrieving item from database by ID: title null.");
-                }
-
-                Rental rental = new Rental(userID, itemID, rentalDate);
-                rental.setRentalID(rentalID);
-                rental.setUsername(user.getUsername());
-                rental.setItemTitle(item.getTitle());
-
-                rentals.add(rental);
-            }
-        }
         //Return the list of rentals
-        return rentals;
-    }*/
-
+        return getRentals(suffix, params, 0);
+    }
 
     // UTILITY STUFF --------------------------------------------------------------------------------------------------
 
@@ -948,9 +736,9 @@ public class RentalHandler
         //Allowed to rent
         if (!user.isAllowedToRent())
             throw new RentalNotAllowedException("User not allowed to rent either due to already renting at " +
-                                                        "maximum capacity or having a late fee." +
-                                                        "\nCurrent late fee: " + user.getLateFee() + ", Current rentals: " + user.getCurrentRentals() +
-                                                        ", Allowed rentals: " + user.getAllowedRentals());
+                    "maximum capacity or having a late fee." +
+                    "\nCurrent late fee: " + user.getLateFee() + ", Current rentals: " + user.getCurrentRentals() +
+                    ", Allowed rentals: " + user.getAllowedRentals());
         if (verbose)
             System.out.println("User with ID " + userID + " is allowed to rent: " + user.isAllowedToRent());
 
@@ -1042,7 +830,7 @@ public class RentalHandler
     {
         if (rentalDate == null || rentalDate.compareTo(LocalDateTime.now()) > 0)
             throw new InvalidDateException("Invalid rentalDate: RentalDate cannot be null or in the future. " +
-                                                   "Received: " + rentalDate);
+                    "Received: " + rentalDate);
     }
 
     /**
@@ -1057,7 +845,7 @@ public class RentalHandler
     {
         if (rentalDay == null || rentalDay.isAfter(LocalDate.now()))
             throw new InvalidDateException("Invalid rentalDay: RentalDay cannot be null or in the future. " +
-                                                   "Received: " + rentalDay);
+                    "Received: " + rentalDay);
     }
 
     /**
@@ -1096,10 +884,10 @@ public class RentalHandler
         for (Rental rental : rentals)
         {
             System.out.println(count + " rentalID: " + rental.getRentalID() + ", userID: " + rental.getUserID()
-                                       + ", username: " + rental.getUsername() + ", itemID: " + rental.getItemID()
-                                       + ", item title: " + rental.getItemTitle() + ", rental date: " + rental.getRentalDate()
-                                       + ", rental due date: " + rental.getRentalDueDate()
-                                       + ", rental return date: " + rental.getRentalReturnDate() + ", late fee: " + rental.getLateFee());
+                    + ", username: " + rental.getUsername() + ", itemID: " + rental.getItemID()
+                    + ", item title: " + rental.getItemTitle() + ", rental date: " + rental.getRentalDate()
+                    + ", rental due date: " + rental.getRentalDueDate()
+                    + ", rental return date: " + rental.getRentalReturnDate() + ", late fee: " + rental.getLateFee());
             count++;
         }
     }

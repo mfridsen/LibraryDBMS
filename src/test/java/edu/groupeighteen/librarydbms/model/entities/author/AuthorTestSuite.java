@@ -22,7 +22,7 @@ import org.junit.platform.suite.api.Suite;
         AuthorSettersTest.class
 })
 
-public class AuthorTest
+public class AuthorTestSuite
 {
 
 }
