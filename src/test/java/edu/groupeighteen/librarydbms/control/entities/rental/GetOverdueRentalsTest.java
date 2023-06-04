@@ -18,7 +18,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GetOverdueRentalsTest
+public class GetOverdueRentalsTest extends BaseRentalHandlerTest
 {
 
     /**

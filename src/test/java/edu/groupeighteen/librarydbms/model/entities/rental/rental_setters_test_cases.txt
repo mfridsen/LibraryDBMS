@@ -1,0 +1,15 @@
+invalid rentalID <= 0
+invalid userID <= 0
+invalid itemID <= 0
+invalid rentalDate null
+invalid rentalDate in future
+invalid rentalDueDate null
+invalid rentalDueDate in the past
+invalid username null
+invalid username empty
+invalid itemTitle null
+invalid itemTitle empty
+invalid itemType null
+invalid itemType empty
+invalid rentalReturnDate in the past
+invalid lateFee less than 0

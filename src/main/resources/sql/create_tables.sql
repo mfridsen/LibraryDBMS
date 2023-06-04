@@ -79,7 +79,7 @@ CREATE TABLE rentals (
     rentalDueDate DATETIME NOT NULL,
     rentalReturnDate DATETIME,
     lateFee DOUBLE NOT NULL,
-
+    receipt TEXT NOT NULL,
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (rentalID),
     FOREIGN KEY (userID) REFERENCES users (userID),

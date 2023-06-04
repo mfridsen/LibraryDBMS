@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.model.entities;
 
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidReceiptException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 
@@ -30,9 +31,6 @@ import java.time.temporal.ChronoUnit;
  */
 public class Rental extends Entity
 {
-
-    //TODO ADD DELETED IN CONSTRUCTORS
-
     //TODO-PRIO ADD RECEIPT
 
     //TODO-FUTURE implement actual receipt printing via own printer
@@ -63,6 +61,11 @@ public class Rental extends Entity
     private LocalDateTime rentalDate;
 
     /**
+     * The date and time when the rental item is due to be returned.
+     */
+    private LocalDateTime rentalDueDate;
+
+    /**
      * The username associated with the rental, set upon creation or retrieval.
      */
     private String username;
@@ -72,10 +75,7 @@ public class Rental extends Entity
      */
     private String itemTitle;
 
-    /**
-     * The date and time when the rental item is due to be returned.
-     */
-    private LocalDateTime rentalDueDate;
+    private String itemType;
 
     /**
      * The date and time when the rental item was actually returned. Null by default.
@@ -87,10 +87,14 @@ public class Rental extends Entity
      */
     private double lateFee;
 
+    /**
+     * A receipt for the rental, containing relevant information.
+     */
+    private String receipt;
+
     //TODO-future implement
     private boolean active;
     private boolean overdue;
-    //TODO-prio RECEIPT
 
     /**
      * Constructs a new Rental object which represents a rental transaction between a user and an item.
@@ -112,11 +116,13 @@ public class Rental extends Entity
             setUserID(userID); //Throws InvalidIDException
             setItemID(itemID); //Throws InvalidIDException
             setRentalDate(LocalDateTime.now()); //Throws InvalidDateException
+            this.rentalDueDate = null; //Set BEFORE initial INSERT by createNewRental
             this.username = null; //Set BEFORE initial INSERT by createNewRental
             this.itemTitle = null; //Set BEFORE initial INSERT by createNewRental
-            this.rentalDueDate = null; //Set BEFORE initial INSERT by createNewRental
+            this.itemType = null; //Set BEFORE initial INSERT by createNewRental
             this.rentalReturnDate = null; //Should be null since the Rental has just been created
             this.lateFee = 0.0; //Should be 0.0 since the Rental has just been created
+            this.receipt = null; //Set BEFORE initial INSERT by createNewRental
         }
         catch (InvalidIDException | InvalidDateException e)
         {
@@ -133,20 +139,23 @@ public class Rental extends Entity
      * @param userID           The ID of the user who is renting the item.
      * @param itemID           The ID of the item being rented.
      * @param rentalDate       The date and time when the item was rented.
+     * @param rentalDueDate    The due date of the rental.
      * @param username         The username of the user who is renting the item.
      * @param itemTitle        The title of the item being rented.
-     * @param rentalDueDate    The due date of the rental.
+     * @param itemType         The type of item being rented.
      * @param rentalReturnDate The return date of the rental. This is null if the rental is still ongoing.
      * @param lateFee          The late fee of the rental, if any. This is 0.0 if the rental is returned on time
      *                         or is still ongoing.
+     * @param receipt          The receipt of the rental.
      * @param deleted          A boolean representing whether the rental has been (soft) deleted.
      * @throws ConstructionException If an error occurs while setting the values of the rental attributes.
-     *                          The cause of the exception (InvalidIDException, InvalidDateException,
-     *                          InvalidNameException, InvalidTitleException, or InvalidLateFeeException)
-     *                          is included in the thrown exception.
+     *                               The cause of the exception (InvalidIDException, InvalidDateException,
+     *                               InvalidNameException, InvalidTitleException, or InvalidLateFeeException)
+     *                               is included in the thrown exception.
      */
-    public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, String username, String itemTitle,
-                  LocalDateTime rentalDueDate, LocalDateTime rentalReturnDate, double lateFee, boolean deleted)
+    public Rental(int rentalID, int userID, int itemID, LocalDateTime rentalDate, LocalDateTime rentalDueDate,
+                  String username, String itemTitle, String itemType, LocalDateTime rentalReturnDate, double lateFee,
+                  String receipt, boolean deleted)
     throws ConstructionException
     {
         super(deleted);
@@ -156,17 +165,19 @@ public class Rental extends Entity
             setUserID(userID); //Throws InvalidIDException
             setItemID(itemID); //Throws InvalidIDException
             setRentalDate(rentalDate); //Throws InvalidDateException
+            setRentalDueDate(rentalDueDate); //Throws InvalidDateException
             setUsername(username); //Throws InvalidNameException
             setItemTitle(itemTitle); //Throws InvalidTitleException
-            setRentalDueDate(rentalDueDate); //Throws InvalidDateException
+            setItemType(itemType); //Throws InvalidTypeException
             setRentalReturnDate(rentalReturnDate); //Throws InvalidDateException
             setLateFee(lateFee); //Throws InvalidLateFeeException
+            setReceipt(receipt); //Throws InvalidReceiptException
         }
-        catch (InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException
-               | InvalidLateFeeException e)
+        catch (InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException |
+                InvalidLateFeeException | InvalidTypeException | InvalidReceiptException e)
         {
             throw new ConstructionException("Failed to construct Rental due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -183,12 +194,14 @@ public class Rental extends Entity
         this.rentalID = other.rentalID;
         this.userID = other.userID;
         this.itemID = other.itemID;
-        this.rentalDate = other.rentalDate;  //Assuming LocalDateTime is immutable
+        this.rentalDate = other.rentalDate;
+        this.rentalDueDate = other.rentalDueDate;
         this.username = other.username;
         this.itemTitle = other.itemTitle;
-        this.rentalDueDate = other.rentalDueDate;
+        this.itemType = other.itemType;
         this.rentalReturnDate = other.rentalReturnDate;
         this.lateFee = other.lateFee;
+        this.receipt = other.receipt;
         this.active = other.active;
         this.overdue = other.overdue;
     }
@@ -289,6 +302,33 @@ public class Rental extends Entity
     }
 
     /**
+     * Returns the rental due date, truncated to days.
+     *
+     * @return the rental due date
+     */
+    public LocalDateTime getRentalDueDate()
+    {
+        return rentalDueDate;
+    }
+
+    /**
+     * Sets the rental due date.
+     *
+     * @param rentalDueDate the rental due date to set
+     * @throws IllegalArgumentException if the rental due date is null or is before the current time
+     */
+    public void setRentalDueDate(LocalDateTime rentalDueDate)
+    throws InvalidDateException
+    {
+        if (rentalDueDate == null)
+            throw new InvalidDateException("Rental due date cannot be null.");
+        if (rentalDueDate.isBefore(LocalDateTime.now()))
+            throw new InvalidDateException("Rental due date cannot be in the past. Received: " + rentalDueDate);
+        this.rentalDueDate = rentalDueDate.withHour(RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0)
+                .truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    /**
      * Returns the username.
      *
      * @return the username
@@ -334,33 +374,6 @@ public class Rental extends Entity
         if (itemTitle == null || itemTitle.isEmpty())
             throw new InvalidTitleException("Title cannot be null or empty.");
         this.itemTitle = itemTitle;
-    }
-
-    /**
-     * Returns the rental due date, truncated to days.
-     *
-     * @return the rental due date
-     */
-    public LocalDateTime getRentalDueDate()
-    {
-        return rentalDueDate;
-    }
-
-    /**
-     * Sets the rental due date.
-     *
-     * @param rentalDueDate the rental due date to set
-     * @throws IllegalArgumentException if the rental due date is null or is before the current time
-     */
-    public void setRentalDueDate(LocalDateTime rentalDueDate)
-    throws InvalidDateException
-    {
-        if (rentalDueDate == null)
-            throw new InvalidDateException("Rental due date cannot be null.");
-        if (rentalDueDate.isBefore(LocalDateTime.now()))
-            throw new InvalidDateException("Rental due date cannot be in the past. Received: " + rentalDueDate);
-        this.rentalDueDate = rentalDueDate.withHour(RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0)
-                                          .truncatedTo(ChronoUnit.SECONDS);
     }
 
     /**
@@ -414,6 +427,56 @@ public class Rental extends Entity
         this.lateFee = lateFee;
     }
 
+    /**
+     * Returns the item type.
+     *
+     * @return the item type
+     */
+    public String getItemType()
+    {
+        return itemType;
+    }
+
+    /**
+     * Sets the item type.
+     *
+     * @param itemType the item type to be set
+     * @throws InvalidTypeException if the item type is null or empty
+     */
+    public void setItemType(String itemType)
+    throws InvalidTypeException
+    {
+        if (itemType == null || itemType.isEmpty())
+            throw new InvalidTypeException("ItemType cannot be null or empty.");
+        this.itemType = itemType;
+    }
+
+    /**
+     * Returns the receipt.
+     *
+     * @return the receipt
+     */
+    public String getReceipt()
+    {
+        return receipt;
+    }
+
+    public void setReceipt(String receipt)
+    throws InvalidReceiptException
+    {
+        if (receipt == null || receipt.isEmpty())
+            throw new InvalidReceiptException("Receipt cannot be null or empty");
+        this.receipt = receipt;
+    }
+
+    /**
+     * Prints the receipt.
+     * TODO-future: Implement printing to printers
+     */
+    public void printReceipt()
+    {
+        System.out.println(receipt);
+    }
 
     public boolean isActive()
     {

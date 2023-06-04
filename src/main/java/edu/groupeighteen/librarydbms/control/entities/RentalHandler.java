@@ -49,55 +49,60 @@ import java.util.List;
  * before executing database operations. It throws SQLException if an error occurs while interacting with the database
  * and IllegalArgumentException if the provided data is not valid.
  * <p>
- * Note on Exceptions:
- * <p>
- * "Exceptions should only be thrown in exceptional circumstances, and invalid user input is not exceptional".
- * <p>
- * I've battled this one for long, but if finally clicked. This class is NOT handling user input. That is going
- * to be handled in RentalCreateGUI. When I press the "Create Rental" button in that class, we perform an instant
- * check on whether the title, and any other needed fields, are empty.
- * <p>
- * If so, we print an error message, reset all fields in the GUI and wait for new input.
- * <p>
- * Meaning, createNewRental (as an example) should NEVER be called with an empty or null String as argument.
- * If it is, that IS exceptional.
  */
 public class RentalHandler
 {
+    //TODO-future overhaul exception handling
+    //TODO-future move utility methods into a separate class
+    //TODO-future implement more get-methods
+    //TODO-future overhaul main get-method
 
+    /**
+     * Indicates whether verbose mode is enabled.
+     */
     private static boolean verbose = false;
 
+    /**
+     * Checks if verbose mode is enabled.
+     *
+     * @return true if verbose mode is enabled, false otherwise
+     */
     public static boolean isVerbose()
     {
         return verbose;
     }
 
+    /**
+     * Sets the verbose mode.
+     *
+     * @param verbose the value indicating whether verbose mode should be enabled or disabled
+     */
     public static void setVerbose(boolean verbose)
     {
         RentalHandler.verbose = verbose;
     }
 
     /**
-     * This method creates a new rental in the system.
-     * <p>
-     * The method will first validate the IDs and ensure the user is allowed to rent.
-     * Then, it will create a new Rental object and fill it with the appropriate information.
-     * This rental will then be saved to the system, and the item's availability and the user's rental count will be
-     * updated accordingly.
-     * <p>
-     * In case of a failure during the rental creation process, the error is logged as a fatal exception.
+     * Creates a new rental in the system.
+     * This method checks that the user ID and item ID are valid, retrieves the user and item,
+     * and updates the item to mark it as not available and the user to increment the number of current rentals.
+     * The newly created rental is then returned.
      *
-     * @param userID The ID of the user who is creating the rental.
-     * @param itemID The ID of the item being rented.
-     * @return A Rental object representing the new rental that was created.
-     * @throws EntityNotFoundException   if the user with the given ID does not exist in the system.
-     *                                   if the item with the given ID does not exist in the system, or if there is no
-     *                                   available copy of the item.
-     * @throws RentalNotAllowedException if the user is not allowed to rent an item (e.g. due to reaching the limit
-     *                                   of simultaneous rentals).
-     * @throws InvalidIDException        if either the userID or itemID is invalid.
+     * @param userID the ID of the user renting the item
+     * @param itemID the ID of the item being rented
+     * @return the newly created Rental
+     * @throws EntityNotFoundException if the user or item cannot be found
+     * @throws RentalNotAllowedException if the user is not allowed to rent the item
+     * @throws InvalidIDException if the user ID or item ID is not valid
+     *
+     * TODO: Improve exception handling. Current handling is not consistent with other classes and needs refinement.
+     * TODO: Make this method shorter. It currently performs multiple tasks which might be better broken down into
+     * smaller methods.
+     *
+     * @see User
+     * @see Item
+     * @see Rental
      */
-
     public static Rental createNewRental(int userID, int itemID)
     throws
     EntityNotFoundException, RentalNotAllowedException, InvalidIDException
@@ -149,12 +154,16 @@ public class RentalHandler
             user.setCurrentRentals(user.getCurrentRentals() + 1);
             UserHandler.updateUser(user);
 
+            //Create and set receipt
+            newRental.setReceipt(createReceipt(newRental));
+
             //Return rental
             return newRental;
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException
-                | InvalidTitleException | RetrievalException | InvalidUserRentalsException | UpdateException e)
+        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException |
+                InvalidTitleException | RetrievalException | InvalidUserRentalsException | UpdateException |
+                InvalidReceiptException e)
         {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
@@ -168,6 +177,25 @@ public class RentalHandler
 
         //Won't reach, needed for compilation
         return null;
+    }
+
+    /**
+     * Generates a receipt for a newly created rental.
+     * The receipt includes information about the rental date, rental due date, user ID, username, item title and item type.
+     *
+     * @param newRental the new Rental for which the receipt is to be created
+     * @return a String representing the receipt for the Rental
+     *
+     * @see Rental
+     */
+    private static String createReceipt(Rental newRental)
+    {
+        return "RECEIPT" +
+                "\nRental Date: " + newRental.getRentalDate() +
+                "\nRental Due Date: " + newRental.getRentalDueDate() +
+                "\nUser ID: " + newRental.getUserID() + ", User: " + newRental.getUsername() +
+                "\nItem Title: " + newRental.getItemTitle() +
+                "\nItem Type: " + newRental.getItemType();
     }
 
     /**
@@ -195,8 +223,8 @@ public class RentalHandler
 
             //Prepare query
             String query = "INSERT INTO rentals " +
-                    "(userID, itemID, rentalDate, rentalDueDate, rentalReturnDate, lateFee, deleted) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    "(userID, itemID, rentalDate, rentalDueDate, rentalReturnDate, lateFee, receipt, deleted) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             //Set parameters for query
             //We check if rental.getRentalReturnDate() is null. If it is, we set the corresponding parameter to null.
@@ -209,6 +237,7 @@ public class RentalHandler
                     rental.getRentalDueDate().toString(),
                     (rental.getRentalReturnDate() == null) ? null : rental.getRentalReturnDate().toString(),
                     String.valueOf(rental.getLateFee()),
+                    rental.getReceipt(),
                     "0" //Not deleted by default
             };
 
@@ -231,6 +260,7 @@ public class RentalHandler
     }
 
     //TODO-prio update according to getUsers, getItems, to take a wider variety of suffixes
+
     /**
      * Fetches all rentals from the database matching the provided SQL suffix and parameters. This allows for the execution
      * of complex and dynamic SQL queries, depending on the provided suffix and parameters. The ResultSet from the query
@@ -266,53 +296,15 @@ public class RentalHandler
                 //Loop through the results
                 while (resultSet.next())
                 {
-                    int rentalID = resultSet.getInt("rentalID");
-
-                    //Get user by ID, throws EntityNotFoundException
-                    int userID = resultSet.getInt("userID");
-                    User user = UserHandler.getUserByID(userID);
-                    if (user == null) throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException(
-                            "Rental retrieval failed: NullEntityException " +
-                                    "thrown for valid user with ID " + userID);
-                    String username = user.getUsername();
-
-                    //Get item by ID
-                    int itemID = resultSet.getInt("itemID");
-                    Item item = ItemHandler.getItemByID(itemID);
-                    if (item == null) throw new NullEntityException("Rental retrieval failed: NullEntityException " +
-                            "thrown for valid item with ID " + itemID);
-                    String itemTitle = item.getTitle();
-
-                    LocalDateTime rentalDate = resultSet.getTimestamp("rentalDate").toLocalDateTime();
-                    LocalDateTime rentalDueDate = resultSet.getTimestamp("rentalDueDate").toLocalDateTime();
-
-                    //Rental return date can be null in the table
-                    Timestamp returnDateTimestamp = resultSet.getTimestamp("rentalReturnDate");
-                    LocalDateTime rentalReturnDate = null; // Set to null by default
-                    if (returnDateTimestamp != null)
-                    {
-                        rentalReturnDate = returnDateTimestamp.toLocalDateTime();
-                    }
-
-                    float lateFee = resultSet.getFloat("lateFee");
-                    boolean deleted = resultSet.getBoolean("deleted");
-
-                    Rental rental = new Rental(rentalID, userID, itemID, rentalDate, username, itemTitle,
-                            rentalDueDate, rentalReturnDate, lateFee, deleted);
-                    rental.setRentalID(rentalID);
-                    rental.setRentalDate(rentalDate);
-                    rental.setUsername(user.getUsername());
-                    rental.setItemTitle(item.getTitle());
-                    rental.setRentalDueDate(rentalDueDate);
-                    rental.setRentalReturnDate(rentalReturnDate);
-                    rental.setLateFee(lateFee);
+                    //Construct rental
+                    Rental retrievedRental = constructRetrievedRental(resultSet);
 
                     //Add to list
-                    rentals.add(rental);
+                    rentals.add(retrievedRental);
                 }
             }
         }
-        catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException | RetrievalException e)
+        catch (SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve rentals from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -320,6 +312,88 @@ public class RentalHandler
 
         //Return the List of rentals
         return rentals;
+    }
+
+    /**
+     * Constructs a Rental object from the provided ResultSet. This method is used to convert database records
+     * into Java objects. It fetches all necessary information about a rental, including associated user and item information.
+     *
+     * @param resultSet the ResultSet obtained from the database query for a rental record
+     *
+     * @see Rental
+     * @see SQLException
+     * @see InvalidIDException
+     * @see RetrievalException
+     * @see ConstructionException
+     */
+    private static Rental constructRetrievedRental(ResultSet resultSet)
+    {
+        try
+        {
+            //Get userID and itemID
+            int userID = resultSet.getInt("userID");
+            int itemID = resultSet.getInt("itemID");
+
+            //Convert Timestamps to LocalDateTimes
+            LocalDateTime rentalDate = convertTimeStampToLocalDateTime(resultSet, "rentalDate");
+            LocalDateTime rentalDueDate = convertTimeStampToLocalDateTime(resultSet, "rentalDueDate");
+            LocalDateTime rentalReturnDate = convertTimeStampToLocalDateTime(resultSet, "rentalReturnDate");
+
+            //Get username, itemTitle and itemType
+            String username = UserHandler.getUserByID(userID).getUsername();
+            Item item = ItemHandler.getItemByID(itemID);
+            String itemTitle = item.getTitle(); //Throws RetrievalException
+            String itemType = item.getType().toString();
+
+            //Create and return the rental
+            return new Rental(
+                    resultSet.getInt("rentalID"),
+                    userID,
+                    itemID,
+                    rentalDate,
+                    rentalDueDate,
+                    username,
+                    itemTitle,
+                    itemType,
+                    rentalReturnDate,
+                    resultSet.getFloat("lateFee"),
+                    resultSet.getString("receipt"),
+                    resultSet.getBoolean("deleted")
+            );
+        }
+        catch (SQLException | InvalidIDException | RetrievalException | ConstructionException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to construct retrieved rental from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+
+        //Not reached, but needed for compilation
+        return null;
+    }
+
+    /**
+     * Converts a SQL Timestamp to a LocalDateTime object.
+     * This method is used to accurately convert time data stored in the database into a format that is
+     * more easily used in the Java environment.
+     *
+     * @param resultSet the ResultSet obtained from the database query
+     * @param columnName the name of the column in the result set that contains the Timestamp
+     * @return a LocalDateTime object representing the time stored in the specified column of the result set
+     * @throws SQLException if a database access error occurs or this method is called on a closed result set
+     *
+     * @see LocalDateTime
+     * @see SQLException
+     */
+    private static LocalDateTime convertTimeStampToLocalDateTime(ResultSet resultSet, String columnName)
+    throws SQLException
+    {
+        Timestamp timestamp = resultSet.getTimestamp(columnName);
+        LocalDateTime localDateTime = null;
+        if (timestamp != null)
+        {
+            localDateTime = timestamp.toLocalDateTime();
+        }
+        return localDateTime;
     }
 
     /**
@@ -368,14 +442,25 @@ public class RentalHandler
         return null;
     }
 
+    /**
+     * Retrieves a list of all overdue rentals from the database. Overdue rentals are those whose
+     * due date is earlier than the current date and time and have not yet been returned. The current
+     * date and time are formatted to match the SQL DateTime format and used as a parameter for the
+     * query.
+     *
+     * @return a List of Rental objects representing all overdue rentals in the system.
+     *
+     * @see Rental
+     * @see LocalDateTime
+     */
     public static List<Rental> getOverdueRentals()
     {
         // Prepare a SQL suffix to select rentals that are overdue
         String suffix = "WHERE rentalDueDate < ? AND rentalReturnDate IS NULL";
 
         // Prepare parameters for query
-        String[] params = { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").
-                format(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)) };
+        String[] params = {DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").
+                format(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))};
 
         //Executor-class Star Dreadnought
         return getRentals(suffix, params, 0); //No settings
@@ -526,6 +611,7 @@ public class RentalHandler
     //RETRIEVING -------------------------------------------------------------------------------------------------------
 
     //TODO OPTIONAL
+
     /**
      * Retrieves all rental instances associated with a given rental date.
      * More than one rental can be created within one second, hence this method returns a list of rentals.
@@ -557,6 +643,7 @@ public class RentalHandler
     }
 
     //TODO OPTIONAL
+
     /**
      * Retrieves a list of rental objects whose rentalDate matches the given LocalDate.
      * The rentalDate is checked to be the same day, but not necessarily the exact same time.
