@@ -21,6 +21,7 @@ import org.junit.platform.suite.api.Suite;
         ClassificationCopyTest.class,
         ClassificationSetterTest.class
 })
-public class ClassificationTest {
+public class ClassificationTestSuite
+{
 
 }
