@@ -13,6 +13,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -152,8 +153,8 @@ public class RentalHandler
             return newRental;
 
         }
-        catch (InvalidIDException | NullEntityException | InvalidDateException
-                | InvalidNameException | InvalidTitleException e)
+        catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException
+                | InvalidTitleException | RetrievalException | InvalidUserRentalsException | UpdateException e)
         {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
@@ -311,8 +312,7 @@ public class RentalHandler
                 }
             }
         }
-        catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException |
-                InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException e)
+        catch (SQLException | ConstructionException | InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException | InvalidLateFeeException | NullEntityException | RetrievalException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve rentals from database due to " +
                                                           e.getClass().getName() + ": " + e.getMessage(), e);
@@ -377,11 +377,11 @@ public class RentalHandler
      * and cannot be changed. Only the Due Date, Return Date, and Late Fee can be modified.
      *
      * @param updatedRental the rental object with updated details.
-     * @throws RentalUpdateException if the updatedRental is null, or if a rental with the provided rentalID
+     * @throws UpdateException if the updatedRental is null, or if a rental with the provided rentalID
      *                               doesn't exist in the database.
      */
     public static void updateRental(Rental updatedRental)
-    throws RentalUpdateException
+    throws UpdateException
     {
         //Validate input
         try
@@ -390,7 +390,7 @@ public class RentalHandler
         }
         catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
         {
-            throw new RentalUpdateException("Rental Update failed: " + e.getMessage(), e);
+            throw new UpdateException("Rental Update failed: " + e.getMessage(), e);
         }
 
         //Prepare a SQL query to update the rental details
@@ -409,13 +409,13 @@ public class RentalHandler
     /**
      * Softly deletes a rental, by marking it as deleted in the database.
      * The rental object is expected to be not null, with a valid rental ID.
-     * If the rental object is invalid, a RentalDeleteException is thrown.
+     * If the rental object is invalid, a DeletionException is thrown.
      *
      * @param rentalToDelete the rental object to be softly deleted
-     * @throws RentalDeleteException if rental object is invalid
+     * @throws DeletionException if rental object is invalid
      */
     public static void deleteRental(Rental rentalToDelete)
-    throws RentalDeleteException
+    throws DeletionException
     {
         //Validate input
         try
@@ -424,7 +424,7 @@ public class RentalHandler
         }
         catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
         {
-            throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
+            throw new DeletionException("Rental Delete failed: " + e.getMessage(), e);
         }
 
         //Set deleted to true (doesn't need to be set before calling this method)
@@ -444,7 +444,7 @@ public class RentalHandler
     /**
      * Reverses a soft delete of a rental, by marking it as not deleted in the database.
      * The rental object is expected to be not null, with a valid rental ID and the deleted attribute set to true.
-     * If the rental object is invalid, a RentalRecoveryException is thrown.
+     * If the rental object is invalid, a RecoveryException is thrown.
      * <p>
      * This method will do the reverse of softDeleteRental(), it will set the deleted attribute of rentalToRecover
      * to false before proceeding with the update in the database.
@@ -452,10 +452,10 @@ public class RentalHandler
      * This allows the rental to be recovered from a soft delete.
      *
      * @param rentalToRecover the rental object to be recovered from soft delete
-     * @throws RentalRecoveryException if rental object is invalid
+     * @throws RecoveryException if rental object is invalid
      */
     public static void undoDeleteRental(Rental rentalToRecover)
-    throws RentalRecoveryException
+    throws RecoveryException
     {
         //Validate input
         try
@@ -464,7 +464,7 @@ public class RentalHandler
         }
         catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
         {
-            throw new RentalRecoveryException("Rental Recovery failed: " + e.getMessage(), e);
+            throw new RecoveryException("Rental Recovery failed: " + e.getMessage(), e);
         }
 
         //Set deleted to false
@@ -484,13 +484,13 @@ public class RentalHandler
     /**
      * Completely removes a rental from the database.
      * The rental object is expected to be not null, with a valid rental ID.
-     * If the rental object is invalid, a RentalDeleteException is thrown.
+     * If the rental object is invalid, a DeletionException is thrown.
      *
      * @param rentalToDelete the rental object to be removed from the database
-     * @throws RentalDeleteException if rental object is invalid
+     * @throws DeletionException if rental object is invalid
      */
     public static void hardDeleteRental(Rental rentalToDelete)
-    throws RentalDeleteException
+    throws DeletionException
     {
         //Validate input
         try
@@ -499,7 +499,7 @@ public class RentalHandler
         }
         catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
         {
-            throw new RentalDeleteException("Rental Delete failed: " + e.getMessage(), e);
+            throw new DeletionException("Rental Delete failed: " + e.getMessage(), e);
         }
 
         //Prepare a SQL query to update the rentalToDelete details
@@ -968,7 +968,7 @@ public class RentalHandler
     private static Item getExistingItem(int itemID)
     throws
     EntityNotFoundException, InvalidIDException,
-    InvalidTitleException
+    InvalidTitleException, RetrievalException
     {
         if (verbose)
             System.out.println("\nGetting available item with ID " + itemID);

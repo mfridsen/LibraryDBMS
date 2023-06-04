@@ -1,0 +1,2 @@
+Split test data into separate files, make one static method recursively use all of them to fill tables,
+else tester can choose which tables to fill

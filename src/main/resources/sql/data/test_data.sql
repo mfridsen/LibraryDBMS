@@ -81,43 +81,16 @@ INSERT INTO films (filmID, ageRating, countryOfProduction, actors) VALUES
 (9, 16, 'Spain', 'Actor10, Actor11, Actor12'),
 (10, 18, 'UK', 'Actor13, Actor14, Actor15');
 
--- literature_item (, ),
-INSERT INTO literature_item (literatureID, itemID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(11, 11),
-(12, 12),
-(13, 13),
-(14, 14),
-(15, 15),
-(16, 16),
-(17, 17),
-(18, 18),
-(19, 19),
-(20, 20);
-
--- film_item (, ),
-INSERT INTO film_item (filmID, itemID) VALUES
-(6, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10);
-
--- users (, '', '', , , , , , ),
-INSERT INTO users (userID, username, password, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) VALUES
-(1, 'user1', 'password1', 5, 0, 0.0, 1, 0),
-(2, 'user2', 'password2', 5, 0, 0.0, 1, 0),
-(3, 'user3', 'password3', 5, 0, 0.0, 1, 0),
-(4, 'user4', 'password4', 5, 0, 0.0, 1, 0),
-(5, 'user5', 'password5', 5, 0, 0.0, 1, 0),
-(6, 'user6', 'password6', 5, 0, 0.0, 1, 0),
-(7, 'user7', 'password7', 5, 0, 0.0, 1, 0),
-(8, 'user8', 'password8', 5, 0, 0.0, 1, 0),
-(9, 'user9', 'password9', 5, 0, 0.0, 1, 0),
-(10, 'user10', 'password10', 5, 0, 0.0, 1, 0);
+INSERT INTO users (userID, username, password, userType, email, allowedRentals, currentRentals, lateFee, allowedToRent, deleted) VALUES
+(1, 'user1', 'password1', 'ADMIN', 'admin@example.com', 5, 0, 0.0, 1, 0),
+(2, 'user2', 'password2', 'STAFF', 'staff@example.com', 5, 0, 0.0, 1, 0),
+(3, 'user3', 'password3', 'PATRON', 'patron@example.com', 5, 0, 0.0, 1, 0),
+(4, 'user4', 'password4', 'STUDENT', 'student@example.com', 5, 0, 0.0, 1, 0),
+(5, 'user5', 'password5', 'TEACHER', 'teacher@example.com', 5, 0, 0.0, 1, 0),
+(6, 'user6', 'password6', 'RESEARCHER', 'researcher@example.com', 5, 0, 0.0, 1, 0),
+(7, 'user7', 'password7', 'ADMIN', 'admin2@example.com', 5, 0, 0.0, 1, 0),
+(8, 'user8', 'password8', 'PATRON', 'patron2@example.com', 5, 0, 0.0, 1, 0),
+(9, 'user9', 'password9', 'STAFF', 'staff2@example.com', 5, 0, 0.0, 1, 0),
+(10, 'user10', 'password10', 'STUDENT', 'student2@example.com', 5, 0, 0.0, 1, 0);
 
 -- No rental test data because not needed, we create rentals during tests or at runtime

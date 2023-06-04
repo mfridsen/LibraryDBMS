@@ -1,0 +1,163 @@
+//SetupTest:
+
+    //Empty Database
+    //Some Users in Database
+    //With Test Data
+    //Reset With Test Data
+    //Sync With Test Data (Kinda already tested by proxy via setup, but whatevs)
+
+//CreateNewUserTest:
+
+    //Valid ADMIN VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid STAFF VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid PATRON VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid STUDENT VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid TEACHER VERIFY ALL FIELDS AND USERHANDLER LISTS
+    //Valid RESEARCHER VERIFY ALL FIELDS AND USERHANDLER LISTS
+
+    //Duplicate username
+    //Duplicate email
+
+    //Null username
+    //Empty username
+    //Short username 3
+    //Long username 20
+
+    //Null password
+    //Empty password
+    //Short password 8
+    //Long password 50
+
+    //Null email
+    //Empty email
+    //Short email 6
+    //Long email 255
+
+    //Null userType
+
+//GetUserByIDTest:
+
+    //Valid ID Existing User
+    //Valid ID Non-Existing User
+    //Valid ID Deleted User getDeleted false
+    //Valid ID Deleted User getDeleted true
+    //InvalidUserID
+
+//DeleteAndRecoverUserTest:
+
+    //Delete Valid Existing PATRON as ADMIN
+    //Delete Valid Existing PATRON as STAFF
+    //Delete Valid Existing PATRON as PATRON (!STAFF && !ADMIN)
+
+    //Delete Valid Existing STUDENT as ADMIN
+    //Delete Valid Existing STUDENT as STAFF
+
+    //Delete Valid Existing TEACHER as ADMIN
+    //Delete Valid Existing TEACHER as STAFF
+
+    //Delete Valid Existing RESEARCHER as ADMIN
+    //Delete Valid Existing RESEARCHER as STAFF
+
+    //Delete Valid Existing STAFF as ADMIN
+    //Delete Valid Existing STAFF as STAFF
+
+    //Delete Valid Existing ADMIN as ADMIN
+    //Delete Valid Existing ADMIN as STAFF
+
+
+    //Delete Valid Existing User Of Each Type
+    //Delete Deleted User
+    //Delete Valid Non-Existing User
+    //Delete Null User
+    //Delete User With Late Fee
+    //Delete User With Current Rentals
+
+    //Recover Deleted User Of Each Type
+    //Recover Non-Deleted User
+    //Recover Non-Existing User
+    //Recover Null User
+
+    //Hard Delete Valid Existing User Of Each Type
+    //Hard Delete Deleted User
+    //Hard Delete Valid Non-Existing User
+    //Hard Delete Null User
+    //Hard Delete User With Late Fee
+    //Hard Delete User With Current Rentals
+
+
+    //Hard Delete Valid Existing PATRON as ADMIN
+    //Hard Delete Valid Existing PATRON as STAFF
+    //Hard Delete Valid Existing PATRON as PATRON (!STAFF && !ADMIN)
+
+    //Hard Delete Valid Existing STAFF as ADMIN
+    //Hard Delete Valid Existing STAFF as STAFF
+    //Hard Delete Valid Existing STAFF as PATRON (!STAFF && !ADMIN)
+
+    //Hard Delete Valid Existing ADMIN as ADMIN
+    //Hard Delete Valid Existing ADMIN as STAFF
+    //Hard Delete Valid Existing ADMIN as PATRON (!STAFF && !ADMIN)
+
+    //Hard Delete Valid Non-Existing User
+    //Hard Delete Null User
+    //Delete User With Late Fee
+    //Delete User With Current Rentals
+
+//LoginAndValidationTest:
+
+    //testLogin_ValidUsernameAndPassword : Expected outcome: returns true. Loop through multiple users
+    //testLogin_ValidUsernameInvalidPassword : Expected outcome: returns false. Loop through multiple users
+    //testLogin_ValidUsernameNullPassword:
+    //testLogin_ValidUsernameEmptyPassword:
+
+    //testLogin_NullUserValidPassword: (User object exists but not in database, password matches)
+    //testLogin_NullUserInvalidPassword: (User object exists but not in database, password does not match)
+    //testLogin_NullUsernameValidPassword:
+    //testLogin_EmptyUserNameValidPassword:
+
+    //testValidate_ValidUserMatchingPassword : Expected outcome: returns true. Loop multiple users
+    //testValidate_ValidUserNonMatchingPassword : Expected outcome: returns false. Loop multiple users
+    //testValidate_ValidUserNullPassword:
+    //testValidate_ValidUserEmptyPassword : Expected outcome: throws
+    //testValidate_NullUserValidPassword : Expected outcome: throws
+
+//GetUserByUsernameTest:
+
+    //Valid User Present
+    //Valid User Not Present
+    //Null Username
+    //Empty Username
+
+//UpdateUserTest:
+
+    ------------Valid--------------
+
+    //Username Changed Not Taken
+    //Password Changed
+    //Email Changed Not Taken
+    //User Type Changed
+    //Allowed Rentals Changed
+    //Current Rentals Changed
+    //Late Fee, Allowed To Rent Changed
+
+    //All Fields Changed
+            (Username Changed, Not Taken "validUsername" -> "changedUsername")
+            (Password Changed           "validPassword" -> "changedPassword")
+            (Email Changed Not Taken    "validEmail@example.com" -> "changedEmail@example.com")
+            (User Type Changed          PATRON -> STUDENT)
+            (Allowed Rentals Changed    3 -> 5)
+            (Current Rentals Changed    0 -> 5)
+            (Allowed To Rent Changed    true -> false)
+
+    ----------Invalid--------------
+
+    //Null User
+    //Valid User Soft Deleted
+    //Valid User Recovered
+    //Valid User Hard Deleted
+    //Valid User Does Not Exist In Database
+    //New Username Taken
+    //New Email Taken
+
+    ----------Future--------------
+    //Concurrency Two Concurrent Attempts To Update Same User
+    //DB Connection Lost

@@ -1,0 +1,50 @@
+[Introduktion]
+Hej och välkommen till videodemonstrationen av vårt bibliotekssystem. Idag kommer jag visa hur vi uppfyller de olika kraven i systemet.
+
+[Funktionalitetskrav 1: Lägga till, ändra och ta bort objekt]
+Först och främst har vi möjligheten att lägga till, ändra och ta bort objekt i systemet. Genom att logga in som bibliotekarie kan vi enkelt hantera objekten i biblioteket.
+
+[Visa användargränssnittet och demonstration av att lägga till, ändra och ta bort objekt]
+
+[Funktionalitetskrav 2: Sökfunktion för objekt]
+För att underlätta för våra användare har vi implementerat en sökfunktion. Användare kan söka efter objekt baserat på titel, författare/regissör, ISBN eller ämnesord/filmgenre.
+
+[Visa sökfunktionen och demonstrera hur man kan söka efter objekt med olika sökkriterier]
+
+[Funktionalitetskrav 3: Hantering av utlåning och återlämning]
+Nu kommer vi till hanteringen av utlåning och återlämning av objekt. Användare måste logga in för att kunna låna eller reservera objekt. När ett lån görs, kommer ett kvitto att skrivas ut med all relevant information.
+
+[Visa inloggning, låna och återlämna objekt samt utskrift av kvitto]
+
+[Funktionalitetskrav 4: Lista över objekt som inte har återlämnats i tid]
+För att hålla koll på objekt som inte har återlämnats i tid, har vi en lista som visar dessa objekt. Det hjälper oss att påminna låntagarna om att lämna tillbaka objekten i tid.
+
+[Visa listan över objekt som inte har återlämnats i tid]
+
+[Funktionalitetskrav 5: Hantering av redan existerande objekt]
+Slutligen har vi möjligheten för bibliotekarien att hantera redan existerande objekt. Det kan vara att hantera försvunna objekt eller korrigera data om objektet.
+
+[Visa hantering av redan existerande objekt och demonstration av att korrigera data]
+
+[Generella krav 1: Användning av relationsdatabas]
+All data i systemet lagras i en relationsdatabas för effektiv hantering och lagring av information.
+
+[Visa databasen och hur data lagras och hämtas]
+
+[Generella krav 2: Användning av arv och polymorfism]
+För att göra systemet mer flexibelt och utbyggbart har vi använt oss av arv och polymorfism i lämpliga delar av systemet.
+
+[Visa exempel på arv och polymorfism i koden]
+
+[Generella krav 3: Hantering av undantag]
+Vi har också implementerat hantering av undantag (exceptions) för att ge användaren meningsfull återkoppling vid felaktiga operationer eller situationer.
+
+[Visa exempel på hantering av undantag och hur felmeddelanden visas för användaren]
+
+[Generella krav 4: Grafiska användargränssnitt]
+Slutligen har vi utvecklat ett användarvänligt grafiskt användargränssnitt för att interagera med systemet på ett intuitivt sätt.
+
+[Visa det grafiska användargränssnittet och demonstrera hur användaren kan interagera med systemet]
+
+[Avslutning]
+Det var en översiktlig demonstration av hur vi uppfyller kraven i vårt bibliotekssystem. Tack för att ni tittade på videon och hör gärna av er om ni har några frågor eller feedback.

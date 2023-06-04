@@ -1,3 +1,6 @@
+/**
+ * <Javadoc providing a brief description of what the method tests.>
+ */
 @Test
 @Order(<Test_Number>)
 void test<MethodName>_<TestCase>()
@@ -11,7 +14,7 @@ void test<MethodName>_<TestCase>()
 Example:
 
 /**
- * Javadoc providing a brief description of what the method tests.
+ * <Javadoc providing a brief description of what the method tests.>
  */
 @Test
 @Order(7)
@@ -28,35 +31,46 @@ void testSetup_EmptyDatabase()
     System.out.println("\nTEST FINISHED.");
 }
 
+Setup method format:
 
-For Model classes, create one test class per constructor and then one for the setters.
+/**
+ * <Javadoc providing brief description of what the setup does>
+ /*
+@BeforeAll
+static void setUp()
+{
+    System.out.println("Performing pre-test setup...");
+
+    <SETUP WORK HERE>
+
+    System.out.println("\nSETUP FINISHED.");
+}
 
 Example:
 
-/**
- * Javadoc providing brief description of what the class tests.
- /*
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthorCreationTest
-{
-
-    /**
-     * Javadoc providing a brief description of what the method tests.
-     */
-    @Test
-    @Order(1)
-    void testAuthorCreation_ValidData()
+    @BeforeAll
+    static void setUp()
     {
+        System.out.println("\n1: Setting up User object for tests...");
 
+        try
+        {
+            user = new User(validUserID1, validUsername, validPassword, userType, validEmail, allowedRentals,
+                    currentRentals, lateFee, allowedToRent, deleted);
+        }
+        catch (ConstructionException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
+
+        System.out.println("\nSETUP FINISHED.");
     }
-}
 
-AuthorRetrievalTest
-AuthorCopyTest
-AuthorSettersTest
+If exceptions can be thrown, either catch or assert them depending on the test case. No need to assert messages
+in exceptions:
 
-If exceptions can be thrown, all non-asserted methods should be handled by placing the entire test in a try-catch
-block and failing like so:
+Example 1:
 
     /**
      * Test case for the setPublisherName method with valid data.
@@ -75,12 +89,56 @@ block and failing like so:
             assertEquals(validName, publisher.getPublisherName(),
                          "Publisher name must be the same as the one set");
         } catch (InvalidNameException | ConstructionException e) {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
     }
+
+Example 2, use lambda expressions and for gods sake use .repeat to generate too-long strings:
+
+    @Test
+    @Order(19)
+    void testUser_LongEmail()
+    {
+        System.out.println("\n19: Testing User constructor with long email...");
+
+        String longEmail = "a".repeat(User.MAX_EMAIL_LENGTH + 1); // More than MAX_EMAIL_LENGTH
+
+        assertThrows(ConstructionException.class, () ->
+                new User("username", "password", User.UserType.PATRON, longEmail));
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+For Model classes, create one test class per constructor and then one for the setters.
+
+Example:
+
+/**
+ * <Javadoc providing brief description of what the class tests.>
+ /*
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class AuthorCreationTest
+{
+
+    /**
+     * <Javadoc providing a brief description of what the method tests.>
+     */
+    @Test
+    @Order(1)
+    void testAuthorCreation_ValidData()
+    {
+
+    }
+}
+
+AuthorRetrievalTest
+AuthorCopyTest
+AuthorSettersTest
+
+
 
 For Control classes (named <ModelClassName>Handler), create one test class per one major method in the Handler, named
 like so:

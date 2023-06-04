@@ -1,5 +1,7 @@
 package edu.groupeighteen.librarydbms.control.exceptions;
 
+import org.junit.Assert;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,9 +21,12 @@ import java.util.logging.Logger;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class ExceptionHandler {
-    public static void HandleFatalException(String message, Throwable cause) { {
-        //TODO-future fix the logging
+public class ExceptionHandler
+{
+    public static void HandleFatalException(String message, Throwable cause)
+    {
+        {
+            //TODO-future fix the logging
             // Log the error
             Logger logger = Logger.getLogger("DatabaseErrorLogger");
             /*if (cause instanceof SQLException) {
@@ -49,7 +54,8 @@ public class ExceptionHandler {
         }
     }
 
-    public static void HandleFatalException(Throwable cause) { {
+    public static void HandleFatalException(Throwable cause)
+    {
         //TODO-future fix the logging
         // Log the error
         Logger logger = Logger.getLogger("DatabaseErrorLogger");
@@ -76,6 +82,13 @@ public class ExceptionHandler {
         System.err.println("A fatal error occurred. Please check the log file for more details.");
         System.exit(1);
     }
+
+    public static void HandleTestExceptionWithCause(String message, Throwable e)
+    {
+        Throwable cause = e.getCause();
+        e.printStackTrace();
+        Assert.fail(message + "failed due to: " + cause.getClass().getName()
+                + ". Message: " + e.getMessage());
     }
 }
 

@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -105,7 +106,7 @@ public class ItemSearchGUI extends GUI {
                          */
                     }
                 }
-            } catch (NumberFormatException | InvalidIDException nfe) {
+            } catch (NumberFormatException | InvalidIDException | RetrievalException nfe) {
                 System.err.println("Wrong data type for field: " + itemSearchTable.getValueAt(row, 0));
             }
         }

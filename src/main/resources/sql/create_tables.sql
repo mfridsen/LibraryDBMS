@@ -26,7 +26,7 @@ CREATE TABLE `classifications` (
 
 -- Item, dependent on Author, Classification, depended on by Rental
 CREATE TABLE items (
-    itemID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    itemID INT PRIMARY KEY AUTO_INCREMENT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     itemType ENUM('REFERENCE_LITERATURE', 'MAGAZINE', 'FILM', 'COURSE_LITERATURE', 'OTHER_BOOKS'),
     barcode VARCHAR(255) UNIQUE NOT NULL,
@@ -35,50 +35,37 @@ CREATE TABLE items (
     allowedRentalDays INT NOT NULL,
     available TINYINT(1) NOT NULL,
     deleted TINYINT(1) NOT NULL,
-    PRIMARY KEY (itemID)
+    FOREIGN KEY (authorID) REFERENCES authors(authorID),
+    FOREIGN KEY (classificationID) REFERENCES classifications(classificationID)
 );
 
 -- Literature
 CREATE TABLE literature (
-    literatureID INT PRIMARY KEY,
-    ISBN VARCHAR(13) NOT NULL
+    literatureID INT PRIMARY KEY UNIQUE NOT NULL,
+    ISBN VARCHAR(13) NOT NULL,
+    FOREIGN KEY (literatureID) REFERENCES items(itemID)
 );
 
 -- Film
 CREATE TABLE films (
-    filmID INT PRIMARY KEY,
+    filmID INT PRIMARY KEY UNIQUE NOT NULL,
     ageRating INT NOT NULL,
     countryOfProduction VARCHAR(100),
-    actors TEXT
-);
-
--- Join table, depends on items and literature
-CREATE TABLE literature_item (
-    literatureID INT,
-    itemID INT,
-    PRIMARY KEY (literatureID, itemID),
-    FOREIGN KEY (literatureID) REFERENCES literature(literatureID),
-    FOREIGN KEY (itemID) REFERENCES items(itemID)
-);
-
--- Join table, depends on items and films
-CREATE TABLE film_item (
-    filmID INT,
-    itemID INT,
-    PRIMARY KEY (filmID, itemID),
-    FOREIGN KEY (filmID) REFERENCES films(filmID),
-    FOREIGN KEY (itemID) REFERENCES items(itemID)
+    actors TEXT,
+    FOREIGN KEY (filmID) REFERENCES items(itemID)
 );
 
 -- User, depended on by Rental
 CREATE TABLE `users` (
-    userID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    username VARCHAR(20) UNIQUE NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    allowedRentals INT NOT NULL,
-    currentRentals INT NOT NULL,
-    lateFee DOUBLE NOT NULL,
-    allowedToRent TINYINT(1) NOT NULL,
+    userID INT AUTO_INCREMENT UNIQUE NOT NULL, -- Can't be < 0
+    username VARCHAR(20) UNIQUE NOT NULL, -- Can't be < 3, null or empty
+    password VARCHAR(50) NOT NULL, -- Can't be < 8, null or empty
+    userType ENUM('ADMIN', 'STAFF', 'PATRON', 'STUDENT', 'TEACHER', 'RESEARCHER'), -- Can't be null
+    email VARCHAR(255) UNIQUE NOT NULL, -- Can't be < 6, null or empty
+    allowedRentals INT NOT NULL, -- Can't be < 0
+    currentRentals INT NOT NULL, -- Can't be < 0, or > allowedRentals
+    lateFee DOUBLE NOT NULL, -- Can't be < 0
+    allowedToRent TINYINT(1) NOT NULL, -- Rules found in User class
     deleted TINYINT(1) NOT NULL,
     PRIMARY KEY (userID)
 );
