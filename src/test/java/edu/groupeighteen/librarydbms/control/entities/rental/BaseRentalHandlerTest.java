@@ -10,8 +10,10 @@ import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
@@ -32,7 +34,94 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public abstract class BaseRentalHandlerTest
 {
+    protected static Connection connection;
+    protected static final String testDatabaseName = "test_database";
 
+    @BeforeAll
+    protected static void setup()
+    {
+        System.out.println("\nSetting up test environment...");
+
+        setupConnectionAndTables();
+        setupTestData();
+        ItemHandler.setup(); //Fills maps with items
+        UserHandler.setup(); //Fills list with users
+        DatabaseHandler.setVerbose(false); //Get that thing to shut up
+
+        System.out.println("\nTEST ENVIRONMENT SETUP FINISHED.");
+    }
+
+
+    protected static void setupConnectionAndTables()
+    {
+        System.out.println("\nSetting up connection and tables...");
+
+        try
+        {
+            connection = DatabaseConnection.setup();
+            DatabaseHandler.setConnection(connection);
+            DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
+            DatabaseHandler.executeCommand("drop database if exists " + testDatabaseName);
+            DatabaseHandler.executeCommand("create database " + testDatabaseName);
+            DatabaseHandler.executeCommand("use " + testDatabaseName);
+            DatabaseHandler.setVerbose(false);
+            DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
+        }
+        catch (SQLException | ClassNotFoundException e)
+        {
+            System.err.println("RentalHandlerTestSuite failed while setting up connection and tables due to " +
+                    e.getClass().getName() + " Message: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("\nCONNECTION AND TABLES SETUP FINISHED.");
+    }
+
+    @AfterEach
+    protected void resetItemsTable()
+    {
+        DatabaseHandler.executeCommand("DELETE FROM rentals");
+        DatabaseHandler.executeCommand("DELETE FROM literature");
+        DatabaseHandler.executeCommand("DELETE FROM films");
+        DatabaseHandler.executeCommand("DELETE FROM items");
+        DatabaseHandler.executeCommand("DELETE FROM users");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/item_test_data.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/user_test_data.sql");
+    }
+
+    protected static void setupTestData()
+    {
+        System.out.println("\nFilling tables with test data...");
+
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
+        DatabaseHandler.setVerbose(true);
+
+        System.out.println("\nTEST DATA SETUP FINISHED.");
+    }
+
+    /**
+     * Always close the connection to the database after use.
+     */
+    @AfterAll
+    protected static void tearDown()
+    {
+        try
+        {
+            //Drop the test database
+            DatabaseHandler.executeCommand("DROP DATABASE IF EXISTS " + testDatabaseName);
+
+            //Close the database connection
+            if (connection != null && !connection.isClosed())
+            {
+                DatabaseHandler.closeDatabaseConnection();
+            }
+        }
+        catch (SQLException e)
+        {
+            System.err.println("An error occurred during cleanup: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
     /**

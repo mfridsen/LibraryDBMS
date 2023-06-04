@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.rental;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
@@ -19,6 +17,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -52,14 +52,15 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
     {
         System.out.println("\n1: Testing createNewRental method with valid input...");
 
-        int validUserID = 1;
-        int validItemID = 1;
+        int validUserID = 3;
+        int validItemID = 4;
 
         // Set up expected values based on the valid inputs
-        String expectedUsername = "user1";
-        String expectedTitle = "item1";
+        String expectedUsername = "user3"; //PATRON
+        String expectedTitle = "item4"; //OTHER_BOOKS, is allowed to rent out
         int expectedRentalID = 1; // Replace with the expected rental ID, if known
-        LocalDateTime expectedDueDate = LocalDateTime.now().plusDays(14)
+        int rentalDueDateDays = Item.getDefaultAllowedRentalDays(Item.ItemType.OTHER_BOOKS);
+        LocalDateTime expectedDueDate = LocalDateTime.now().plusDays(rentalDueDateDays)
                 .withHour(20).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS);
 
         // Call the method under test
@@ -237,7 +238,7 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
     {
         System.out.println("\n6: Testing createNewRental method with nonexistent item...");
 
-        int validUserID = 1;
+        int validUserID = 3;
         int nonexistentItemID = 9999; // This item ID does not exist in the database
 
         Exception exception = assertThrows(EntityNotFoundException.class,
@@ -260,7 +261,7 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
     {
         System.out.println("\n7: Testing createNewRental method with an item that doesn't exist...");
 
-        int validUserID = 1;
+        int validUserID = 3;
         int nonexistentItemID = 999; // assuming this ID does not exist in your database
 
         Exception exception = assertThrows(EntityNotFoundException.class,
@@ -283,8 +284,8 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
 
         try
         {
-            int validUserID = 1;
-            int validItemID = 1;
+            int validUserID = 3;
+            int validItemID = 4; //OTHER_BOOKS
 
             //Change item to be unavailable and update it
             Item unavailableItem = ItemHandler.getItemByID(validItemID);
@@ -301,19 +302,18 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
             assertTrue(actualMessage.contains(expectedMessage));
 
             //Rent item 2 (should be available)
-            RentalHandler.createNewRental(validUserID, 2);
+            RentalHandler.createNewRental(validUserID, 6);
 
             //Assert correct exception with correct message is thrown when we attempt to rent item again
-            exception = assertThrows(EntityNotFoundException.class, () -> RentalHandler.createNewRental(2, 2));
+            exception = assertThrows(EntityNotFoundException.class, () -> RentalHandler.createNewRental(4, 6));
             expectedMessage = "Rental creation failed";
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
-
         }
-        catch (InvalidIDException | EntityNotFoundException | RentalNotAllowedException | NullEntityException | RetrievalException e)
+        catch (InvalidIDException | NullEntityException | RetrievalException | RentalNotAllowedException | EntityNotFoundException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -330,21 +330,29 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
 
         try
         {
-            int validUserID = 1;
-            int validItemID = 1;
+            int validUserID = 3; //PATRON
+            int validItemID = 3;
 
             RentalHandler.setVerbose(true);
 
             //Change users number of rentals to maximum allowed
             User maxRentalUser = UserHandler.getUserByID(validUserID);
             assertNotNull(maxRentalUser);
-            maxRentalUser.setCurrentRentals(5);
+            maxRentalUser.setCurrentRentals(3);
             UserHandler.updateUser(maxRentalUser);
 
             //Tracer to find bug
-            Item item1 = ItemHandler.getItemByID(1);
-            assertNotNull(item1);
-            System.out.println("item1 available 1: " + item1.isAvailable());
+            Item item3 = ItemHandler.getItemByID(validItemID);
+            assertNotNull(item3);
+            System.out.println("item3 available 1: " + item3.isAvailable());
+
+            //Tracer to find second bug
+            User user3 = UserHandler.getUserByID(validUserID);
+            assertNotNull(user3);
+            System.out.println("Username: " + user3.getUsername() +
+                    ", allowedRentals: " + user3.getAllowedRentals() +
+                    ", currentRentals: " + user3.getCurrentRentals() +
+                    ", allowedToRent: " + user3.isAllowedToRent());
 
             //Assert correct exception with correct message is thrown
             Exception exception = assertThrows(RentalNotAllowedException.class,
@@ -358,34 +366,34 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
 
             assertTrue(actualMessage.contains(expectedMessage));
 
-            //Try with user 2 and items 1-6...
-            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 1));
-            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 2));
-            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 3));
-            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 4));
-            assertDoesNotThrow(() -> RentalHandler.createNewRental(2, 5));
+            //Try with user 4 and items that are rentable
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(4, 6)); //STUDENT
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(4, 7));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(4, 8));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(4, 9));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(4, 10));
 
-            //... where 6 should fail
+            //... where 11 should fail
             exception = assertThrows(RentalNotAllowedException.class,
-                    () -> RentalHandler.createNewRental(2, 6));
+                    () -> RentalHandler.createNewRental(4, 11)); //STUDENT
             expectedMessage = "User not allowed to rent either due to already renting at maximum capacity " +
                     "or having a late fee.";
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
 
             //Debug
-            item1 = ItemHandler.getItemByID(1);
-            assertNotNull(item1);
-            System.out.println("item1 available 1: " + item1.isAvailable());
-            assertFalse(item1.isAvailable());
+            item3 = ItemHandler.getItemByID(3);
+            assertNotNull(item3);
+            System.out.println("item3 available 2: " + item3.isAvailable());
+            //assertFalse(item3.isAvailable());
 
             RentalHandler.setVerbose(false);
 
         }
         catch (InvalidIDException | NullEntityException | RetrievalException | InvalidUserRentalsException | UpdateException e)
         {
-            fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+            fail("Valid tests should not throw exceptions.");
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -402,15 +410,15 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
 
         try
         {
-            int validUserID = 1;
-            int validItemID = 1;
+            int validUserID = 3;
+            int validItemID = 3;
 
             //Get ourselves a poor little user object
             User lateFeeUser = UserHandler.getUserByID(validUserID);
             assertNotNull(lateFeeUser);
 
             //Assert user is allowed to rent before getting a late fee
-            assertDoesNotThrow(() -> RentalHandler.createNewRental(validUserID, 2));
+            assertDoesNotThrow(() -> RentalHandler.createNewRental(validUserID, validItemID));
 
             //Set a positive late fee for user
             lateFeeUser.setLateFee(1);

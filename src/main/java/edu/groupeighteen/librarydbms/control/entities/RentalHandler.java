@@ -8,14 +8,14 @@ import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.*;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidReceiptException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -91,14 +91,13 @@ public class RentalHandler
      * @param userID the ID of the user renting the item
      * @param itemID the ID of the item being rented
      * @return the newly created Rental
-     * @throws EntityNotFoundException if the user or item cannot be found
+     * @throws EntityNotFoundException   if the user or item cannot be found
      * @throws RentalNotAllowedException if the user is not allowed to rent the item
-     * @throws InvalidIDException if the user ID or item ID is not valid
-     *
-     * TODO: Improve exception handling. Current handling is not consistent with other classes and needs refinement.
-     * TODO: Make this method shorter. It currently performs multiple tasks which might be better broken down into
-     * smaller methods.
-     *
+     * @throws InvalidIDException        if the user ID or item ID is not valid
+     *                                   <p>
+     *                                   TODO: Improve exception handling. Current handling is not consistent with other classes and needs refinement.
+     *                                   TODO: Make this method shorter. It currently performs multiple tasks which might be better broken down into
+     *                                   smaller methods.
      * @see User
      * @see Item
      * @see Rental
@@ -142,6 +141,9 @@ public class RentalHandler
             LocalDateTime dueDate = newRental.getRentalDate().plusDays(allowedRentalDays);
             newRental.setRentalDueDate(dueDate);
 
+            //Create and set receipt
+            newRental.setReceipt(createReceipt(newRental));
+
             //Save rental
             int rentalID = saveRental(newRental);
             newRental.setRentalID(rentalID);
@@ -153,9 +155,6 @@ public class RentalHandler
             //Update User to increment number of current rentals
             user.setCurrentRentals(user.getCurrentRentals() + 1);
             UserHandler.updateUser(user);
-
-            //Create and set receipt
-            newRental.setReceipt(createReceipt(newRental));
 
             //Return rental
             return newRental;
@@ -181,11 +180,11 @@ public class RentalHandler
 
     /**
      * Generates a receipt for a newly created rental.
-     * The receipt includes information about the rental date, rental due date, user ID, username, item title and item type.
+     * The receipt includes information about the rental date, rental due date, user ID, username, item title
+     * and item type.
      *
      * @param newRental the new Rental for which the receipt is to be created
      * @return a String representing the receipt for the Rental
-     *
      * @see Rental
      */
     private static String createReceipt(Rental newRental)
@@ -319,7 +318,6 @@ public class RentalHandler
      * into Java objects. It fetches all necessary information about a rental, including associated user and item information.
      *
      * @param resultSet the ResultSet obtained from the database query for a rental record
-     *
      * @see Rental
      * @see SQLException
      * @see InvalidIDException
@@ -376,11 +374,10 @@ public class RentalHandler
      * This method is used to accurately convert time data stored in the database into a format that is
      * more easily used in the Java environment.
      *
-     * @param resultSet the ResultSet obtained from the database query
+     * @param resultSet  the ResultSet obtained from the database query
      * @param columnName the name of the column in the result set that contains the Timestamp
      * @return a LocalDateTime object representing the time stored in the specified column of the result set
      * @throws SQLException if a database access error occurs or this method is called on a closed result set
-     *
      * @see LocalDateTime
      * @see SQLException
      */
@@ -449,7 +446,6 @@ public class RentalHandler
      * query.
      *
      * @return a List of Rental objects representing all overdue rentals in the system.
-     *
      * @see Rental
      * @see LocalDateTime
      */
@@ -843,7 +839,7 @@ public class RentalHandler
     private static Item getExistingItem(int itemID)
     throws
     EntityNotFoundException, InvalidIDException,
-    InvalidTitleException, RetrievalException
+    InvalidTitleException, RetrievalException, RentalNotAllowedException
     {
         if (verbose)
             System.out.println("\nGetting available item with ID " + itemID);
@@ -859,11 +855,16 @@ public class RentalHandler
         if (verbose)
             System.out.println("Item with ID " + itemID + " is not deleted: " + !item.isDeleted());
 
+        if (item.getAllowedRentalDays() <= 0)
+            throw new RentalNotAllowedException("Item with ID: " + itemID + " is not allowed for rent.");
         if (verbose)
-            System.out.println("Item with ID " + itemID + " is available: " + item.isAvailable());
+            System.out.println("Item with ID: " + itemID + " is allwed to be rented for " +
+                    item.getAllowedRentalDays() + " days.");
 
         if (!item.isAvailable())
             item = getAvailableCopy(item.getTitle());
+        if (verbose)
+            System.out.println("Item with ID " + itemID + " is available: " + item.isAvailable());
 
         return item;
     }
