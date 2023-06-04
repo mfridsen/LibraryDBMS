@@ -122,7 +122,10 @@
 
 //GetUserByUsernameTest:
 
-    //
+    //Valid User Present
+    //Valid User Not Present
+    //Null Username
+    //Empty Username
 
 //UpdateUserTest:
 

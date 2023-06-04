@@ -1,0 +1,54 @@
+VIDEO 1:
+[Introduction]
+Hello and welcome to the video demonstration of our library system. Today, I will show you how we fulfill the different requirements of the system.
+
+[Functional Requirement 1: Adding, modifying, and deleting items]
+First and foremost, we have the capability to add, modify, and delete items in the system. By logging in as a librarian, we can easily manage the objects in the library.
+
+[Show the user interface and demonstrate adding, modifying, and deleting items]
+
+VIDEO 2:
+[Functional Requirement 2: Search function for objects]
+To facilitate our users, we have implemented a search function. Users can search for items based on title, author/director, ISBN, or subject/genre.
+
+[Show the search function and demonstrate how users can search for items using different criteria]
+
+[Functional Requirement 3: Handling borrowing and returning]
+Now, let's move on to the handling of borrowing and returning items. Users need to log in to borrow or reserve items. When a loan is made, a receipt will be printed with all the relevant information.
+
+[Show the login process, borrowing and returning items, and printing the receipt]
+
+VIDEO 3:
+[Functional Requirement 4: List of overdue items]
+To keep track of items that have not been returned on time, we have a list that displays these items. It helps us remind borrowers to return the items promptly.
+
+[Show the list of overdue items]
+
+[Functional Requirement 5: Managing existing objects]
+Finally, we have the ability for librarians to manage existing objects. This includes handling lost items or correcting data about an object.
+
+[Show the management of existing objects and demonstrate how data can be corrected]
+
+VIDEO 4:
+[General Requirement 1: Use of a relational database]
+All data in the system is stored in a relational database for efficient management and storage of information.
+
+[Show the database and how data is stored and retrieved]
+
+[General Requirement 2: Use of inheritance and polymorphism]
+To make the system more flexible and extensible, we have utilized inheritance and polymorphism in appropriate parts of the system.
+
+[Show examples of inheritance and polymorphism in the code]
+
+[General Requirement 3: Exception handling]
+We have also implemented exception handling to provide meaningful feedback to the user in case of erroneous operations or situations.
+
+[Show examples of exception handling and how error messages are displayed to the user]
+
+[General Requirement 4: Graphical user interface] THIS HAS BEEN SHOWED ALREADY
+Lastly, we have developed a user-friendly graphical user interface to interact with the system in an intuitive manner.
+
+[Show the graphical user interface and demonstrate how users can interact with the system]
+
+[Conclusion]
+That concludes the overview demonstration of how we fulfill the requirements of our library system. Thank you for watching the video, and please feel free to reach out if you have any questions or feedback.

@@ -548,21 +548,28 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //Validate input
             validateUserObject(updatedUser);
 
-            //TODO-PRIO VALIDATE NEW USERNAME AND/OR PASSWORD NOT TAKEN
-
-            //TODO-PRIO VALIDATE NOT DELETED
+            //Validate email and username not taken
+            validateUpdatableUser(updatedUser);
 
             //Retrieve old username
-            String oldUsername = getUserByID(updatedUser.getUserID()).getUsername();
+            User oldUser = getUserByID(updatedUser.getUserID());
+            String oldUsername = oldUser.getUsername();
+            String oldEmail = oldUser.getEmail();
 
             //If username has been changed...
             if (!updatedUser.getUsername().equals(oldUsername))
             {
-                //... and is taken. Throws UsernameTakenException
-                checkUsernameTaken(updatedUser.getUsername());
-                //... and is not taken: remove old username from and add new username to storedUsernames
+                //... remove old username from and add new username to storedUsernames
                 storedUsernames.remove(oldUsername);
-                storedUsernames.add(updatedUser.getUsername()); //TODO-PRIO MOVE
+                storedUsernames.add(updatedUser.getUsername());
+            }
+
+            //If email has been changed
+            if (!updatedUser.getEmail().equals(oldEmail))
+            {
+                //... remove old email from and add new email to registeredEmails
+                registeredEmails.remove(oldEmail);
+                registeredEmails.add(updatedUser.getEmail());
             }
 
             //Prepare a SQL command to update a updatedUser's data by userID.
@@ -583,11 +590,29 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
         }
-        catch (InvalidIDException | InvalidNameException | EntityNotFoundException e)
+        catch (InvalidIDException | InvalidNameException | EntityNotFoundException | InvalidEmailException e)
         {
             throw new UpdateException("Failed to update user in database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
+    }
+
+    private static void validateUpdatableUser(User updatedUser)
+    throws InvalidIDException, InvalidNameException, InvalidEmailException
+    {
+        User oldUser = getUserByID(updatedUser.getUserID());
+
+        //If username is different
+        if (!updatedUser.getUsername().equals(oldUser.getUsername()))
+            if (storedUsernames.contains(updatedUser.getUsername()))
+                throw new InvalidNameException("Cannot update username; username " + updatedUser.getUsername() +
+                        " already taken.");
+
+        //If email is different
+        if (!updatedUser.getEmail().equals(oldUser.getEmail()))
+            if (registeredEmails.contains(updatedUser.getEmail()))
+                throw new InvalidEmailException("Cannot update email; email " + updatedUser.getEmail() +
+                        " already taken.");
     }
 
     //VALIDATION STUFF -----------------------------------------------------------------------------------------------

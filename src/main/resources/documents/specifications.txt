@@ -1,0 +1,25 @@
+Funktionalitetskrav:
+
+Möjlighet att lägga till, ändra och ta bort objekt i systemet.
+Sökfunktion för att söka efter objekt baserat på titel, författare/regissör, ISBN eller ämnesord/filmgenre.
+Hantering av utlåning och återlämning av objekt, inklusive inloggning och utskrift av kvitto.
+En lista som visar objekt som inte har återlämnats i tid.
+Möjlighet för bibliotekarien att hantera redan existerande objekt och korrigera data om objektet.
+
+
+Generella krav:
+
+Användning av en relationsdatabas för att lagra data.
+Användning av arv och polymorfism i lämpliga delar av systemet.
+Hantering av undantag (exceptions) på ett sätt som ger meningsfull återkoppling till användaren.
+Tillhandahållande av grafiska användargränssnitt för att interagera med systemet.
+
+
+Inlämningskrav:
+
+Rapport som beskriver utvecklingsprocessen, inklusive klassdiagram, datamodell med attribut och samband, och motivering av eventuella avgränsningar eller utökningar från kravspecifikationen.
+En fungerande prototyp av systemet.
+En inspelad demonstration på cirka 10 minuter som visar hur en utlåning går till, inklusive sökning efter objekt.
+Inlämning av rapporten i PDF-format via Canvas.
+All källkod, inklusive en "dump" av databasen (data och DDL), ska lämnas in som en separat ZIP-fil.
+Inspelad demonstration ska vara i MP4-format.

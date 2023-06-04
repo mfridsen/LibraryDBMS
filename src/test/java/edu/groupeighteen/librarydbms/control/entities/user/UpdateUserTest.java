@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.CreationException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.UserValidationException;
 import org.junit.jupiter.api.*;
 
 /**
@@ -36,6 +38,10 @@ public class UpdateUserTest extends BaseUserHandlerTest
     private static final String takenEmail = "takenEmail@example.com";
 
     private static final User.UserType userType = User.UserType.PATRON;
+    private static final User.UserType changedUserType = User.UserType.STUDENT;
+
+    private static final int changedAllowedRentals = 7;
+    private static final int changedCurrentRentals = 2;
 
     private static User baseUser;
 
@@ -59,7 +65,7 @@ public class UpdateUserTest extends BaseUserHandlerTest
     @Override
     protected void reset()
     {
-        super.reset();
+        super.reset(); //Resets UserHandler lists
         resetUsersTable();
 
         try //Reset user
@@ -81,7 +87,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n1: Testing updateUser method with new valid and unique username...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setUsername(changedUsername);
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+            assertNotNull(updatedUser);
+            assertEquals(changedUsername, updatedUser.getUsername());
+        }
+        catch (InvalidNameException | NullEntityException | UpdateException | InvalidIDException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -95,7 +113,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n2: Testing updateUser method with new password...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setPassword(changedPassword);
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+            assertNotNull(updatedUser);
+            assertEquals(changedPassword, updatedUser.getPassword());
+        }
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidPasswordException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -109,7 +139,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n3: Testing updateUser method with new valid and unique email...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setEmail(changedEmail);
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+            assertNotNull(updatedUser);
+            assertEquals(changedEmail, updatedUser.getEmail());
+        }
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidEmailException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -123,7 +165,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n4: Testing updateUser method with new user type...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setUserType(changedUserType);
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+            assertNotNull(updatedUser);
+            assertEquals(changedUserType, updatedUser.getUserType());
+        }
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidTypeException | InvalidUserRentalsException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -137,7 +191,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n5: Testing updateUser method with updated allowed rentals...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setAllowedRentals(changedAllowedRentals);
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+            assertNotNull(updatedUser);
+            assertEquals(changedAllowedRentals, updatedUser.getAllowedRentals());
+        }
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidUserRentalsException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -151,7 +217,19 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n6: Testing updateUser method with updated current rentals...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setCurrentRentals(changedCurrentRentals);
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+            assertNotNull(updatedUser);
+            assertEquals(changedCurrentRentals, updatedUser.getCurrentRentals());
+        }
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidUserRentalsException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -165,7 +243,20 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n7: Testing updateUser method with updated late fee and allowed to rent...");
 
-        // TODO: Implement test logic.
+        try
+        {
+            baseUser.setLateFee(1);
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+            assertNotNull(updatedUser);
+            assertEquals(1, updatedUser.getLateFee());
+            assertFalse(updatedUser.isAllowedToRent());
+        }
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidLateFeeException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -179,14 +270,47 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n8: Testing updateUser method with all fields updated...");
 
-        // TODO: Implement test logic.
-        // (Username Changed, Not Taken "validUsername" -> "changedUsername")
-        // (Password Changed           "validPassword" -> "changedPassword")
-        // (Email Changed Not Taken    "validEmail@example.com" -> "changedEmail@example.com")
-        // (User Type Changed          PATRON -> STUDENT)
-        // (Allowed Rentals Changed    3 -> 5)
-        // (Current Rentals Changed    0 -> 5)
         // (Allowed To Rent Changed    true -> false)
+
+        try
+        {
+            // (Username Changed, Not Taken "validUsername" -> "changedUsername")
+            baseUser.setUsername(changedUsername);
+            // (Password Changed           "validPassword" -> "changedPassword")
+            baseUser.setPassword(changedPassword);
+            // (Email Changed Not Taken    "validEmail@example.com" -> "changedEmail@example.com")
+            baseUser.setEmail(changedEmail);
+            // (User Type Changed          PATRON -> STUDENT)
+            baseUser.setUserType(changedUserType);
+            // (Allowed Rentals Changed    3 -> 7)
+            baseUser.setAllowedRentals(changedAllowedRentals);
+            // (Current Rentals Changed    0 -> 7)
+            baseUser.setCurrentRentals(7);
+            // Late fee 0 -> 1
+            baseUser.setLateFee(1);
+
+            //Update
+            UserHandler.updateUser(baseUser);
+            User updatedUser = UserHandler.getUserByID(baseUser.getUserID());
+
+            //Assert
+            assertNotNull(updatedUser);
+            assertEquals(changedUsername, updatedUser.getUsername());
+            assertEquals(changedPassword, updatedUser.getPassword());
+            assertEquals(changedEmail, updatedUser.getEmail());
+            assertEquals(changedUserType, updatedUser.getUserType());
+            assertEquals(changedAllowedRentals, updatedUser.getAllowedRentals());
+            assertEquals(7, updatedUser.getCurrentRentals());
+            assertEquals(1, updatedUser.getLateFee());
+            assertFalse(updatedUser.isAllowedToRent());
+        }
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidLateFeeException |
+                InvalidNameException | InvalidPasswordException | InvalidEmailException | InvalidTypeException |
+                InvalidUserRentalsException e)
+        {
+            e.printStackTrace();
+            fail("Valid operations should not throw exceptions.");
+        }
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -200,7 +324,7 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n9: Testing updateUser method with null user...");
 
-        // TODO: Implement test logic.
+        assertThrows(NullEntityException.class, () -> UserHandler.updateUser(null));
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -214,7 +338,8 @@ public class UpdateUserTest extends BaseUserHandlerTest
     {
         System.out.println("\n10: Testing updateUser method with valid user that has been soft deleted...");
 
-        // TODO: Implement test logic.
+        Exception e = assertThrows(NullEntityException.class, () -> UserHandler.updateUser(null));
+        assertTrue(e.getCause() instanceof NullEntityException);
 
         System.out.println("\nTEST FINISHED.");
     }
