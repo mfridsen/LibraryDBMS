@@ -404,6 +404,8 @@ public class RentalHandlerTestSuite extends BaseHandlerTest
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+        } catch (UpdateException e) {
+            throw new RuntimeException(e);
         }
 
         System.out.println("\nTEST FINISHED.");
@@ -448,6 +450,8 @@ public class RentalHandlerTestSuite extends BaseHandlerTest
         {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
+        } catch (UpdateException e) {
+            throw new RuntimeException(e);
         }
 
         System.out.println("\nTEST FINISHED.");

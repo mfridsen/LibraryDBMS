@@ -131,14 +131,13 @@ public class AuthorHandler {
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-    public static void deleteAuthor(Author authorToDelete) throws DeleteException, RecoveryException {
+    public static void deleteAuthor(Author authorToDelete) throws DeletionException {
         {
             //Validate input
             try {
                 validateAuthor(authorToDelete);
-            } catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException |
-                     edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e) {
-                throw new DeleteException("Author Delete failed: " + e.getMessage(), e);
+            } catch (EntityNotFoundException | InvalidIDException | NullEntityException e) {
+                throw new DeletionException("Author Delete failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
             }
 
             //Set deleted to true (doesn't need to be set before calling this method)
@@ -179,7 +178,7 @@ public class AuthorHandler {
         }
 
 
-    public static void hardDeleteAuthor(Author authorToDelete) throws NullEntityException, EntityNotFoundException, DeleteException {
+    public static void hardDeleteAuthor(Author authorToDelete) throws  DeletionException {
         {
             //Validate input
             try
@@ -188,7 +187,7 @@ public class AuthorHandler {
             }
             catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
             {
-                throw new DeleteException("Author Delete failed: " + e.getMessage(), e);
+                throw new DeletionException("Author Delete failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
             }
 
             //Prepare a SQL query to update the authorToDelete details
