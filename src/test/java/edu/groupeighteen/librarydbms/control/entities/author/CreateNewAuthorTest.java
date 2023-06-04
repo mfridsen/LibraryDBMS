@@ -9,5 +9,10 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @date 2023-06-03
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CreateNewAuthorTest {
+public class CreateNewAuthorTest{
+    // variables to be used in the tests
+private static final String validAuthorFirstName = "validAuthorfirstname";
+private static final String validAuthorLastName = "validAuthorlastname";
+
+
 }
