@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
- * @author Mattias Fridsén
+ * @author Mattias Fridsén, Johan Lund, Jesper Truedsson
  * @project LibraryDBMS
  * @package edu.groupeighteen.librarydbms.model.entities
  * @contact matfir-1@student.ltu.se
