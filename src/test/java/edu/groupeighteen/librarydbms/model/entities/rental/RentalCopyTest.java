@@ -7,6 +7,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author Mattias Fridsén
@@ -21,15 +22,18 @@ import java.time.LocalDateTime;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalCopyTest
 {
-    @BeforeAll
-    static void setUp()
-    {
-    }
-
-    @AfterAll
-    static void tearDown()
-    {
-    }
+    //Valid inputs
+    private static final int rentalID = 1;
+    private static final int userID = 1;
+    private static final int itemID = 1;
+    private static final LocalDateTime rentalDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    private static final LocalDateTime rentalDueDate = rentalDate.plusDays(5).withHour(20).withMinute(0).withSecond(0);
+    private static final String username = "TestUser";
+    private static final String itemTitle = "TestItem";
+    private static final String itemType = "TestType";
+    private static final LocalDateTime rentalReturnDate = rentalDate.plusDays(4);
+    private static final double lateFee = 0.0;
+    private static final String receipt = "TestReceipt";
 
     /**
      *
@@ -51,14 +55,15 @@ public class RentalCopyTest
      * and finally verifying that all properties in the copied Rental are identical to the original.
      */
     @Test
-    @Order(5)
+    @Order(1)
     void testRentalConstructor_CopyRental() {
-        System.out.println("\n5: Testing Rental copy constructor...");
+        System.out.println("\n1: Testing Rental copy constructor...");
 
         try {
             //Create a rental object
-            LocalDateTime now = LocalDateTime.now();
-            Rental originalRental = new Rental(1, 2, 3, now, "username", "itemTitle", now.plusDays(7), now.plusDays(5), 0.0, false);
+            //Construct with valid inputs
+            Rental originalRental = new Rental(rentalID, userID, itemID, rentalDate, rentalDueDate, username, itemTitle,
+                    itemType, rentalReturnDate, lateFee, receipt, false);
 
             //Use the copy constructor
             Rental copyRental = new Rental(originalRental);

@@ -1,18 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities.rental;
 
-import edu.groupeighteen.librarydbms.model.entities.Rental;
-import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
-import org.junit.jupiter.api.*;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
