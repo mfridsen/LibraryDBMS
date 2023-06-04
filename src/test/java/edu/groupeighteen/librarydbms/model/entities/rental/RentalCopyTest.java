@@ -36,19 +36,6 @@ public class RentalCopyTest
     private static final String receipt = "TestReceipt";
 
     /**
-     *
-     */
-    @Test
-    @Order(1)
-    void testRentalCopy()
-    {
-        System.out.println("\n1: Testing RentalCopy...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write your code here
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    /**
      * This test method verifies the correct functionality of the copy constructor of the Rental class.
      * The copy constructor should create a new Rental instance with the same property values as the original.
      * We test it by creating a new Rental object, then using the copy constructor to make a copy,
@@ -68,16 +55,19 @@ public class RentalCopyTest
             //Use the copy constructor
             Rental copyRental = new Rental(originalRental);
 
-            //Check that all fields are identical
-            assertEquals(originalRental.getRentalID(), copyRental.getRentalID());
-            assertEquals(originalRental.getUserID(), copyRental.getUserID());
-            assertEquals(originalRental.getItemID(), copyRental.getItemID());
-            assertEquals(originalRental.getRentalDate(), copyRental.getRentalDate());
-            assertEquals(originalRental.getUsername(), copyRental.getUsername());
-            assertEquals(originalRental.getItemTitle(), copyRental.getItemTitle());
-            assertEquals(originalRental.getRentalDueDate(), copyRental.getRentalDueDate());
-            assertEquals(originalRental.getRentalReturnDate(), copyRental.getRentalReturnDate());
-            assertEquals(originalRental.getLateFee(), copyRental.getLateFee());
+            //Test all fields
+            assertEquals(rentalID, copyRental.getRentalID(), "RentalID not set correctly.");
+            assertEquals(userID, copyRental.getUserID(), "UserID not set correctly.");
+            assertEquals(itemID, copyRental.getItemID(), "ItemID not set correctly.");
+            assertEquals(rentalDate, copyRental.getRentalDate(), "RentalDate not set correctly.");
+            assertEquals(rentalDueDate, copyRental.getRentalDueDate(), "RentalDueDate not set correctly.");
+            assertEquals(username, copyRental.getUsername(), "Username not set correctly.");
+            assertEquals(itemTitle, copyRental.getItemTitle(), "ItemTitle not set correctly.");
+            assertEquals(itemType, copyRental.getItemType(), "ItemType not set correctly.");
+            assertEquals(rentalReturnDate, copyRental.getRentalReturnDate(), "RentalReturnDate should be null.");
+            assertEquals(lateFee, copyRental.getLateFee(), "LateFee not set correctly.");
+            assertEquals(receipt, copyRental.getReceipt(), "Receipt not set correctly.");
+            assertFalse(copyRental.isDeleted());
         } catch (ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
