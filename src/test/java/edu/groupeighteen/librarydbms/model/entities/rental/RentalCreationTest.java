@@ -46,12 +46,14 @@ public class RentalCreationTest
 
             LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
             assertEquals(now, rental.getRentalDate(), "Rental date should be approximately the current time.");
+            assertNull(rental.getRentalDueDate(), "Rental due date should be null for a newly created rental.");
 
             assertNull(rental.getUsername(), "Username should be null for a newly created rental.");
             assertNull(rental.getItemTitle(), "Item title should be null for a newly created rental.");
-            assertNull(rental.getRentalDueDate(), "Rental due date should be null for a newly created rental.");
+            assertNull(rental.getItemType(), "Item type should be null for a newly created rental.");
             assertNull(rental.getRentalReturnDate(), "Rental return date should be null for a newly created rental.");
             assertEquals(0.0, rental.getLateFee(), "Late fee should be 0.0 for a newly created rental.");
+            assertNull(rental.getReceipt(), "Receipt should be null for a newly crated rental.");
         } catch (ConstructionException e) {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
