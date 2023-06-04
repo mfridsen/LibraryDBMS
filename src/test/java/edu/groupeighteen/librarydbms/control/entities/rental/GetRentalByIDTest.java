@@ -1,18 +1,19 @@
 package edu.groupeighteen.librarydbms.control.entities.rental;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -27,6 +28,33 @@ import java.time.temporal.ChronoUnit;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GetRentalByIDTest extends BaseRentalHandlerTest
 {
+    private static final int[] validUserIDs = new int[]{3, 4, 5, 6, 8, 10};
+
+    @BeforeEach
+    void setupRentals()
+    {
+        System.out.println("\nSetting up test rentals...");
+
+        try
+        {
+            for (int i = 0; i < validUserIDs.length; i++)
+            {
+                Rental rental = RentalHandler.createNewRental(validUserIDs[i], i + 10);
+                assertNotNull(rental);
+                System.out.println("Rental ID: " + rental.getRentalID() +
+                        ", User ID: " + rental.getUserID() +
+                        ", Item ID: " + rental.getItemID());
+            }
+        }
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+        {
+            e.printStackTrace();
+            fail("Exception occurred during setupRentals: " + e.getMessage());
+        }
+
+        System.out.println("\nTest rentals setup finished.");
+    }
+
     /**
      * This is a test for the method 'getRentalByID' in the class 'RentalHandler'.
      * <p>
@@ -37,29 +65,16 @@ public class GetRentalByIDTest extends BaseRentalHandlerTest
      * rentals with IDs 0 and -1, which should trigger the 'InvalidIDException' as these IDs are not valid.
      */
     @Test
-    @Order(14)
+    @Order(1)
     void testGetRentalByID_InvalidRentalID()
     {
-        System.out.println("\n14: Testing getRentalByID method with an invalid rentalID...");
+        System.out.println("\n1: Testing getRentalByID method with an invalid rentalID...");
 
-        try
-        {
-            // Create 5 rentals, should get IDs 1-5
-            for (int i = 1; i <= 5; i++)
-                RentalHandler.createNewRental(i, i);
+        //These should result in exceptions
+        assertThrows(InvalidIDException.class, () -> RentalHandler.getRentalByID(0));
+        assertThrows(InvalidIDException.class, () -> RentalHandler.getRentalByID(-1));
 
-            //These should result in exceptions
-            assertThrows(InvalidIDException.class, () -> RentalHandler.getRentalByID(0));
-            assertThrows(InvalidIDException.class, () -> RentalHandler.getRentalByID(-1));
-
-        }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
-        {
-            fail("Exception occurred during test: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        System.out.println("\nTEST FINISHED.");
+        System.out.println("\nTest finished.");
     }
 
     /**
@@ -72,30 +87,25 @@ public class GetRentalByIDTest extends BaseRentalHandlerTest
      * fetch rentals with IDs 6 to 10, which should return null as no rentals with these IDs exist.
      */
     @Test
-    @Order(15)
+    @Order(2)
     void testGetRentalByID_NonExistentRentalID()
     {
-        System.out.println("\n15: Testing getRentalByID method with non-existent rentalID...");
+        System.out.println("\n2: Testing getRentalByID method with non-existent rentalID...");
 
         try
         {
-            // Create 5 rentals, should get IDs 1-5
-            for (int i = 1; i <= 5; i++)
-                RentalHandler.createNewRental(i, i);
-
             // These should return null as no rental with these IDs exist
-            for (int i = 6; i <= 10; i++)
+            for (int i = validUserIDs.length + 1; i <= validUserIDs.length + 10; i++)
                 assertNull(RentalHandler.getRentalByID(i), "Expected null for non-existent rental ID " + i);
 
         }
-        catch (EntityNotFoundException | RentalNotAllowedException
-                | InvalidIDException e)
+        catch (InvalidIDException e)
         {
-            fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
+            fail("Exception occurred during test: " + e.getMessage());
         }
 
-        System.out.println("\nTEST FINISHED.");
+        System.out.println("\nTest finished.");
     }
 
     /**
@@ -111,42 +121,56 @@ public class GetRentalByIDTest extends BaseRentalHandlerTest
      * match the expected values.
      */
     @Test
-    @Order(16)
+    @Order(3)
     void testGetRentalByID_ValidRentalID()
     {
-        System.out.println("\n16: Testing getRentalByID method with valid rentalID...");
+        System.out.println("\n3: Testing getRentalByID method with valid rentalID...");
 
-        try
+        for (int i = 0; i < 5; i++)
         {
-            for (int i = 0; i < 5; i++)
+            try
             {
                 // Create rental
-                RentalHandler.createNewRental(i + 1, i + 1);
                 Rental rental = RentalHandler.getRentalByID(i + 1);
 
                 // Verify non-nullness
                 assertNotNull(rental, "Expected Rental object for rental ID " + i + 1);
 
+                //Retrieve allowedRentalDays
+                Item.ItemType type = Item.ItemType.valueOf(rental.getItemType());
+                int allowedRentalDays = Item.getDefaultAllowedRentalDays(type);
+
+                //Create expected dueDate
+                LocalDateTime expectedDueDate =rental.getRentalDate().plusDays(allowedRentalDays).
+                        withHour(20).withMinute(0).withSecond(0).
+                        truncatedTo(ChronoUnit.SECONDS);
+
+                //Retrieve item title
+                Item item = ItemHandler.getItemByID(rental.getItemID());
+                assertNotNull(item);
+                String expectedTitle = item.getTitle();
+
                 // Verify fields
                 assertEquals(i + 1, rental.getRentalID());
-                assertEquals(i + 1, rental.getUserID());
-                assertEquals(i + 1, rental.getItemID());
+                assertEquals(validUserIDs[i], rental.getUserID());
+                assertEquals(i + 10, rental.getItemID());
                 assertNotNull(rental.getRentalDate());
-                assertEquals("user" + (i + 1), rental.getUsername());
-                assertEquals("item" + (i + 1), rental.getItemTitle());
-                assertEquals(rental.getRentalDate().plusDays(14).truncatedTo(ChronoUnit.SECONDS).withHour(20)
-                        .withMinute(0).withSecond(0), rental.getRentalDueDate());
+                assertEquals("user" + validUserIDs[i], rental.getUsername());
+
+
+                assertEquals(expectedTitle, rental.getItemTitle());
+                assertEquals(expectedDueDate, rental.getRentalDueDate());
                 assertNull(rental.getRentalReturnDate());
+
                 assertEquals(0.0, rental.getLateFee(), 0.001);
             }
-        }
-        catch (EntityNotFoundException | RentalNotAllowedException
-                | InvalidIDException e)
-        {
-            fail("Exception occurred during test: " + e.getMessage());
-            e.printStackTrace();
+            catch (InvalidIDException | RetrievalException e)
+            {
+                e.printStackTrace();
+                fail("Exception occurred during test: " + e.getMessage());
+            }
         }
 
-        System.out.println("\nTEST FINISHED.");
+        System.out.println("\nTest finished.");
     }
 }

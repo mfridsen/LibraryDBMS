@@ -48,7 +48,7 @@ public abstract class BaseRentalHandlerTest
         UserHandler.setup(); //Fills list with users
         DatabaseHandler.setVerbose(false); //Get that thing to shut up
 
-        System.out.println("\nTEST ENVIRONMENT SETUP FINISHED.");
+        System.out.println("\nTest environment setup finished.");
     }
 
 
@@ -74,13 +74,14 @@ public abstract class BaseRentalHandlerTest
             e.printStackTrace();
         }
 
-        System.out.println("\nCONNECTION AND TABLES SETUP FINISHED.");
+        System.out.println("\nConnection and tables setup finished.");
     }
 
     @AfterEach
     protected void resetItemsTable()
     {
         DatabaseHandler.executeCommand("DELETE FROM rentals");
+        DatabaseHandler.executeCommand("ALTER TABLE rentals AUTO_INCREMENT = 1;");
         DatabaseHandler.executeCommand("DELETE FROM literature");
         DatabaseHandler.executeCommand("DELETE FROM films");
         DatabaseHandler.executeCommand("DELETE FROM items");
@@ -96,7 +97,7 @@ public abstract class BaseRentalHandlerTest
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         DatabaseHandler.setVerbose(true);
 
-        System.out.println("\nTEST DATA SETUP FINISHED.");
+        System.out.println("\nTest data setup finished.");
     }
 
     /**

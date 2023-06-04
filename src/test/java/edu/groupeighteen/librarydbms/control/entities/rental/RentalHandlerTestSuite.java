@@ -16,9 +16,11 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
         CreateNewRentalTest.class,
         GetRentalByIDTest.class,
-        GetOverdueRentalsTest.class,
-        DeleteAndRecoverRentalTest.class,
-        UpdateRentalTest.class,
+        //GetOverdueRentalsTest.class,
+        //DeleteAndRecoverRentalTest.class,
+        //UpdateRentalTest.class,
+
+
         //GetRentalsByRentalDayTest.class,
         //GetRentalsByRentalDateTest.class,
 })

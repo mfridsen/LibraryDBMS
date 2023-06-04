@@ -9,7 +9,7 @@ void test<MethodName>_<TestCase>()
 
     //TODO test implementation here
 
-    System.out.println("\nTEST FINISHED.");
+    System.out.println("\nTest finished.");
 }
 
 Example:
@@ -29,7 +29,7 @@ void testSetup_EmptyDatabase()
     // Verify that the storedTitles and availableTitles maps are empty
     assertEquals(0, UserHandler.getStoredUsernames().size(), "storedUsernames list should be empty after setup with an empty database");
 
-    System.out.println("\nTEST FINISHED.");
+    System.out.println("\nTest finished.");
 }
 
 Setup method format:
@@ -44,7 +44,7 @@ static void setUp()
 
     <SETUP WORK HERE>
 
-    System.out.println("\nSETUP FINISHED.");
+    System.out.println("\nSetup finished.");
 }
 
 Example:
@@ -62,10 +62,10 @@ Example:
         catch (ConstructionException e)
         {
             e.printStackTrace();
-            fail("Valid operations should not throw exceptions.");
+            fail("Exception occurred during test: " + e.getMessage());
         }
 
-        System.out.println("\nSETUP FINISHED.");
+        System.out.println("\nSetup finished.");
     }
 
 If exceptions can be thrown, either catch or assert them depending on the test case. No need to assert messages
@@ -94,7 +94,7 @@ Example 1:
             fail("Valid operations should not throw exceptions.");
         }
 
-        System.out.println("\nTEST FINISHED.");
+        System.out.println("\nTest finished.");
     }
 
 Example 2, use lambda expressions and for gods sake use .repeat to generate too-long strings:
@@ -110,7 +110,7 @@ Example 2, use lambda expressions and for gods sake use .repeat to generate too-
         assertThrows(ConstructionException.class, () ->
                 new User("username", "password", User.UserType.PATRON, longEmail));
 
-        System.out.println("\nTEST FINISHED.");
+        System.out.println("\nTest finished.");
     }
 
 For Model classes, create one test class per constructor and then one for the setters.
