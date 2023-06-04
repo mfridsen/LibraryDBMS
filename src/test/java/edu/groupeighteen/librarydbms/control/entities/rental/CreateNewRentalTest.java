@@ -31,7 +31,7 @@ import java.time.temporal.ChronoUnit;
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CreateNewRentalTestTest extends BaseRentalHandlerTest
+public class CreateNewRentalTest extends BaseRentalHandlerTest
 {
 
     /**

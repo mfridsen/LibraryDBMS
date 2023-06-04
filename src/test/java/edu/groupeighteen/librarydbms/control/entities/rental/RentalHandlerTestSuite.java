@@ -23,11 +23,13 @@ import java.sql.SQLException;
  */
 @Suite
 @SelectClasses({
-        CreateNewRentalTestTest.class,
+        CreateNewRentalTest.class,
         GetRentalByIDTest.class,
         GetOverdueRentalsTest.class,
         DeleteAndRecoverRentalTest.class,
         UpdateRentalTest.class,
+        //GetRentalsByRentalDayTest.class,
+        //GetRentalsByRentalDateTest.class,
 })
 public class RentalHandlerTestSuite
 {
