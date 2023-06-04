@@ -377,6 +377,30 @@ public class Rental extends Entity
     }
 
     /**
+     * Returns the item type.
+     *
+     * @return the item type
+     */
+    public String getItemType()
+    {
+        return itemType;
+    }
+
+    /**
+     * Sets the item type.
+     *
+     * @param itemType the item type to be set
+     * @throws InvalidTypeException if the item type is null or empty
+     */
+    public void setItemType(String itemType)
+    throws InvalidTypeException
+    {
+        if (itemType == null || itemType.isEmpty())
+            throw new InvalidTypeException("ItemType cannot be null or empty.");
+        this.itemType = itemType;
+    }
+
+    /**
      * Returns the rental return date.
      *
      * @return the rental return date
@@ -425,30 +449,6 @@ public class Rental extends Entity
         if (lateFee < 0.0)
             throw new InvalidLateFeeException("Late fee cannot be negative. Received: " + lateFee);
         this.lateFee = lateFee;
-    }
-
-    /**
-     * Returns the item type.
-     *
-     * @return the item type
-     */
-    public String getItemType()
-    {
-        return itemType;
-    }
-
-    /**
-     * Sets the item type.
-     *
-     * @param itemType the item type to be set
-     * @throws InvalidTypeException if the item type is null or empty
-     */
-    public void setItemType(String itemType)
-    throws InvalidTypeException
-    {
-        if (itemType == null || itemType.isEmpty())
-            throw new InvalidTypeException("ItemType cannot be null or empty.");
-        this.itemType = itemType;
     }
 
     /**

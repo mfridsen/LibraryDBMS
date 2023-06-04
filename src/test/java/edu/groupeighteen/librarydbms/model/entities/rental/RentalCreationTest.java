@@ -22,29 +22,6 @@ import java.time.temporal.ChronoUnit;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RentalCreationTest
 {
-    @BeforeAll
-    static void setUp()
-    {
-    }
-
-    @AfterAll
-    static void tearDown()
-    {
-    }
-
-    /**
-     *
-     */
-    @Test
-    @Order(1)
-    void testRentalCreation()
-    {
-        System.out.println("\n1: Testing RentalCreation...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write your code here
-        System.out.println("\nTEST FINISHED.");
-    }
-
     /**
      * This test case validates the behavior of the Rental constructor for creation with valid input.
      * It checks whether all fields of the Rental object are correctly initialized based on the input parameters.
