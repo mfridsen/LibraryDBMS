@@ -505,11 +505,11 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
     {
         try
         {
-            //Validate the input. Throws NullEntityException
+            //Validate the input. Throws NullEntityException and EntityNotFoundException
             validateDeletableUserObject(userToDelete);
 
-            //Validate that userToDelete has no current rentals and no late fee
-            validateAllowedToDeleteUser(userToDelete);
+            //Validate that userToDelete has no current rentals and no late fee. Throws InvalidUserRentalsException
+            validateAllowedToDeleteUser(userToDelete); // and InvalidLateFeeException
 
             //Retrieve the unique username and email
             String username = userToDelete.getUsername();
@@ -601,7 +601,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
      * @return true if successful, otherwise false
      */
     public static boolean login(String username, String password) //TODO-test //TODO-deleted
-    throws InvalidNameException, EntityNotFoundException, InvalidPasswordException
+    throws UserValidationException
     {
         try
         {
@@ -612,7 +612,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
 
             //First check list
             if (!storedUsernames.contains(username))
-                throw new EntityNotFoundException("Login failed: User " + username + " does not exist.");
+                throw new EntityNotFoundException("User " + username + " does not exist.");
 
             String query = "SELECT password FROM users WHERE username = ?";
             String[] params = {username};
@@ -636,6 +636,10 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             ExceptionHandler.HandleFatalException("Login failed due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
+        catch (EntityNotFoundException | InvalidNameException | InvalidPasswordException e)
+        {
+            throw new UserValidationException("Login failed: " + e.getMessage(), e);
+        }
 
         //Incorrect password
         return false;
@@ -652,14 +656,14 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
      * @return boolean Returns true if the provided password matches the User's stored password, false otherwise.
      */
     public static boolean validate(User user, String password) //TODO-test //TODO-deleted
-    throws UserValidationException, InvalidPasswordException, NullEntityException
+    throws UserValidationException
     {
         try
         {
             validateUserObject(user);
             checkEmptyPassword(password);
         }
-        catch (EntityNotFoundException | InvalidIDException e)
+        catch (EntityNotFoundException | InvalidIDException | NullEntityException | InvalidPasswordException e)
         {
             throw new UserValidationException("Validation failed due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);

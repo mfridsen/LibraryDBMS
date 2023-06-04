@@ -43,7 +43,7 @@ public class ItemDeleteGUI extends GUI {
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     }
-                } catch (InvalidPasswordException | DeletionException | UserValidationException | NullEntityException nullEntityException) {
+                } catch (DeletionException | UserValidationException nullEntityException) {
                     nullEntityException.printStackTrace();
                 }
             }

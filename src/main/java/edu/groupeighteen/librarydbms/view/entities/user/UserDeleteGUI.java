@@ -43,7 +43,7 @@ public class UserDeleteGUI extends GUI {
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     }
-                } catch (UserValidationException | InvalidPasswordException | NullEntityException userNullException) {
+                } catch (UserValidationException userNullException) {
                     userNullException.printStackTrace();
                 }
             }

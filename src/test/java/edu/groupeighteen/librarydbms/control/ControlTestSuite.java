@@ -3,7 +3,6 @@ package edu.groupeighteen.librarydbms.control;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandlerMetaDataTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.item.ItemHandlerTestSuite;
-import edu.groupeighteen.librarydbms.control.entities.rental.RentalHandlerTestSuite;
 import edu.groupeighteen.librarydbms.control.entities.user.UserHandlerTestSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;

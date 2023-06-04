@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
+import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserValidationException;
 import org.junit.jupiter.api.*;
 
@@ -15,223 +17,374 @@ import org.junit.jupiter.api.*;
  * @date 6/2/2023
  * @contact matfir-1@student.ltu.se
  * <p>
- * Unit Test for the LoginAndValidation class.
+ * Unit Test for the login and validate methods.
  * <p>
  * Brought to you by copious amounts of nicotine.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginAndValidationTest extends BaseUserHandlerTest
 {
+    //A nice batch of user objects to use over and over
+    private static User admin;
+    private static User staff;
+    private static User patron;
+    private static User student;
+    private static User teacher;
+    private static User researcher;
+
+    private static User nonExistingUser; //CONSTRUCTOR NOT createNewUser
+
+    private static User[] users;
+
+    private static final String invalidPassword = "invalidPassword";
+
     /**
-     *
+     * Let's setup the needed users ahead of time.
+     */
+    @BeforeAll
+    protected static void customSetup()
+    {
+        initializeUsers();
+    }
+
+    /**
+     * And now we can reset the table and the users back to original states after tests.
+     */
+    @Override
+    @AfterEach
+    protected void reset()
+    {
+        super.reset();
+        resetUsersTable();
+        initializeUsers();
+    }
+
+    /**
+     * Initializes the batch and prepares them for testing. Further preparation might be needed in specific tests.
+     */
+    protected static void initializeUsers()
+    {
+        System.out.println("\nInitializing users...");
+
+        try
+        {
+            admin = UserHandler.createNewUser("admin", "adminPass",
+                    "admin@mail.com", User.UserType.ADMIN);
+            staff = UserHandler.createNewUser("staff", "staffPass",
+                    "staff@mail.com", User.UserType.STAFF);
+            patron = UserHandler.createNewUser("patron", "patronPass",
+                    "patron@mail.com", User.UserType.PATRON);
+            student = UserHandler.createNewUser("student", "studentPass",
+                    "student@mail.com", User.UserType.STUDENT);
+            teacher = UserHandler.createNewUser("teacher", "teacherPass",
+                    "teacher@mail.com", User.UserType.TEACHER);
+            researcher = UserHandler.createNewUser("researcher", "researcherPass",
+                    "researcher@mail.com", User.UserType.RESEARCHER);
+
+            users = new User[]{admin, staff, patron, student, teacher, researcher};
+
+            nonExistingUser = new User("nonExistingUser", "nonExistingPassword",
+                    "nonExisting@mail.com", User.UserType.TEACHER); //CONSTRUCTOR NOT createNewUser
+
+            //Make sure our users are set correctly
+            nonExistingUser.setUserID(9999);
+        }
+        catch (CreationException | ConstructionException | InvalidIDException e)
+        {
+            e.printStackTrace();
+            fail("User initialization failed due to: " + e.getCause().getClass().getName()
+                    + ". Message: " + e.getMessage());
+        }
+
+        System.out.println("\nUSERS INITIALIZED.");
+    }
+
+    /**
+     * Tests the 'login' method with a valid username and matching password.
      */
     @Test
     @Order(1)
-    void testLoginAndValidation()
-    {
-        System.out.println("\n1: Testing LoginAndValidation...");
-        System.out.println("No test implemented here yet!");
-        //TODO Write your code here
-        System.out.println("\nTEST FINISHED.");
-    }
+    void testLogin_ValidUsernameAndPassword() {
+        System.out.println("\n1: Testing login method with valid username and matching password...\n");
 
-    @Test
-    @Order(36)
-    void testLogin_EmptyUsername()
-    {
-        System.out.println("\n36: Testing login method with an empty username...");
-
-        //Call login with empty username and expect false to be returned
-        assertThrows(InvalidNameException.class, () -> UserHandler.login("", "password"),
-                "Login should return false when username is empty.");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(37)
-    void testLogin_NullUsername()
-    {
-        System.out.println("\n37: Testing login method with null username...");
-
-        //Call login with null username and expect false to be returned
-        assertThrows(InvalidNameException.class, () -> UserHandler.login(null, "password"),
-                "Login should return false when username is null.");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(38)
-    void testLogin_EmptyPassword()
-    {
-        System.out.println("\n38: Testing login method with an empty password...");
-
-        //Call login with empty password and expect false to be returned
-        assertThrows(InvalidPasswordException.class, () -> UserHandler.login("username", ""),
-                "Login should return false when password is empty.");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(39)
-    void testLogin_NullPassword()
-    {
-        System.out.println("\n39: Testing login method with null password...");
-
-        //Call login with null password and expect false to be returned
-        assertThrows(InvalidPasswordException.class, () -> UserHandler.login("username", null),
-                "Login should return false when password is null.");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(40)
-    void testLogin_NonexistentUsername()
-    {
-        System.out.println("\n40: Testing login method with nonexistent username...");
-
-        //Call login with a nonexistent username and expect false to be returned
-        assertThrows(EntityNotFoundException.class, () -> UserHandler.login("nonexistentUser", "password"),
-                "Login should return false when username does not exist.");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-
-    @Test
-    @Order(41)
-    void testLogin_IncorrectPassword()
-    {
-        System.out.println("\n41: Testing login method with incorrect password...");
-
-        try
+        for (User user : users)
         {
-            //Create a new user
-            UserHandler.createNewUser("user1", "password1", "user1@mail.com", User.UserType.PATRON);
-            //Attempt to login with the correct username but incorrect password
-            assertFalse(UserHandler.login("user1", "incorrectPassword"),
-                    "Login should return false when password is incorrect.");
-        }
-        catch (InvalidNameException | InvalidPasswordException | EntityNotFoundException | CreationException e)
-        {
-            e.printStackTrace();
-            fail("Valid operations should not throw exceptions.");
+            try
+            {
+                System.out.println("Attempting to login " + user.getUsername() + " with correct password.");
+
+                assertTrue(UserHandler.login(user.getUsername(), user.getPassword()));
+
+                System.out.println("Login success.");
+            }
+            catch (UserValidationException e)
+            {
+                e.printStackTrace();
+                fail("User login test failed due to: " + e.getCause().getClass().getName()
+                        + ". Message: " + e.getMessage());
+            }
         }
 
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Tests the 'login' method with a valid username and non-matching password.
+     */
     @Test
-    @Order(42)
-    void testLogin_CorrectUsernamePassword()
-    {
-        System.out.println("\n42: Testing login method with correct username and password...");
+    @Order(2)
+    void testLogin_ValidUsernameInvalidPassword() {
+        System.out.println("\n2: Testing login method with valid username and non-matching password...");
 
-        try
+        for (User user : users)
         {
-            //Create a new user
-            UserHandler.createNewUser("user2", "password2", "user2@mail.com", User.UserType.PATRON);
+            try
+            {
+                System.out.println("Attempting to login " + user.getUsername() + " with invalid password.");
 
-            //Attempt to login with the correct username and password
-            assertTrue(UserHandler.login("user2", "password2"),
-                    "Login should return true when username and password are correct.");
-        }
-        catch (InvalidNameException | InvalidPasswordException | EntityNotFoundException | CreationException e)
-        {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
+                assertFalse(UserHandler.login(user.getUsername(), invalidPassword));
+
+                System.out.println("Login failed as expected.");
+            }
+            catch (UserValidationException e)
+            {
+                e.printStackTrace();
+                fail("User login test failed due to: " + e.getCause().getClass().getName()
+                        + ". Message: " + e.getMessage());
+            }
         }
 
         System.out.println("\nTEST FINISHED.");
     }
 
-    //VALIDATE----------------------------------------------------------------------------------------------------------
-
+    /**
+     * Tests the 'login' method with a valid username and null password.
+     */
     @Test
-    @Order(43)
-    void testValidateUser_NullUser()
-    {
-        System.out.println("\n43: Testing validateUser method with null user...");
+    @Order(3)
+    void testLogin_ValidUsernameNullPassword() {
+        System.out.println("\n3: Testing login method with valid username and null password...");
 
-        assertThrows(NullEntityException.class, () -> UserHandler.validate(null, "validPassword"),
-                "Validate should throw an exception for null users.");
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-    @Test
-    @Order(44)
-    void testValidateUser_NullPassword()
-    {
-        System.out.println("\n44: Testing validateUser method with null password...");
-
-        try
+        for (User user : users)
         {
-            //Create a new User
-            User user = UserHandler.createNewUser("user1", "password1", "user1@mail.com", User.UserType.PATRON);
+            System.out.println("Attempting to login " + user.getUsername() + " with null password.");
 
-            //Call validateUser with null password
-            assertThrows(InvalidPasswordException.class, () -> UserHandler.validate(user, null),
-                    "Validate should throw an exception for null passwords.");
-        }
-        catch (CreationException e)
-        {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
-        }
+            Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login(user.getUsername(),
+                    null));
+            assertTrue(e.getCause() instanceof InvalidPasswordException);
 
-
-        System.out.println("\nTEST FINISHED.");
-    }
-
-
-    @Test
-    @Order(45)
-    void testValidateUser_CorrectPassword()
-    {
-        System.out.println("\n45: Testing validateUser method with correct password...");
-
-        try
-        {
-            //Create a new user
-            User user = new User("user1", "password1", "user1@mail.com", User.UserType.PATRON);
-
-            //Call validateUser with correct password and expect true to be returned
-            assertTrue(UserHandler.validate(user, "password1"),
-                    "ValidateUser should return true when the password is correct.");
-        }
-        catch (InvalidPasswordException | ConstructionException | UserValidationException | NullEntityException e)
-        {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
+            System.out.println("Login failed as expected.");
         }
 
         System.out.println("\nTEST FINISHED.");
     }
 
+    /**
+     * Tests the 'login' method with a valid username and empty password.
+     */
     @Test
-    @Order(46)
-    void testValidateUser_IncorrectPassword()
-    {
-        System.out.println("\n46: Testing validateUser method with incorrect password...");
+    @Order(4)
+    void testLogin_ValidUsernameEmptyPassword() {
+        System.out.println("\n4: Testing login method with valid username and empty password...");
 
-        try
+        for (User user : users)
         {
-            //Create a new user
-            User user = new User("user1", "password1", "user1@mail.com", User.UserType.PATRON);
+            System.out.println("Attempting to login " + user.getUsername() + " with empty password.");
 
-            //Call validateUser with incorrect password and expect false to be returned
-            assertFalse(UserHandler.validate(user, "password2"),
-                    "ValidateUser should return false when the password is incorrect.");
+            Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login(user.getUsername(),
+                    ""));
+            assertTrue(e.getCause() instanceof InvalidPasswordException);
+
+            System.out.println("Login failed as expected.");
         }
-        catch (InvalidPasswordException | ConstructionException | NullEntityException | UserValidationException e)
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'login' method with a non-existent user (User object exists but not in database) and a valid password.
+     */
+    @Test
+    @Order(5)
+    void testLogin_NonExistingUserValidPassword() {
+        System.out.println("\n5: Testing login method with non-existent user (User object exists but not in database)" +
+                " and a valid password...");
+
+        System.out.println("Attempting to login " + nonExistingUser.getUsername() + " with valid password.");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login(nonExistingUser.getUsername(),
+                nonExistingUser.getPassword()));
+        assertTrue(e.getCause() instanceof EntityNotFoundException);
+
+        System.out.println("Login failed as expected.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'login' method with a non-existent user (User object exists but not in database) and an invalid password.
+     */
+    @Test
+    @Order(6)
+    void testLogin_NonExistingUserInvalidPassword() {
+        System.out.println("\n6: Testing login method with non-existent user (User object exists but not in database)" +
+                " and an invalid password...");
+
+        System.out.println("Attempting to login " + nonExistingUser.getUsername() + " with invalid password.");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login(nonExistingUser.getUsername(),
+                invalidPassword));
+        assertTrue(e.getCause() instanceof EntityNotFoundException);
+
+        System.out.println("Login failed as expected.");
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'login' method with null username and a valid password.
+     */
+    @Test
+    @Order(7)
+    void testLogin_NullUsernameValidPassword() {
+        System.out.println("\n7: Testing login method with null username and a valid password...");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login(null,
+                "password123"));
+        assertTrue(e.getCause() instanceof InvalidNameException);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'login' method with empty username and a valid password.
+     */
+    @Test
+    @Order(8)
+    void testLogin_EmptyUserNameValidPassword() {
+        System.out.println("\n8: Testing login method with empty username and a valid password...");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login("",
+                "password123"));
+        assertTrue(e.getCause() instanceof InvalidNameException);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'validate' method with a valid user and a matching password.
+     */
+    @Test
+    @Order(9)
+    void testValidate_ValidUserMatchingPassword() {
+        System.out.println("\n9: Testing validate method with a valid user and a matching password...");
+
+        for (User user : users)
         {
-            fail("Valid operations should not throw exceptions.");
-            e.printStackTrace();
+            try
+            {
+                System.out.println("Attempting to validate " + user.getUsername() + " with correct password.");
+
+                assertTrue(UserHandler.validate(user, user.getPassword()));
+
+                System.out.println("Validation success.");
+            }
+            catch (UserValidationException e)
+            {
+                e.printStackTrace();
+                fail("User validation test failed due to: " + e.getCause().getClass().getName()
+                        + ". Message: " + e.getMessage());
+            }
         }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'validate' method with a valid user and a non-matching password.
+     */
+    @Test
+    @Order(10)
+    void testValidate_ValidUserNonMatchingPassword() {
+        System.out.println("\n10: Testing validate method with a valid user and a non-matching password...");
+
+        for (User user : users)
+        {
+            try
+            {
+                System.out.println("Attempting to validate " + user.getUsername() + " with invalid password.");
+
+                assertFalse(UserHandler.validate(user, invalidPassword));
+
+                System.out.println("Validation failed as expected.");
+            }
+            catch (UserValidationException e)
+            {
+                e.printStackTrace();
+                fail("User validation test failed due to: " + e.getCause().getClass().getName()
+                        + ". Message: " + e.getMessage());
+            }
+        }
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'validate' method with a valid user and a null password.
+     */
+    @Test
+    @Order(11)
+    void testValidate_ValidUserNullPassword() {
+        System.out.println("\n11: Testing validate method with a valid user and a null password...");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(patron,
+                null));
+        assertTrue(e.getCause() instanceof InvalidPasswordException);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'validate' method with a valid user and an empty password.
+     */
+    @Test
+    @Order(12)
+    void testValidate_ValidUserEmptyPassword() {
+        System.out.println("\n12: Testing validate method with a valid user and an empty password...");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(patron,
+                ""));
+        assertTrue(e.getCause() instanceof InvalidPasswordException);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the 'validate' method with a null user object and a valid password.
+     */
+    @Test
+    @Order(13)
+    void testValidate_NullUserValidPassword() {
+        System.out.println("\n13: Testing validate method with a null user object and a valid password...");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(null,
+                "password123"));
+        assertTrue(e.getCause() instanceof NullEntityException);
+
+        System.out.println("\nTEST FINISHED.");
+    }
+
+    /**
+     * Tests the `validate` method with a user that doesn't exist in database and a valid password.
+     */
+    @Test
+    @Order(14)
+    void testValidate_NonExistingUserValidPassword() {
+        System.out.println("\n14: Testing login method with a non-existing username and a valid password...");
+
+        Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(nonExistingUser,
+                nonExistingUser.getPassword()));
+        assertTrue(e.getCause() instanceof EntityNotFoundException);
 
         System.out.println("\nTEST FINISHED.");
     }

@@ -104,20 +104,21 @@
 
 //LoginAndValidationTest:
 
-    //testLogin_ValidUserAndPassword : Expected outcome: returns true.
-    //testLogin_ValidUserInvalidPassword : Expected outcome: throws InvalidPasswordException.
-    //testLogin_InvalidUserValidPassword : Expected outcome: throws EntityNotFoundException.
-    //testLogin_InvalidUserInvalidPassword : Expected outcome: throws EntityNotFoundException.
-    //testLogin_ValidUserEmptyPassword : Expected outcome: throws InvalidPasswordException.
-    //testLogin_EmptyUserValidPassword : Expected outcome: throws InvalidNameException.
-    //testLogin_NullUserOrPassword : Expected outcome: throws NullPointerException.
+    //testLogin_ValidUsernameAndPassword : Expected outcome: returns true. Loop through multiple users
+    //testLogin_ValidUsernameInvalidPassword : Expected outcome: returns false. Loop through multiple users
+    //testLogin_ValidUsernameNullPassword:
+    //testLogin_ValidUsernameEmptyPassword:
 
-    //testValidate_ValidUserMatchingPassword : Expected outcome: returns true.
-    //testValidate_ValidUserNonMatchingPassword : Expected outcome: returns false.
-    //testValidate_ValidUserEmptyPassword : Expected outcome: throws InvalidPasswordException.
-    //testValidate_NullUserValidPassword : Expected outcome: throws NullEntityException.
-    //testValidate_InvalidUserValidPassword : Expected outcome: throws UserValidationException.
-    //testValidate_NullPassword : Expected outcome: throws NullPointerException.
+    //testLogin_NullUserValidPassword: (User object exists but not in database, password matches)
+    //testLogin_NullUserInvalidPassword: (User object exists but not in database, password does not match)
+    //testLogin_NullUsernameValidPassword:
+    //testLogin_EmptyUserNameValidPassword:
+
+    //testValidate_ValidUserMatchingPassword : Expected outcome: returns true. Loop multiple users
+    //testValidate_ValidUserNonMatchingPassword : Expected outcome: returns false. Loop multiple users
+    //testValidate_ValidUserNullPassword:
+    //testValidate_ValidUserEmptyPassword : Expected outcome: throws
+    //testValidate_NullUserValidPassword : Expected outcome: throws
 
 //GetUserByUsernameTest:
 

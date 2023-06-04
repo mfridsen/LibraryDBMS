@@ -108,6 +108,9 @@ public abstract class BaseUserHandlerTest
             {
                 DatabaseHandler.closeDatabaseConnection();
             }
+
+            //Reset UserHandler
+            resetUserHandler();
         }
         catch (SQLException e)
         {
