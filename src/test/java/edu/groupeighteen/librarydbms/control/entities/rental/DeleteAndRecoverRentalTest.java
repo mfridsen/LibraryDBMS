@@ -32,15 +32,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to perform successfully, and the database should no longer contain the softly deleted Rental.
      */
     @Test
-    @Order(24)
-    void testSoftDeleteRental_ValidRental()
+    @Order(1)
+    void testDeleteRental_ValidRental()
     {
-        System.out.println("\n24: Testing softDeleteRental method with a valid rental...");
+        System.out.println("\n1: Testing DeleteRental method with a valid rental...");
 
         try
         {
             // Create and save a new rental
-            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            Rental rentalToDelete = RentalHandler.createNewRental(validUserIDs[0], validUserIDs[0]);
             assertNotNull(rentalToDelete);
 
             // Softly delete the rental
@@ -75,10 +75,10 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to throw a DeletionException.
      */
     @Test
-    @Order(25)
-    void testSoftDeleteRental_NullRental()
+    @Order(2)
+    void testDeleteRental_NullRental()
     {
-        System.out.println("\n25: Testing softDeleteRental method with a null rental...");
+        System.out.println("\n2: Testing DeleteRental method with a null rental...");
 
         // Attempt to softly delete a null rental
         Exception e = assertThrows(DeletionException.class, () -> RentalHandler.deleteRental(null),
@@ -95,10 +95,10 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to throw a DeletionException.
      */
     @Test
-    @Order(26)
-    void testSoftDeleteRental_NonExistentRental()
+    @Order(3)
+    void testDeleteRental_NonExistentRental()
     {
-        System.out.println("\n26: Testing softDeleteRental method with a non-existent rental...");
+        System.out.println("\n3: Testing DeleteRental method with a non-existent rental...");
 
         try
         {
@@ -127,16 +127,16 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to perform successfully, and the database should contain the recovered Rental.
      */
     @Test
-    @Order(27)
-    void testSoftDeleteRental_AlreadySoftDeletedRental()
+    @Order(4)
+    void testDeleteRental_AlreadyDeletedRental()
     {
         System.out.println(
-                "\n27: Testing softDeleteRental method with a rental that has already been softly deleted...");
+                "\n4: Testing DeleteRental method with a rental that has already been softly deleted...");
 
         try
         {
             // Create a new rental, softly delete it, and then try to softly delete it again
-            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            Rental rentalToDelete = RentalHandler.createNewRental(validUserIDs[0], validItemIDs[0]);
             assertNotNull(rentalToDelete);
             RentalHandler.deleteRental(rentalToDelete);
             RentalHandler.deleteRental(rentalToDelete);
@@ -165,15 +165,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to perform successfully, and the database should contain the recovered Rental, no longer marked as deleted.
      */
     @Test
-    @Order(28)
-    void testUndoSoftDeleteRental_ValidRental()
+    @Order(5)
+    void testRecoverRental_ValidRental()
     {
-        System.out.println("\n28: Testing undoSoftDeleteRental method with a valid, softly deleted rental...");
+        System.out.println("\n5: Testing RecoverRental method with a valid, softly deleted rental...");
 
         try
         {
             // Create a new rental, softly delete it, and then undo the soft delete
-            Rental rentalToRecover = RentalHandler.createNewRental(1, 1);
+            Rental rentalToRecover = RentalHandler.createNewRental(validUserIDs[0], validItemIDs[0]);
             assertNotNull(rentalToRecover);
             RentalHandler.deleteRental(rentalToRecover);
             RentalHandler.recoverRental(rentalToRecover);
@@ -200,10 +200,10 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to throw a UpdateException.
      */
     @Test
-    @Order(29)
-    void testUndoSoftDeleteRental_NullRental()
+    @Order(6)
+    void testRecoverRental_NullRental()
     {
-        System.out.println("\n29: Testing undoSoftDeleteRental method with a null rental...");
+        System.out.println("\n6: Testing RecoverRental method with a null rental...");
 
         // Attempt to undo a soft delete on a null rental
         Exception e = assertThrows(RecoveryException.class,
@@ -222,15 +222,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to perform successfully without changing the Rental.
      */
     @Test
-    @Order(30)
-    void testUndoSoftDeleteRental_NotSoftlyDeletedRental()
+    @Order(7)
+    void testRecoverRental_NotSoftlyDeletedRental()
     {
-        System.out.println("\n30: Testing undoSoftDeleteRental method with a rental that was not softly deleted...");
+        System.out.println("\n7: Testing RecoverRental method with a rental that was not softly deleted...");
 
         try
         {
             // Create a new rental and attempt to undo a soft delete on it
-            Rental rental = RentalHandler.createNewRental(1, 1);
+            Rental rental = RentalHandler.createNewRental(validUserIDs[0], validItemIDs[0]);
             assertNotNull(rental);
             RentalHandler.recoverRental(rental);
 
@@ -259,15 +259,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to perform successfully, and the database should no longer contain the deleted Rental.
      */
     @Test
-    @Order(31)
-    void testDeleteRental_ValidRental()
+    @Order(8)
+    void testHardDeleteRental_ValidRental()
     {
-        System.out.println("\n31: Testing deleteRental method with a valid rental...");
+        System.out.println("\n8: Testing deleteRental method with a valid rental...");
 
         try
         {
             // Create a new rental and delete it
-            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            Rental rentalToDelete = RentalHandler.createNewRental(validUserIDs[0], validItemIDs[0]);
             assertNotNull(rentalToDelete);
             RentalHandler.hardDeleteRental(rentalToDelete);
 
@@ -291,10 +291,10 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to throw a DeletionException.
      */
     @Test
-    @Order(32)
-    void testDeleteRental_NullRental()
+    @Order(9)
+    void testHardDeleteRental_NullRental()
     {
-        System.out.println("\n32: Testing deleteRental method with a null rental...");
+        System.out.println("\n9: Testing deleteRental method with a null rental...");
 
         // Attempt to delete a null rental
         Exception e = assertThrows(DeletionException.class,
@@ -313,15 +313,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to throw a DeletionException.
      */
     @Test
-    @Order(33)
+    @Order(10)
     void testDeleteRental_NotExistingRental()
     {
-        System.out.println("\n33: Testing deleteRental method with a rental that doesn't exist...");
+        System.out.println("\n10: Testing deleteRental method with a rental that doesn't exist...");
 
         try
         {
             // Attempt to delete a rental that doesn't exist in the database
-            Rental nonExistentRental = new Rental(1, 1);
+            Rental nonExistentRental = new Rental(validUserIDs[0], validItemIDs[0]);
             nonExistentRental.setRentalID(1); //Needs a valid ID
             Exception e = assertThrows(DeletionException.class,
                     () -> RentalHandler.hardDeleteRental(nonExistentRental),
@@ -344,15 +344,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * The method is expected to perform successfully, and the database should no longer contain the deleted Rental.
      */
     @Test
-    @Order(34)
-    void testDeleteRental_SoftlyDeletedRental()
+    @Order(11)
+    void testHardDeleteRental_SoftlyDeletedRental()
     {
-        System.out.println("\n34: Testing deleteRental method with a rental that was softly deleted...");
+        System.out.println("\n11: Testing deleteRental method with a rental that was softly deleted...");
 
         try
         {
             // Create a new rental, softly delete it, and then hard delete it
-            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            Rental rentalToDelete = RentalHandler.createNewRental(validUserIDs[0], validItemIDs[0]);
             assertNotNull(rentalToDelete);
             RentalHandler.deleteRental(rentalToDelete);
             RentalHandler.hardDeleteRental(rentalToDelete);
@@ -379,15 +379,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * has been hard deleted and doesn't exist in the database anymore.
      */
     @Test
-    @Order(35)
+    @Order(12)
     void testSoftDeleteRental_AlreadyHardDeletedRental()
     {
-        System.out.println("\n35: Testing softDeleteRental method with a rental that has already been hard deleted...");
+        System.out.println("\n12: Testing softDeleteRental method with a rental that has already been hard deleted...");
 
         try
         {
             // Create a new rental, hard delete it, and then try to softly delete it
-            Rental rentalToDelete = RentalHandler.createNewRental(1, 1);
+            Rental rentalToDelete = RentalHandler.createNewRental(validUserIDs[0], validItemIDs[0]);
             RentalHandler.hardDeleteRental(rentalToDelete);
 
             // Attempt to softly delete the hard deleted rental
@@ -415,15 +415,15 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
      * has been hard deleted and doesn't exist in the database anymore.
      */
     @Test
-    @Order(36)
-    void testUndoSoftDeleteRental_HardDeletedRental()
+    @Order(13)
+    void testRecoverRental_HardDeletedRental()
     {
-        System.out.println("\n36: Testing undoSoftDeleteRental method with a rental that was hard deleted...");
+        System.out.println("\n13: Testing RecoverRental method with a rental that was hard deleted...");
 
         try
         {
             // Create a new rental, hard delete it, and then try to undo a soft delete on it
-            Rental rentalToRecover = RentalHandler.createNewRental(1, 1);
+            Rental rentalToRecover = RentalHandler.createNewRental(validUserIDs[0], validItemIDs[0]);
             RentalHandler.hardDeleteRental(rentalToRecover);
 
             // Attempt to undo a soft delete on the hard deleted rental
