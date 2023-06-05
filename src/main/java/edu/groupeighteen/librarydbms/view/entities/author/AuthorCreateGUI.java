@@ -19,7 +19,7 @@ public class AuthorCreateGUI extends GUI {
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
      */
     public AuthorCreateGUI(GUI previousGUI) {
-        super(previousGUI, "AuthorCreateGUI");
+        super(previousGUI, "AuthorCreateGUI", null);
         setupPanels();
         displayGUI();
     }

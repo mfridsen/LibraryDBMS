@@ -23,7 +23,7 @@ public class UserDeleteGUI extends GUI {
 
 
     public UserDeleteGUI(GUI previousGUI, User usertoDelete) {
-        super(previousGUI, "UserDeleteGUI");
+        super(previousGUI, "UserDeleteGUI", usertoDelete);
         this.usertoDelete = usertoDelete;
         setupPanels();
         displayGUI();

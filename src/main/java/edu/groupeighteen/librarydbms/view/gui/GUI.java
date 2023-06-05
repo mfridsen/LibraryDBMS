@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.view.gui;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.model.entities.Entity;
 import edu.groupeighteen.librarydbms.view.HomeScreenGUI;
 
 import javax.swing.*;
@@ -31,15 +32,19 @@ public abstract class GUI extends JFrame {
     protected JButton previousGUIButton;
     protected JButton logoutButton;
 
+    //Most GUIs are Entity-related
+    protected Entity entity;
+
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
      *
      * @param previousGUI the previous GUI object.
      * @param title the title of this GUI object.
      */
-    public GUI(GUI previousGUI, String title) {
+    public GUI(GUI previousGUI, String title, Entity entity) {
         this.previousGUI = previousGUI;
         this.setTitle(title);
+        this.entity = entity;
         GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
         buttonPanel = new JPanel(); //The previous button will always be added to the button panel
         setupPreviousGUIButton();

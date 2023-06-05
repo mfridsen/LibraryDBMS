@@ -20,7 +20,7 @@ public class HomeScreenGUI extends GUI {
     public JButton skapakontoButton;
 
     public HomeScreenGUI(GUI previousGUI) {
-        super(previousGUI, "HomeScreenGUI");
+        super(previousGUI, "HomeScreenGUI", null);
         setupPanels();
         displayGUI();
     }

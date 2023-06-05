@@ -20,7 +20,7 @@ public class AuthorUpdateGUI extends GUI {
 
 
     public AuthorUpdateGUI(GUI previousGUI, Author authorToUpdate) {
-        super(previousGUI, "AuthorUpdateGUI for authorID = " + authorToUpdate.getAuthorID());
+        super(previousGUI, "AuthorUpdateGUI for authorID = " + authorToUpdate.getAuthorID(), authorToUpdate);
         this.oldAuthor = authorToUpdate;
         setupScrollPane();
         setupPanels();

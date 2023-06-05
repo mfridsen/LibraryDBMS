@@ -24,7 +24,7 @@ public class UserCreateGUI extends GUI {
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
      */
     public UserCreateGUI(GUI previousGUI) {
-        super(previousGUI, "UserCreateGUI");
+        super(previousGUI, "UserCreateGUI", null);
         setupPanels();
         displayGUI();
     }

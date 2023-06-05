@@ -28,7 +28,7 @@ public class AuthorGUI extends GUI {
      */
 
     public AuthorGUI(GUI previousGUI, Author author) {
-        super(previousGUI, "AuthorGUI");
+        super(previousGUI, "AuthorGUI", author);
         this.author = author;
         setupScrollPane();
         setupPanels();

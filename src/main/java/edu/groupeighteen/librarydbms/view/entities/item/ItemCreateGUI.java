@@ -35,7 +35,7 @@ public class ItemCreateGUI extends GUI {
      * @param previousGUI The GUI that was displayed before this one.
      */
     public ItemCreateGUI(GUI previousGUI) {
-        super(previousGUI, "ItemCreateGUI");
+        super(previousGUI, "ItemCreateGUI", null);
         setupPanels();
         displayGUI();
     }

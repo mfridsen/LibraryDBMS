@@ -19,7 +19,7 @@ public class LoginErrorGUI extends GUI {
      * @param previousGUI the previous GUI object.
      */
     public LoginErrorGUI(GUI previousGUI) {
-        super(previousGUI, "LoginErrorGUI");
+        super(previousGUI, "LoginErrorGUI", null);
         setupPanels();
         displayGUI();
     }

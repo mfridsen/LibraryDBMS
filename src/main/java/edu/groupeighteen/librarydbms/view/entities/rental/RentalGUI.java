@@ -39,7 +39,7 @@ public class RentalGUI extends GUI {
      * @param rental
      */
     public RentalGUI(GUI previousGUI, Rental rental) {
-        super(previousGUI, "RentalGUI");
+        super(previousGUI, "RentalGUI", rental);
         this.rental = rental;
         setupScrollPane();
         setupPanels();

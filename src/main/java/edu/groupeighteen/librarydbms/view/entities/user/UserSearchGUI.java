@@ -23,7 +23,7 @@ public class UserSearchGUI extends GUI {
     private JTable userSearchTable;
     private JPanel searchFieldsPanel;
     public UserSearchGUI(GUI previousGUI) {
-        super(previousGUI, "UserSearchGUI");
+        super(previousGUI, "UserSearchGUI", null);
         setupScrollPane();
         setupPanels();
         displayGUI();

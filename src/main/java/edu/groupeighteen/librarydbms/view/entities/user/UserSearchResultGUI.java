@@ -42,7 +42,7 @@ public class UserSearchResultGUI extends GUI {
      * @param searchResultList the list of User objects to be displayed.
      */
     public UserSearchResultGUI(GUI previousGUI, List<User> searchResultList) {
-        super(previousGUI, "UserSearchResultGUI");
+        super(previousGUI, "UserSearchResultGUI", null);
         this.searchResultList = searchResultList;
         clearDuplicates();
         setupScrollPane();

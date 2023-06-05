@@ -23,7 +23,7 @@ public class UserWelcomeGUI extends GUI {
      *
      */
     public UserWelcomeGUI(GUI previousGUI, User user) {
-        super(previousGUI, "UserWelcomeGUI");
+        super(previousGUI, "UserWelcomeGUI", user);
         this.user = user;
         setupPanels();
         displayGUI();

@@ -24,7 +24,7 @@ public class AuthorSearchResultGUI extends GUI {
     private JPanel searchResultPanel;
 
     public AuthorSearchResultGUI(GUI previousGUI, List<Author> searchResultList) {
-        super(previousGUI, "AuthorSearchResultGUI");
+        super(previousGUI, "AuthorSearchResultGUI", null);
         this.searchResultList = searchResultList;
         clearDuplicates();
         setupScrollPane();

@@ -25,7 +25,7 @@ public class LoginScreenGUI extends GUI {
      *
      */
     public LoginScreenGUI(GUI previousGUI) {
-        super(previousGUI, "LoginScreenGUI");
+        super(previousGUI, "LoginScreenGUI", null);
         setupPanels();
         displayGUI();
     }

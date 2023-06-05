@@ -30,7 +30,7 @@ public class RentalCreateGUI extends GUI {
      * @param previousGUI The GUI that was displayed before this one.
      */
     public RentalCreateGUI(GUI previousGUI) {
-        super(previousGUI, "RentalCreateGUI");
+        super(previousGUI, "RentalCreateGUI", null);
         setupPanels();
         displayGUI();
     }

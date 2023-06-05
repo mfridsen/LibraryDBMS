@@ -1,14 +1,21 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
+import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jesper Truedsson
@@ -23,13 +30,13 @@ public class ItemGUI extends GUI
     //  Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser.getUserID, item.getItemID)
     //  new RentalGUI för newRental
 
-    private final Item item;
     private JPanel scrollPanePanel;
+
+
 
     public ItemGUI(GUI previousGUI, Item item)
     {
-        super(previousGUI, "ItemGUI");
-        this.item = item;
+        super(previousGUI, "ItemGUI", item);
         setupScrollPane();
         setupPanels();
         displayGUI();
@@ -38,13 +45,38 @@ public class ItemGUI extends GUI
     @Override
     protected JButton[] setupButtons()
     {
-        //Leads to ItemGUI
+        Item item = (Item) entity;
+
+        if (item.isAvailable()) //If item can be rented...
+        {
+            if (LibraryManager.getCurrentUser() != null) //... and we are logged in
+            {
+                try
+                {
+                    Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser().getUserID(),
+                            item.getItemID());
+                    dispose();
+                    new RentalGUI(this, newRental);
+                }
+                catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+                {
+                    e.printStackTrace(); //TODO-prio handle
+                }
+            }
+            else //... and we are not logged in
+            {
+                //Open login GUI
+            }
+        }
+
         return new JButton[0];
 
     }
 
     protected void setupScrollPane()
     {
+        Item item = (Item) entity;
+
         //Define column names
         String[] columnNames = {"Property", "Value"};
 
@@ -57,19 +89,25 @@ public class ItemGUI extends GUI
         data.add(new Object[]{"Author/Director", item.getAuthorFirstname() + " " + item.getAuthorLastname()});
 
         //Check if item is an instance of Literature
-        if (item instanceof Literature) {
+        if (item instanceof Literature)
+        {
             Literature literatureItem = (Literature) item;
             data.add(new Object[]{"ISBN", literatureItem.getISBN()});
-            data.add(new Object[]{"Barcode", literatureItem.getBarcode()});
+
         }
         //Check if item is an instance of Film
-        else if (item instanceof Film) {
+        else if (item instanceof Film)
+        {
             Film filmItem = (Film) item;
             data.add(new Object[]{"Age Rating", filmItem.getAgeRating()});
             data.add(new Object[]{"Country of Production", filmItem.getCountryOfProduction()});
             data.add(new Object[]{"List of Actors", String.join(", ", filmItem.getListOfActors())});
-            data.add(new Object[]{"Barcode", filmItem.getBarcode()});
         }
+
+        //Add final row(s)
+        data.add(new Object[]{"Barcode", item.getBarcode()});
+        data.add(new Object[]{"Deleted", item.isDeleted()});
+        data.add(new Object[]{"Available", item.isAvailable()});
 
         //Convert list to an array for final data structure
         Object[][] dataArray = data.toArray(new Object[0][]);
@@ -106,6 +144,7 @@ public class ItemGUI extends GUI
 
     public Item getItem()
     {
-        return item;
+
+        return (Item) entity;
     }
 }

@@ -17,7 +17,7 @@ public class InfoPageGUI extends GUI {
      *
      */
     public InfoPageGUI(GUI previousGUI) {
-        super(previousGUI, "InfoPageGUI");
+        super(previousGUI, "InfoPageGUI", null);
         setupButtons();
         addButtonsToPanel(new JButton[]{});
         setupPanels();

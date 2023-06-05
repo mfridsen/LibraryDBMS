@@ -36,7 +36,7 @@ public class ItemUpdateGUI extends GUI {
      *                     GUI will be populated with the details of this item.
      */
     public ItemUpdateGUI(GUI previousGUI, Item itemToUpdate) {
-        super(previousGUI, "itemUpdateGUI for itemID = " + itemToUpdate.getItemID());
+        super(previousGUI, "itemUpdateGUI for itemID = " + itemToUpdate.getItemID(), null);
         this.olditem = itemToUpdate;
         setupScrollPane();
         setupPanels();

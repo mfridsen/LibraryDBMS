@@ -39,7 +39,7 @@ public class RentalSearchResultGUI extends GUI {
      * @param searchResultList  the list of Rental objects to be displayed.
      */
     public RentalSearchResultGUI(GUI previousGUI, List<Rental> searchResultList) {
-        super(previousGUI, "RentalSearchResultGUI");
+        super(previousGUI, "RentalSearchResultGUI", null);
         this.searchResultList = searchResultList;
         clearDuplicates();
         setupScrollPane();

@@ -27,7 +27,7 @@ public class ItemSearchGUI extends GUI {
     private JPanel searchFieldsPanel;
 
     public ItemSearchGUI(GUI previousGUI) {
-        super(previousGUI, "ItemSearchGUI");
+        super(previousGUI, "ItemSearchGUI", null);
         setupScrollPane();
         setupPanels();
         displayGUI();

@@ -23,7 +23,7 @@ public class UserUpdateGUI extends GUI {
 
 
     public UserUpdateGUI(GUI previousGUI, User userToUpdate) {
-        super(previousGUI, "UserUpdateGUI for userID = " + userToUpdate.getUserID());
+        super(previousGUI, "UserUpdateGUI for userID = " + userToUpdate.getUserID(), userToUpdate);
         this.oldUser = userToUpdate;
         setupScrollPane();
         setupPanels();

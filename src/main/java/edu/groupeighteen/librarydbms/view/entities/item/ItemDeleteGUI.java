@@ -24,7 +24,7 @@ public class ItemDeleteGUI extends GUI {
     private JPasswordField passwordField;
 
     public ItemDeleteGUI(GUI previousGUI, Item itemToDelete) {
-        super(previousGUI, "ItemDeleteGUI");
+        super(previousGUI, "ItemDeleteGUI", itemToDelete);
         this.itemToDelete = itemToDelete;
         setupPanels();
         displayGUI();

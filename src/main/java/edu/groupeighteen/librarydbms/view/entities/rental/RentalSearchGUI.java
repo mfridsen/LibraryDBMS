@@ -63,7 +63,7 @@ public class RentalSearchGUI extends GUI {
      * @param previousGUI The GUI that was displayed before this one.
      */
     public RentalSearchGUI(GUI previousGUI) {
-        super(previousGUI, "RentalSearchGUI");
+        super(previousGUI, "RentalSearchGUI", null);
         setupScrollPane();
         setupPanels();
         displayGUI();

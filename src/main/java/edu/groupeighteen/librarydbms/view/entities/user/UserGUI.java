@@ -26,7 +26,7 @@ public class UserGUI extends GUI {
      */
 
     public UserGUI(GUI previousGUI, User user) {
-        super(previousGUI, "UserGUI");
+        super(previousGUI, "UserGUI", user);
         this.user = user;
         setupScrollPane();
         setupPanels();

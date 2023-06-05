@@ -32,7 +32,7 @@ public class ItemSearchResultGUI extends GUI {
     private JPanel searchResultPanel;
 
     public ItemSearchResultGUI(GUI previousGUI, List<Item> searchResultList) {
-        super(previousGUI, "ItemSearchResultGUI");
+        super(previousGUI, "ItemSearchResultGUI", null);
         this.searchResultList = searchResultList;
         clearDuplicates();
         setupScrollPane();

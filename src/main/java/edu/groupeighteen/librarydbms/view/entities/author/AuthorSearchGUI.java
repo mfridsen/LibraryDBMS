@@ -19,7 +19,7 @@ public class AuthorSearchGUI extends GUI {
     private JTable authorSearchTable;
     private JPanel searchFieldsPanel;
     public AuthorSearchGUI(GUI previousGUI) {
-        super(previousGUI, "AuthorSearchGUI");
+        super(previousGUI, "AuthorSearchGUI", null);
         setupScrollPane();
         setupPanels();
         displayGUI();

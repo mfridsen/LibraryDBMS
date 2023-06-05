@@ -58,7 +58,7 @@ public class RentalUpdateGUI extends GUI {
      *                       GUI will be populated with the details of this rental.
      */
     public RentalUpdateGUI(GUI previousGUI, Rental rentalToUpdate) {
-        super(previousGUI, "RentalUpdateGUI for rentalID = " + rentalToUpdate.getRentalID());
+        super(previousGUI, "RentalUpdateGUI for rentalID = " + rentalToUpdate.getRentalID(), rentalToUpdate);
         this.oldRental = rentalToUpdate;
         setupScrollPane();
         setupPanels();

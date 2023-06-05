@@ -34,7 +34,7 @@ public class RentalDeleteGUI extends GUI {
     private JPasswordField passwordField;
 
     public RentalDeleteGUI(GUI previousGUI, Rental rentalToDelete) {
-        super(previousGUI, "RentalDeleteGUI");
+        super(previousGUI, "RentalDeleteGUI", rentalToDelete);
         this.rentalToDelete = rentalToDelete;
         setupPanels();
         displayGUI();
