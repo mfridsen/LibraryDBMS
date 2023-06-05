@@ -206,7 +206,7 @@ public abstract class BaseRentalHandlerTest
         }
 
         //Change rentalDates on desired amount of rentals
-        for (int i = 0; i < offsetRentals; i++)
+        for (int i = 0; i <= offsetRentals; i++)
         {
             try
             {

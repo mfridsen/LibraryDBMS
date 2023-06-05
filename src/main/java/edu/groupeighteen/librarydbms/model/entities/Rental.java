@@ -322,8 +322,8 @@ public class Rental extends Entity
     {
         if (rentalDueDate == null)
             throw new InvalidDateException("Rental due date cannot be null.");
-        if (rentalDueDate.isBefore(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
-            throw new InvalidDateException("Rental due date cannot be in the past. Received: " + rentalDueDate);
+        if (rentalDueDate.isBefore(rentalDate))
+            throw new InvalidDateException("Rental due date cannot be before rental date. Received: " + rentalDueDate);
         this.rentalDueDate = rentalDueDate.withHour(RENTAL_DUE_DATE_HOURS).withMinute(0).withSecond(0)
                 .truncatedTo(ChronoUnit.SECONDS);
     }
