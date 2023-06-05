@@ -76,7 +76,7 @@ public class GetAuthorByIDTest extends BaseHandlerTest
     {
         System.out.println("\n1: Testing GetAuthorByID...");
 
-        Author author = AuthorHandler.getAuthorByID(1);
+        Author author = AuthorHandler.getAuthorByID(1, true);
 
         assertNotNull(author);
         assertEquals(1, author.getAuthorID());
@@ -95,24 +95,19 @@ public class GetAuthorByIDTest extends BaseHandlerTest
     void testGetAuthorByID_ValidDeletedAuthor_GetDeletedTrue() {
         System.out.println("\n4: Testing getAuthorByID method with a valid ID for a deleted author (getDeleted = true)...");
 
-        try
-        {
-            assertNotNull(AuthorHandler.getAuthorByID(deletedAuthorID, true));
-        }
-        catch (InvalidIDException e)
-        {
-            e.printStackTrace();
-            fail("Valid operations should not throw exceptions.");
-        }
+        assertNotNull(AuthorHandler.getAuthorByID(deletedAuthorID, true));
 
         System.out.println("\nTEST FINISHED.");
     }
+    /**
+     * Tests the `getAuthorByID` method with an invalid author ID.
+     */
     @Test
     @Order(3)
     void testGetAuthorByID_InvalidAuthorID() {
         System.out.println("\n5: Testing getAuthorByID method with an invalid author ID...");
 
-        assertThrows(InvalidIDException.class, () -> AuthorHandler.getAuthorByID(invalidID));
+        assertThrows(InvalidIDException.class, () -> AuthorHandler.getAuthorByID(invalidID, true));
 
         System.out.println("\nTEST FINISHED.");
     }

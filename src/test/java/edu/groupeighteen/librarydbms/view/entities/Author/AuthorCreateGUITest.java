@@ -22,6 +22,6 @@ import org.junit.Test;
 public class AuthorCreateGUITest {
     public static void main(String[] args) {
         LibraryManager.setup();
-        new AuthorGUI(null, AuthorHandler.getAuthorByID(1));
+        new AuthorGUI(null, AuthorHandler.getAuthorByID(1, false));
     }
 }

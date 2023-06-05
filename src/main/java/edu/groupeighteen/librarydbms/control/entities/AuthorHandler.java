@@ -85,7 +85,7 @@ public class AuthorHandler {
         return 0;
     }
 
-    public static Author getAuthorByID(int authorID) {
+    public static Author getAuthorByID(int authorID, boolean getDeleted) {
         Author author = null;
 
         //Prepare statement
@@ -268,7 +268,7 @@ public class AuthorHandler {
     private static void validateAuthor(Author author) throws EntityNotFoundException, InvalidIDException, NullEntityException {
         checkNullAuthor(author);
         int ID = author.getAuthorID();
-        if (AuthorHandler.getAuthorByID(ID) == null)
+        if (AuthorHandler.getAuthorByID(ID, true) == null)
             throw new EntityNotFoundException("Author with ID " + author + "not found in database.");
     }
 
