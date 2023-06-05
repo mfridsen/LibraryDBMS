@@ -4,7 +4,7 @@ package edu.groupeighteen.librarydbms.view.entities.item;
  * @author Jesper Truedsson
  * @project LibraryDBMS
  * @date 2023-04-27
- *
+ * <p>
  * this class displays results for a search performed in the ItemSearchGUI
  * leads to ItemGUI
  */
@@ -20,15 +20,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ItemSearchResultGUI extends GUI {
-    // TODO- if LibraryManager.getCurrentUser != null and item.isAvailable
-    //  Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser.getUserID, item.getItemID)
-    //  new RentalGUI för newRental
-
+public class ItemSearchResultGUI extends GUI
+{
     private final List<Item> searchResultList;
     private JPanel searchResultPanel;
 
-    public ItemSearchResultGUI(GUI previousGUI, List<Item> searchResultList) {
+    public ItemSearchResultGUI(GUI previousGUI, List<Item> searchResultList)
+    {
         super(previousGUI, "ItemSearchResultGUI", null);
         this.searchResultList = searchResultList;
         clearDuplicates();
@@ -37,27 +35,33 @@ public class ItemSearchResultGUI extends GUI {
         displayGUI();
     }
 
-    private void clearDuplicates() {
+    private void clearDuplicates()
+    {
         Set<Integer> seenItemIDs = new HashSet<>();
         searchResultList.removeIf(item -> !seenItemIDs.add(item.getItemID()));
     }
 
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton homeButton = new JButton("Home");
-        homeButton.addActionListener(e -> {
+        homeButton.addActionListener(e ->
+        {
             dispose();
             new LoginScreenGUI(this);
         });
         return new JButton[]{homeButton};
     }
 
-    private void setupScrollPane() {
+    private void setupScrollPane()
+    {
         String[] columnNames = {"ID", "Title", "Classification", "View Item", "Rent Item"};
 
-        if (searchResultList != null && !searchResultList.isEmpty()) {
+        if (searchResultList != null && !searchResultList.isEmpty())
+        {
             Object[][] data = new Object[searchResultList.size()][columnNames.length];
-            for (int i = 0; i < searchResultList.size(); i++) {
+            for (int i = 0; i < searchResultList.size(); i++)
+            {
                 Item item = searchResultList.get(i);
                 data[i][0] = item.getItemID();
                 data[i][1] = item.getTitle();
@@ -72,14 +76,16 @@ public class ItemSearchResultGUI extends GUI {
 
             //View Item buttons
             searchResultTable.getColumn("View Item").setCellRenderer(buttonRenderer);
-            for (Item item : searchResultList) {
+            for (Item item : searchResultList)
+            {
                 ItemGUIButtonEditor itemGUIButtonEditor = new ItemGUIButtonEditor(new JCheckBox(), item, "View", this);
                 searchResultTable.getColumnModel().getColumn(3).setCellEditor(itemGUIButtonEditor);
             }
 
             //Rent Item buttons
             searchResultTable.getColumn("Rent Item").setCellRenderer(buttonRenderer);
-            for (Item item : searchResultList) {
+            for (Item item : searchResultList)
+            {
                 ItemGUIButtonEditor itemGUIButtonEditor = new ItemGUIButtonEditor(new JCheckBox(), item, "Rent", this);
                 searchResultTable.getColumnModel().getColumn(4).setCellEditor(itemGUIButtonEditor);
             }
@@ -92,7 +98,8 @@ public class ItemSearchResultGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         GUIPanel.add(searchResultPanel);
     }
 }

@@ -378,7 +378,7 @@ public class User extends Entity
      * Sets the user type of this user and updates the user's allowed rentals accordingly.
      *
      * @param userType The user type to set for this user.
-     * @throws InvalidTypeException if the given userType is null.
+     * @throws InvalidTypeException        if the given userType is null.
      * @throws InvalidUserRentalsException if updating allowed rentals fails for some reason.
      */
     public void setUserType(UserType userType)
@@ -543,18 +543,23 @@ public class User extends Entity
      *                                            library's rules. The rules being, a user with no late fee and with fewer current rentals
      *                                            than permitted should be allowed to rent.
      */
-    public void setAllowedToRent(boolean allowedToRent) throws InvalidRentalStatusChangeException
+    public void setAllowedToRent(boolean allowedToRent)
+    throws InvalidRentalStatusChangeException
     {
         // If the user is deleted, they can't rent.
-        if (deleted) {
-            if (allowedToRent) {
+        if (deleted)
+        {
+            if (allowedToRent)
+            {
                 throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
                         "A deleted user cannot be allowed to rent.");
             }
         }
         // If the user has no late fee and fewer rentals than allowed, they can rent.
-        else if (lateFee == 0.0 && currentRentals < allowedRentals) {
-            if (!allowedToRent) {
+        else if (lateFee == 0.0 && currentRentals < allowedRentals)
+        {
+            if (!allowedToRent)
+            {
                 throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
                         "A user with no late fee and fewer rentals than permitted should be allowed to rent. " +
                         "Current late fee: " + lateFee + ", Current rentals: " + currentRentals +
@@ -562,8 +567,10 @@ public class User extends Entity
             }
         }
         // If the user has a late fee or has reached the maximum rentals, they can't rent.
-        else if (lateFee > 0.0 || currentRentals >= allowedRentals) {
-            if (allowedToRent) {
+        else if (lateFee > 0.0 || currentRentals >= allowedRentals)
+        {
+            if (allowedToRent)
+            {
                 throw new InvalidRentalStatusChangeException("Attempt to change rental status failed. " +
                         "User has late fee: " + lateFee + " or has rented to capacity.");
             }

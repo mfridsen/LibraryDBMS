@@ -11,7 +11,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
  * @package edu.groupeighteen.librarydbms.model.entities
  * @contact matfir-1@student.ltu.se
  * @date 5/23/2023
- *
+ * <p>
  * Represents an Author in a library system.
  * The Author class extends Entity and contains information about the author, including
  * first name, last name, and biography.
@@ -32,7 +32,8 @@ public class Author extends Entity
     /*
      * Helps with adherence to DRY, now if we want to change the rules we only need to do so in one place.
      */
-    static {
+    static
+    {
         int[] metaData = DatabaseHandler.getAuthorMetaData();
         AUTHOR_FIRST_NAME_LENGTH = metaData[0]; //100
         AUTHOR_LAST_NAME_LENGTH = metaData[1];  //100
@@ -60,8 +61,9 @@ public class Author extends Entity
 
     /**
      * Constructor for creating a new Author.
+     *
      * @param authorFirstname The first name of the author.
-     * @param authorLastName The last name of the author.
+     * @param authorLastName  The last name of the author.
      * @throws ConstructionException if the author's first name is null, empty, or too long.
      */
     public Author(String authorFirstname, String authorLastName)
@@ -78,17 +80,18 @@ public class Author extends Entity
         catch (InvalidNameException e)
         {
             throw new ConstructionException("Author Creation Construction failed due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
     /**
      * Constructor for retrieving an existing Author.
-     * @param authorID The unique identifier of the author.
+     *
+     * @param authorID        The unique identifier of the author.
      * @param authorFirstname The first name of the author.
-     * @param authorLastName The last name of the author.
-     * @param biography The biography of the author.
-     * @param deleted Indicates whether the author is deleted.
+     * @param authorLastName  The last name of the author.
+     * @param biography       The biography of the author.
+     * @param deleted         Indicates whether the author is deleted.
      * @throws ConstructionException if the authorID is invalid or if the author's names are null, empty, or too long.
      */
     public Author(int authorID, String authorFirstname, String authorLastName, String biography, boolean deleted)
@@ -105,12 +108,13 @@ public class Author extends Entity
         catch (InvalidIDException | InvalidNameException e)
         {
             throw new ConstructionException("Author Retrieval Construction failed due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
     /**
      * Copy constructor for Author.
+     *
      * @param other The Author object to be copied.
      */
     public Author(Author other)
@@ -124,6 +128,7 @@ public class Author extends Entity
 
     /**
      * Returns the unique identifier of the author.
+     *
      * @return The author's ID.
      */
     public int getAuthorID()
@@ -133,6 +138,7 @@ public class Author extends Entity
 
     /**
      * Sets the unique identifier of the author.
+     *
      * @param authorID The author's ID.
      * @throws InvalidIDException if the authorID is not greater than 0.
      */
@@ -146,6 +152,7 @@ public class Author extends Entity
 
     /**
      * Returns the first name of the author.
+     *
      * @return The author's first name.
      */
     public String getAuthorFirstname()
@@ -155,6 +162,7 @@ public class Author extends Entity
 
     /**
      * Sets the first name of the author.
+     *
      * @param authorFirstname The author's first name.
      * @throws InvalidNameException if the first name is null, empty, or too long.
      */
@@ -165,12 +173,13 @@ public class Author extends Entity
             throw new InvalidNameException("Author first name cannot be null or empty.");
         if (authorFirstname.length() > AUTHOR_FIRST_NAME_LENGTH)
             throw new InvalidNameException("Author first name must be at most " + AUTHOR_FIRST_NAME_LENGTH +
-                                                   " characters. Received: " + authorFirstname.length());
+                    " characters. Received: " + authorFirstname.length());
         this.authorFirstname = authorFirstname;
     }
 
     /**
      * Returns the last name of the author.
+     *
      * @return The author's last name.
      */
     public String getAuthorLastName()
@@ -180,6 +189,7 @@ public class Author extends Entity
 
     /**
      * Sets the last name of the author.
+     *
      * @param authorLastName The author's last name.
      * @throws InvalidNameException if the last name is too long.
      */
@@ -188,12 +198,13 @@ public class Author extends Entity
     {
         if (authorLastName.length() > AUTHOR_LAST_NAME_LENGTH)
             throw new InvalidNameException("Author last name must be at most " + AUTHOR_LAST_NAME_LENGTH +
-                                                   " characters. Received: " + authorLastName.length());
+                    " characters. Received: " + authorLastName.length());
         this.authorLastName = authorLastName;
     }
 
     /**
      * Returns the biography of the author.
+     *
      * @return The author's biography.
      */
     public String getBiography()
@@ -203,6 +214,7 @@ public class Author extends Entity
 
     /**
      * Sets the biography of the author.
+     *
      * @param biography The author's biography.
      */
     public void setBiography(String biography)

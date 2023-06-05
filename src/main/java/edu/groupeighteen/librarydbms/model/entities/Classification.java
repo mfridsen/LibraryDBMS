@@ -9,7 +9,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
  * @author Mattias Fridsén
  * @project LibraryDBMS
  * @date 2023-05-27
- *
+ * <p>
  * Represents a Classification in a publishing system.
  * The Classification class extends Entity and contains information about the classification, including
  * classification name and description.
@@ -25,7 +25,8 @@ public class Classification extends Entity
     /*
      * Helps with adherence to DRY, now if we want to change the rules we only need to do so in one place.
      */
-    static {
+    static
+    {
         int[] metaData = DatabaseHandler.getClassificationMetaData();
         CLASSIFICATION_NAME_LENGTH = metaData[0];
     }
@@ -47,6 +48,7 @@ public class Classification extends Entity
 
     /**
      * Constructor for creating a new Classification.
+     *
      * @param classificationName The name of the classification.
      * @throws ConstructionException if the classification's name is null, empty, or too long.
      */
@@ -63,18 +65,19 @@ public class Classification extends Entity
         catch (Exception e)
         {
             throw new ConstructionException("Classification Creation Construction failed due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
     /**
      * Constructor for retrieving an existing Classification.
-     * @param classificationID The unique identifier of the classification.
+     *
+     * @param classificationID   The unique identifier of the classification.
      * @param classificationName The name of the classification.
-     * @param description The description of the classification.
-     * @param deleted Indicates whether the classification is deleted.
+     * @param description        The description of the classification.
+     * @param deleted            Indicates whether the classification is deleted.
      * @throws ConstructionException if the classificationID is invalid or if the classification's name is null,
-     *          empty, or too long.
+     *                               empty, or too long.
      */
     public Classification(int classificationID, String classificationName, String description, boolean deleted)
     throws ConstructionException
@@ -89,12 +92,13 @@ public class Classification extends Entity
         catch (InvalidIDException | InvalidNameException e)
         {
             throw new ConstructionException("Classification Retrieval Construction failed due to " +
-                                                    e.getClass().getName() + ": " + e.getMessage(), e);
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
 
     /**
      * Copy constructor for Classification.
+     *
      * @param other The Classification object to be copied.
      */
     public Classification(Classification other)
@@ -107,6 +111,7 @@ public class Classification extends Entity
 
     /**
      * Returns the unique identifier of the classification.
+     *
      * @return The classification's ID.
      */
     public int getClassificationID()
@@ -116,6 +121,7 @@ public class Classification extends Entity
 
     /**
      * Sets the unique identifier of the classification.
+     *
      * @param classificationID The classification's ID.
      * @throws InvalidIDException if the classificationID is not greater than 0.
      */
@@ -129,6 +135,7 @@ public class Classification extends Entity
 
     /**
      * Returns the name of the classification.
+     *
      * @return The classification's name.
      */
     public String getClassificationName()
@@ -138,6 +145,7 @@ public class Classification extends Entity
 
     /**
      * Sets the name of the classification.
+     *
      * @param classificationName The classification's name.
      * @throws InvalidNameException if the name is null, empty, or too long.
      */
@@ -148,12 +156,13 @@ public class Classification extends Entity
             throw new InvalidNameException("Classification name cannot be null or empty.");
         if (classificationName.length() > CLASSIFICATION_NAME_LENGTH)
             throw new InvalidNameException("Classification name must be at most " + CLASSIFICATION_NAME_LENGTH +
-                                                   " characters. Received: " + classificationName.length());
+                    " characters. Received: " + classificationName.length());
         this.classificationName = classificationName;
     }
 
     /**
      * Returns the description of the classification.
+     *
      * @return The classification's description.
      */
     public String getDescription()
@@ -163,6 +172,7 @@ public class Classification extends Entity
 
     /**
      * Sets the description of the classification.
+     *
      * @param description The classification's description.
      */
     public void setDescription(String description)

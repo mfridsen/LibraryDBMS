@@ -57,6 +57,9 @@ public class RentalHandler
     //TODO-future implement more get-methods
     //TODO-future overhaul main get-method
 
+
+    //TODO-PRIO RETURNING OF RENTALS
+
     /**
      * Indicates whether verbose mode is enabled.
      */
@@ -172,8 +175,6 @@ public class RentalHandler
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental construction failed due to " + cause, e);
 
-        } catch (UpdateException e) {
-            throw new RuntimeException(e);
         }
 
         //Won't reach, needed for compilation
@@ -954,7 +955,7 @@ public class RentalHandler
      * @throws EntityNotFoundException if a rental with the provided rentalID doesn't exist in the database.
      * @throws InvalidIDException      if the provided rentalID is invalid (less than or equal to 0).
      *                                 <p>
-     * TODO add deletion checks
+     *                                 TODO add deletion checks
      */
     private static void validateRental(Rental rentalToValidate)
     throws

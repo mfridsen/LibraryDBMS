@@ -2,10 +2,6 @@ package edu.groupeighteen.librarydbms.control.exceptions;
 
 import org.junit.Assert;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

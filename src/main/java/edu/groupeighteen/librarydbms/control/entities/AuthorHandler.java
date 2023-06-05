@@ -25,22 +25,29 @@ import java.util.List;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class AuthorHandler {
+public class AuthorHandler
+{
 
-    public static void printAuthorList(List<Author> authorList) {
+    public static void printAuthorList(List<Author> authorList)
+    {
         System.out.println("Authors:");
         int count = 1;
-        for (Author author : authorList) {
-            System.out.println(count + " authorID: " + author.getAuthorID() + ", Author Name: " + author.getAuthorFirstname());
+        for (Author author : authorList)
+        {
+            System.out.println(
+                    count + " authorID: " + author.getAuthorID() + ", Author Name: " + author.getAuthorFirstname());
         }
     }
 
     //CREATE -----------------------------------------------------------------------------------------------------------
 
-    public static Author createNewAuthor(String authorFirstname, String authorLastName) throws InvalidNameException {
+    public static Author createNewAuthor(String authorFirstname, String authorLastName)
+    throws InvalidNameException
+    {
         Author newAuthor = null;
 
-        try {
+        try
+        {
             //Validate input
             validateAuthorname(authorFirstname, authorLastName);
 
@@ -49,7 +56,9 @@ public class AuthorHandler {
             newAuthor.setAuthorID(saveAuthor(newAuthor));
 
 
-        } catch (ConstructionException | InvalidIDException e) {
+        }
+        catch (ConstructionException | InvalidIDException e)
+        {
             ExceptionHandler.HandleFatalException(String.format("Failed to create Author with the given name: " +
                     "'%s' due to %s: %s", authorFirstname, e.getClass().getName(), e.getMessage()), e);
         }
@@ -57,8 +66,10 @@ public class AuthorHandler {
         return newAuthor;
     }
 
-    private static int saveAuthor(Author author) {
-        try {
+    private static int saveAuthor(Author author)
+    {
+        try
+        {
             // Prepare query
             String query = "INSERT INTO authors (authorFirstname, authorLastName, " +
                     "VALUES (?, ?)";
@@ -70,13 +81,17 @@ public class AuthorHandler {
 
             // Execute query and get the generated authorID, using try-with-resources
             try (QueryResult queryResult =
-                         DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS)) {
+                         DatabaseHandler.executePreparedQuery(query, params, Statement.RETURN_GENERATED_KEYS))
+            {
                 ResultSet generatedKeys = queryResult.getStatement().getGeneratedKeys();
-                if (generatedKeys.next()) {
+                if (generatedKeys.next())
+                {
                     return generatedKeys.getInt(1);
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             ExceptionHandler.HandleFatalException("Failed to save author to database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -85,7 +100,8 @@ public class AuthorHandler {
         return 0;
     }
 
-    public static Author getAuthorByID(int authorID, boolean getDeleted) {
+    public static Author getAuthorByID(int authorID, boolean getDeleted)
+    {
         Author author = null;
 
         //Prepare statement
@@ -94,7 +110,8 @@ public class AuthorHandler {
         String[] params = {String.valueOf(authorID)};
 
         //Execute statement
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
+        {
             ResultSet resultSet = queryResult.getResultSet();
             if (resultSet.next())
                 author = new Author(
@@ -104,7 +121,9 @@ public class AuthorHandler {
                         resultSet.getString("biography"),
                         resultSet.getBoolean("deleted")
                 );
-        } catch (SQLException | ConstructionException e) {
+        }
+        catch (SQLException | ConstructionException e)
+        {
             ExceptionHandler.HandleFatalException("Failed to retrieve author by ID from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
@@ -115,7 +134,9 @@ public class AuthorHandler {
 
     //UPDATE -----------------------------------------------------------------------------------------------------------
 
-    public static void updateAuthor(Author updatedAuthor) throws InvalidNameException {
+    public static void updateAuthor(Author updatedAuthor)
+    throws InvalidNameException
+    {
         //Let's check if the author exists in the database before we go on
         updateAuthor(updatedAuthor);
 
@@ -131,13 +152,19 @@ public class AuthorHandler {
         DatabaseHandler.executePreparedUpdate(sql, params);
     }
 
-    public static void deleteAuthor(Author authorToDelete) throws DeletionException {
+    public static void deleteAuthor(Author authorToDelete)
+    throws DeletionException
+    {
         {
             //Validate input
-            try {
+            try
+            {
                 validateAuthor(authorToDelete);
-            } catch (EntityNotFoundException | InvalidIDException | NullEntityException e) {
-                throw new DeletionException("Author Delete failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
+            }
+            catch (EntityNotFoundException | InvalidIDException | NullEntityException e)
+            {
+                throw new DeletionException(
+                        "Author Delete failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
             }
 
             //Set deleted to true (doesn't need to be set before calling this method)
@@ -155,30 +182,38 @@ public class AuthorHandler {
         }
     }
 
-        public static void undoDeleteAuthor (Author authorToRecover) throws RecoveryException {
-            // Validate input
-            try {
-                validateAuthor(authorToRecover);
-            } catch (EntityNotFoundException | InvalidIDException | NullEntityException e) {
-                throw new RecoveryException("Author Recovery failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
-            } //TODO- alla 'throw new' skall göras som ovan
-
-            // Set deleted to false
-            authorToRecover.setDeleted(false);
-
-            // Prepare a SQL query to update the author details
-            String query = "UPDATE authors SET deleted = ? WHERE authorID = ?";
-            String[] params = {
-                    authorToRecover.isDeleted() ? "1" : "0",
-                    String.valueOf(authorToRecover.getAuthorID())
-            };
-
-            // Executor-class Star Dreadnought
-            DatabaseHandler.executePreparedUpdate(query, params);
+    public static void undoDeleteAuthor(Author authorToRecover)
+    throws RecoveryException
+    {
+        // Validate input
+        try
+        {
+            validateAuthor(authorToRecover);
         }
+        catch (EntityNotFoundException | InvalidIDException | NullEntityException e)
+        {
+            throw new RecoveryException(
+                    "Author Recovery failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
+        } //TODO- alla 'throw new' skall göras som ovan
+
+        // Set deleted to false
+        authorToRecover.setDeleted(false);
+
+        // Prepare a SQL query to update the author details
+        String query = "UPDATE authors SET deleted = ? WHERE authorID = ?";
+        String[] params = {
+                authorToRecover.isDeleted() ? "1" : "0",
+                String.valueOf(authorToRecover.getAuthorID())
+        };
+
+        // Executor-class Star Dreadnought
+        DatabaseHandler.executePreparedUpdate(query, params);
+    }
 
 
-    public static void hardDeleteAuthor(Author authorToDelete) throws  DeletionException {
+    public static void hardDeleteAuthor(Author authorToDelete)
+    throws DeletionException
+    {
         {
             //Validate input
             try
@@ -187,7 +222,8 @@ public class AuthorHandler {
             }
             catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
             {
-                throw new DeletionException("Author Delete failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
+                throw new DeletionException(
+                        "Author Delete failed due to: " + e.getClass().getName() + ": " + e.getMessage(), e);
             }
 
             //Prepare a SQL query to update the authorToDelete details
@@ -198,26 +234,33 @@ public class AuthorHandler {
             DatabaseHandler.executePreparedUpdate(query, params);
         }
     }
+
     //RETRIEVING -------------------------------------------------------------------------------------------------------
-    public static List<Author> getAuthorByAuthorName(String authorFirstname, String authorLastname) throws InvalidNameException {
+    public static List<Author> getAuthorByAuthorName(String authorFirstname, String authorLastname)
+    throws InvalidNameException
+    {
         //both names cant be null or empty, only one can be
         if ((authorFirstname == null || authorFirstname.isEmpty()) && (authorLastname == null || authorLastname.isEmpty()))
             throw new InvalidNameException("Both first and last name can not be empty at the same time.");
 
-        try {
+        try
+        {
             List<Author> authors = new ArrayList<>();
 
             // Prepare a SQL query to select a author by authorFirstname and authorLastname
             String query = "SELECT authorID, authorFirstname, authorLastname, biography, deleted FROM authors WHERE";
             List<String> params = new ArrayList<>();
 
-            if (authorFirstname != null && !authorFirstname.trim().isEmpty()) {
+            if (authorFirstname != null && !authorFirstname.trim().isEmpty())
+            {
                 query += " LOWER(authorFirstname) = ?";
                 params.add(authorFirstname.toLowerCase());
             }
 
-            if (authorLastname != null && !authorLastname.trim().isEmpty()) {
-                if (!params.isEmpty()) {
+            if (authorLastname != null && !authorLastname.trim().isEmpty())
+            {
+                if (!params.isEmpty())
+                {
                     query += " AND";
                 }
                 query += " LOWER(authorLastname) = ?";
@@ -227,11 +270,13 @@ public class AuthorHandler {
             String[] paramsArray = params.toArray(new String[0]);
 
             // Execute the query and store the result in a ResultSet
-            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, paramsArray)) {
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, paramsArray))
+            {
                 ResultSet resultSet = queryResult.getResultSet();
                 // If the ResultSet contains data, create a new Author object using the retrieved ,
                 // and set the author's authorID
-                while (resultSet.next()) {
+                while (resultSet.next())
+                {
                     Author author = new Author(
                             resultSet.getInt("authorID"),
                             resultSet.getString("authorFirstname"),
@@ -243,29 +288,41 @@ public class AuthorHandler {
                 }
             }
             return authors;
-        } catch (SQLException | ConstructionException e) {
+        }
+        catch (SQLException | ConstructionException e)
+        {
             throw new RuntimeException(e);//TODO-ändra
         }
     }
     //UTILITY METHODS---------------------------------------------------------------------------------------------------
 
-    private static void validateAuthorname(String authorFirstname, String authorLastName) throws InvalidNameException {
+    private static void validateAuthorname(String authorFirstname, String authorLastName)
+    throws InvalidNameException
+    {
         checkEmptyName(authorFirstname);
         checkEmptyName(authorLastName);
         if (authorFirstname.length() > Author.AUTHOR_FIRST_NAME_LENGTH)
-            throw new InvalidNameException("Author first name too long. Must be at most "+ Author.AUTHOR_FIRST_NAME_LENGTH +
-                    " characters, received " + authorFirstname.length());
+            throw new InvalidNameException(
+                    "Author first name too long. Must be at most " + Author.AUTHOR_FIRST_NAME_LENGTH +
+                            " characters, received " + authorFirstname.length());
         if (authorLastName.length() > Author.AUTHOR_LAST_NAME_LENGTH)
-            throw new InvalidNameException("Author last name too long. Must be at most "+ Author.AUTHOR_LAST_NAME_LENGTH +
-                    " characters, received " + authorLastName.length());
+            throw new InvalidNameException(
+                    "Author last name too long. Must be at most " + Author.AUTHOR_LAST_NAME_LENGTH +
+                            " characters, received " + authorLastName.length());
     }
-    private static void checkEmptyName(String authorName) throws InvalidNameException {
-        if (authorName == null || authorName.isEmpty()) {
+
+    private static void checkEmptyName(String authorName)
+    throws InvalidNameException
+    {
+        if (authorName == null || authorName.isEmpty())
+        {
             throw new InvalidNameException("Author Name is null or empty.");
         }
     }
 
-    private static void validateAuthor(Author author) throws EntityNotFoundException, InvalidIDException, NullEntityException {
+    private static void validateAuthor(Author author)
+    throws EntityNotFoundException, InvalidIDException, NullEntityException
+    {
         checkNullAuthor(author);
         int ID = author.getAuthorID();
         if (AuthorHandler.getAuthorByID(ID, true) == null)
@@ -273,14 +330,19 @@ public class AuthorHandler {
     }
 
 
-    private static void checkNullAuthor(Author author) throws NullEntityException {
+    private static void checkNullAuthor(Author author)
+    throws NullEntityException
+    {
         if (author == null)
             throw new NullEntityException("Author is null.");
     }
 
 
-    private static void checkValidAuthorID(int authorID) throws InvalidIDException {
-        if (authorID <= 0) {
+    private static void checkValidAuthorID(int authorID)
+    throws InvalidIDException
+    {
+        if (authorID <= 0)
+        {
             throw new InvalidIDException("Invalid authorID: " + authorID);
         }
     }

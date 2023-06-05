@@ -15,10 +15,11 @@ import java.sql.SQLException;
  * @package edu.groupeighteen.librarydbms.model
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
- *
+ * <p>
  * This class handles setting up, maintaining and closing of a JDBC Connection.
  */
-public class DatabaseConnection {
+public class DatabaseConnection
+{
     private static Connection connection = null;
     //Print commands being run, default = not
     private static boolean verbose = false;
@@ -32,18 +33,24 @@ public class DatabaseConnection {
      * server: localhost
      * port: 3306
      */
-    public static Connection setup() throws SQLException, ClassNotFoundException {
+    public static Connection setup()
+    throws SQLException, ClassNotFoundException
+    {
         String url = "jdbc:mysql://localhost:3306";
         String user = null;
         String password = null;
 
-        try {
+        try
+        {
             // Read the user and password from config.json
             Gson gson = new Gson();
-            JsonElement config = gson.fromJson(new FileReader("src/main/resources/documents/config.json"), JsonElement.class);
+            JsonElement config = gson.fromJson(new FileReader("src/main/resources/documents/config.json"),
+                    JsonElement.class);
             user = config.getAsJsonObject().get("user").getAsString();
             password = config.getAsJsonObject().get("password").getAsString();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             // Handle any exceptions that might occur while reading the file
         }
 
@@ -55,13 +62,15 @@ public class DatabaseConnection {
      * and then establishes a connection to the database using the provided url, user, and password parameters.
      * If there are any errors connecting to the database, the method will throw a ClassNotFoundException
      * or SQLException.
-     * @param url the URL of the database to connect to
-     * @param user the username to use when connecting to the database
+     *
+     * @param url      the URL of the database to connect to
+     * @param user     the username to use when connecting to the database
      * @param password the password to use when connecting to the database
      * @return a Connection if successful
      */
     public static Connection connectToDatabaseServer(String url, String user, String password)
-            throws SQLException, ClassNotFoundException {
+    throws SQLException, ClassNotFoundException
+    {
         // Load the JDBC driver
         if (verbose) System.out.println("\nLoading JDBC driver...");
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -77,12 +86,17 @@ public class DatabaseConnection {
     /**
      * Closes the connection.
      */
-    public static void closeConnection() {
-        try {
-            if (connection != null) {
+    public static void closeConnection()
+    {
+        try
+        {
+            if (connection != null)
+            {
                 connection.close();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
     }
@@ -90,15 +104,18 @@ public class DatabaseConnection {
     /**
      * Getters and setters are self-explanatory.
      */
-    public static Connection getConnection() {
+    public static Connection getConnection()
+    {
         return connection;
     }
 
-    public static boolean isVerbose() {
+    public static boolean isVerbose()
+    {
         return verbose;
     }
 
-    public static void setVerbose(boolean verbose) {
+    public static void setVerbose(boolean verbose)
+    {
         DatabaseConnection.verbose = verbose;
     }
 }

@@ -4,7 +4,6 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidReceiptException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -31,8 +30,6 @@ import java.time.temporal.ChronoUnit;
  */
 public class Rental extends Entity
 {
-    //TODO-PRIO ADD RECEIPT
-
     //TODO-FUTURE implement actual receipt printing via own printer
 
     /**

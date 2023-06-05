@@ -14,7 +14,8 @@ import java.sql.SQLException;
  * @project LibraryDBMS
  * @date 2023-05-27
  */
-public class ClassificationHandler {
+public class ClassificationHandler
+{
     public static Classification getClassificationByID(int classificationID)
     {
         Classification classification = null;
@@ -25,7 +26,8 @@ public class ClassificationHandler {
         String[] params = {String.valueOf(classificationID)};
 
         //Execute statement
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params)) {
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
+        {
             ResultSet resultSet = queryResult.getResultSet();
             if (resultSet.next())
                 classification = new Classification(

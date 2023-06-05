@@ -4,7 +4,6 @@ Möjlighet att lägga till, ändra och ta bort objekt i systemet.
 Sökfunktion för att söka efter objekt baserat på titel, författare/regissör, ISBN eller ämnesord/filmgenre.
 Hantering av utlåning och återlämning av objekt, inklusive inloggning och utskrift av kvitto.
 En lista som visar objekt som inte har återlämnats i tid.
-Möjlighet för bibliotekarien att hantera redan existerande objekt och korrigera data om objektet.
 
 
 Generella krav:

@@ -30,8 +30,8 @@ public class ItemTable extends JTable
     /**
      * Constructs an ItemTable with the specified model, items, and previous GUI.
      *
-     * @param model the ItemTableModel that the JTable will use.
-     * @param items the list of Item objects for which "View" and "Rent" buttons are to be created.
+     * @param model       the ItemTableModel that the JTable will use.
+     * @param items       the list of Item objects for which "View" and "Rent" buttons are to be created.
      * @param previousGUI the GUI from which the ItemTable is created.
      */
     public ItemTable(ItemTableModel model, List<Item> items, GUI previousGUI)
@@ -51,7 +51,7 @@ public class ItemTable extends JTable
      * columns and the row index is less than the number of editors.
      * Otherwise, it returns the default cell editor.
      *
-     * @param row the row index of the cell being edited.
+     * @param row    the row index of the cell being edited.
      * @param column the column index of the cell being edited.
      * @return the appropriate TableCellEditor for the given cell.
      */

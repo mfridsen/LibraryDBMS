@@ -170,9 +170,9 @@ public class ItemHandlerUtils
      *
      * @param item the item to retrieve the old title for
      * @return the old title of the item
-     * @throws InvalidIDException         if the item ID is invalid
-     * @throws EntityNotFoundException   if the item is not found in the database
-     * @throws RetrievalException        if an error occurs during retrieval
+     * @throws InvalidIDException      if the item ID is invalid
+     * @throws EntityNotFoundException if the item is not found in the database
+     * @throws RetrievalException      if an error occurs during retrieval
      */
     static String retrieveOldTitle(Item item)
     throws InvalidIDException, EntityNotFoundException, RetrievalException
@@ -190,9 +190,9 @@ public class ItemHandlerUtils
      *
      * @param item the item to retrieve the old barcode for
      * @return the old barcode of the item
-     * @throws InvalidIDException         if the item ID is invalid
-     * @throws RetrievalException        if an error occurs during retrieval
-     * @throws EntityNotFoundException   if the item is not found in the database
+     * @throws InvalidIDException      if the item ID is invalid
+     * @throws RetrievalException      if an error occurs during retrieval
+     * @throws EntityNotFoundException if the item is not found in the database
      */
     static String retrieveOldBarcode(Item item)
     throws InvalidIDException, RetrievalException, EntityNotFoundException

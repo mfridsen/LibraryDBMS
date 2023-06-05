@@ -11,8 +11,10 @@ package edu.groupeighteen.librarydbms.model.db;
  * When we can (based on the time and resources available),
  * But not before.
  */
-public class SQLFormatter {
-    public static void printFormattedSQL(String sql) {
+public class SQLFormatter
+{
+    public static void printFormattedSQL(String sql)
+    {
         String formattedSQL = sql.replaceAll("  +", "\n");
         System.out.println(formattedSQL);
     }

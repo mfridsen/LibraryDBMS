@@ -71,21 +71,21 @@ public class Film extends Item
     /**
      * Retrieval Constructor. Constructs a Film object with the given parameters.
      *
-     * @param deleted            true if the film is deleted, false otherwise
-     * @param itemID             the ID of the film
-     * @param title              the title of the film
-     * @param type               the type of the film
-     * @param barcode            the barcode of the film
-     * @param authorID           the ID of the author
-     * @param classificationID   the ID of the classification
-     * @param authorFirstname    Name of the author or director of the item.
-     * @param authorLastname     Last name of the author or director of the item.
-     * @param classificationName the name of the classification
-     * @param allowedRentalDays  the number of allowed rental days
-     * @param available          true if the film is available, false otherwise
-     * @param ageRating          the age rating of the film
-     * @param countryOfProduction   the country of the film's publisher
-     * @param listOfActors       the list of actors in the film
+     * @param deleted             true if the film is deleted, false otherwise
+     * @param itemID              the ID of the film
+     * @param title               the title of the film
+     * @param type                the type of the film
+     * @param barcode             the barcode of the film
+     * @param authorID            the ID of the author
+     * @param classificationID    the ID of the classification
+     * @param authorFirstname     Name of the author or director of the item.
+     * @param authorLastname      Last name of the author or director of the item.
+     * @param classificationName  the name of the classification
+     * @param allowedRentalDays   the number of allowed rental days
+     * @param available           true if the film is available, false otherwise
+     * @param ageRating           the age rating of the film
+     * @param countryOfProduction the country of the film's publisher
+     * @param listOfActors        the list of actors in the film
      * @throws ConstructionException if the construction fails
      */
     public Film(boolean deleted, int itemID, String title, ItemType type, String barcode, int authorID,
@@ -127,7 +127,8 @@ public class Film extends Item
      *
      * @return the age rating
      */
-    public int getAgeRating() {
+    public int getAgeRating()
+    {
         return ageRating;
     }
 
@@ -137,7 +138,9 @@ public class Film extends Item
      * @param ageRating the age rating to set
      * @throws InvalidAgeRatingException if the age rating is invalid
      */
-    public void setAgeRating(int ageRating) throws InvalidAgeRatingException {
+    public void setAgeRating(int ageRating)
+    throws InvalidAgeRatingException
+    {
         if (ageRating < 0)
             throw new InvalidAgeRatingException("Cannot set an age rating lower than 0.");
         if (ageRating > FILM_MAX_AGE_RATING)
@@ -150,7 +153,8 @@ public class Film extends Item
      *
      * @return the publisher country
      */
-    public String getCountryOfProduction() {
+    public String getCountryOfProduction()
+    {
         return countryOfProduction;
     }
 
@@ -160,7 +164,9 @@ public class Film extends Item
      * @param countryOfProduction the publisher country to set
      * @throws InvalidNameException if the publisher country name is invalid
      */
-    public void setCountryOfProduction(String countryOfProduction) throws InvalidNameException {
+    public void setCountryOfProduction(String countryOfProduction)
+    throws InvalidNameException
+    {
         if (countryOfProduction != null && countryOfProduction.length() > FILM_COUNTRY_LENGTH)
             throw new InvalidNameException("Film country name cannot be greater than " + FILM_COUNTRY_LENGTH + ".");
         this.countryOfProduction = countryOfProduction;
@@ -171,7 +177,8 @@ public class Film extends Item
      *
      * @return the list of actors
      */
-    public String getListOfActors() {
+    public String getListOfActors()
+    {
         return listOfActors;
     }
 
@@ -180,7 +187,8 @@ public class Film extends Item
      *
      * @param listOfActors the list of actors to set
      */
-    public void setListOfActors(String listOfActors) {
+    public void setListOfActors(String listOfActors)
+    {
         this.listOfActors = listOfActors;
     }
 }

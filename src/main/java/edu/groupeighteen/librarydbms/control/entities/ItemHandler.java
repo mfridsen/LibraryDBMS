@@ -5,13 +5,13 @@ import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.*;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
