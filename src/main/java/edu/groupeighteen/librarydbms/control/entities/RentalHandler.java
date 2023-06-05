@@ -951,11 +951,12 @@ public class RentalHandler
      * @throws edu.groupeighteen.librarydbms.model.exceptions.NullEntityException     if the rental is null.
      * @throws edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException if a rental with the provided rentalID doesn't exist in the database.
      * @throws InvalidIDException                                                     if the provided rentalID is invalid (less than or equal to 0).
+     *
+     * TODO add deletion checks
      */
     private static void validateRental(Rental rentalToValidate)
     throws
-    edu.groupeighteen.librarydbms.model.exceptions.NullEntityException,
-    edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException, InvalidIDException
+    NullEntityException, EntityNotFoundException, InvalidIDException
     {
         if (rentalToValidate == null)
             throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException(

@@ -28,6 +28,178 @@ import java.time.temporal.ChronoUnit;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UpdateRentalTest extends BaseRentalHandlerTest
 {
+
+    /**
+     * Tests the UpdateRental method by changing the userID.
+     */
+    @Test
+    @Order(1)
+    void testUpdateRental_userIDChanged()
+    {
+        System.out.println("\n1: Testing UpdateRental method by changing userID...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method by changing the itemID.
+     */
+    @Test
+    @Order(2)
+    void testUpdateRental_itemIDChanged()
+    {
+        System.out.println("\n2: Testing UpdateRental method by changing itemID...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method by changing the rentalDate.
+     */
+    @Test
+    @Order(3)
+    void testUpdateRental_rentalDateChanged()
+    {
+        System.out.println("\n3: Testing UpdateRental method by changing rentalDate...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method by changing the rentalDueDate.
+     */
+    @Test
+    @Order(4)
+    void testUpdateRental_rentalDueDateChanged()
+    {
+        System.out.println("\n4: Testing UpdateRental method by changing rentalDueDate...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method by changing the rentalReturnDate.
+     */
+    @Test
+    @Order(5)
+    void testUpdateRental_rentalReturnDateChanged()
+    {
+        System.out.println("\n5: Testing UpdateRental method by changing rentalReturnDate...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method by changing the receipt.
+     */
+    @Test
+    @Order(6)
+    void testUpdateRental_receiptChanged()
+    {
+        System.out.println("\n6: Testing UpdateRental method by changing receipt...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method by changing all fields.
+     */
+    @Test
+    @Order(7)
+    void testUpdateRental_allFieldsChanged()
+    {
+        System.out.println("\n7: Testing UpdateRental method by changing all fields...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method with null rental.
+     */
+    @Test
+    @Order(8)
+    void testUpdateRental_nullRental()
+    {
+        System.out.println("\n8: Testing UpdateRental method with null rental...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method with a valid rental that has been soft deleted.
+     */
+    @Test
+    @Order(9)
+    void testUpdateRental_validRentalSoftDeleted()
+    {
+        System.out.println("\n9: Testing UpdateRental method with a valid rental that has been soft deleted...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method with a valid rental that has been recovered.
+     */
+    @Test
+    @Order(10)
+    void testUpdateRental_validRentalRecovered()
+    {
+        System.out.println("\n10: Testing UpdateRental method with a valid rental that has been recovered...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method with a valid rental that has been hard deleted.
+     */
+    @Test
+    @Order(11)
+    void testUpdateRental_validRentalHardDeleted()
+    {
+        System.out.println("\n11: Testing UpdateRental method with a valid rental that has been hard deleted...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+    /**
+     * Tests the UpdateRental method with a valid rental that does not exist.
+     */
+    @Test
+    @Order(12)
+    void testUpdateRental_validNonExistingRental()
+    {
+        System.out.println("\n12: Testing UpdateRental method with a valid rental that does not exist...");
+
+        //TODO test implementation here
+
+        System.out.println("\nTest finished.");
+    }
+
+
+
+
     /**
      * Test case for updateRental method when the rental to update is null.
      * <p>
@@ -130,7 +302,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
         try
         {
             // Create a rental and save it
-            Rental rentalToUpdate = RentalHandler.createNewRental(1, 1);
+            Rental rentalToUpdate = RentalHandler.createNewRental(3, 4);
             assertNotNull(rentalToUpdate);
 
             // Store the original values
@@ -182,7 +354,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
         try
         {
             // Create a rental and save it
-            Rental rentalToUpdate = RentalHandler.createNewRental(1, 1);
+            Rental rentalToUpdate = RentalHandler.createNewRental(3, 4);
             assertNotNull(rentalToUpdate);
 
             // Store the original values
@@ -234,7 +406,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
         try
         {
             // Create a rental and save it
-            Rental rentalToUpdate = RentalHandler.createNewRental(1, 1);
+            Rental rentalToUpdate = RentalHandler.createNewRental(3, 4);
             assertNotNull(rentalToUpdate);
 
             // Store the original values
@@ -285,7 +457,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
         try
         {
             // Create a rental and save it
-            Rental rentalToUpdate = RentalHandler.createNewRental(1, 1);
+            Rental rentalToUpdate = RentalHandler.createNewRental(3, 4);
             assertNotNull(rentalToUpdate);
 
             // Store the original values

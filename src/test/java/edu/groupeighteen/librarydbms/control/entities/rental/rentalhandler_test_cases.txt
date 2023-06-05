@@ -1,0 +1,21 @@
+
+
+//UpdateRental:
+
+    ------------Valid--------------
+    //userID Changed
+    //itemID Changed
+    //rentalDate Changed
+    //rentalDueDate Changed
+    //rentalReturnDate Changed
+    //receipt Changed
+
+    //All Fields Changed
+
+    -----------Invalid-------------
+
+    //Null rental
+    //Valid Rental Soft Deleted
+    //Valid Rental Recovered
+    //Valid Rental Hard Deleted
+    //Valid Non Existing Rental

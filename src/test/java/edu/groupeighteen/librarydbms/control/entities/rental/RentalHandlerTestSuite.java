@@ -18,7 +18,7 @@ import org.junit.platform.suite.api.Suite;
         GetRentalByIDTest.class,
         GetOverdueRentalsTest.class,
         DeleteAndRecoverRentalTest.class,
-        //UpdateRentalTest.class,
+        UpdateRentalTest.class,
 
 
         //GetRentalsByRentalDayTest.class,
