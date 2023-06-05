@@ -217,7 +217,7 @@ public class RentalHandler
         {
             //Validate input
             if (rental == null)
-                throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException(
+                throw new NullEntityException(
                         "Error saving rental: rental is null.");
 
             //Prepare query
@@ -248,7 +248,7 @@ public class RentalHandler
                 if (generatedKeys.next()) return generatedKeys.getInt(1);
             }
         }
-        catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | SQLException e)
+        catch (NullEntityException | SQLException e)
         {
             ExceptionHandler.HandleFatalException("Failed to save Rental due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -482,7 +482,7 @@ public class RentalHandler
         {
             validateRental(updatedRental);
         }
-        catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
         {
             throw new UpdateException("Rental Update failed: " + e.getMessage(), e);
         }
@@ -522,7 +522,7 @@ public class RentalHandler
         {
             validateRental(rentalToDelete);
         }
-        catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
+        catch (EntityNotFoundException | InvalidIDException | NullEntityException e)
         {
             throw new DeletionException("Rental Delete failed: " + e.getMessage(), e);
         }
@@ -562,7 +562,7 @@ public class RentalHandler
         {
             validateRental(rentalToRecover);
         }
-        catch (edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException | edu.groupeighteen.librarydbms.model.exceptions.NullEntityException e)
+        catch (EntityNotFoundException | InvalidIDException | NullEntityException e)
         {
             throw new RecoveryException("Rental Recovery failed: " + e.getMessage(), e);
         }
@@ -597,7 +597,7 @@ public class RentalHandler
         {
             validateRental(rentalToDelete);
         }
-        catch (edu.groupeighteen.librarydbms.model.exceptions.NullEntityException | edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException | InvalidIDException e)
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
         {
             throw new DeletionException("Rental Delete failed: " + e.getMessage(), e);
         }
@@ -795,12 +795,12 @@ public class RentalHandler
      *
      * @param userID the id of the User to be retrieved
      * @return the User object corresponding to the given userID
-     * @throws edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException if there's no User with the given userID
-     * @throws InvalidIDException                                                     if the userID is invalid
+     * @throws EntityNotFoundException if there's no User with the given userID
+     * @throws InvalidIDException      if the userID is invalid
      */
     private static User getValidatedUser(int userID)
     throws
-    edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException, InvalidIDException,
+    EntityNotFoundException, InvalidIDException,
     RentalNotAllowedException
     {
         if (verbose)
@@ -810,14 +810,14 @@ public class RentalHandler
 
         //Not null
         if (user == null)
-            throw new edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException(
+            throw new EntityNotFoundException(
                     "User with ID " + userID + " not found.");
         if (verbose)
             System.out.println("Found non-null user with ID " + userID);
 
         //Not deleted
         if (user.isDeleted())
-            throw new edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException(
+            throw new EntityNotFoundException(
                     "User with ID " + userID + " found but is deleted.");
         if (verbose)
             System.out.println("User with ID " + userID + " is not deleted: " + !user.isDeleted());
@@ -948,10 +948,10 @@ public class RentalHandler
      * A rental is considered valid if it is not null and it exists in the database (has a valid ID).
      *
      * @param rentalToValidate the rental object to validate.
-     * @throws edu.groupeighteen.librarydbms.model.exceptions.NullEntityException     if the rental is null.
-     * @throws edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException if a rental with the provided rentalID doesn't exist in the database.
-     * @throws InvalidIDException                                                     if the provided rentalID is invalid (less than or equal to 0).
-     *
+     * @throws NullEntityException     if the rental is null.
+     * @throws EntityNotFoundException if a rental with the provided rentalID doesn't exist in the database.
+     * @throws InvalidIDException      if the provided rentalID is invalid (less than or equal to 0).
+     *                                 <p>
      * TODO add deletion checks
      */
     private static void validateRental(Rental rentalToValidate)
@@ -959,10 +959,10 @@ public class RentalHandler
     NullEntityException, EntityNotFoundException, InvalidIDException
     {
         if (rentalToValidate == null)
-            throw new edu.groupeighteen.librarydbms.model.exceptions.NullEntityException(
+            throw new NullEntityException(
                     "Error validating rental: rental is null.");
         if (getRentalByID(rentalToValidate.getRentalID()) == null)
-            throw new edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException(
+            throw new EntityNotFoundException(
                     "Error validating rental: rental with ID " + rentalToValidate.getRentalID() + " not found.");
     }
 

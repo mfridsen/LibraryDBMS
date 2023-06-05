@@ -39,3 +39,12 @@ Numbers:
     Too Large
     <Any other numbers that are invalid (meaning too low < num < too large>
 
+
+Exceptions:
+
+    When multiple exceptions are caught and rethrown by a method:
+
+    Exception e = assertThrows(CreationException.class, () -> UserHandler.createNewUser(null,
+                        validPassword, userType, validEmail));
+    assertTrue(e.getCause() instanceof InvalidNameException);
+
