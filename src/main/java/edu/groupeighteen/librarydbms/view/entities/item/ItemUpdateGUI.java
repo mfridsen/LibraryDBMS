@@ -2,27 +2,33 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
+import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidAgeRatingException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidItemTypeException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jesper Truedsson
  * @project LibraryDBMS
  * @date 2023-05-21
  */
-public class ItemUpdateGUI extends GUI {
-    //The item object to update
-    private final Item olditem;
-    //The new item object
-    private Item newitem;
+public class ItemUpdateGUI extends GUI
+{
+    //TODO-prio improve exception handling
+
     //We need the table to be a member variable in order to access its data via the buttons
     private JTable itemUpdateTable;
     //The panel containing the scroll pane which displays the item data
@@ -35,9 +41,9 @@ public class ItemUpdateGUI extends GUI {
      * @param itemToUpdate The item object that the user wants to update. The initial fields of the
      *                     GUI will be populated with the details of this item.
      */
-    public ItemUpdateGUI(GUI previousGUI, Item itemToUpdate) {
-        super(previousGUI, "itemUpdateGUI for itemID = " + itemToUpdate.getItemID(), null);
-        this.olditem = itemToUpdate;
+    public ItemUpdateGUI(GUI previousGUI, Item itemToUpdate)
+    {
+        super(previousGUI, "itemUpdateGUI for itemID = " + itemToUpdate.getItemID(), itemToUpdate);
         setupScrollPane();
         setupPanels();
         displayGUI();
@@ -56,7 +62,8 @@ public class ItemUpdateGUI extends GUI {
      * @return JButton[] An array containing the 'Reset' and 'Confirm Update' buttons.
      */
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton resetCellsButton = setupResetButton();
         JButton confirmUpdateButton = setupConfirmButton();
         return new JButton[]{resetCellsButton, confirmUpdateButton};
@@ -70,11 +77,13 @@ public class ItemUpdateGUI extends GUI {
      *
      * @return JButton The reset button configured with the appropriate action listener.
      */
-    private JButton setupResetButton() {
+    private JButton setupResetButton()
+    {
         //Clears the data cells
         JButton resetCellsButton = new JButton("Reset");
         //Reset the editable cells //TODO-bug doesn't clear selected field
-        resetCellsButton.addActionListener(e -> {
+        resetCellsButton.addActionListener(e ->
+        {
             resetCells();
         });
         return resetCellsButton;
@@ -85,10 +94,14 @@ public class ItemUpdateGUI extends GUI {
      * <p>
      * Note: This method assumes the third column (index 2) of the table is the only column that needs to be reset.
      */
-    private void resetCells() {
-        for (int row = 0; row < itemUpdateTable.getRowCount(); row++) {
-            for (int col = 0; col < itemUpdateTable.getColumnCount(); col++) {
-                if (col == 2) { //Assuming the 3rd column is the editable column
+    private void resetCells()
+    {
+        for (int row = 0; row < itemUpdateTable.getRowCount(); row++)
+        {
+            for (int col = 0; col < itemUpdateTable.getColumnCount(); col++)
+            {
+                if (col == 2)
+                { //Assuming the 3rd column is the editable column
                     itemUpdateTable.setValueAt("", row, col);
                 }
             }
@@ -115,54 +128,278 @@ public class ItemUpdateGUI extends GUI {
      *
      * @return JButton The 'Confirm Update' button configured with the appropriate action listener.
      */
-    private JButton setupConfirmButton() {
+    private JButton setupConfirmButton()
+    {
+        //Recast entity into item
+        Item oldItem = (Item) entity;
+
+        //Reset error message
+        messageLabel.setText("");
+
         //Updates itemToUpdate and opens a new itemGUI displaying the updated item object
         JButton confirmUpdateButton = new JButton("Confirm Update");
-        confirmUpdateButton.addActionListener(e -> {
-            //Duplicate olditem
-            //newitem = new Item(olditem);
+        confirmUpdateButton.addActionListener(e ->
+        {
+            Item newItem;
 
-            //Get the new values from the table
-            String userID = (String) itemUpdateTable.getValueAt(0, 2);
-            String username = (String) itemUpdateTable.getValueAt(1, 2);
-            String itemID = (String) itemUpdateTable.getValueAt(2, 2);
-            String itemTitle = (String) itemUpdateTable.getValueAt(3, 2);
-            //Update the itemToUpdate object. Only update if new value is not null or empty
-            try {
-                if (userID != null && !userID.isEmpty()) {
-                    newitem.setItemID(Integer.parseInt(userID));
-                }
-                //No parsing required for username, it is a string
-                if (username != null && !username.isEmpty()) {
-                    newitem.setTitle(username);
-                }
-                if (itemID != null && !itemID.isEmpty()) {
-                    newitem.setItemID(Integer.parseInt(itemID));
-                }
-                //No parsing required for itemTitle, it is a string
-                if (itemTitle != null && !itemTitle.isEmpty()) {
-                    newitem.setTitle(itemTitle);
-                }
-            } catch (NumberFormatException | InvalidIDException nfe) {
-                System.err.println("One of the fields that requires a number received an invalid input. User ID:" + userID + ", Item ID: " + itemID);
-            } catch (DateTimeParseException | InvalidTitleException dtpe) {
-                System.err.println("The date field received an invalid input. Please ensure it is in the correct format.");
+            //Duplicate oldItem
+            if (oldItem instanceof Literature)
+            {
+                newItem = retrieveAndSetLiteratureObject((Literature) oldItem);
+            }
+            else
+            {
+                newItem = retrieveAndSetFilmObject((Film) oldItem);
             }
 
-            //Now call the update method
-            try {
-                ItemHandler.updateItem(olditem);
-                dispose();
-                new ItemGUI(this, newitem);
-            } catch (NullEntityException | EntityNotFoundException sqle) {
-                sqle.printStackTrace();
-                LibraryManager.exit(1);
-            } catch (IllegalArgumentException ile) {
-                System.err.println(ile.getMessage()); //TODO-test //TODO-exception handle better
-                resetCells();
+            // Now call the update method
+            if (newItem != null) {
+                try
+                {
+                    ItemHandler.updateItem(newItem);
+                    dispose();
+                    new ItemGUI(this, newItem);
+                }
+                catch (NullEntityException | EntityNotFoundException sqle)
+                {
+                    sqle.printStackTrace();
+                    LibraryManager.exit(1);
+                }
+                catch (IllegalArgumentException ile)
+                {
+                    System.err.println(ile.getMessage()); //TODO-test //TODO-exception handle better
+                    resetCells();
+                }
             }
         });
         return confirmUpdateButton;
+    }
+
+    /**
+     * This method retrieves a Literature object and sets its properties based on the values
+     * entered into the table. If an invalid value is entered, an error message will be displayed.
+     *
+     * @param oldItem the original Literature object
+     * @return the updated Literature object, null if any errors were encountered
+     */
+    private Literature retrieveAndSetLiteratureObject(Literature oldItem)
+    {
+        Literature newItem = new Literature(oldItem);
+
+        //Used to collect error messages for display
+        StringBuilder messageBuilder = new StringBuilder();
+
+        //Get the new values from the table and update the itemToUpdate object.
+        //Only update if new value is not null or empty
+        try
+        {
+            String itemTitle = (String) itemUpdateTable.getValueAt(1, 2);
+            if (itemTitle != null && !itemTitle.isEmpty())
+                newItem.setTitle(itemTitle);
+        }
+        catch (InvalidTitleException e)
+        {
+            messageBuilder.append("Invalid title: ").append(e.getMessage()).append("\n");
+        }
+
+        //Type
+        try
+        {
+            String itemType = (String) itemUpdateTable.getValueAt(2, 2);
+            if (itemType != null && !itemType.isEmpty())
+                newItem.setType(Item.ItemType.valueOf(itemType));
+        }
+        catch (InvalidItemTypeException e)
+        {
+            messageBuilder.append("Invalid itemType: ").append(e.getMessage()).append("\n");
+        }
+
+        //Classification
+        try
+        {
+            String classificationName = (String) itemUpdateTable.getValueAt(3, 2);
+            if (classificationName != null && !classificationName.isEmpty())
+                newItem.setClassificationName(classificationName);
+        }
+        catch (Exception e)
+        {
+            messageBuilder.append("Invalid classification name: ").append(e.getMessage()).append("\n");
+        }
+
+        //Classification
+        String classificationName = (String) itemUpdateTable.getValueAt(3, 2);
+        if (classificationName != null && !classificationName.isEmpty())
+            newItem.setClassificationName(classificationName);
+
+        //Author first name
+        String authorFirstName = (String) itemUpdateTable.getValueAt(4, 2);
+        if (authorFirstName != null && !authorFirstName.isEmpty())
+            newItem.setAuthorFirstname(authorFirstName);
+
+        //Author last name
+        String authorLastName = (String) itemUpdateTable.getValueAt(5, 2);
+        if (authorLastName != null && !authorLastName.isEmpty())
+            newItem.setAuthorLastname(authorLastName);
+
+        //ISBN
+        try
+        {
+            String ISBN = (String) itemUpdateTable.getValueAt(6, 2);
+            if (ISBN != null && !ISBN.isEmpty())
+                newItem.setISBN(ISBN);
+        }
+        catch (InvalidISBNException e)
+        {
+            messageBuilder.append("Invalid ISBN: ").append(e.getMessage()).append("\n");
+        }
+
+        //Barcode
+        try
+        {
+            String barcode = (String) itemUpdateTable.getValueAt(7,2);
+            if (barcode != null && !barcode.isEmpty())
+                newItem.setBarcode(barcode);
+        }
+        catch (InvalidBarcodeException e)
+        {
+            messageBuilder.append("Invalid barcode: ").append(e.getMessage()).append("\n");
+        }
+
+        //Available
+        String availableStr = (String) itemUpdateTable.getValueAt(8, 2);
+        if (availableStr != null && !availableStr.isEmpty())
+        {
+            boolean available = Boolean.parseBoolean(availableStr);
+            newItem.setAvailable(available);
+        }
+
+        // Build error message
+        String errorMessage = messageBuilder.toString();
+        messageLabel.setText(errorMessage);
+
+        // If there were validation errors, return null
+        if (!errorMessage.isEmpty()) {
+            return null;
+        }
+
+        return newItem;
+    }
+
+    /**
+     * This method retrieves a Film object and sets its properties based on the values
+     * entered into the table. If an invalid value is entered, an error message will be displayed.
+     *
+     * @param oldItem the original Film object
+     * @return the updated Film object, null if any errors were encountered
+     */
+    private Film retrieveAndSetFilmObject(Film oldItem)
+    {
+        Film newItem = new Film(oldItem);
+
+        //Used to collect error messages for display
+        StringBuilder messageBuilder = new StringBuilder();
+
+        //Get the new values from the table and update the itemToUpdate object.
+        //Only update if new value is not null or empty
+        try
+        {
+            String itemTitle = (String) itemUpdateTable.getValueAt(1, 2);
+            if (itemTitle != null && !itemTitle.isEmpty())
+                newItem.setTitle(itemTitle);
+        }
+        catch (InvalidTitleException e)
+        {
+            messageBuilder.append("Invalid title: ").append(e.getMessage()).append("\n");
+        }
+
+        //Type
+        try
+        {
+            String itemType = (String) itemUpdateTable.getValueAt(2, 2);
+            if (itemType != null && !itemType.isEmpty())
+                newItem.setType(Item.ItemType.valueOf(itemType));
+        }
+        catch (InvalidItemTypeException e)
+        {
+            messageBuilder.append("Invalid itemType: ").append(e.getMessage()).append("\n");
+        }
+
+        //Classification
+        try
+        {
+            String classificationName = (String) itemUpdateTable.getValueAt(3, 2);
+            if (classificationName != null && !classificationName.isEmpty())
+                newItem.setClassificationName(classificationName);
+        }
+        catch (Exception e)
+        {
+            messageBuilder.append("Invalid classification name: ").append(e.getMessage()).append("\n");
+        }
+
+        //Author first name
+        String authorFirstName = (String) itemUpdateTable.getValueAt(4, 2);
+        if (authorFirstName != null && !authorFirstName.isEmpty())
+            newItem.setAuthorFirstname(authorFirstName);
+
+        //Author last name
+        String authorLastName = (String) itemUpdateTable.getValueAt(5, 2);
+        if (authorLastName != null && !authorLastName.isEmpty())
+            newItem.setAuthorLastname(authorLastName);
+
+        //Age rating
+        try
+        {
+            Object ageRatingValue = itemUpdateTable.getValueAt(6, 2);
+            if (ageRatingValue != null)
+                newItem.setAgeRating((Integer) ageRatingValue);
+        }
+        catch (InvalidAgeRatingException e)
+        {
+            messageBuilder.append("Invalid age rating: ").append(e.getMessage()).append("\n");
+        }
+
+        //Country of production
+        try
+        {
+            String countryOfProduction = (String) itemUpdateTable.getValueAt(7, 2);
+            if (countryOfProduction != null && !countryOfProduction.isEmpty())
+                newItem.setCountryOfProduction(countryOfProduction);
+        }
+        catch (InvalidNameException e)
+        {
+            messageBuilder.append("Invalid country of production: ").append(e.getMessage()).append("\n");
+        }
+
+        //List of actors
+        String listOfActors = (String) itemUpdateTable.getValueAt(8, 2);
+        if (listOfActors != null && !listOfActors.isEmpty())
+            newItem.setListOfActors(listOfActors);
+
+        //Barcode
+        try
+        {
+            String barcode = (String) itemUpdateTable.getValueAt(9,2);
+            if (barcode != null && !barcode.isEmpty())
+                newItem.setBarcode(barcode);
+        }
+        catch (InvalidBarcodeException e)
+        {
+            messageBuilder.append("Invalid barcode: ").append(e.getMessage()).append("\n");
+        }
+
+        //Available
+        newItem.setAvailable((Boolean) itemUpdateTable.getValueAt(10, 2));
+
+        // Build error message
+        String errorMessage = messageBuilder.toString();
+        messageLabel.setText(errorMessage);
+
+        // If there were validation errors, return null
+        if (!errorMessage.isEmpty()) {
+            return null;
+        }
+
+        return newItem;
     }
 
     /**
@@ -177,20 +414,47 @@ public class ItemUpdateGUI extends GUI {
      * After the table is set up, it is added to a scroll pane, which in turn is added to a panel
      * that uses a BorderLayout. The scroll pane is placed in the center of this panel.
      */
-    protected void setupScrollPane() {
+    protected void setupScrollPane()
+    {
+        //Recast entity into item
+        Item olditem = (Item) entity;
+
         //Define the names of the columns for the table.
         String[] columnNames = {"Property", "Old Value", "New Value"};
 
-        //Gather the data for the table. Each row corresponds to a property of the item.
-        //The first column is the name of the property, the second column is its old value,
-        //and the third column (which is initially empty) will hold the new value.
-        Object[][] data = {
-                {"Item ID", olditem.getItemID(), ""},
-                {"Item Title", olditem.getTitle(), ""},
-        };
+        //Gather common data
+        List<Object[]> data = new ArrayList<>();
+        data.add(new Object[]{"Item ID", olditem.getItemID(), ""});
+        data.add(new Object[]{"Item Title", olditem.getTitle(), ""});
+        data.add(new Object[]{"Item Type", getItemTypeString(olditem.getType()), ""});
+        data.add(new Object[]{"Classification", olditem.getClassificationName(), ""});
+        data.add(new Object[]{"Author/Director First Name",olditem.getAuthorFirstname()});
+        data.add(new Object[]{"Author/Director Last Name", olditem.getAuthorLastname()});
+
+        //Check if item is an instance of Literature
+        if (olditem instanceof Literature)
+        {
+            Literature literatureItem = (Literature) olditem;
+            data.add(new Object[]{"ISBN", literatureItem.getISBN(), ""});
+        }
+        //Check if item is an instance of Film
+        else if (olditem instanceof Film)
+        {
+            Film filmItem = (Film) olditem;
+            data.add(new Object[]{"Age Rating", filmItem.getAgeRating(), ""});
+            data.add(new Object[]{"Country of Production", filmItem.getCountryOfProduction(), ""});
+            data.add(new Object[]{"List of Actors", String.join(", ", filmItem.getListOfActors()), ""});
+        }
+
+        //Add final row(s)
+        data.add(new Object[]{"Barcode", olditem.getBarcode(), ""});
+        data.add(new Object[]{"Available", olditem.isAvailable(), ""});
+
+        //Convert list to an array for final data structure
+        Object[][] dataArray = data.toArray(new Object[0][]);
 
         //Use the column names and data to create a new table with editable cells.
-        itemUpdateTable = setupTableWithEditableCells(columnNames, data, 2);
+        itemUpdateTable = setupTableWithEditableCells(columnNames, dataArray, 2);
 
         //Create a new scroll pane and add the table to it.
         JScrollPane itemScrollPane = new JScrollPane();
@@ -198,7 +462,28 @@ public class ItemUpdateGUI extends GUI {
 
         //Create a new panel with a BorderLayout and add the scroll pane to the center of it.
         scrollPanePanel = new JPanel(new BorderLayout());
+        scrollPanePanel.add(messageLabel, BorderLayout.NORTH);
         scrollPanePanel.add(itemScrollPane, BorderLayout.CENTER);
+    }
+
+    /**
+     * Get the string representation of an Item type.
+     *
+     * @param type the type of the Item.
+     * @return the string representation of the type.
+     */
+    private String getItemTypeString(Item.ItemType type)
+    {
+        String typeString = null;
+        switch (type)
+        {
+            case REFERENCE_LITERATURE -> typeString = "Reference Literature";
+            case MAGAZINE -> typeString = "Magazine";
+            case FILM -> typeString = "Film";
+            case COURSE_LITERATURE -> typeString = "Course Literature";
+            case OTHER_BOOKS -> typeString = "Book";
+        }
+        return typeString;
     }
 
     /**
@@ -208,7 +493,8 @@ public class ItemUpdateGUI extends GUI {
      * to the north area (top) of the GUIPanel.
      */
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         //Add the scroll pane panel to the north area (top) of the GUIPanel.
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
     }

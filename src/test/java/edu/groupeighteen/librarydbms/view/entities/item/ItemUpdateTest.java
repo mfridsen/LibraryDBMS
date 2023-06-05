@@ -1,5 +1,9 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,20 +17,17 @@ import org.junit.Test;
  * Unit Test for the ItemUpdate class.
  */
 public class ItemUpdateTest {
-    private static final String testClassTextBlock = """
-               ---------------------------
-                Testing ItemUpdate Class(es) \s
-               ---------------------------\s
-            """;
-
-    static {
-        System.out.println("\n" + testClassTextBlock);
+    public static void main(String[] args) {
+        LibraryManager.setup();
+        testMethodOne();
     }
 
-
-    @Test
-    public void testItemUpdate() {
-        System.out.println("No test implemented here yet!");
-        // Write your code here
+    private static void testMethodOne()
+    {
+        try {
+            new ItemUpdateGUI(null, ItemHandler.getItemByID(1));
+        } catch (InvalidIDException | RetrievalException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

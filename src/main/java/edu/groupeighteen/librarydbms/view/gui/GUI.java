@@ -36,6 +36,11 @@ public abstract class GUI extends JFrame {
     protected Entity entity;
 
     /**
+     * JLabel for displaying login messages.
+     */
+    protected JLabel messageLabel;
+
+    /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
      *
      * @param previousGUI the previous GUI object.
@@ -45,6 +50,7 @@ public abstract class GUI extends JFrame {
         this.previousGUI = previousGUI;
         this.setTitle(title);
         this.entity = entity;
+        messageLabel = new JLabel();
         GUIPanel = new JPanel(new BorderLayout()); //To achieve the preferred layout, BorderLayout is needed
         buttonPanel = new JPanel(); //The previous button will always be added to the button panel
         setupPreviousGUIButton();

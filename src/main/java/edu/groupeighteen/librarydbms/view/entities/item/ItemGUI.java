@@ -129,7 +129,8 @@ public class ItemGUI extends GUI
         data.add(new Object[]{"Item Title", item.getTitle()});
         data.add(new Object[]{"Item Type", getItemTypeString(item.getType())});
         data.add(new Object[]{"Classification", item.getClassificationName()});
-        data.add(new Object[]{"Author/Director", item.getAuthorFirstname() + " " + item.getAuthorLastname()});
+        data.add(new Object[]{"Author/Director First Name",item.getAuthorFirstname()});
+        data.add(new Object[]{"Author/Director Last Name", item.getAuthorLastname()});
 
         //Check if item is an instance of Literature
         if (item instanceof Literature)
