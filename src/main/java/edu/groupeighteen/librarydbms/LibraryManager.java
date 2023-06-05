@@ -14,13 +14,15 @@ import java.sql.SQLException;
  * @contact matfir-1@student.ltu.se
  * @date 4/5/2023
  */
-public class LibraryManager {
-
+public class LibraryManager
+{
     public static final String databaseName = "lilla_biblioteket";
     private static User currentUser = null;
 
     //TODO clean up exceptions
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args)
+    throws SQLException
+    {
         //Perform initialization work
         setup();
 
@@ -33,7 +35,8 @@ public class LibraryManager {
     /**
      * Calls the setup methods in all other classes (Handlers) that contain one.
      */
-    public static void setup() {
+    public static void setup()
+    {
         DatabaseHandler.setup(false);
         UserHandler.setup();
         ItemHandler.setup();
@@ -44,18 +47,22 @@ public class LibraryManager {
     /**
      * Exits the program with status. If the connection to the database is still active, closes it.
      */
-    public static void exit(int status) {
-        if (DatabaseHandler.getConnection() != null) { //Always close the connection to the database after use
+    public static void exit(int status)
+    {
+        if (DatabaseHandler.getConnection() != null)
+        { //Always close the connection to the database after use
             DatabaseHandler.closeDatabaseConnection();
         }
         System.exit(status);
     }
 
-    public static User getCurrentUser() {
+    public static User getCurrentUser()
+    {
         return currentUser;
     }
 
-    public static void setCurrentUser(User currentUser) {
+    public static void setCurrentUser(User currentUser)
+    {
         LibraryManager.currentUser = currentUser;
     }
 }

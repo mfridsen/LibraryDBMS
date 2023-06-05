@@ -10,6 +10,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.InvalidReceiptException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalReturnException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 
 import java.sql.ResultSet;
@@ -261,8 +262,110 @@ public class RentalHandler
         return 0;
     }
 
-    //TODO-prio update according to getUsers, getItems, to take a wider variety of suffixes
+    /**
+     * Returns a rental and updates the necessary details related to the associated user and item.
+     * <p>
+     * This method executes the procedure of returning a rented item as follows:
+     * <ol>
+     *   <li>Validates the returnability of the provided rental. The rental is considered returnable if it is not already
+     *       returned and it is associated with a valid user and a valid item. If the rental is not valid, the method
+     *       throws a {@link RentalReturnException}.</li>
+     *   <li>Retrieves the User and Item associated with the rental. This step ensures that the rental is associated with
+     *       valid entities. If any of the associated entities are not valid, the method considers it a fatal exception and
+     *       handles it accordingly.</li>
+     *   <li>Sets the return date of the rental to the current time. The method considers any exception during this step as
+     *       a fatal exception.</li>
+     *   <li>Updates the rental in the database. Any exception during this update is considered fatal.</li>
+     *   <li>Decrements the number of rentals of the User and updates the User. The method handles any exception during
+     *       this step as a fatal exception.</li>
+     *   <li>Changes the availability status of the Item and updates it in the database. The method also updates the list of
+     *       available items in the ItemHandler.</li>
+     * </ol>
+     *
+     * @param rentalToReturn The rental to be returned.
+     * @return The rental that has been returned.
+     * @throws RentalReturnException If the rental is not returnable due to invalid input or the rental is already returned.
+     */
+    public static Rental returnRental(Rental rentalToReturn)
+    throws RentalReturnException
+    {
+        //Validate input, check if rental is already returned
+        try
+        {
+            validateReturnableRental(rentalToReturn); //Throws sooo many exceptions
+        }
+        catch (NullEntityException | InvalidIDException | EntityNotFoundException e)
+        { //Input Exceptions are considered non-fatal
+            throw new RentalReturnException("Rental return failed: " + e.getMessage(), e);
+        }
 
+        try
+        {
+            //Retrieve User and Item
+            User user = UserHandler.getUserByID(rentalToReturn.getUserID()); //InvalidIDException, fatal
+            Item item = ItemHandler.getItemByID(rentalToReturn.getItemID()); //RetrievalException, fatal
+
+            //I need to look over UserHandler since user should technically be able to be null just like item here
+            if (item == null)
+                throw new EntityNotFoundException("Item related to rental with rentalID " + rentalToReturn.getRentalID() +
+                        " not found.");
+
+            //Set rentalReturnDate, throws InvalidDateException which is considered fatal in this context
+            rentalToReturn.setRentalReturnDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+
+            //Update the rental in the table, throws UpdateException which is considered fatal in this context
+            updateRental(rentalToReturn);
+
+            //Decrement User's currentRentals and update
+            user.setCurrentRentals(user.getCurrentRentals() - 1); //InvalidUserRentalsException, fatal
+            UserHandler.updateUser(user);
+
+            //Change Item's availability and update ItemHandler's list
+            item.setAvailable(true);
+            ItemHandler.updateItem(item);
+            ItemHandler.incrementAvailableTitles(item.getTitle());
+        }
+        catch (InvalidDateException | UpdateException | InvalidIDException | RetrievalException |
+               InvalidUserRentalsException | NullEntityException | EntityNotFoundException e)
+        { //We get these and something has gone seriously wrong
+            ExceptionHandler.HandleFatalException("Rental return failed fatally: " + e.getMessage(), e);
+        }
+
+        return rentalToReturn;
+    }
+
+    /**
+     * Validates whether a rental is returnable.
+     * <p>
+     * This method checks that the provided rental meets the following conditions:
+     * <ul>
+     *   <li>The rental is not null.</li>
+     *   <li>The rental exists in the database.</li>
+     *   <li>The rental is active (has not been returned yet).</li>
+     * </ul>
+     * If any of these conditions is not met, the method throws the appropriate exception.
+     *
+     * @param rentalToReturn The rental to be validated.
+     * @throws NullEntityException If the rental is null.
+     * @throws InvalidIDException If the rental's ID is invalid.
+     * @throws EntityNotFoundException If the rental is not found in the database.
+     * @throws RentalReturnException If the rental has already been returned.
+     */
+    private static void validateReturnableRental(Rental rentalToReturn)
+    throws NullEntityException, InvalidIDException, EntityNotFoundException, RentalReturnException
+    {
+        //Not null
+        if (rentalToReturn == null)
+            throw new NullEntityException("Can't return rental; rental is null.");
+        //Exists
+        if (getRentalByID(rentalToReturn.getRentalID()) == null)
+            throw new EntityNotFoundException("Can't return rental; rental not found in table.");
+        //Is active
+        if (rentalToReturn.getRentalReturnDate() != null)
+            throw new RentalReturnException("Can't return rental; rental already returned.");
+    }
+
+    //TODO-prio update according to getUsers, getItems, to take a wider variety of suffixes
     /**
      * Fetches all rentals from the database matching the provided SQL suffix and parameters. This allows for the execution
      * of complex and dynamic SQL queries, depending on the provided suffix and parameters. The ResultSet from the query
