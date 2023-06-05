@@ -56,7 +56,7 @@ public class ItemSearchResultGUI extends GUI {
     }
 
     private void setupScrollPane() {
-        String[] columnNames = {"ItemID", "Item Title", "View Rental"};
+        String[] columnNames = {"ItemID", "Item Title", "View Item"};
 
         if (searchResultList != null && !searchResultList.isEmpty()) {
             Object[][] data = new Object[searchResultList.size()][columnNames.length];
@@ -70,7 +70,7 @@ public class ItemSearchResultGUI extends GUI {
             ItemTable searchResultTable = new ItemTable(new ItemTableModel(data, columnNames), searchResultList, this);
 
             ButtonRenderer buttonRenderer = new ButtonRenderer();
-            searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
+            searchResultTable.getColumn("View Item").setCellRenderer(buttonRenderer);
             for (Item item : searchResultList) {
                 ItemGUIButtonEditor itemGUIButtonEditor = new ItemGUIButtonEditor(new JCheckBox(), item, this);
                 searchResultTable.getColumnModel().getColumn(2).setCellEditor(itemGUIButtonEditor);

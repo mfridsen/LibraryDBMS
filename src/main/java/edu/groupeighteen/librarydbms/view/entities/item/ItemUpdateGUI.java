@@ -28,6 +28,7 @@ import java.util.List;
 public class ItemUpdateGUI extends GUI
 {
     //TODO-prio improve exception handling
+    //TODO-prio fields can be set more or less as one wishes, not good
 
     //We need the table to be a member variable in order to access its data via the buttons
     private JTable itemUpdateTable;
@@ -170,7 +171,7 @@ public class ItemUpdateGUI extends GUI
                     System.err.println(ile.getMessage()); //TODO-test //TODO-exception handle better
                     resetCells();
                 }
-            }
+            } else resetCells();
         });
         return confirmUpdateButton;
     }
@@ -209,7 +210,7 @@ public class ItemUpdateGUI extends GUI
             if (itemType != null && !itemType.isEmpty())
                 newItem.setType(Item.ItemType.valueOf(itemType));
         }
-        catch (InvalidItemTypeException e)
+        catch (InvalidItemTypeException |IllegalArgumentException e)
         {
             messageBuilder.append("Invalid itemType: ").append(e.getMessage()).append("\n");
         }
