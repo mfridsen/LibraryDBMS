@@ -33,7 +33,7 @@ public class UserTable extends JTable {
         super(model);
         this.editors = new ArrayList<>();
         for (User user : users) {
-            this.editors.add(new UserGUIButtonEditor(new JCheckBox(), user, previousGUI));
+            //this.editors.add(new UserGUIButtonEditor(new JCheckBox(), user, previousGUI));
         }
     }
     /**

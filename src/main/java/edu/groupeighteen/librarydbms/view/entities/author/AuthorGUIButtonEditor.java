@@ -12,8 +12,8 @@ import javax.swing.*;
  * @date 2023-05-26
  */
 public class AuthorGUIButtonEditor extends EntityButtonEditor {
-    public AuthorGUIButtonEditor(JCheckBox checkBox, Author author, GUI previousGUI) {
-        super(checkBox, author, previousGUI);
+    public AuthorGUIButtonEditor(JCheckBox checkBox, Author author, String label, GUI previousGUI) {
+        super(checkBox, author, label, previousGUI);
     }
     @Override
     public Object getCellEditorValue() {

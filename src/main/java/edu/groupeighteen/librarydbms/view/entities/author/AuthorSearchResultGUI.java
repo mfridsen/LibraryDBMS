@@ -65,7 +65,8 @@ public class AuthorSearchResultGUI extends GUI {
             ButtonRenderer buttonRenderer = new ButtonRenderer();
             searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
             for (Author Author : searchResultList) {
-                AuthorGUIButtonEditor AuthorGUIButtonEditor = new AuthorGUIButtonEditor(new JCheckBox(), Author, this);
+                AuthorGUIButtonEditor AuthorGUIButtonEditor = new AuthorGUIButtonEditor(new JCheckBox(), Author,
+                        "View", this);
                 searchResultTable.getColumnModel().getColumn(2).setCellEditor(AuthorGUIButtonEditor);
             }
 

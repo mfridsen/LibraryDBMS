@@ -1,5 +1,6 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
+import edu.groupeighteen.librarydbms.model.entities.Entity;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.view.buttons.EntityButtonEditor;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
@@ -12,8 +13,10 @@ import javax.swing.*;
  * @date 2023-05-22
  */
 public class ItemGUIButtonEditor extends EntityButtonEditor {
-    public ItemGUIButtonEditor(JCheckBox checkBox, Item item, GUI previousGUI) {
-        super(checkBox, item, previousGUI);
+    public ItemGUIButtonEditor(JCheckBox checkBox, Entity entity,
+                               String label, GUI previousGUI)
+    {
+        super(checkBox, entity, label, previousGUI);
     }
 
     /**

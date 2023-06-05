@@ -104,7 +104,7 @@ public class UserSearchResultGUI extends GUI {
             ButtonRenderer buttonRenderer = new ButtonRenderer();
             searchResultTable.getColumn("View User").setCellRenderer(buttonRenderer);
             for (User user : searchResultList) {
-                UserGUIButtonEditor userGUIButtonEditor = new UserGUIButtonEditor(new JCheckBox(), user, this);
+                UserGUIButtonEditor userGUIButtonEditor = new UserGUIButtonEditor(new JCheckBox(), user, "View", this);
                 searchResultTable.getColumnModel().getColumn(2).setCellEditor(userGUIButtonEditor);
             }
 

@@ -1,9 +1,6 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.entities.Rental;
-import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUIButtonEditor;
-import edu.groupeighteen.librarydbms.view.entities.rental.RentalTableModel;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -20,22 +17,24 @@ public class ItemTable extends JTable {
     private final List<ItemGUIButtonEditor> editors;
 
     /**
-     * Constructs a ItemTable with the specified model, items, and previous GUI.
+     * Constructs an ItemTable with the specified model, items, and previous GUI.
      *
      */
     public ItemTable(ItemTableModel model, List<Item> items, GUI previousGUI) {
         super(model);
         this.editors = new ArrayList<>();
         for (Item item : items) {
-            this.editors.add(new ItemGUIButtonEditor(new JCheckBox(), item, previousGUI));
+            this.editors.add(new ItemGUIButtonEditor(new JCheckBox(), item, "View", previousGUI));
+            this.editors.add(new ItemGUIButtonEditor(new JCheckBox(), item, "Rent", previousGUI));
         }
     }
+
     @Override
     public TableCellEditor getCellEditor(int row, int column) {
         int modelColumn = convertColumnIndexToModel(column);
 
-        if (modelColumn == 4 && row < editors.size()) {
-            return editors.get(row);
+        if (modelColumn >= 3 && modelColumn <= 4 && row < editors.size()) {
+            return editors.get(row * 2 + modelColumn - 3);
         } else {
             return super.getCellEditor(row, column);
         }

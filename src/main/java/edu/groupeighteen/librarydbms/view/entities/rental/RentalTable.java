@@ -36,7 +36,7 @@ public class RentalTable extends JTable {
         super(model);
         this.editors = new ArrayList<>();
         for (Rental rental : rentals) {
-            this.editors.add(new RentalGUIButtonEditor(new JCheckBox(), rental, previousGUI));
+            //this.editors.add(new RentalGUIButtonEditor(new JCheckBox(), rental, previousGUI));
         }
     }
 

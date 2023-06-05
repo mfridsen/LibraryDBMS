@@ -103,7 +103,8 @@ public class RentalSearchResultGUI extends GUI {
             ButtonRenderer buttonRenderer = new ButtonRenderer();
             searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
             for (Rental rental : searchResultList) {
-                RentalGUIButtonEditor rentalGUIButtonEditor = new RentalGUIButtonEditor(new JCheckBox(), rental, this);
+                RentalGUIButtonEditor rentalGUIButtonEditor = new RentalGUIButtonEditor(new JCheckBox(), rental,
+                        "View", this);
                 searchResultTable.getColumnModel().getColumn(4).setCellEditor(rentalGUIButtonEditor);
             }
 

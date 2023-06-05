@@ -13,8 +13,8 @@ import javax.swing.*;
  */
 public class UserGUIButtonEditor extends EntityButtonEditor {
 
-    public UserGUIButtonEditor(JCheckBox checkBox, User user, GUI previousGUI) {
-        super(checkBox, user, previousGUI);
+    public UserGUIButtonEditor(JCheckBox checkBox, User user, String label, GUI previousGUI) {
+        super(checkBox, user, label, previousGUI);
     }
     @Override
     public Object getCellEditorValue() {

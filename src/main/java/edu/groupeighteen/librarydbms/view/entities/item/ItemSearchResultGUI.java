@@ -26,7 +26,7 @@ public class ItemSearchResultGUI extends GUI {
     //  new RentalGUI för newRental
 
     //TODO- fält som ska visas i denna ordning:
-    //  type, title
+    //   title, type,
     //  genre, author name, publisher name
     private final List<Item> searchResultList;
     private JPanel searchResultPanel;
@@ -56,7 +56,7 @@ public class ItemSearchResultGUI extends GUI {
     }
 
     private void setupScrollPane() {
-        String[] columnNames = {"ItemID", "Item Title", "View Item"};
+        String[] columnNames = {"ID", "Title", "Classification", "View Item", "Rent Item"};
 
         if (searchResultList != null && !searchResultList.isEmpty()) {
             Object[][] data = new Object[searchResultList.size()][columnNames.length];
@@ -64,16 +64,27 @@ public class ItemSearchResultGUI extends GUI {
                 Item item = searchResultList.get(i);
                 data[i][0] = item.getItemID();
                 data[i][1] = item.getTitle();
-                data[i][2] = "View";  // Text for the button
+                data[i][2] = item.getClassificationName();
+                data[i][3] = "View"; // Text for the button
+                data[i][4] = "Rent"; // Text for the button
             }
 
             ItemTable searchResultTable = new ItemTable(new ItemTableModel(data, columnNames), searchResultList, this);
 
             ButtonRenderer buttonRenderer = new ButtonRenderer();
+
+            //View Item buttons
             searchResultTable.getColumn("View Item").setCellRenderer(buttonRenderer);
             for (Item item : searchResultList) {
-                ItemGUIButtonEditor itemGUIButtonEditor = new ItemGUIButtonEditor(new JCheckBox(), item, this);
-                searchResultTable.getColumnModel().getColumn(2).setCellEditor(itemGUIButtonEditor);
+                ItemGUIButtonEditor itemGUIButtonEditor = new ItemGUIButtonEditor(new JCheckBox(), item, "View", this);
+                searchResultTable.getColumnModel().getColumn(3).setCellEditor(itemGUIButtonEditor);
+            }
+
+            //Rent Item buttons
+            searchResultTable.getColumn("Rent Item").setCellRenderer(buttonRenderer);
+            for (Item item : searchResultList) {
+                ItemGUIButtonEditor itemGUIButtonEditor = new ItemGUIButtonEditor(new JCheckBox(), item, "Rent", this);
+                searchResultTable.getColumnModel().getColumn(4).setCellEditor(itemGUIButtonEditor);
             }
 
             JScrollPane searchResultScrollPane = new JScrollPane();

@@ -26,8 +26,8 @@ public class RentalGUIButtonEditor extends EntityButtonEditor {
      * @param rental a Rental object that this button corresponds to.
      * @param previousGUI the previous GUI screen.
      */
-    public RentalGUIButtonEditor(JCheckBox checkBox, Rental rental, GUI previousGUI) {
-        super(checkBox, rental, previousGUI);
+    public RentalGUIButtonEditor(JCheckBox checkBox, Rental rental, String label, GUI previousGUI) {
+        super(checkBox, rental, label, previousGUI);
     }
 
     /**

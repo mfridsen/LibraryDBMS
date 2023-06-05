@@ -32,11 +32,11 @@ public abstract class EntityButtonEditor extends DefaultCellEditor {
      * @param entity        the Entity object that the button will open a EntityGUI for when clicked.
      * @param previousGUI   the GUI from which the EntityGUI will be opened.
      */
-    public EntityButtonEditor(JCheckBox checkBox, Entity entity, GUI previousGUI) {
+    public EntityButtonEditor(JCheckBox checkBox, Entity entity, String label, GUI previousGUI) {
         super(checkBox);
         this.entity = entity;
         this.previousGUI = previousGUI;
-        label = "View";
+        this.label = label;
         button = new JButton();
         button.setOpaque(true);
         button.addActionListener(e -> fireEditingStopped());

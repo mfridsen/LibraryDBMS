@@ -28,7 +28,7 @@ public class AuthorTable extends JTable {
         super(model);
         this.editors = new ArrayList<>();
         for (Author author : authors) {
-            this.editors.add(new AuthorGUIButtonEditor(new JCheckBox(), author, previousGUI));
+            //this.editors.add(new AuthorGUIButtonEditor(new JCheckBox(), author, previousGUI));
         }
     }
     /**
