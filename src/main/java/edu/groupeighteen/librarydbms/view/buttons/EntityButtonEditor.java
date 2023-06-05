@@ -22,7 +22,7 @@ public abstract class EntityButtonEditor extends DefaultCellEditor {
     protected JButton button;
     protected final String label;
     protected boolean isPushed;
-    protected final Entity entity;
+    protected Entity entity;
     protected final GUI previousGUI;
 
     /**

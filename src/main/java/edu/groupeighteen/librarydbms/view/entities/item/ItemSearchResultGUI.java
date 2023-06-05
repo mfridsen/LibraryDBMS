@@ -25,9 +25,6 @@ public class ItemSearchResultGUI extends GUI {
     //  Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser.getUserID, item.getItemID)
     //  new RentalGUI för newRental
 
-    //TODO- fält som ska visas i denna ordning:
-    //   title, type,
-    //  genre, author name, publisher name
     private final List<Item> searchResultList;
     private JPanel searchResultPanel;
 
