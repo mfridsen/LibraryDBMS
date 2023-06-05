@@ -15,19 +15,35 @@ import javax.swing.*;
  * @contact matfir-1@student.ltu.se
  * @date 5/19/2023
  * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
- * Brought to you by enough nicotine to kill a large horse.
+ * LoginOptionPaneGUI class provides a graphical interface for user login.
+ * It includes text fields for entering username and password, as well as buttons for login and going back.
+ * After successful login, it retrieves the user and sets the current user in LibraryManager.
  */
-public class LoginOptionPaneGUI {
+public class LoginOptionPaneGUI
+{
+    //TODO-prio better exception handling
 
+    /**
+     * JTextField for inputting username.
+     */
     private final JTextField usernameField;
+
+    /**
+     * JPasswordField for inputting password.
+     */
     private final JPasswordField passwordField;
+
+    /**
+     * JLabel for displaying login messages.
+     */
     private final JLabel messageLabel;
 
-    public LoginOptionPaneGUI() {
+    /**
+     * Constructor for the LoginOptionPaneGUI class.
+     * Initializes the interface components, sets their properties, and adds action listeners to the buttons.
+     */
+    public LoginOptionPaneGUI()
+    {
         this.usernameField = new JTextField();
         this.passwordField = new JPasswordField();
         JButton loginButton = new JButton("Login");
@@ -45,7 +61,8 @@ public class LoginOptionPaneGUI {
         panel.add(backButton);
         panel.add(messageLabel);
 
-        loginButton.addActionListener(e -> {
+        loginButton.addActionListener(e ->
+        {
             boolean loginSuccessful = false;
             try
             {
@@ -55,7 +72,8 @@ public class LoginOptionPaneGUI {
             {
                 userValidationException.printStackTrace();
             }
-            if (loginSuccessful) {
+            if (loginSuccessful)
+            {
                 User user = null;
                 try
                 {
@@ -65,17 +83,23 @@ public class LoginOptionPaneGUI {
                 {
                     invalidNameException.printStackTrace();
                 }
+
                 LibraryManager.setCurrentUser(user);
+                System.out.println("Login successful, you can now attempt to rent again.");
                 JOptionPane.getRootFrame().dispose();
-            } else {
+            }
+            else
+            {
                 messageLabel.setText("Login failed");
             }
         });
 
-        backButton.addActionListener(e -> {
+        backButton.addActionListener(e ->
+        {
             JOptionPane.getRootFrame().dispose();
         });
 
-        JOptionPane.showOptionDialog(null, panel, "Login", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
+        JOptionPane.showOptionDialog(null, panel, "Login", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                null, new Object[]{}, null);
     }
 }

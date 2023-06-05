@@ -24,17 +24,24 @@ import java.util.List;
  * @project LibraryDBMS
  * @date 2023-05-10
  * <p>
- * this class displays all information about a single item object
+ * ItemGUI class extends GUI class and provides a graphical interface for displaying and managing items.
+ * It allows users to view item properties, including specific fields for Literature and Film items.
+ * Users can also rent an item if it's available and they are logged in.
  */
 public class ItemGUI extends GUI
 {
-    // TODO- if LibraryManager.getCurrentUser != null and item.isAvailable
-    //  Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser.getUserID, item.getItemID)
-    //  new RentalGUI för newRental
+    //TODO-prio better exception handling
 
+    /**
+     * JPanel for containing the scrollPane.
+     */
     private JPanel scrollPanePanel;
 
-
+    /**
+     * Constructor for the ItemGUI class.
+     * @param previousGUI the GUI from which this GUI is accessed.
+     * @param item the Item entity to be managed.
+     */
     public ItemGUI(GUI previousGUI, Item item)
     {
         super(previousGUI, "ItemGUI", item);
@@ -43,12 +50,18 @@ public class ItemGUI extends GUI
         displayGUI();
     }
 
+    /**
+     * Setup the buttons for the GUI.
+     * @return array of JButtons used in this GUI.
+     */
     @Override
     protected JButton[] setupButtons()
     {
+        //Recast entity into item
         Item item = (Item) entity;
 
         JButton rentButton = new JButton("Rent Item");
+
         rentButton.addActionListener(e -> {
             if (item.isAvailable()) //If item can be rented...
             {
@@ -83,6 +96,13 @@ public class ItemGUI extends GUI
         return new JButton[]{rentButton};
     }
 
+    /**
+     * Creates a new Rental for the specified Item and opens the RentalGUI for the new rental.
+     * @param item the Item to be rented.
+     * @throws EntityNotFoundException if the User or Item entities cannot be found.
+     * @throws RentalNotAllowedException if the rental is not allowed.
+     * @throws InvalidIDException if the ID of the User or Item is invalid.
+     */
     private void createAndOpenNewRental(Item item)
     throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException
     {
@@ -92,8 +112,12 @@ public class ItemGUI extends GUI
         new RentalGUI(this, newRental);
     }
 
+    /**
+     * Setup the scrollPane for the GUI to display Item data.
+     */
     protected void setupScrollPane()
     {
+        //Recast entity into item
         Item item = (Item) entity;
 
         //Define column names
@@ -140,7 +164,11 @@ public class ItemGUI extends GUI
         scrollPanePanel.add(userScrollPane, BorderLayout.CENTER);
     }
 
-
+    /**
+     * Get the string representation of an Item type.
+     * @param type the type of the Item.
+     * @return the string representation of the type.
+     */
     private String getItemTypeString(Item.ItemType type)
     {
         String typeString = null;
@@ -155,15 +183,21 @@ public class ItemGUI extends GUI
         return typeString;
     }
 
+    /**
+     * Setup the panels for the GUI.
+     */
     @Override
     protected void setupPanels()
     {
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Get the Item entity managed by this GUI.
+     * @return the Item entity.
+     */
     public Item getItem()
     {
-
         return (Item) entity;
     }
 }
