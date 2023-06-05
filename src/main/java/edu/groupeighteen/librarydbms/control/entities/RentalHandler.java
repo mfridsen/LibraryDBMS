@@ -172,6 +172,8 @@ public class RentalHandler
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental construction failed due to " + cause, e);
 
+        } catch (UpdateException e) {
+            throw new RuntimeException(e);
         }
 
         //Won't reach, needed for compilation

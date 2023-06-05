@@ -143,7 +143,7 @@ public class ItemHandlerUtils
     static Author getExistingAuthor(int authorID)
     throws EntityNotFoundException
     {
-        Author author = AuthorHandler.getAuthorByID(authorID);
+        Author author = AuthorHandler.getAuthorByID(authorID, false);
         if (author == null)
             throw new EntityNotFoundException("Author with ID " + authorID + "not found.");
         return author;
@@ -225,8 +225,8 @@ public class ItemHandlerUtils
                     resultSet.getString("barcode"),
                     resultSet.getInt("authorID"),
                     resultSet.getInt("classificationID"),
-                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorFirstname(),
-                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorLastName(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID"), false).getAuthorFirstname(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID"), false).getAuthorLastName(),
                     ClassificationHandler.getClassificationByID(
                             resultSet.getInt("classificationID")).getClassificationName(),
                     resultSet.getInt("allowedRentalDays"),
@@ -263,8 +263,8 @@ public class ItemHandlerUtils
                     resultSet.getString("barcode"),
                     resultSet.getInt("authorID"),
                     resultSet.getInt("classificationID"),
-                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorFirstname(),
-                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID")).getAuthorLastName(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID"), false).getAuthorFirstname(),
+                    AuthorHandler.getAuthorByID(resultSet.getInt("authorID"), false).getAuthorLastName(),
                     ClassificationHandler.getClassificationByID(
                             resultSet.getInt("classificationID")).getClassificationName(),
                     resultSet.getInt("allowedRentalDays"),
