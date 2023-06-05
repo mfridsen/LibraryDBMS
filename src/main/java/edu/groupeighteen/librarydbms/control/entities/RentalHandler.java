@@ -488,11 +488,17 @@ public class RentalHandler
         }
 
         //Prepare a SQL query to update the rental details
-        String query = "UPDATE rentals SET rentalDueDate = ?, rentalReturnDate = ?, lateFee = ? WHERE rentalID = ?";
+        String query = "UPDATE rentals " +
+                "SET userID = ?, itemID = ?, rentalDate = ?, rentalDueDate = ?, rentalReturnDate = ?, lateFee = ?, " +
+                "receipt = ? WHERE rentalID = ?";
         String[] params = {
+                String.valueOf(updatedRental.getUserID()), //TODO-prio Should probably not be allowed
+                String.valueOf(updatedRental.getItemID()), //TODO-prio Should probably not be allowed
+                String.valueOf(updatedRental.getRentalDate()), //TODO-prio Should probably not be allowed
                 String.valueOf(updatedRental.getRentalDueDate()),
                 (updatedRental.getRentalReturnDate() == null) ? null : updatedRental.getRentalReturnDate().toString(),
                 String.valueOf(updatedRental.getLateFee()),
+                updatedRental.getReceipt(), //TODO-prio Should probably not be allowed
                 String.valueOf(updatedRental.getRentalID())
         };
 
