@@ -24,8 +24,22 @@ import java.sql.SQLException;
 public class ItemGUITest {
     public static void main(String[] args) {
         LibraryManager.setup();
+        testWithItemAllowedToRent();
+    }
+
+    private static void testWithItemNotAllowedToRent()
+    {
         try {
             new ItemGUI(null, ItemHandler.getItemByID(2));
+        } catch (InvalidIDException | RetrievalException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void testWithItemAllowedToRent()
+    {
+        try {
+            new ItemGUI(null, ItemHandler.getItemByID(6));
         } catch (InvalidIDException | RetrievalException e) {
             throw new RuntimeException(e);
         }

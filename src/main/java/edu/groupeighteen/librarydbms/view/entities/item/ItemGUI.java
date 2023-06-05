@@ -2,6 +2,7 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
+import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
@@ -11,6 +12,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
+import edu.groupeighteen.librarydbms.view.optionpanes.LoginOptionPaneGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +35,6 @@ public class ItemGUI extends GUI
     private JPanel scrollPanePanel;
 
 
-
     public ItemGUI(GUI previousGUI, Item item)
     {
         super(previousGUI, "ItemGUI", item);
@@ -47,30 +48,48 @@ public class ItemGUI extends GUI
     {
         Item item = (Item) entity;
 
-        if (item.isAvailable()) //If item can be rented...
-        {
-            if (LibraryManager.getCurrentUser() != null) //... and we are logged in
+        JButton rentButton = new JButton("Rent Item");
+        rentButton.addActionListener(e -> {
+            if (item.isAvailable()) //If item can be rented...
             {
-                try
+                if (LibraryManager.getCurrentUser() != null) //... and we are logged in
                 {
-                    Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser().getUserID(),
-                            item.getItemID());
-                    dispose();
-                    new RentalGUI(this, newRental);
+                    try
+                    {
+                        createAndOpenNewRental(item);
+                    }
+                    catch (EntityNotFoundException | InvalidIDException fatalException) //This SHOULD NOT happen
+                    {
+                        ExceptionHandler.HandleFatalException("Rental creation failed fatally due to: " +
+                                fatalException.getCause().getClass().getName() + ", Message: " +
+                                fatalException.getMessage(), fatalException);
+                    }
+                    catch (RentalNotAllowedException rentalNotAllowedException) //This is perfectly fine
+                    {
+                        rentalNotAllowedException.printStackTrace(); //TODO-prio handle non-fatal
+                    }
                 }
-                catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+                else //... and we are not logged in
                 {
-                    e.printStackTrace(); //TODO-prio handle
+                    new LoginOptionPaneGUI();
                 }
             }
-            else //... and we are not logged in
+            else //.. item can't be rented
             {
-                //Open login GUI
+                System.err.println("Item can't be rented.");
             }
-        }
+        });
 
-        return new JButton[0];
+        return new JButton[]{rentButton};
+    }
 
+    private void createAndOpenNewRental(Item item)
+    throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException
+    {
+        Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser().getUserID(),
+                item.getItemID());
+        dispose();
+        new RentalGUI(this, newRental);
     }
 
     protected void setupScrollPane()
