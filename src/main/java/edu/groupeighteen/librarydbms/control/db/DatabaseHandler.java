@@ -616,14 +616,14 @@ public class DatabaseHandler
         DatabaseConnection.closeConnection();
     }
 
-    public static void setConnection(Connection connection)
-    {
-        DatabaseHandler.connection = connection;
-    }
-
     public static Connection getConnection()
     {
         return connection;
+    }
+
+    public static void setConnection(Connection connection)
+    {
+        DatabaseHandler.connection = connection;
     }
 
     public static boolean isVerbose()

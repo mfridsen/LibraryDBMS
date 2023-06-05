@@ -1,28 +1,25 @@
 package edu.groupeighteen.librarydbms.view.entities.author;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Author;
-import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
-import java.util.Arrays;
 
 /**
  * @author Johan Lund
  * @project LibraryDBMS
  * @date 2023-05-26
  */
-public class AuthorDeleteGUI extends GUI {
+public class AuthorDeleteGUI extends GUI
+{
     private final Author authortoDelete;
     private JButton confirmButton;
     private JPasswordField passwordField;
 
 
-    public AuthorDeleteGUI(GUI previousGUI, Author authortoDelete) {
+    public AuthorDeleteGUI(GUI previousGUI, Author authortoDelete)
+    {
         super(previousGUI, "UserDeleteGUI", authortoDelete);
         this.authortoDelete = authortoDelete;
         setupPanels();
@@ -30,12 +27,15 @@ public class AuthorDeleteGUI extends GUI {
     }
 
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         confirmButton = new JButton("Confirm Delete");
-        confirmButton.addActionListener(e -> {
+        confirmButton.addActionListener(e ->
+        {
             dispose();
 
-            if (LibraryManager.getCurrentUser() != null) {
+            if (LibraryManager.getCurrentUser() != null)
+            {
                 /*try {
                     if (UserHandler.validate(LibraryManager.getCurrentUser(),
                             Arrays.toString(passwordField.getPassword()))) {
@@ -55,7 +55,8 @@ public class AuthorDeleteGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         JPanel passwordPanel = new JPanel();
         JLabel passwordLabel = new JLabel("Delete author: " + authortoDelete.getAuthorFirstname() + "?");
         passwordField = new JPasswordField();

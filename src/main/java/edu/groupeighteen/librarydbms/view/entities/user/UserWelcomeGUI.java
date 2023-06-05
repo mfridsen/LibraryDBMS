@@ -9,10 +9,11 @@ import javax.swing.*;
  * @author Jesper Truedsson
  * @project LibraryDBMS
  * @date 2023-05-10
- *
+ * <p>
  * this class displays all information about a single user object
  */
-public class UserWelcomeGUI extends GUI {
+public class UserWelcomeGUI extends GUI
+{
     private JLabel welcomeLabel;
     private JButton searchButton;
     private JPanel welcomePanel;
@@ -20,19 +21,22 @@ public class UserWelcomeGUI extends GUI {
 
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
-     *
      */
-    public UserWelcomeGUI(GUI previousGUI, User user) {
+    public UserWelcomeGUI(GUI previousGUI, User user)
+    {
         super(previousGUI, "UserWelcomeGUI", user);
         this.user = user;
         setupPanels();
         displayGUI();
     }
+
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         searchButton = new JButton("UserSearchGUI");
 
-        searchButton.addActionListener(e -> {
+        searchButton.addActionListener(e ->
+        {
             dispose();
             new UserSearchGUI(this);
         });
@@ -40,7 +44,8 @@ public class UserWelcomeGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         welcomeLabel = new JLabel("Sök");
         welcomePanel = new JPanel();
 

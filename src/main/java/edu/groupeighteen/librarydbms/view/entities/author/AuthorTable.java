@@ -13,7 +13,8 @@ import java.util.List;
  * @project LibraryDBMS
  * @date 2023-05-26
  */
-public class AuthorTable extends JTable {
+public class AuthorTable extends JTable
+{
     private final List<AuthorGUIButtonEditor> editors;
 
     /**
@@ -24,30 +25,37 @@ public class AuthorTable extends JTable {
      * @param previousGUI the previous GUI instance
      */
 
-    public AuthorTable(AuthorTableModel model, List<Author> authors, GUI previousGUI) {
+    public AuthorTable(AuthorTableModel model, List<Author> authors, GUI previousGUI)
+    {
         super(model);
         this.editors = new ArrayList<>();
-        for (Author author : authors) {
+        for (Author author : authors)
+        {
             //this.editors.add(new AuthorGUIButtonEditor(new JCheckBox(), author, previousGUI));
         }
     }
+
     /**
      * Returns an appropriate editor for the cell specified by the given row and column indices.
      *
-     * @param row       the row of the cell to edit.
-     * @param column    the column of the cell to edit.
-     * @return          if the specified cell is in the 'View User' column, a UserGUIButtonEditor is returned
-     *                  that opens a UserGUI for the User object associated with the row.
-     *                  Otherwise, the result of the superclass's getCellEditor method is returned.
+     * @param row    the row of the cell to edit.
+     * @param column the column of the cell to edit.
+     * @return if the specified cell is in the 'View User' column, a UserGUIButtonEditor is returned
+     * that opens a UserGUI for the User object associated with the row.
+     * Otherwise, the result of the superclass's getCellEditor method is returned.
      */
 
     @Override
-    public TableCellEditor getCellEditor(int row, int column) {
+    public TableCellEditor getCellEditor(int row, int column)
+    {
         int modelColumn = convertColumnIndexToModel(column);
 
-        if (modelColumn == 2 && row < editors.size()) {
+        if (modelColumn == 2 && row < editors.size())
+        {
             return editors.get(row);
-        } else {
+        }
+        else
+        {
             return super.getCellEditor(row, column);
         }
     }

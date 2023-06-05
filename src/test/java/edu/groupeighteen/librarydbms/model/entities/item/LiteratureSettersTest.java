@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
@@ -12,6 +10,9 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidItemTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Mattias Fridsén

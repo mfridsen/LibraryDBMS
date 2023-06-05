@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.rental;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
@@ -14,6 +12,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -198,8 +198,6 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
     }
 
 
-
-
     /**
      * Test case for updateRental method when the rental to update is null.
      * <p>
@@ -331,7 +329,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(originalLateFee, updatedRental.getLateFee());
         }
         catch (InvalidDateException | UpdateException | InvalidIDException
-                | EntityNotFoundException | RentalNotAllowedException e)
+               | EntityNotFoundException | RentalNotAllowedException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -383,7 +381,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(originalLateFee, updatedRental.getLateFee());
         }
         catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-                | InvalidDateException | UpdateException e)
+               | InvalidDateException | UpdateException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -434,7 +432,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(newLateFee, updatedRental.getLateFee());
         }
         catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-                | InvalidLateFeeException | UpdateException e)
+               | InvalidLateFeeException | UpdateException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -489,7 +487,7 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(newLateFee, updatedRental.getLateFee());
         }
         catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-                | InvalidDateException | InvalidLateFeeException | UpdateException e)
+               | InvalidDateException | InvalidLateFeeException | UpdateException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();

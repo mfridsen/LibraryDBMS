@@ -17,11 +17,12 @@ import java.util.Set;
  * @package edu.groupeighteen.librarydbms.view.GUI.entities.rental
  * @contact matfir-1@student.ltu.se
  * @date 5/15/2023
- *
+ * <p>
  * This class extends GUI to create a specialized graphical interface for displaying a list of rental search results.
  * Each row in the table represents a Rental object and includes a button to view the details of the rental.
  */
-public class RentalSearchResultGUI extends GUI {
+public class RentalSearchResultGUI extends GUI
+{
     /**
      * The list of Rental objects to be displayed.
      */
@@ -35,10 +36,11 @@ public class RentalSearchResultGUI extends GUI {
     /**
      * Constructs a new RentalSearchResultGUI.
      *
-     * @param previousGUI       the GUI instance from which this GUI was opened.
-     * @param searchResultList  the list of Rental objects to be displayed.
+     * @param previousGUI      the GUI instance from which this GUI was opened.
+     * @param searchResultList the list of Rental objects to be displayed.
      */
-    public RentalSearchResultGUI(GUI previousGUI, List<Rental> searchResultList) {
+    public RentalSearchResultGUI(GUI previousGUI, List<Rental> searchResultList)
+    {
         super(previousGUI, "RentalSearchResultGUI", null);
         this.searchResultList = searchResultList;
         clearDuplicates();
@@ -53,7 +55,8 @@ public class RentalSearchResultGUI extends GUI {
      * with another rental in the list. In case of duplicates, all but one
      * instance will be removed.
      */
-    private void clearDuplicates() {
+    private void clearDuplicates()
+    {
         Set<Integer> seenRentalIDs = new HashSet<>();
         searchResultList.removeIf(rental -> !seenRentalIDs.add(rental.getRentalID()));
     }
@@ -66,9 +69,11 @@ public class RentalSearchResultGUI extends GUI {
      * @return an array of JButton objects containing the "Home" button
      */
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton homeButton = new JButton("Home");
-        homeButton.addActionListener(e -> {
+        homeButton.addActionListener(e ->
+        {
             dispose(); //TODO-prio should open a MyAccountGUI depending on what type of User is logged on
             new LoginScreenGUI(this);
         });
@@ -81,13 +86,16 @@ public class RentalSearchResultGUI extends GUI {
      * sets a custom cell renderer and editor for the last column, and adds the table to the scroll pane.
      * The scroll pane is then added to the search result panel.
      */
-    private void setupScrollPane() {
+    private void setupScrollPane()
+    {
         // Add a column for the buttons to the column names array
         String[] columnNames = {"Rental ID", "Username", "Item Title", "Rental Date", "View Rental"};
 
-        if (searchResultList != null && !searchResultList.isEmpty()) {
+        if (searchResultList != null && !searchResultList.isEmpty())
+        {
             Object[][] data = new Object[searchResultList.size()][columnNames.length];
-            for (int i = 0; i < searchResultList.size(); i++) {
+            for (int i = 0; i < searchResultList.size(); i++)
+            {
                 Rental rental = searchResultList.get(i);
                 data[i][0] = rental.getRentalID();
                 data[i][1] = rental.getUsername();
@@ -97,12 +105,14 @@ public class RentalSearchResultGUI extends GUI {
             }
 
             // Use the custom table model when creating the table
-            RentalTable searchResultTable = new RentalTable(new RentalTableModel(data, columnNames), searchResultList, this);
+            RentalTable searchResultTable = new RentalTable(new RentalTableModel(data, columnNames), searchResultList,
+                    this);
 
             // Set the custom cell renderer and editor for the last column
             ButtonRenderer buttonRenderer = new ButtonRenderer();
             searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
-            for (Rental rental : searchResultList) {
+            for (Rental rental : searchResultList)
+            {
                 RentalGUIButtonEditor rentalGUIButtonEditor = new RentalGUIButtonEditor(new JCheckBox(), rental,
                         "View", this);
                 searchResultTable.getColumnModel().getColumn(4).setCellEditor(rentalGUIButtonEditor);
@@ -120,7 +130,8 @@ public class RentalSearchResultGUI extends GUI {
      * Adds the searchResultPanel to the GUIPanel.
      */
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         GUIPanel.add(searchResultPanel);
     }
 }

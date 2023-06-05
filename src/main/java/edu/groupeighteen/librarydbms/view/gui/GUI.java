@@ -21,7 +21,8 @@ import java.awt.*;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public abstract class GUI extends JFrame {
+public abstract class GUI extends JFrame
+{
     //This is used to go back to the previous GUI
     protected final GUI previousGUI;
     //All GUI objects will have at least one 'main' panel, to which we can add other panels, such as the buttonPanel
@@ -44,9 +45,10 @@ public abstract class GUI extends JFrame {
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
      *
      * @param previousGUI the previous GUI object.
-     * @param title the title of this GUI object.
+     * @param title       the title of this GUI object.
      */
-    public GUI(GUI previousGUI, String title, Entity entity) {
+    public GUI(GUI previousGUI, String title, Entity entity)
+    {
         this.previousGUI = previousGUI;
         this.setTitle(title);
         this.entity = entity;
@@ -64,10 +66,13 @@ public abstract class GUI extends JFrame {
     /**
      * GUIs will need a logout button, whenever a User is logged in.
      */
-    protected void setupLogoutButton() {
-        if (LibraryManager.getCurrentUser() != null) {
+    protected void setupLogoutButton()
+    {
+        if (LibraryManager.getCurrentUser() != null)
+        {
             logoutButton = new JButton("Log Out");
-            logoutButton.addActionListener(e -> {
+            logoutButton.addActionListener(e ->
+            {
                 //TODO-prio should have an OptionPane pop up to confirm logout
                 dispose();
                 //Log out user
@@ -91,7 +96,8 @@ public abstract class GUI extends JFrame {
     /**
      * Performs all of the basic operations needed to display a GUI (JFrame).
      */
-    public void displayGUI() {
+    public void displayGUI()
+    {
         this.add(GUIPanel);
         this.pack(); //Packs all the things
         this.setVisible(true); //We kinda need to be able to see it
@@ -105,7 +111,8 @@ public abstract class GUI extends JFrame {
      *
      * @param buttons the array of JButtons to add to the buttonPanel.
      */
-    protected void addButtonsToPanel(JButton[] buttons) {
+    protected void addButtonsToPanel(JButton[] buttons)
+    {
         //We want the buttons to be ordered horizontally, in a row
         for (JButton button : buttons)
             buttonPanel.add(button);
@@ -115,12 +122,17 @@ public abstract class GUI extends JFrame {
      * Since all GUIs will have a "Back" button that functions exactly the same, we might as well just
      * set it up here.
      */
-    private void setupPreviousGUIButton() {
+    private void setupPreviousGUIButton()
+    {
         previousGUIButton = new JButton("Previous GUI");
-        previousGUIButton.addActionListener(e -> {
-            if (previousGUI == null) {
+        previousGUIButton.addActionListener(e ->
+        {
+            if (previousGUI == null)
+            {
                 System.err.println("No previous GUI to return to!");
-            } else {
+            }
+            else
+            {
                 dispose();
                 previousGUI.displayGUI();
             }
@@ -131,10 +143,11 @@ public abstract class GUI extends JFrame {
      * Creates a JTable with named columns and fills it with data, then returns the JTable.
      *
      * @param columnNames a String array containing the names of the columns.
-     * @param data a two-dimensional Object array containing the data to fill in the columns.
+     * @param data        a two-dimensional Object array containing the data to fill in the columns.
      * @return a JTable ready to add to a JScrollPane.
      */
-    protected JTable setupTable(String[] columnNames, Object[][] data) {
+    protected JTable setupTable(String[] columnNames, Object[][] data)
+    {
         //Create table with data and column names
         JTable table = new JTable(data, columnNames);
 
@@ -145,20 +158,24 @@ public abstract class GUI extends JFrame {
     }
 
     //TODO-comment rework comment
+
     /**
      * Creates a JTable with named columns and fills it with data, as well as adding a column with
      * editable cells where new data can be entered.
      *
      * @param columnNames a String array containing the names of the columns.
-     * @param data a two-dimensional Object array containing the data to fill in the columns.
+     * @param data        a two-dimensional Object array containing the data to fill in the columns.
      * @param editableCol the column which is desired to be editable.
      * @return a JTable ready to add to a JScrollPane.
      */
-    protected JTable setupTableWithEditableCells(String[] columnNames, Object[][] data, int editableCol) {
+    protected JTable setupTableWithEditableCells(String[] columnNames, Object[][] data, int editableCol)
+    {
         // Create table model with data and column names
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames){
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames)
+        {
             @Override
-            public boolean isCellEditable(int row, int column) {
+            public boolean isCellEditable(int row, int column)
+            {
                 // Make only the desired column editable
                 return column == editableCol;
             }
@@ -178,18 +195,21 @@ public abstract class GUI extends JFrame {
      * @param labels the array of JLabels to add to the panel.
      * @return the new JPanel, with labels installed.
      */
-    protected JPanel addLabelsToPanel(JLabel[] labels) {
+    protected JPanel addLabelsToPanel(JLabel[] labels)
+    {
         JPanel labelPanel = new JPanel();
         //We want the labels to be ordered vertically, in a column
         labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
-        for (JLabel label : labels) {
+        for (JLabel label : labels)
+        {
             label.setAlignmentX(Component.LEFT_ALIGNMENT); //Align labels to the left
             labelPanel.add(label);
         }
         return labelPanel;
     }
 
-    public GUI getPreviousGUI() {
+    public GUI getPreviousGUI()
+    {
         return previousGUI;
     }
 }

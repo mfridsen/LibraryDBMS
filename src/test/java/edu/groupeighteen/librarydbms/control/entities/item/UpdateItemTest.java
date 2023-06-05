@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Film;
@@ -15,6 +13,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -35,13 +35,15 @@ public class UpdateItemTest extends BaseHandlerTest
      */
     @Test
     @Order(1)
-    void testUpdateItem_ValidInput() {
+    void testUpdateItem_ValidInput()
+    {
         System.out.println("\n1: Testing updateItem method with valid input...");
 
         try
         {
             // Create a new Literature item
-            Literature newLit = ItemHandler.createNewLiterature("Title1", Item.ItemType.OTHER_BOOKS, 1, 1, "barcode1", "ISBN1");
+            Literature newLit = ItemHandler.createNewLiterature("Title1", Item.ItemType.OTHER_BOOKS, 1, 1, "barcode1",
+                    "ISBN1");
             int itemID = newLit.getItemID();
 
             // Change some fields
@@ -59,7 +61,8 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle1", updatedLit.getTitle());
             assertEquals("UpdatedISBN1", updatedLit.getISBN());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException |
+               InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -73,13 +76,15 @@ public class UpdateItemTest extends BaseHandlerTest
      */
     @Test
     @Order(2)
-    void testUpdateItem_NonExistingItem() {
+    void testUpdateItem_NonExistingItem()
+    {
         System.out.println("\n2: Testing updateItem method with non-existing item...");
 
         try
         {
             // Create a new Literature item
-            Literature newLit = ItemHandler.createNewLiterature("Title2", Item.ItemType.OTHER_BOOKS, 2, 2, "barcode2", "ISBN2");
+            Literature newLit = ItemHandler.createNewLiterature("Title2", Item.ItemType.OTHER_BOOKS, 2, 2, "barcode2",
+                    "ISBN2");
 
             // Change itemID to a non-existent ID
             newLit.setItemID(Integer.MAX_VALUE);
@@ -101,7 +106,8 @@ public class UpdateItemTest extends BaseHandlerTest
      */
     @Test
     @Order(3)
-    void testUpdateItem_FilmItem() {
+    void testUpdateItem_FilmItem()
+    {
         System.out.println("\n3: Testing updateItem method with film item...");
 
         try
@@ -125,7 +131,8 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle3", updatedFilm.getTitle());
             assertEquals(18, updatedFilm.getAgeRating());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidAgeRatingException | NullEntityException | RetrievalException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException |
+               InvalidTitleException | InvalidAgeRatingException | NullEntityException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -139,13 +146,15 @@ public class UpdateItemTest extends BaseHandlerTest
      */
     @Test
     @Order(4)
-    void testUpdateItem_LiteratureItem() {
+    void testUpdateItem_LiteratureItem()
+    {
         System.out.println("\n4: Testing updateItem method with literature item...");
 
         try
         {
             // Create a new Literature item
-            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode47", "ISBN4");
+            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode47",
+                    "ISBN4");
             int itemID = newLit.getItemID();
 
             // Change some fields
@@ -163,7 +172,8 @@ public class UpdateItemTest extends BaseHandlerTest
             assertEquals("UpdatedTitle4", updatedLit.getTitle());
             assertEquals("UpdatedISBN4", updatedLit.getISBN());
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException |
+               InvalidTitleException | InvalidISBNException | NullEntityException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");

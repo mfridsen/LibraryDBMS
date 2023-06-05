@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
@@ -15,6 +13,8 @@ import org.junit.jupiter.api.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -26,12 +26,11 @@ import java.sql.SQLException;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DeleteAndRecoverItemTest
 {
+    protected static final String testDatabaseName = "test_database";
+    protected static Connection connection = null;
     // Declare these at the class level so all tests can access them
     static Film film;
     static Literature literature;
-
-    protected static Connection connection = null;
-    protected static final String testDatabaseName = "test_database";
 
     static void setupConnectionAndTables()
     throws SQLException, ClassNotFoundException
@@ -67,7 +66,8 @@ public class DeleteAndRecoverItemTest
             literature = ItemHandler.createNewLiterature("Test Literature", Item.ItemType.OTHER_BOOKS,
                     1, 2, "5678", "978-3-16-1484");
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | SQLException | ClassNotFoundException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException |
+               SQLException | ClassNotFoundException e)
         {
             e.printStackTrace();
         }

@@ -1,18 +1,17 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import edu.groupeighteen.librarydbms.model.entities.Item;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidISBNException;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -27,9 +26,9 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GetItemsByISBNTest
 {
+    protected static final String testDatabaseName = "test_database";
     //We need all this stuff, copied from BaseHandlerTest but adapted to be static
     protected static Connection connection = null;
-    protected static final String testDatabaseName = "test_database";
 
     //BeforeEach
     static void setupConnectionAndTables()
@@ -98,10 +97,12 @@ public class GetItemsByISBNTest
 
     @Test
     @Order(1)
-    void testGetItemsByISBN_EmptyISBN() {
+    void testGetItemsByISBN_EmptyISBN()
+    {
         System.out.println("\n1: Testing getItemsByISBN method with empty ISBN...");
 
-        assertThrows(InvalidISBNException.class, () -> {
+        assertThrows(InvalidISBNException.class, () ->
+        {
             ItemHandler.getItemsByISBN("");
         });
 
@@ -110,10 +111,12 @@ public class GetItemsByISBNTest
 
     @Test
     @Order(2)
-    void testGetItemsByISBN_NullISBN() {
+    void testGetItemsByISBN_NullISBN()
+    {
         System.out.println("\n2: Testing getItemsByISBN method with null ISBN...");
 
-        assertThrows(InvalidISBNException.class, () -> {
+        assertThrows(InvalidISBNException.class, () ->
+        {
             ItemHandler.getItemsByISBN(null);
         });
 
@@ -122,12 +125,14 @@ public class GetItemsByISBNTest
 
     @Test
     @Order(3)
-    void testGetItemsByISBN_TooLongISBN() {
+    void testGetItemsByISBN_TooLongISBN()
+    {
         System.out.println("\n3: Testing getItemsByISBN method with too long ISBN...");
 
         String tooLongISBN = "1234567890123456789012345678901";  // more than Literature.LITERATURE_ISBN_LENGTH
 
-        assertThrows(InvalidISBNException.class, () -> {
+        assertThrows(InvalidISBNException.class, () ->
+        {
             ItemHandler.getItemsByISBN(tooLongISBN);
         });
 
@@ -136,7 +141,8 @@ public class GetItemsByISBNTest
 
     @Test
     @Order(4)
-    void testGetItemsByISBN_ItemNotExist() {
+    void testGetItemsByISBN_ItemNotExist()
+    {
         System.out.println("\n4: Testing getItemsByISBN method with ISBN of non-existent item...");
 
         try
@@ -158,7 +164,8 @@ public class GetItemsByISBNTest
 
     @Test
     @Order(5)
-    void testGetItemsByISBN_ItemExist() {
+    void testGetItemsByISBN_ItemExist()
+    {
         System.out.println("\n5: Testing getItemsByISBN method with existing item...");
 
         try
@@ -180,18 +187,22 @@ public class GetItemsByISBNTest
 
     @Test
     @Order(6)
-    void testGetItemsByISBN_MultipleItemsExist() {
+    void testGetItemsByISBN_MultipleItemsExist()
+    {
         System.out.println("\n6: Testing getItemsByISBN method with multiple items...");
 
         // assuming authorID = 1, classificationID = 1 are valid IDs in your database
-        try {
+        try
+        {
             String isbn = "1234567890123";  // unique ISBN for the test
             ItemHandler.createNewLiterature("Title1", Item.ItemType.OTHER_BOOKS, 1, 1, "barcode1", isbn);
             ItemHandler.createNewLiterature("Title2", Item.ItemType.OTHER_BOOKS, 1, 1, "barcode2", isbn);
 
             List<Item> items = ItemHandler.getItemsByISBN(isbn);
             assertEquals(2, items.size());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
         }

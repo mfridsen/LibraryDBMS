@@ -20,16 +20,16 @@ import javax.swing.*;
  * @author Jesper Truedsson
  * @project LibraryDBMS
  * @date 2023-05-22
- *
+ * <p>
  * This class extends EntityButtonEditor and specifically handles GUI button interactions for items. The class
  * overrides the getCellEditorValue method to determine the behavior of the button when clicked.
  * Depending on the label of the button, different actions are performed.
- *
+ * <p>
  * If the label is "View", a new ItemGUI instance is created to view the item's details.
  * If the label is "Rent", the item's availability is checked. If the item is available and a user is currently
  * logged in, an attempt to create and open a new rental is made. If the item is unavailable, or the user is not
  * logged in, appropriate messages are outputted and handled.
- *
+ * <p>
  * It also overrides the getCellEditorValue method from the EntityButtonEditor class to handle button press events.
  */
 public class ItemGUIButtonEditor extends EntityButtonEditor
@@ -37,10 +37,10 @@ public class ItemGUIButtonEditor extends EntityButtonEditor
     /**
      * Constructs a new ItemGUIButtonEditor with the given parameters.
      *
-     * @param checkBox     a JCheckBox that the superclass's constructor requires.
-     * @param entity       the Entity object that the button will open a EntityGUI for when clicked.
-     * @param label        the label of the button.
-     * @param previousGUI  the GUI from which the EntityGUI will be opened.
+     * @param checkBox    a JCheckBox that the superclass's constructor requires.
+     * @param entity      the Entity object that the button will open a EntityGUI for when clicked.
+     * @param label       the label of the button.
+     * @param previousGUI the GUI from which the EntityGUI will be opened.
      */
     public ItemGUIButtonEditor(JCheckBox checkBox, Entity entity, String label, GUI previousGUI)
     {
@@ -104,10 +104,11 @@ public class ItemGUIButtonEditor extends EntityButtonEditor
 
     /**
      * Creates a new Rental for the specified Item and opens the RentalGUI for the new rental.
+     *
      * @param item the Item to be rented.
-     * @throws EntityNotFoundException if the User or Item entities cannot be found.
+     * @throws EntityNotFoundException   if the User or Item entities cannot be found.
      * @throws RentalNotAllowedException if the rental is not allowed.
-     * @throws InvalidIDException if the ID of the User or Item is invalid.
+     * @throws InvalidIDException        if the ID of the User or Item is invalid.
      */
     private void createAndOpenNewRental(Item item)
     throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException

@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
@@ -15,6 +13,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -173,7 +173,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, null, Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to null title.");
         }
         catch (ConstructionException e)
@@ -198,7 +198,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, "", Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to empty title.");
         }
         catch (ConstructionException e)
@@ -225,7 +225,7 @@ public class LiteratureRetrievalTest
             String tooLongTitle = String.format("%0" + (Item.ITEM_TITLE_MAX_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, tooLongTitle, Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to too long title.");
         }
         catch (ConstructionException e)
@@ -250,7 +250,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, "Title", null,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to null ItemType.");
         }
         catch (ConstructionException e)
@@ -327,7 +327,7 @@ public class LiteratureRetrievalTest
             String tooLongBarcode = String.format("%0" + (Item.ITEM_BARCODE_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     tooLongBarcode, 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to too long title.");
         }
         catch (ConstructionException e)
@@ -352,7 +352,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     "Barcode", -1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to negative authorID.");
         }
         catch (ConstructionException e)
@@ -377,7 +377,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, -1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to negative classificationID.");
         }
         catch (ConstructionException e)
@@ -402,7 +402,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",-1, true, "1234567890123");
+                    "ClassificationName", -1, true, "1234567890123");
             fail("ConstructionException expected due to negative allowedRentalDays.");
         }
         catch (ConstructionException e)
@@ -427,7 +427,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, null);
+                    "ClassificationName", 10, true, null);
             fail("ConstructionException expected due to null ISBN.");
         }
         catch (ConstructionException e)
@@ -452,7 +452,7 @@ public class LiteratureRetrievalTest
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "");
+                    "ClassificationName", 10, true, "");
             fail("ConstructionException expected due to empty ISBN.");
         }
         catch (ConstructionException e)
@@ -479,7 +479,7 @@ public class LiteratureRetrievalTest
             String tooLongISBN = String.format("%0" + (Literature.LITERATURE_ISBN_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     "Barcode", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, tooLongISBN);
+                    "ClassificationName", 10, true, tooLongISBN);
             fail("ConstructionException expected due to too long ISBN.");
         }
         catch (ConstructionException e)

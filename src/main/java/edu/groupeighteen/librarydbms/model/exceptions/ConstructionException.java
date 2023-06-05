@@ -9,8 +9,10 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * <p>
  * Custom ConstructionException class. Used to make Exceptions clearer.
  */
-public class ConstructionException extends Exception {
-    public ConstructionException(String message, Throwable cause) {
+public class ConstructionException extends Exception
+{
+    public ConstructionException(String message, Throwable cause)
+    {
         super(message, cause);
     }
 }

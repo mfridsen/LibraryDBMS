@@ -39,24 +39,10 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException
 public abstract class Item extends Entity
 {
     /**
-     * An enumeration of different types of items available in the library.
-     * Each item type can be one of the following: REFERENCE_LITERATURE, MAGAZINE, FILM, COURSE_LITERATURE, OTHER_BOOKS
-     */
-    public enum ItemType
-    {
-        REFERENCE_LITERATURE,
-        MAGAZINE,
-        FILM,
-        COURSE_LITERATURE,
-        OTHER_BOOKS
-    }
-
-    /**
      * Maximum allowed length of an item's title. The value is retrieved from the database metadata to
      * maintain consistency.
      */
     public static final int ITEM_TITLE_MAX_LENGTH;
-
     /**
      * The exact required length of an item's barcode. The value is retrieved from the database metadata to
      * maintain consistency.
@@ -78,58 +64,46 @@ public abstract class Item extends Entity
      * Primary key of the item in the database.
      */
     protected int itemID;
-
     /**
      * Title of the item.
      */
     protected String title;
-
     /**
      * Type of the item, as defined in the ItemType enumeration.
      */
     protected ItemType type;
-
     /**
      * Unique identifier for the item, represented as a barcode.
      */
     protected String barcode;
-
     /**
      * Foreign key reference to the ID of the author or director associated with the item.
      */
     protected int authorID;
-
     /**
      * Foreign key reference to the ID of the item's classification.
      */
     protected int classificationID;
-
     /**
      * Name of the author or director associated with the item. This field is not persisted in the database.
      */
     protected String authorFirstname;
-
     /**
      * Last name of the author or director associated with the item. This field is not persisted in the database.
      */
     protected String authorLastname;
-
     /**
      * Name of the item's classification. This field is not persisted in the database.
      */
     protected String classificationName;
-
     /**
      * Number of days this item is allowed to be rented.
      */
     protected int allowedRentalDays;
-
     /**
      * Availability status of the item. True if the item is available for rental, false otherwise.
      */
     protected boolean available; //True by default //TODO-prio double check availability on delete
-
-    //TODO remember the protected boolean deleted inherited from Entity
 
     /**
      * Constructs a new Item object using provided data. The ItemID is not set during construction and should be
@@ -162,12 +136,14 @@ public abstract class Item extends Entity
             this.available = true;
         }
         catch (InvalidTitleException | InvalidIDException | InvalidDateException | InvalidBarcodeException
-                | InvalidItemTypeException e)
+               | InvalidItemTypeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
+
+    //TODO remember the protected boolean deleted inherited from Entity
 
     /**
      * Constructs an Item object using the provided data. This constructor is typically used when retrieving an item
@@ -209,7 +185,7 @@ public abstract class Item extends Entity
             this.available = available;
         }
         catch (InvalidIDException | InvalidTitleException | InvalidDateException
-                | InvalidBarcodeException | InvalidItemTypeException e)
+               | InvalidBarcodeException | InvalidItemTypeException e)
         {
             throw new ConstructionException("Failed to construct Item due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -506,5 +482,18 @@ public abstract class Item extends Entity
     public void setAvailable(boolean available)
     {
         this.available = available;
+    }
+
+    /**
+     * An enumeration of different types of items available in the library.
+     * Each item type can be one of the following: REFERENCE_LITERATURE, MAGAZINE, FILM, COURSE_LITERATURE, OTHER_BOOKS
+     */
+    public enum ItemType
+    {
+        REFERENCE_LITERATURE,
+        MAGAZINE,
+        FILM,
+        COURSE_LITERATURE,
+        OTHER_BOOKS
     }
 }

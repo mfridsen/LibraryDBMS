@@ -8,7 +8,7 @@ import org.junit.platform.suite.api.Suite;
  * @project LibraryDBMS
  * @date 5/12/2023
  * @contact matfir-1@student.ltu.se
- *
+ * <p>
  * Unit Tests for the ItemHandler class.
  */
 @Suite

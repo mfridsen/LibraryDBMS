@@ -1,8 +1,6 @@
 package edu.groupeighteen.librarydbms.view.entities.author;
 
 import edu.groupeighteen.librarydbms.model.entities.Author;
-import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.view.entities.user.UserSearchResultGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -15,17 +13,21 @@ import java.util.List;
  * @project LibraryDBMS
  * @date 2023-05-26
  */
-public class AuthorSearchGUI extends GUI {
+public class AuthorSearchGUI extends GUI
+{
     private JTable authorSearchTable;
     private JPanel searchFieldsPanel;
-    public AuthorSearchGUI(GUI previousGUI) {
+
+    public AuthorSearchGUI(GUI previousGUI)
+    {
         super(previousGUI, "AuthorSearchGUI", null);
         setupScrollPane();
         setupPanels();
         displayGUI();
     }
 
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         //Resets the editable cells //TODO-bug doesn't clear selected field
         JButton resetButton = setupResetButton();
         //Performs the search and opens a searchResultGUI
@@ -33,46 +35,60 @@ public class AuthorSearchGUI extends GUI {
         return new JButton[]{resetButton, searchButton};
     }
 
-    private JButton setupResetButton() {
+    private JButton setupResetButton()
+    {
         JButton resetCellsButton = new JButton("Reset");
-        resetCellsButton.addActionListener(e -> {
+        resetCellsButton.addActionListener(e ->
+        {
             resetCells();
         });
         return resetCellsButton;
     }
 
-    private void resetCells() {
-        for (int row = 0; row < authorSearchTable.getRowCount(); row++) {
-            for (int col = 0; col < authorSearchTable.getColumnCount(); col++) {
-                if (col == 1) { //Assuming the 2nd column is the editable column
+    private void resetCells()
+    {
+        for (int row = 0; row < authorSearchTable.getRowCount(); row++)
+        {
+            for (int col = 0; col < authorSearchTable.getColumnCount(); col++)
+            {
+                if (col == 1)
+                { //Assuming the 2nd column is the editable column
                     authorSearchTable.setValueAt("", row, col);
                 }
             }
         }
     }
 
-    private JButton setupSearchButton() {
+    private JButton setupSearchButton()
+    {
         JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> {
+        searchButton.addActionListener(e ->
+        {
             //Perform the search
             List<Author> searchResultList = performSearch();
             //If the search doesn't generate a result, we stay
-            if (!searchResultList.isEmpty()) {
+            if (!searchResultList.isEmpty())
+            {
                 dispose();
                 new AuthorSearchResultGUI(this, searchResultList);
-            } else System.err.println("No results found for search.");
+            }
+            else System.err.println("No results found for search.");
         });
         return searchButton;
     }
-    private List<Author> performSearch() {
+
+    private List<Author> performSearch()
+    {
         List<Author> searchResultList = new ArrayList<>();
 
-        for (int row = 0; row < authorSearchTable.getRowCount(); row++) {
+        for (int row = 0; row < authorSearchTable.getRowCount(); row++)
+        {
             //Retrieve cell data
             Object cellData = authorSearchTable.getValueAt(row, 1);
 
             //If data is null or empty, do nothing
-            if (cellData == null || cellData.toString().isEmpty()) {
+            if (cellData == null || cellData.toString().isEmpty())
+            {
                 continue;
             }
 
@@ -107,7 +123,8 @@ public class AuthorSearchGUI extends GUI {
         return searchResultList;
     }
 
-    protected void setupScrollPane() {
+    protected void setupScrollPane()
+    {
         //Define the names of the columns for the table.
         String[] columnNames = {"Property", "Search Value"};
 
@@ -129,7 +146,8 @@ public class AuthorSearchGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         GUIPanel.add(searchFieldsPanel);
     }
 }

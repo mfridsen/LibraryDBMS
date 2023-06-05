@@ -3,8 +3,8 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
@@ -25,7 +25,8 @@ import java.awt.*;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class ItemCreateGUI extends GUI {
+public class ItemCreateGUI extends GUI
+{
     private JTextField userIDField;
     private JTextField itemIDField;
 
@@ -34,7 +35,8 @@ public class ItemCreateGUI extends GUI {
      *
      * @param previousGUI The GUI that was displayed before this one.
      */
-    public ItemCreateGUI(GUI previousGUI) {
+    public ItemCreateGUI(GUI previousGUI)
+    {
         super(previousGUI, "ItemCreateGUI", null);
         setupPanels();
         displayGUI();
@@ -47,14 +49,17 @@ public class ItemCreateGUI extends GUI {
      * @return An array of the two JButtons created in this method.
      */
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton resetButton = new JButton("Reset Fields");
-        resetButton.addActionListener(e -> {
+        resetButton.addActionListener(e ->
+        {
             resetFields();
         });
 
         JButton createButton = new JButton("Create Rental");
-        createButton.addActionListener(e -> {
+        createButton.addActionListener(e ->
+        {
             createItem();
         });
 
@@ -64,7 +69,8 @@ public class ItemCreateGUI extends GUI {
     /**
      * Resets the text fields for user ID and item ID to be empty.
      */
-    private void resetFields() {
+    private void resetFields()
+    {
         userIDField.setText("");
         itemIDField.setText("");
     }
@@ -75,17 +81,20 @@ public class ItemCreateGUI extends GUI {
      * an error message is printed and the method returns early. If the fields are valid,
      * a new Rental is created and a new RentalGUI is opened for that rental.
      */
-    private void createItem() {
+    private void createItem()
+    {
         String userIDStr = userIDField.getText();
         String itemIDStr = itemIDField.getText();
 
         //Check if one or both fields are empty
-        if (userIDStr.isEmpty()) {
+        if (userIDStr.isEmpty())
+        {
             System.err.println("To create a new item you need to enter in a user ID. User ID: " + userIDStr);
             resetFields();
             return;
         }
-        if (itemIDStr.isEmpty()) {
+        if (itemIDStr.isEmpty())
+        {
             System.err.println("To create a new item you need to enter in an item ID. Item ID: " + itemIDStr);
             resetFields();
             return;
@@ -95,17 +104,23 @@ public class ItemCreateGUI extends GUI {
         int itemID = 0;
 
         //Attempt to parse the user ID and item ID as integers
-        try {
+        try
+        {
             userID = Integer.parseInt(userIDStr);
-        } catch (NumberFormatException nfe) {
+        }
+        catch (NumberFormatException nfe)
+        {
             //If the parsing fails, print an error message
             System.err.println("Item creation failed: user ID not an int. User ID: " + userIDStr);
             resetFields();
             return;
         }
-        try {
+        try
+        {
             itemID = Integer.parseInt(itemIDStr);
-        } catch (NumberFormatException nfe) {
+        }
+        catch (NumberFormatException nfe)
+        {
             //If the parsing fails, print an error message
             System.err.println("Item creation failed: item ID not an int. Item ID: " + itemIDStr);
             resetFields();
@@ -113,11 +128,14 @@ public class ItemCreateGUI extends GUI {
         }
 
         //If successful, dispose, create a new item and open a new ItemGUI for that item
-        try {
+        try
+        {
             dispose();
             Rental newRental = RentalHandler.createNewRental(userID, itemID);
             new RentalGUI(this, newRental);
-        } catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException sqle) {
+        }
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException sqle)
+        {
             System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
             sqle.printStackTrace();
             LibraryManager.exit(1);
@@ -129,7 +147,8 @@ public class ItemCreateGUI extends GUI {
      * Sets up the panel containing the text fields for user ID and item ID.
      */
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         JPanel textFieldsPanel = new JPanel();
         textFieldsPanel.setLayout(new GridLayout(2, 2));
         JLabel userIDLabel = new JLabel("Enter Item ID:");

@@ -9,14 +9,16 @@ import javax.swing.*;
  * @project LibraryDBMS
  * @date 2023-04-21
  */
-public class InfoPageGUI extends GUI {
+public class InfoPageGUI extends GUI
+{
     public JFrame firstFrame;
     public JPanel firstPanel;
+
     /**
      * Constructs a new GUI object. Stores the previous GUI and sets the title of the GUI.
-     *
      */
-    public InfoPageGUI(GUI previousGUI) {
+    public InfoPageGUI(GUI previousGUI)
+    {
         super(previousGUI, "InfoPageGUI", null);
         setupButtons();
         addButtonsToPanel(new JButton[]{});
@@ -24,7 +26,8 @@ public class InfoPageGUI extends GUI {
         this.displayGUI();
     }
 
-    public void showInfoGUI(){
+    public void showInfoGUI()
+    {
         // skapar infoGUI
         firstFrame = new JFrame("Information");
         firstPanel = new JPanel();
@@ -47,16 +50,17 @@ public class InfoPageGUI extends GUI {
         firstFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-
     }
 
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         return new JButton[0];
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
 
     }
 }

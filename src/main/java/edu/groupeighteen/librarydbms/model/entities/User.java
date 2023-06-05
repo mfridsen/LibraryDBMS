@@ -41,63 +41,29 @@ import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsExc
 public class User extends Entity
 {
     /**
-     * Represents the different types of users in the system.
-     * <p>
-     * ADMIN: Has full control over the system and can perform any operation.
-     * STAFF: Can perform most operations, but may be restricted in some areas.
-     * PATRON: A regular user of the system, with the least privileges.
-     * STUDENT: Represents a student in an educational setting. May have extra privileges related to educational
-     * materials.
-     * TEACHER: Represents a teacher in an educational setting. May have extra privileges related to educational
-     * materials.
-     * RESEARCHER: Represents a researcher in an educational or corporate setting. May have extra privileges related
-     * to research materials.
-     */
-    public enum UserType
-    {
-        ADMIN,
-        STAFF,
-        PATRON,
-        STUDENT,
-        TEACHER,
-        RESEARCHER
-    }
-
-    /**
      * The minimum length for a username. Shorter usernames will be considered invalid.
      */
     public static final int MIN_USERNAME_LENGTH = 3;
-
     /**
      * The maximum length for a username. Longer usernames will be considered invalid.
      */
     public static final int MAX_USERNAME_LENGTH; //20
-
     /**
      * The minimum length for a password. Shorter passwords will be considered invalid.
      */
     public static final int MIN_PASSWORD_LENGTH = 8;
-
     /**
      * The maximum length for a password. Longer passwords will be considered invalid.
      */
     public static final int MAX_PASSWORD_LENGTH; //50
-
     /**
      * The minimum length for an email address. Shorter email addresses will be considered invalid.
      */
     public static final int MIN_EMAIL_LENGTH = 6;
-
     /**
      * The maximum length for an email address. Longer email addresses will be considered invalid.
      */
     public static final int MAX_EMAIL_LENGTH; //255
-    //An email address needs to have a minimum of six characters:
-    // One character for the user name.
-    // The @ symbol.
-    // One character for the domain name.
-    // The dot symbol (.)
-    // Two characters for the top level domain (like .com, .org, .io, .us).
 
     /*
      * Initializes the maximum length fields for username, password and email.
@@ -110,7 +76,17 @@ public class User extends Entity
         MAX_PASSWORD_LENGTH = metaData[1];
         MAX_EMAIL_LENGTH = metaData[2];
     }
+    //An email address needs to have a minimum of six characters:
+    // One character for the user name.
+    // The @ symbol.
+    // One character for the domain name.
+    // The dot symbol (.)
+    // Two characters for the top level domain (like .com, .org, .io, .us).
 
+    /**
+     * Whether this user is allowed to rent items.
+     */
+    boolean allowedToRent;
     /**
      * The unique identifier for this user in the database.
      */
@@ -152,13 +128,6 @@ public class User extends Entity
     private double lateFee;
 
     /**
-     * Whether this user is allowed to rent items.
-     */
-    boolean allowedToRent;
-
-    //TODO-future private boolean activeRentals;
-
-    /**
      * Constructs a new User with the specified username and password. This is
      * generally used when creating a new User, as it assigns a default number of
      * allowed rentals and no late fee. An exception is thrown if the username or
@@ -191,12 +160,14 @@ public class User extends Entity
             }
         }
         catch (InvalidNameException | InvalidPasswordException | InvalidTypeException | InvalidEmailException
-                | InvalidUserRentalsException | InvalidLateFeeException | InvalidRentalStatusChangeException e)
+               | InvalidUserRentalsException | InvalidLateFeeException | InvalidRentalStatusChangeException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
         }
     }
+
+    //TODO-future private boolean activeRentals;
 
     /**
      * Constructs a User object based on data retrieved from the database.
@@ -233,8 +204,8 @@ public class User extends Entity
             setAllowedToRent(allowedToRent);    //Throws InvalidRentalStatusChangeException
         }
         catch (InvalidIDException | InvalidNameException | InvalidPasswordException | InvalidLateFeeException
-                | InvalidRentalStatusChangeException | InvalidUserRentalsException | InvalidTypeException
-                | InvalidEmailException e)
+               | InvalidRentalStatusChangeException | InvalidUserRentalsException | InvalidTypeException
+               | InvalidEmailException e)
         {
             throw new ConstructionException("Failed to construct User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -577,5 +548,28 @@ public class User extends Entity
         }
 
         this.allowedToRent = allowedToRent;
+    }
+
+    /**
+     * Represents the different types of users in the system.
+     * <p>
+     * ADMIN: Has full control over the system and can perform any operation.
+     * STAFF: Can perform most operations, but may be restricted in some areas.
+     * PATRON: A regular user of the system, with the least privileges.
+     * STUDENT: Represents a student in an educational setting. May have extra privileges related to educational
+     * materials.
+     * TEACHER: Represents a teacher in an educational setting. May have extra privileges related to educational
+     * materials.
+     * RESEARCHER: Represents a researcher in an educational or corporate setting. May have extra privileges related
+     * to research materials.
+     */
+    public enum UserType
+    {
+        ADMIN,
+        STAFF,
+        PATRON,
+        STUDENT,
+        TEACHER,
+        RESEARCHER
     }
 }

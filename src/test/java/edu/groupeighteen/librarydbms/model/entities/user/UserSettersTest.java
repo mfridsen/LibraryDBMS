@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
@@ -9,6 +7,8 @@ import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordExcept
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidRentalStatusChangeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -23,36 +23,30 @@ import org.junit.jupiter.api.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserSettersTest
 {
-    //Let's use the same User object for all tests here
-    private static User user = null;
-
     //Previously established valid values.
     private static final int validUserID1 = 1;
     private static final int validUserID2 = 2;
-
     private static final String validUsername = "validusername";
     private static final String validUsername2 = "validusername2";
     private static final String shortUsername = "sh"; //3
     private static final String longUsername = "a".repeat(User.MAX_USERNAME_LENGTH + 1);
-
     private static final String validPassword = "validpassword";
     private static final String validPassword2 = "validpassword";
     private static final String shortPassword = "short"; //8
     private static final String longPassword = "a".repeat(User.MAX_PASSWORD_LENGTH + 1);
-
     private static final User.UserType userType = User.UserType.PATRON;
     private static final User.UserType userType2 = User.UserType.RESEARCHER; //Verify allowedRentals changed
-
     private static final String validEmail = "validuser@example.com";
     private static final String validEmail2 = "validuser2@example.com";
     private static final String shortEmail = "shrt"; //6
     private static final String longEmail = "a".repeat(User.MAX_EMAIL_LENGTH + 1);
-
     private static final int allowedRentals = User.getDefaultAllowedRentals(User.UserType.PATRON);
     private static final int currentRentals = 0;
     private static final double lateFee = 0.0;
     private static final boolean allowedToRent = true;
     private static final boolean deleted = false;
+    //Let's use the same User object for all tests here
+    private static User user = null;
 
     /**
      * Creates a valid user object that we can perform tests on, ethical or not-so-ethical depending on currentMood.
@@ -200,7 +194,8 @@ public class UserSettersTest
      */
     @Test
     @Order(8)
-    void testUserSetters_SetPassword_NullPassword() {
+    void testUserSetters_SetPassword_NullPassword()
+    {
         System.out.println("\n8: Testing setPassword with null password...");
 
         assertThrows(InvalidPasswordException.class, () -> user.setPassword(null));
@@ -213,7 +208,8 @@ public class UserSettersTest
      */
     @Test
     @Order(9)
-    void testUserSetters_SetPassword_EmptyPassword() {
+    void testUserSetters_SetPassword_EmptyPassword()
+    {
         System.out.println("\n9: Testing setPassword with empty password...");
 
         assertThrows(InvalidPasswordException.class, () -> user.setPassword(""));
@@ -226,7 +222,8 @@ public class UserSettersTest
      */
     @Test
     @Order(10)
-    void testUserSetters_SetPassword_ShortPassword() {
+    void testUserSetters_SetPassword_ShortPassword()
+    {
         System.out.println("\n10: Testing setPassword with short password...");
 
         assertThrows(InvalidPasswordException.class, () -> user.setPassword(shortPassword));
@@ -239,7 +236,8 @@ public class UserSettersTest
      */
     @Test
     @Order(11)
-    void testUserSetters_SetPassword_LongPassword() {
+    void testUserSetters_SetPassword_LongPassword()
+    {
         System.out.println("\n11: Testing setPassword with long password...");
 
         assertThrows(InvalidPasswordException.class, () -> user.setPassword(longPassword));
@@ -252,7 +250,8 @@ public class UserSettersTest
      */
     @Test
     @Order(12)
-    void testUserSetters_SetUserType_ValidType() {
+    void testUserSetters_SetUserType_ValidType()
+    {
         System.out.println("\n12: Testing setUserType with valid type, also verifying updates to user...");
 
         assertDoesNotThrow(() -> user.setUserType(User.UserType.RESEARCHER));
@@ -267,7 +266,8 @@ public class UserSettersTest
      */
     @Test
     @Order(13)
-    void testUserSetters_SetUserType_NullUserType() {
+    void testUserSetters_SetUserType_NullUserType()
+    {
         System.out.println("\n13: Testing setUserType with null userType...");
 
         assertThrows(InvalidTypeException.class, () -> user.setUserType(null));
@@ -280,7 +280,8 @@ public class UserSettersTest
      */
     @Test
     @Order(14)
-    void testUserSetters_SetEmail_ValidEmail() {
+    void testUserSetters_SetEmail_ValidEmail()
+    {
         System.out.println("\n14: Testing setEmail with valid email...");
 
         assertDoesNotThrow(() -> user.setEmail(validEmail2));
@@ -294,7 +295,8 @@ public class UserSettersTest
      */
     @Test
     @Order(15)
-    void testUserSetters_SetEmail_NullEmail() {
+    void testUserSetters_SetEmail_NullEmail()
+    {
         System.out.println("\n15: Testing setEmail with null email...");
 
         assertThrows(InvalidEmailException.class, () -> user.setEmail(null));
@@ -307,7 +309,8 @@ public class UserSettersTest
      */
     @Test
     @Order(16)
-    void testUserSetters_SetEmail_EmptyEmail() {
+    void testUserSetters_SetEmail_EmptyEmail()
+    {
         System.out.println("\n16: Testing setEmail with empty email...");
 
         assertThrows(InvalidEmailException.class, () -> user.setEmail(""));
@@ -320,7 +323,8 @@ public class UserSettersTest
      */
     @Test
     @Order(17)
-    void testUserSetters_SetEmail_ShortEmail() {
+    void testUserSetters_SetEmail_ShortEmail()
+    {
         System.out.println("\n17: Testing setEmail with short email...");
 
         assertThrows(InvalidEmailException.class, () -> user.setEmail(shortEmail));
@@ -333,7 +337,8 @@ public class UserSettersTest
      */
     @Test
     @Order(18)
-    void testUserSetters_SetEmail_LongEmail() {
+    void testUserSetters_SetEmail_LongEmail()
+    {
         System.out.println("\n18: Testing setEmail with long email...");
 
         assertThrows(InvalidEmailException.class, () -> user.setEmail(longEmail));
@@ -346,7 +351,8 @@ public class UserSettersTest
      */
     @Test
     @Order(19)
-    void testUserSetters_SetAllowedRentals_NegativeAllowedRentals() {
+    void testUserSetters_SetAllowedRentals_NegativeAllowedRentals()
+    {
         System.out.println("\n19: Testing setAllowedRentals with a negative number...");
 
         assertThrows(InvalidUserRentalsException.class, () -> user.setAllowedRentals(-1));
@@ -359,7 +365,8 @@ public class UserSettersTest
      */
     @Test
     @Order(20)
-    void testUserSetters_SetCurrentRentals_NegativeCurrentRentals() {
+    void testUserSetters_SetCurrentRentals_NegativeCurrentRentals()
+    {
         System.out.println("\n20: Testing setCurrentRentals with a negative number...");
 
         assertThrows(InvalidUserRentalsException.class, () -> user.setCurrentRentals(-1));
@@ -372,7 +379,8 @@ public class UserSettersTest
      */
     @Test
     @Order(21)
-    void testUserSetters_SetCurrentRentals_MoreThanAllowedRentals() {
+    void testUserSetters_SetCurrentRentals_MoreThanAllowedRentals()
+    {
         System.out.println("\n21: Testing setCurrentRentals more than allowedRentals...");
 
         assertThrows(InvalidUserRentalsException.class, () -> user.setCurrentRentals(user.getAllowedRentals() + 1));
@@ -385,7 +393,8 @@ public class UserSettersTest
      */
     @Test
     @Order(22)
-    void testUserSetters_SetLateFee_NegativeLateFee() {
+    void testUserSetters_SetLateFee_NegativeLateFee()
+    {
         System.out.println("\n22: Testing setLateFee with a negative number...");
 
         assertThrows(InvalidLateFeeException.class, () -> user.setLateFee(-1));
@@ -398,7 +407,8 @@ public class UserSettersTest
      */
     @Test
     @Order(23)
-    void testUserSetters_SetAllowedToRent_ZeroLateFee_AllowedRentalsMoreThanCurrentRentals_AllowedToRentFalse() {
+    void testUserSetters_SetAllowedToRent_ZeroLateFee_AllowedRentalsMoreThanCurrentRentals_AllowedToRentFalse()
+    {
         System.out.println("\n23: Testing setAllowedToRent when lateFee is 0.0 and allowedRentals is greater " +
                 "than currentRentals, when allowedToRent is set to false...");
 
@@ -415,7 +425,8 @@ public class UserSettersTest
      */
     @Test
     @Order(24)
-    void testUserSetters_SetAllowedToRent_PositiveLateFee_AllowedToRentTrue() {
+    void testUserSetters_SetAllowedToRent_PositiveLateFee_AllowedToRentTrue()
+    {
         System.out.println("\n24: Testing setAllowedToRent with lateFee greater than 0.0 and allowedToRent is set to " +
                 "true...");
 
@@ -431,7 +442,8 @@ public class UserSettersTest
      */
     @Test
     @Order(25)
-    void testUserSetters_SetAllowedToRent_MoreThanOrEqualsToDefaultAllowedRentals() {
+    void testUserSetters_SetAllowedToRent_MoreThanOrEqualsToDefaultAllowedRentals()
+    {
         System.out.println("\n25: Testing setAllowedToRent when currentRentals greater than or equals to " +
                 "allowedRentals, when setting allowedToRent to true...");
 
@@ -447,7 +459,8 @@ public class UserSettersTest
      */
     @Test
     @Order(26)
-    void testUserSetters_SetDeletedAndAllowedToRent_True() {
+    void testUserSetters_SetDeletedAndAllowedToRent_True()
+    {
         System.out.println("\n26: Testing setting deleted to true and allowedToRent to true...");
 
         assertDoesNotThrow(() -> user.setDeleted(true));
@@ -462,7 +475,8 @@ public class UserSettersTest
      */
     @Test
     @Order(27)
-    void testUserSetters_SetAllowedRentals_ValidAllowedRentals() {
+    void testUserSetters_SetAllowedRentals_ValidAllowedRentals()
+    {
         System.out.println("\n27: Testing setAllowedRentals with valid allowedRentals...");
 
         assertDoesNotThrow(() -> user.setAllowedRentals(7));
@@ -475,7 +489,8 @@ public class UserSettersTest
      */
     @Test
     @Order(28)
-    void testUserSetters_SetCurrentRentals_ValidCurrentRentals() {
+    void testUserSetters_SetCurrentRentals_ValidCurrentRentals()
+    {
         System.out.println("\n28: Testing setCurrentRentals with valid currentRentals...");
 
         assertDoesNotThrow(() -> user.setCurrentRentals(2));
@@ -488,7 +503,8 @@ public class UserSettersTest
      */
     @Test
     @Order(29)
-    void testUserSetters_SetLateFee_ValidLateFee() {
+    void testUserSetters_SetLateFee_ValidLateFee()
+    {
         System.out.println("\n29: Testing setLateFee with valid lateFee...");
 
         assertDoesNotThrow(() -> user.setLateFee(2));
@@ -501,7 +517,8 @@ public class UserSettersTest
      */
     @Test
     @Order(30)
-    void testUserSetters_SetPassword_ValidPassword() {
+    void testUserSetters_SetPassword_ValidPassword()
+    {
         System.out.println("\n30: Testing setPassword with valid password...");
 
         assertDoesNotThrow(() -> user.setPassword(validPassword2));

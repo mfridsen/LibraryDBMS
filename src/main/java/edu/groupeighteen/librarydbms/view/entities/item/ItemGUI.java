@@ -39,8 +39,9 @@ public class ItemGUI extends GUI
 
     /**
      * Constructor for the ItemGUI class.
+     *
      * @param previousGUI the GUI from which this GUI is accessed.
-     * @param item the Item entity to be managed.
+     * @param item        the Item entity to be managed.
      */
     public ItemGUI(GUI previousGUI, Item item)
     {
@@ -52,6 +53,7 @@ public class ItemGUI extends GUI
 
     /**
      * Setup the buttons for the GUI.
+     *
      * @return array of JButtons used in this GUI.
      */
     @Override
@@ -62,7 +64,8 @@ public class ItemGUI extends GUI
 
         JButton rentButton = new JButton("Rent Item");
 
-        rentButton.addActionListener(e -> {
+        rentButton.addActionListener(e ->
+        {
             if (item.isAvailable()) //If item can be rented...
             {
                 if (LibraryManager.getCurrentUser() != null) //... and we are logged in
@@ -98,10 +101,11 @@ public class ItemGUI extends GUI
 
     /**
      * Creates a new Rental for the specified Item and opens the RentalGUI for the new rental.
+     *
      * @param item the Item to be rented.
-     * @throws EntityNotFoundException if the User or Item entities cannot be found.
+     * @throws EntityNotFoundException   if the User or Item entities cannot be found.
      * @throws RentalNotAllowedException if the rental is not allowed.
-     * @throws InvalidIDException if the ID of the User or Item is invalid.
+     * @throws InvalidIDException        if the ID of the User or Item is invalid.
      */
     private void createAndOpenNewRental(Item item)
     throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException
@@ -129,7 +133,7 @@ public class ItemGUI extends GUI
         data.add(new Object[]{"Item Title", item.getTitle()});
         data.add(new Object[]{"Item Type", getItemTypeString(item.getType())});
         data.add(new Object[]{"Classification", item.getClassificationName()});
-        data.add(new Object[]{"Author/Director First Name",item.getAuthorFirstname()});
+        data.add(new Object[]{"Author/Director First Name", item.getAuthorFirstname()});
         data.add(new Object[]{"Author/Director Last Name", item.getAuthorLastname()});
 
         //Check if item is an instance of Literature
@@ -167,6 +171,7 @@ public class ItemGUI extends GUI
 
     /**
      * Get the string representation of an Item type.
+     *
      * @param type the type of the Item.
      * @return the string representation of the type.
      */
@@ -195,6 +200,7 @@ public class ItemGUI extends GUI
 
     /**
      * Get the Item entity managed by this GUI.
+     *
      * @return the Item entity.
      */
     public Item getItem()

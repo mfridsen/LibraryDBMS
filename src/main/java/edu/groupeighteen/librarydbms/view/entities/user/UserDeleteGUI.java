@@ -3,8 +3,6 @@ package edu.groupeighteen.librarydbms.view.entities.user;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserValidationException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
@@ -16,13 +14,15 @@ import java.util.Arrays;
  * @project LibraryDBMS
  * @date 2023-05-12
  */
-public class UserDeleteGUI extends GUI {
+public class UserDeleteGUI extends GUI
+{
     private final User usertoDelete;
     private JButton confirmButton;
     private JPasswordField passwordField;
 
 
-    public UserDeleteGUI(GUI previousGUI, User usertoDelete) {
+    public UserDeleteGUI(GUI previousGUI, User usertoDelete)
+    {
         super(previousGUI, "UserDeleteGUI", usertoDelete);
         this.usertoDelete = usertoDelete;
         setupPanels();
@@ -30,20 +30,27 @@ public class UserDeleteGUI extends GUI {
     }
 
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         confirmButton = new JButton("Confirm Delete");
-        confirmButton.addActionListener(e -> {
+        confirmButton.addActionListener(e ->
+        {
             dispose();
 
-            if (LibraryManager.getCurrentUser() != null) {
-                try {
+            if (LibraryManager.getCurrentUser() != null)
+            {
+                try
+                {
                     if (UserHandler.validate(LibraryManager.getCurrentUser(),
-                            Arrays.toString(passwordField.getPassword()))) {
+                            Arrays.toString(passwordField.getPassword())))
+                    {
                         //UserHandler.deleteUser(usertoDelete);
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     }
-                } catch (UserValidationException userNullException) {
+                }
+                catch (UserValidationException userNullException)
+                {
                     userNullException.printStackTrace();
                 }
             }
@@ -55,7 +62,8 @@ public class UserDeleteGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         JPanel passwordPanel = new JPanel();
         JLabel passwordLabel = new JLabel("Delete user: " + usertoDelete.getUsername() + "?");
         passwordField = new JPasswordField();

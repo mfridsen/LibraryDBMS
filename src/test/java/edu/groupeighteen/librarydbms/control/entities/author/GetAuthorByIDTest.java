@@ -1,18 +1,15 @@
 package edu.groupeighteen.librarydbms.control.entities.author;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.AuthorHandler;
-import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Author;
-import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.CreationException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -30,18 +27,20 @@ public class GetAuthorByIDTest extends BaseHandlerTest
 {
     private static final String validAuthorFirstName1 = "validfirstname1";
     private static final String validAuthorFirstName2 = "validfirstname2";
-    private static final String  validAuthorFirstName3 = "validfirstname3";
-    private static final String  validAuthorLastName1 = "validlastname1";
+    private static final String validAuthorFirstName3 = "validfirstname3";
+    private static final String validAuthorLastName1 = "validlastname1";
     private static final String validAuthorLastName2 = "validlastname2";
     private static final String validAuthorLastName3 = "validlastname3";
+    private static final int invalidID = -1;
     private static int existingAuthorID;
     private static int nonExistingAuthorID;
     private static int deletedAuthorID;
-    private static final int invalidID = -1;
 
     @BeforeAll
-    protected static void customSetup() {
-        try {
+    protected static void customSetup()
+    {
+        try
+        {
             Author existingAuthor = AuthorHandler.createNewAuthor(validAuthorFirstName1, validAuthorLastName1);
             existingAuthorID = existingAuthor.getAuthorID();
 
@@ -56,13 +55,16 @@ public class GetAuthorByIDTest extends BaseHandlerTest
 
             //Soft delete deletedUser
             DatabaseHandler.executeCommand("UPDATE authors SET deleted = 1 WHERE authorname = 'validauthorname3';");
-        } catch (ConstructionException | InvalidIDException e) {
+        }
+        catch (ConstructionException | InvalidIDException e)
+        {
             e.printStackTrace();
-        } catch (InvalidNameException e) {
+        }
+        catch (InvalidNameException e)
+        {
             throw new RuntimeException(e);
         }
     }
-
 
 
     /**
@@ -87,24 +89,29 @@ public class GetAuthorByIDTest extends BaseHandlerTest
 
         System.out.println("\nTEST FINISHED.");
     }
+
     /**
      * Tests the `getAuthorByID` method with a valid ID for a deleted author (getDeleted = true).
      */
     @Test
     @Order(2)
-    void testGetAuthorByID_ValidDeletedAuthor_GetDeletedTrue() {
-        System.out.println("\n4: Testing getAuthorByID method with a valid ID for a deleted author (getDeleted = true)...");
+    void testGetAuthorByID_ValidDeletedAuthor_GetDeletedTrue()
+    {
+        System.out.println(
+                "\n4: Testing getAuthorByID method with a valid ID for a deleted author (getDeleted = true)...");
 
         assertNotNull(AuthorHandler.getAuthorByID(deletedAuthorID, true));
 
         System.out.println("\nTEST FINISHED.");
     }
+
     /**
      * Tests the `getAuthorByID` method with an invalid author ID.
      */
     @Test
     @Order(3)
-    void testGetAuthorByID_InvalidAuthorID() {
+    void testGetAuthorByID_InvalidAuthorID()
+    {
         System.out.println("\n5: Testing getAuthorByID method with an invalid author ID...");
 
         assertThrows(InvalidIDException.class, () -> AuthorHandler.getAuthorByID(invalidID, true));

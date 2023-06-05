@@ -98,9 +98,9 @@ public class RentalHandler
      * @throws RentalNotAllowedException if the user is not allowed to rent the item
      * @throws InvalidIDException        if the user ID or item ID is not valid
      *                                   <p>
-     *                                   TODO: Improve exception handling. Current handling is not consistent with other classes and needs refinement.
-     *                                   TODO: Make this method shorter. It currently performs multiple tasks which might be better broken down into
-     *                                   smaller methods.
+     *                                                                     TODO: Improve exception handling. Current handling is not consistent with other classes and needs refinement.
+     *                                                                     TODO: Make this method shorter. It currently performs multiple tasks which might be better broken down into
+     *                                                                     smaller methods.
      * @see User
      * @see Item
      * @see Rental
@@ -164,8 +164,8 @@ public class RentalHandler
 
         }
         catch (InvalidIDException | NullEntityException | InvalidDateException | InvalidNameException |
-                InvalidTitleException | RetrievalException | InvalidUserRentalsException | UpdateException |
-                InvalidReceiptException e)
+               InvalidTitleException | RetrievalException | InvalidUserRentalsException | UpdateException |
+               InvalidReceiptException e)
         {
             String cause = (e.getCause() != null) ? e.getCause().getClass().getName() : "Unknown";
             ExceptionHandler.HandleFatalException("Rental creation failed due to " + cause + ":" + e.getMessage(), e);
@@ -955,7 +955,7 @@ public class RentalHandler
      * @throws EntityNotFoundException if a rental with the provided rentalID doesn't exist in the database.
      * @throws InvalidIDException      if the provided rentalID is invalid (less than or equal to 0).
      *                                 <p>
-     *                                 TODO add deletion checks
+     *                                                                 TODO add deletion checks
      */
     private static void validateRental(Rental rentalToValidate)
     throws

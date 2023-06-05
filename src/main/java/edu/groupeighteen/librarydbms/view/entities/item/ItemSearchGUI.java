@@ -13,7 +13,6 @@ import edu.groupeighteen.librarydbms.view.gui.GUI;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -153,7 +152,8 @@ public class ItemSearchGUI extends GUI
                 switch (row)
                 {
                     //Item ID
-                    case 0 -> {
+                    case 0 ->
+                    {
                         itemID = Integer.parseInt(cellData.toString());
                         if (itemID > 0)
                         {
@@ -167,12 +167,14 @@ public class ItemSearchGUI extends GUI
                             System.err.println("Item IDs can't be less than 1. Item ID: " + itemID);
                     }
                     //Item title
-                    case 1 -> {
+                    case 1 ->
+                    {
                         String title = cellData.toString();
                         searchResultList.addAll(performItemTitleSearch(title, row));
                     }
                     //Item classification
-                    case 2 -> {
+                    case 2 ->
+                    {
                         String classificationName = cellData.toString();
                         searchResultList.addAll(performItemClassificationSearch(classificationName, row));
                     }
@@ -181,7 +183,8 @@ public class ItemSearchGUI extends GUI
                     //Author last name
                     case 4 -> authorLastName = cellData.toString();
                     //ISBN
-                    case 5 -> {
+                    case 5 ->
+                    {
                         String ISBN = cellData.toString();
                         List<Item> items = ItemHandler.getItemsByISBN(ISBN);
                         if (!items.isEmpty())
@@ -234,7 +237,7 @@ public class ItemSearchGUI extends GUI
      * Attempts to retrieve items based on a given title.
      *
      * @param title The title of the items to search for.
-     * @param row The row in the table where the title is located.
+     * @param row   The row in the table where the title is located.
      * @return A list of Items with the given title, or an empty list if none were found.
      */
     private List<Item> performItemTitleSearch(String title, int row)
@@ -260,7 +263,7 @@ public class ItemSearchGUI extends GUI
      * Attempts to retrieve items based on a given classification.
      *
      * @param classificationName The classification of the items to search for.
-     * @param row The row in the table where the classification is located.
+     * @param row                The row in the table where the classification is located.
      * @return A list of Items with the given classification, or an empty list if none were found.
      */
     private List<Item> performItemClassificationSearch(String classificationName, int row)
@@ -286,8 +289,8 @@ public class ItemSearchGUI extends GUI
      * Helper method to perform the search for author names in the database.
      *
      * @param authorFirstName The author's first name as a String.
-     * @param authorLastName The author's last name as a String.
-     * @param row The row index in the itemSearchTable where the author's name is located.
+     * @param authorLastName  The author's last name as a String.
+     * @param row             The row index in the itemSearchTable where the author's name is located.
      * @return a List of Item objects that match the author's first name and/or last name. If no matches are found,
      * returns an empty list.
      * This method is called by performSearch() after author first and last names have been retrieved from the table.

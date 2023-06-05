@@ -11,13 +11,18 @@ import javax.swing.*;
  * @project LibraryDBMS
  * @date 2023-05-26
  */
-public class AuthorGUIButtonEditor extends EntityButtonEditor {
-    public AuthorGUIButtonEditor(JCheckBox checkBox, Author author, String label, GUI previousGUI) {
+public class AuthorGUIButtonEditor extends EntityButtonEditor
+{
+    public AuthorGUIButtonEditor(JCheckBox checkBox, Author author, String label, GUI previousGUI)
+    {
         super(checkBox, author, label, previousGUI);
     }
+
     @Override
-    public Object getCellEditorValue() {
-        if (isPushed) {
+    public Object getCellEditorValue()
+    {
+        if (isPushed)
+        {
             new AuthorGUI(previousGUI, (Author) entity);
         }
         isPushed = false;

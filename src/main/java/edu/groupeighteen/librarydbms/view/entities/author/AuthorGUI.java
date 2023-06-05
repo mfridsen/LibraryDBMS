@@ -1,9 +1,6 @@
 package edu.groupeighteen.librarydbms.view.entities.author;
 
 import edu.groupeighteen.librarydbms.model.entities.Author;
-import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.view.entities.user.UserDeleteGUI;
-import edu.groupeighteen.librarydbms.view.entities.user.UserUpdateGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -14,7 +11,8 @@ import java.awt.*;
  * @project LibraryDBMS
  * @date 2023-05-25
  */
-public class AuthorGUI extends GUI {
+public class AuthorGUI extends GUI
+{
     //TODO- fält som ska visas i denna ordning:
     //  authorID, firstName, lastName
     // biography
@@ -22,12 +20,12 @@ public class AuthorGUI extends GUI {
     private JPanel scrollPanePanel;
 
     /**
-     *
      * @param
      * @param author
      */
 
-    public AuthorGUI(GUI previousGUI, Author author) {
+    public AuthorGUI(GUI previousGUI, Author author)
+    {
         super(previousGUI, "AuthorGUI", author);
         this.author = author;
         setupScrollPane();
@@ -38,21 +36,25 @@ public class AuthorGUI extends GUI {
     /**
      * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
      */
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton updateButton = new JButton("Update Author");
-        updateButton.addActionListener(e -> {
+        updateButton.addActionListener(e ->
+        {
             dispose();
             new AuthorUpdateGUI(this, author);
         });
         JButton deleteButton = new JButton("Delete Author");
-        deleteButton.addActionListener(e -> {
+        deleteButton.addActionListener(e ->
+        {
             dispose();
             new AuthorDeleteGUI(this, author);
         });
         return new JButton[]{deleteButton, updateButton};
     }
 
-    private void setupScrollPane() {
+    private void setupScrollPane()
+    {
         String[] columnNames = {"Property", "Value"};
 
         Object[][] data = {
@@ -68,10 +70,13 @@ public class AuthorGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
     }
-    public Author getAuthor(){
+
+    public Author getAuthor()
+    {
         return author;
     }
 }

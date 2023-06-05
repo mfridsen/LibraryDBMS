@@ -9,8 +9,10 @@ package edu.groupeighteen.librarydbms.model.exceptions;
  * <p>
  * Custom InvalidDateException class. Used to make Exceptions clearer.
  */
-public class InvalidDateException extends Exception {
-    public InvalidDateException(String message) {
+public class InvalidDateException extends Exception
+{
+    public InvalidDateException(String message)
+    {
         super(message);
     }
 }

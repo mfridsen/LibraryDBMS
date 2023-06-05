@@ -1,14 +1,13 @@
 package edu.groupeighteen.librarydbms.control.entities.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidRentalStatusChangeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -42,18 +41,6 @@ public class DeleteAndRecoverUserTest extends BaseUserHandlerTest
     @BeforeAll
     protected static void customSetup()
     {
-        initializeUsers();
-    }
-
-    /**
-     * And now we can reset the table and the users back to original states after tests.
-     */
-    @Override
-    @AfterEach
-    protected void reset()
-    {
-        super.reset();
-        resetUsersTable();
         initializeUsers();
     }
 
@@ -94,7 +81,7 @@ public class DeleteAndRecoverUserTest extends BaseUserHandlerTest
             nonExistingUser.setUserID(9999);
         }
         catch (CreationException | ConstructionException | InvalidLateFeeException
-                | InvalidUserRentalsException | InvalidIDException e)
+               | InvalidUserRentalsException | InvalidIDException e)
         {
             e.printStackTrace();
             fail("User initialization failed due to: " + e.getCause().getClass().getName()
@@ -102,6 +89,18 @@ public class DeleteAndRecoverUserTest extends BaseUserHandlerTest
         }
 
         System.out.println("\nUSERS INITIALIZED.");
+    }
+
+    /**
+     * And now we can reset the table and the users back to original states after tests.
+     */
+    @Override
+    @AfterEach
+    protected void reset()
+    {
+        super.reset();
+        resetUsersTable();
+        initializeUsers();
     }
 
     /**
@@ -438,7 +437,7 @@ public class DeleteAndRecoverUserTest extends BaseUserHandlerTest
                 e.printStackTrace();
                 if (e instanceof DeletionException)
                     fail("Exception thrown when deleting user " + user.getUsername() + " due to: "
-                    + e.getCause().getClass().getName() + ": " + e.getCause().getMessage());
+                            + e.getCause().getClass().getName() + ": " + e.getCause().getMessage());
                 else
                     fail("Exception thrown when deleting user " + user.getUsername() + ": " + e.getMessage());
             }

@@ -1,13 +1,13 @@
 package edu.groupeighteen.librarydbms.model.entities.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -73,7 +73,7 @@ public class UserRetrievalTest
             boolean allowedToRent = true;
             boolean deleted = false;
 
-            User user = new User(userId, username, password,  email, userType, allowedRentals, currentRentals, lateFee,
+            User user = new User(userId, username, password, email, userType, allowedRentals, currentRentals, lateFee,
                     allowedToRent, deleted);
 
             assertNotNull(user);
@@ -119,7 +119,7 @@ public class UserRetrievalTest
         System.out.println("\n3: Testing User constructor with null username...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, null, "validpassword","validuser@example.com", User.UserType.PATRON,
+                new User(1, null, "validpassword", "validuser@example.com", User.UserType.PATRON,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");
@@ -239,7 +239,7 @@ public class UserRetrievalTest
         System.out.println("\n11: Testing User constructor with null userType...");
 
         assertThrows(ConstructionException.class, () ->
-                new User(1, "validusername", "validpassword", "validuser@example.com",null,
+                new User(1, "validusername", "validpassword", "validuser@example.com", null,
                         User.getDefaultAllowedRentals(User.UserType.PATRON), 0, 0.0, true, false));
 
         System.out.println("\nTEST FINISHED.");

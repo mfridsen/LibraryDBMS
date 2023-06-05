@@ -1,15 +1,13 @@
 package edu.groupeighteen.librarydbms.control.entities.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserValidationException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -24,6 +22,7 @@ import org.junit.jupiter.api.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginAndValidationTest extends BaseUserHandlerTest
 {
+    private static final String invalidPassword = "invalidPassword";
     //A nice batch of user objects to use over and over
     private static User admin;
     private static User staff;
@@ -31,12 +30,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
     private static User student;
     private static User teacher;
     private static User researcher;
-
     private static User nonExistingUser; //CONSTRUCTOR NOT createNewUser
-
     private static User[] users;
-
-    private static final String invalidPassword = "invalidPassword";
 
     /**
      * Let's setup the needed users ahead of time.
@@ -44,18 +39,6 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
     @BeforeAll
     protected static void customSetup()
     {
-        initializeUsers();
-    }
-
-    /**
-     * And now we can reset the table and the users back to original states after tests.
-     */
-    @Override
-    @AfterEach
-    protected void reset()
-    {
-        super.reset();
-        resetUsersTable();
         initializeUsers();
     }
 
@@ -100,11 +83,24 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
     }
 
     /**
+     * And now we can reset the table and the users back to original states after tests.
+     */
+    @Override
+    @AfterEach
+    protected void reset()
+    {
+        super.reset();
+        resetUsersTable();
+        initializeUsers();
+    }
+
+    /**
      * Tests the 'login' method with a valid username and matching password.
      */
     @Test
     @Order(1)
-    void testLogin_ValidUsernameAndPassword() {
+    void testLogin_ValidUsernameAndPassword()
+    {
         System.out.println("\n1: Testing login method with valid username and matching password...\n");
 
         for (User user : users)
@@ -133,7 +129,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(2)
-    void testLogin_ValidUsernameInvalidPassword() {
+    void testLogin_ValidUsernameInvalidPassword()
+    {
         System.out.println("\n2: Testing login method with valid username and non-matching password...");
 
         for (User user : users)
@@ -162,7 +159,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(3)
-    void testLogin_ValidUsernameNullPassword() {
+    void testLogin_ValidUsernameNullPassword()
+    {
         System.out.println("\n3: Testing login method with valid username and null password...");
 
         for (User user : users)
@@ -184,7 +182,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(4)
-    void testLogin_ValidUsernameEmptyPassword() {
+    void testLogin_ValidUsernameEmptyPassword()
+    {
         System.out.println("\n4: Testing login method with valid username and empty password...");
 
         for (User user : users)
@@ -206,7 +205,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(5)
-    void testLogin_NonExistingUserValidPassword() {
+    void testLogin_NonExistingUserValidPassword()
+    {
         System.out.println("\n5: Testing login method with non-existent user (User object exists but not in database)" +
                 " and a valid password...");
 
@@ -226,7 +226,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(6)
-    void testLogin_NonExistingUserInvalidPassword() {
+    void testLogin_NonExistingUserInvalidPassword()
+    {
         System.out.println("\n6: Testing login method with non-existent user (User object exists but not in database)" +
                 " and an invalid password...");
 
@@ -246,7 +247,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(7)
-    void testLogin_NullUsernameValidPassword() {
+    void testLogin_NullUsernameValidPassword()
+    {
         System.out.println("\n7: Testing login method with null username and a valid password...");
 
         Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login(null,
@@ -261,7 +263,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(8)
-    void testLogin_EmptyUserNameValidPassword() {
+    void testLogin_EmptyUserNameValidPassword()
+    {
         System.out.println("\n8: Testing login method with empty username and a valid password...");
 
         Exception e = assertThrows(UserValidationException.class, () -> UserHandler.login("",
@@ -276,7 +279,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(9)
-    void testValidate_ValidUserMatchingPassword() {
+    void testValidate_ValidUserMatchingPassword()
+    {
         System.out.println("\n9: Testing validate method with a valid user and a matching password...");
 
         for (User user : users)
@@ -305,7 +309,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(10)
-    void testValidate_ValidUserNonMatchingPassword() {
+    void testValidate_ValidUserNonMatchingPassword()
+    {
         System.out.println("\n10: Testing validate method with a valid user and a non-matching password...");
 
         for (User user : users)
@@ -334,7 +339,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(11)
-    void testValidate_ValidUserNullPassword() {
+    void testValidate_ValidUserNullPassword()
+    {
         System.out.println("\n11: Testing validate method with a valid user and a null password...");
 
         Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(patron,
@@ -349,7 +355,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(12)
-    void testValidate_ValidUserEmptyPassword() {
+    void testValidate_ValidUserEmptyPassword()
+    {
         System.out.println("\n12: Testing validate method with a valid user and an empty password...");
 
         Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(patron,
@@ -364,7 +371,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(13)
-    void testValidate_NullUserValidPassword() {
+    void testValidate_NullUserValidPassword()
+    {
         System.out.println("\n13: Testing validate method with a null user object and a valid password...");
 
         Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(null,
@@ -379,7 +387,8 @@ public class LoginAndValidationTest extends BaseUserHandlerTest
      */
     @Test
     @Order(14)
-    void testValidate_NonExistingUserValidPassword() {
+    void testValidate_NonExistingUserValidPassword()
+    {
         System.out.println("\n14: Testing login method with a non-existing username and a valid password...");
 
         Exception e = assertThrows(UserValidationException.class, () -> UserHandler.validate(nonExistingUser,

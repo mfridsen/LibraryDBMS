@@ -9,6 +9,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @date 2023-06-03
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UpdateAuthorTest {
+public class UpdateAuthorTest
+{
 
 }

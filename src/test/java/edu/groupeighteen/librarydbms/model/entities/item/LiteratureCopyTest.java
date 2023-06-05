@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
@@ -9,6 +7,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -33,7 +33,7 @@ public class LiteratureCopyTest
         try
         {
             Literature literature = new Literature(new Literature(false, 1, "Title",
-                    Item.ItemType.OTHER_BOOKS,"Barcode", 1, 1, "AuthorFName",
+                    Item.ItemType.OTHER_BOOKS, "Barcode", 1, 1, "AuthorFName",
                     "AuthorLName",
                     "ClassificationName", 10, true, "1234567890123"));
 

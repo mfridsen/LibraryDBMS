@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
@@ -9,6 +7,8 @@ import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.CreationException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -37,11 +37,10 @@ public class GetUserByIDTest extends BaseUserHandlerTest
     private static final String validEmail3 = "validuser3@example.com";
 
     private static final User.UserType userType = User.UserType.ADMIN;
-
+    private static final int invalidID = -1;
     private static int existingUserID;
     private static int nonExistingUserID;
     private static int deletedUserID;
-    private static final int invalidID = -1;
 
     /**
      * Let's setup the three different needed users ahead of time.
@@ -78,7 +77,8 @@ public class GetUserByIDTest extends BaseUserHandlerTest
      */
     @Test
     @Order(1)
-    void testGetUserByID_ValidExistingUser() {
+    void testGetUserByID_ValidExistingUser()
+    {
         System.out.println("\n1: Testing getUserByID method with a valid ID for an existing user...");
 
         try
@@ -99,7 +99,8 @@ public class GetUserByIDTest extends BaseUserHandlerTest
      */
     @Test
     @Order(2)
-    void testGetUserByID_ValidNonExistingUser() {
+    void testGetUserByID_ValidNonExistingUser()
+    {
         System.out.println("\n2: Testing getUserByID method with a valid ID for a non-existing user...");
 
         try
@@ -120,8 +121,10 @@ public class GetUserByIDTest extends BaseUserHandlerTest
      */
     @Test
     @Order(3)
-    void testGetUserByID_ValidDeletedUser_GetDeletedFalse() {
-        System.out.println("\n3: Testing getUserByID method with a valid ID for a deleted user (getDeleted = false)...");
+    void testGetUserByID_ValidDeletedUser_GetDeletedFalse()
+    {
+        System.out.println(
+                "\n3: Testing getUserByID method with a valid ID for a deleted user (getDeleted = false)...");
 
         try
         {
@@ -141,7 +144,8 @@ public class GetUserByIDTest extends BaseUserHandlerTest
      */
     @Test
     @Order(4)
-    void testGetUserByID_ValidDeletedUser_GetDeletedTrue() {
+    void testGetUserByID_ValidDeletedUser_GetDeletedTrue()
+    {
         System.out.println("\n4: Testing getUserByID method with a valid ID for a deleted user (getDeleted = true)...");
 
         try
@@ -162,7 +166,8 @@ public class GetUserByIDTest extends BaseUserHandlerTest
      */
     @Test
     @Order(5)
-    void testGetUserByID_InvalidUserID() {
+    void testGetUserByID_InvalidUserID()
+    {
         System.out.println("\n5: Testing getUserByID method with an invalid user ID...");
 
         assertThrows(InvalidIDException.class, () -> UserHandler.getUserByID(invalidID));

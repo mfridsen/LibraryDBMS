@@ -9,8 +9,10 @@ package edu.groupeighteen.librarydbms.model.exceptions.user;
  * <p>
  * Custom InvalidPasswordException class. Used to make Exceptions clearer.
  */
-public class InvalidPasswordException extends Exception {
-    public InvalidPasswordException(String message) {
+public class InvalidPasswordException extends Exception
+{
+    public InvalidPasswordException(String message)
+    {
         super(message);
     }
 }

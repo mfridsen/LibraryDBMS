@@ -10,11 +10,12 @@ import java.awt.*;
  * @package edu.groupeighteen.librarydbms.view.GUI.entities
  * @contact matfir-1@student.ltu.se
  * @date 5/18/2023
- *
+ * <p>
  * This class extends JButton and implements the TableCellRenderer interface. It is used to create a custom renderer
  * that can display a JButton in a table cell.
  */
-public class ButtonRenderer extends JButton implements TableCellRenderer {
+public class ButtonRenderer extends JButton implements TableCellRenderer
+{
 
     /**
      * Returns this button as the renderer for the specified table cell.
@@ -28,7 +29,9 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
      * @param column     the column index of the cell being drawn.
      * @return the component used for drawing the cell.
      */
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                   int row, int column)
+    {
         this.setText((value == null) ? "" : value.toString());
         return this;
     }

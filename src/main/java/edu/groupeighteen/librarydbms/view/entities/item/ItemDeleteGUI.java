@@ -5,8 +5,6 @@ import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.DeletionException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.UserValidationException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
@@ -18,12 +16,14 @@ import java.util.Arrays;
  * @project LibraryDBMS
  * @date 2023-05-22
  */
-public class ItemDeleteGUI extends GUI {
+public class ItemDeleteGUI extends GUI
+{
     //TODO-comment
     private final Item itemToDelete;
     private JPasswordField passwordField;
 
-    public ItemDeleteGUI(GUI previousGUI, Item itemToDelete) {
+    public ItemDeleteGUI(GUI previousGUI, Item itemToDelete)
+    {
         super(previousGUI, "ItemDeleteGUI", itemToDelete);
         this.itemToDelete = itemToDelete;
         setupPanels();
@@ -31,19 +31,26 @@ public class ItemDeleteGUI extends GUI {
     }
 
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton confirmButton = new JButton("Confirm Delete");
-        confirmButton.addActionListener(e -> {
+        confirmButton.addActionListener(e ->
+        {
             //TODO-prio you shouldn't be able to access this GUI at all without being logged in (and staff)
-            if (LibraryManager.getCurrentUser() != null) {
-                try {
+            if (LibraryManager.getCurrentUser() != null)
+            {
+                try
+                {
                     if (UserHandler.validate(LibraryManager.getCurrentUser(),
-                            Arrays.toString(passwordField.getPassword()))) {
+                            Arrays.toString(passwordField.getPassword())))
+                    {
                         ItemHandler.deleteItem(itemToDelete);
                         //dispose();
                         //TODO-prio return to some other GUI, probably the LoginGUI
                     }
-                } catch (DeletionException | UserValidationException nullEntityException) {
+                }
+                catch (DeletionException | UserValidationException nullEntityException)
+                {
                     nullEntityException.printStackTrace();
                 }
             }
@@ -52,7 +59,8 @@ public class ItemDeleteGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         JPanel passwordPanel = new JPanel();
         JLabel passwordLabel = new JLabel("Enter Password:");
         passwordField = new JPasswordField();

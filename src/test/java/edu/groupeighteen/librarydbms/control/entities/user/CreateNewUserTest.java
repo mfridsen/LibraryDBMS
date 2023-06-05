@@ -1,12 +1,15 @@
 package edu.groupeighteen.librarydbms.control.entities.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
-import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.CreationException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidEmailException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén

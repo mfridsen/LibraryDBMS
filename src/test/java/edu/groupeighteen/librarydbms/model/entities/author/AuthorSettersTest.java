@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.author;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
@@ -10,6 +8,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -70,7 +70,7 @@ public class AuthorSettersTest
             Author author = new Author("John", "Doe");
 
             assertThrows(InvalidIDException.class, () -> author.setAuthorID(id),
-                         "Expected InvalidIDException for invalid ID");
+                    "Expected InvalidIDException for invalid ID");
         }
         catch (ConstructionException e)
         {
@@ -87,15 +87,19 @@ public class AuthorSettersTest
      */
     @Test
     @Order(3)
-    void testSetAuthorFirstname_ValidName() {
+    void testSetAuthorFirstname_ValidName()
+    {
         System.out.println("\n3: Testing setAuthorFirstname method with a valid name...");
 
-        try {
+        try
+        {
             String firstname = "John";
             Author author = new Author(firstname, "Doe");
             author.setAuthorFirstname(firstname);
             assertEquals(firstname, author.getAuthorFirstname(), "Author's first name should match the set name");
-        } catch (InvalidNameException | ConstructionException e) {
+        }
+        catch (InvalidNameException | ConstructionException e)
+        {
             fail("Valid operations should not throw exceptions. " + e.getMessage());
             e.printStackTrace();
         }
@@ -109,16 +113,20 @@ public class AuthorSettersTest
      */
     @Test
     @Order(4)
-    void testSetAuthorFirstname_NameTooLong() {
+    void testSetAuthorFirstname_NameTooLong()
+    {
         System.out.println("\n4: Testing setAuthorFirstname method with a name that exceeds the character limit...");
 
-        try {
+        try
+        {
             String firstname = "a".repeat(Author.AUTHOR_FIRST_NAME_LENGTH + 1);
             Author author = new Author("John", "Doe");
 
             assertThrows(InvalidNameException.class, () -> author.setAuthorFirstname(firstname),
-                         "Expected InvalidNameException for name exceeding character limit");
-        } catch (ConstructionException e) {
+                    "Expected InvalidNameException for name exceeding character limit");
+        }
+        catch (ConstructionException e)
+        {
             fail("Valid operations should not throw exceptions. " + e.getMessage());
             e.printStackTrace();
         }
@@ -132,15 +140,19 @@ public class AuthorSettersTest
      */
     @Test
     @Order(5)
-    void testSetAuthorLastName_ValidName() {
+    void testSetAuthorLastName_ValidName()
+    {
         System.out.println("\n5: Testing setAuthorLastName method with a valid name...");
 
-        try {
+        try
+        {
             String lastname = "Doe";
             Author author = new Author("John", lastname);
             author.setAuthorLastName(lastname);
             assertEquals(lastname, author.getAuthorLastName(), "Author's last name should match the set name");
-        } catch (InvalidNameException | ConstructionException e) {
+        }
+        catch (InvalidNameException | ConstructionException e)
+        {
             fail("Valid operations should not throw exceptions. " + e.getMessage());
             e.printStackTrace();
         }
@@ -154,16 +166,20 @@ public class AuthorSettersTest
      */
     @Test
     @Order(6)
-    void testSetAuthorLastName_NameTooLong() {
+    void testSetAuthorLastName_NameTooLong()
+    {
         System.out.println("\n6: Testing setAuthorLastName method with a name that exceeds the character limit...");
 
-        try {
+        try
+        {
             String lastname = "a".repeat(Author.AUTHOR_LAST_NAME_LENGTH + 1);
             Author author = new Author("John", "Doe");
 
             assertThrows(InvalidNameException.class, () -> author.setAuthorLastName(lastname),
-                         "Expected InvalidNameException for name exceeding character limit");
-        } catch (ConstructionException e) {
+                    "Expected InvalidNameException for name exceeding character limit");
+        }
+        catch (ConstructionException e)
+        {
             fail("Valid operations should not throw exceptions. " + e.getMessage());
             e.printStackTrace();
         }
@@ -177,15 +193,19 @@ public class AuthorSettersTest
      */
     @Test
     @Order(7)
-    void testSetBiography_ValidBio() {
+    void testSetBiography_ValidBio()
+    {
         System.out.println("\n7: Testing setBiography method with valid biography text...");
 
-        try {
+        try
+        {
             String biography = "This is a test biography.";
             Author author = new Author("John", "Doe");
             author.setBiography(biography);
             assertEquals(biography, author.getBiography(), "Author's biography should match the set biography");
-        } catch (ConstructionException e) {
+        }
+        catch (ConstructionException e)
+        {
             fail("Valid operations should not throw exceptions. " + e.getMessage());
             e.printStackTrace();
         }

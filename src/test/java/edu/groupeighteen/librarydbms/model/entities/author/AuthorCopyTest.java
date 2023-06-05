@@ -1,13 +1,13 @@
 package edu.groupeighteen.librarydbms.model.entities.author;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -45,13 +45,13 @@ public class AuthorCopyTest
 
             assertFalse(copiedAuthor.isDeleted());
             assertEquals(originalAuthor.getAuthorID(), copiedAuthor.getAuthorID(),
-                         "Copied author's ID should match the original author's ID");
+                    "Copied author's ID should match the original author's ID");
             assertEquals(originalAuthor.getAuthorFirstname(), copiedAuthor.getAuthorFirstname(),
-                         "Copied author's first name should match the original author's first name");
+                    "Copied author's first name should match the original author's first name");
             assertEquals(originalAuthor.getAuthorLastName(), copiedAuthor.getAuthorLastName(),
-                         "Copied author's last name should match the original author's last name");
+                    "Copied author's last name should match the original author's last name");
             assertEquals(originalAuthor.getBiography(), copiedAuthor.getBiography(),
-                         "Copied author's biography should match the original author's biography");
+                    "Copied author's biography should match the original author's biography");
 
         }
         catch (ConstructionException e)
@@ -75,7 +75,7 @@ public class AuthorCopyTest
         Author originalAuthor = null;
 
         assertThrows(NullPointerException.class, () -> new Author(originalAuthor),
-                     "Expected NullPointerException for null author");
+                "Expected NullPointerException for null author");
 
         System.out.println("\nTEST FINISHED.");
     }

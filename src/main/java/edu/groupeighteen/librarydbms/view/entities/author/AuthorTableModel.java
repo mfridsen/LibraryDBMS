@@ -8,12 +8,16 @@ import javax.swing.table.DefaultTableModel;
  * @project LibraryDBMS
  * @date 2023-05-26
  */
-public class AuthorTableModel extends DefaultTableModel {
-    public AuthorTableModel(Object[][] data, Object[] columnNames) {
+public class AuthorTableModel extends DefaultTableModel
+{
+    public AuthorTableModel(Object[][] data, Object[] columnNames)
+    {
         super(data, columnNames);
     }
+
     @Override
-    public Class<?> getColumnClass(int columnIndex) {
+    public Class<?> getColumnClass(int columnIndex)
+    {
         return columnIndex == 4 ? JButton.class : super.getColumnClass(columnIndex);
     }
 }

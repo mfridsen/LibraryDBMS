@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
@@ -13,6 +11,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -129,19 +129,23 @@ public class LiteratureCreationTest
      */
     @Test
     @Order(4)
-    void testLiteratureCreation_LongTitle() {
+    void testLiteratureCreation_LongTitle()
+    {
         System.out.println("\n4: Testing Literature constructor with long title...");
 
         //Generate a long title
         StringBuilder longTitle = new StringBuilder();
         longTitle.append("a".repeat(Math.max(0, Item.ITEM_TITLE_MAX_LENGTH + 1)));
 
-        try {
+        try
+        {
             //Create a new Literature object with long title
             Literature literature = new Literature(longTitle.toString(), Item.ItemType.OTHER_BOOKS, 1,
                     1, "1234567890", "0123456789");
             fail("Construction with long title should throw ConstructionException");
-        } catch (ConstructionException e) {
+        }
+        catch (ConstructionException e)
+        {
             assertTrue(e.getCause() instanceof InvalidTitleException, "Cause should be InvalidTitleException");
         }
 
@@ -284,7 +288,7 @@ public class LiteratureCreationTest
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     null, 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to null barcode.");
         }
         catch (ConstructionException e)
@@ -309,7 +313,7 @@ public class LiteratureCreationTest
         {
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     "", 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to empty barcode.");
         }
         catch (ConstructionException e)
@@ -336,7 +340,7 @@ public class LiteratureCreationTest
             String tooLongBarcode = String.format("%0" + (Item.ITEM_BARCODE_LENGTH + 1) + "d", 0);
             Literature literature = new Literature(false, 1, "Title", Item.ItemType.OTHER_BOOKS,
                     tooLongBarcode, 1, 1, "AuthorFName", "AuthorLName",
-                    "ClassificationName",10, true, "1234567890123");
+                    "ClassificationName", 10, true, "1234567890123");
             fail("ConstructionException expected due to too long title.");
         }
         catch (ConstructionException e)

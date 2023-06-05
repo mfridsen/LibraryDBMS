@@ -1,14 +1,9 @@
 package edu.groupeighteen.librarydbms.view.entities.rental;
 
-import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 /**
  * @author Mattias Fridsén
@@ -16,11 +11,12 @@ import java.time.LocalDateTime;
  * @package edu.groupeighteen.librarydbms.view.GUI.entities.rental
  * @contact matfir-1@student.ltu.se
  * @date 5/15/2023
- *
+ * <p>
  * The RentalCreateGUI class is a subclass of GUI that provides a graphical user interface
  * for creating a new Rental object. It contains two input fields for entering a user ID and an item ID.
  */
-public class RentalCreateGUI extends GUI {
+public class RentalCreateGUI extends GUI
+{
     private JTextField userIDField;
     private JTextField itemIDField;
 
@@ -29,7 +25,8 @@ public class RentalCreateGUI extends GUI {
      *
      * @param previousGUI The GUI that was displayed before this one.
      */
-    public RentalCreateGUI(GUI previousGUI) {
+    public RentalCreateGUI(GUI previousGUI)
+    {
         super(previousGUI, "RentalCreateGUI", null);
         setupPanels();
         displayGUI();
@@ -42,14 +39,17 @@ public class RentalCreateGUI extends GUI {
      * @return An array of the two JButtons created in this method.
      */
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton resetButton = new JButton("Reset Fields");
-        resetButton.addActionListener(e -> {
+        resetButton.addActionListener(e ->
+        {
             resetFields();
         });
 
         JButton createButton = new JButton("Create Rental");
-        createButton.addActionListener(e -> {
+        createButton.addActionListener(e ->
+        {
             createRental();
         });
 
@@ -59,7 +59,8 @@ public class RentalCreateGUI extends GUI {
     /**
      * Resets the text fields for user ID and item ID to be empty.
      */
-    private void resetFields() {
+    private void resetFields()
+    {
         userIDField.setText("");
         itemIDField.setText("");
     }
@@ -70,17 +71,20 @@ public class RentalCreateGUI extends GUI {
      * an error message is printed and the method returns early. If the fields are valid,
      * a new Rental is created and a new RentalGUI is opened for that rental.
      */
-    private void createRental() {
+    private void createRental()
+    {
         String userIDStr = userIDField.getText();
         String itemIDStr = itemIDField.getText();
 
         //Check if one or both fields are empty
-        if (userIDStr.isEmpty()) {
+        if (userIDStr.isEmpty())
+        {
             System.err.println("To create a new Rental you need to enter in a user ID. User ID: " + userIDStr);
             resetFields();
             return;
         }
-        if (itemIDStr.isEmpty()) {
+        if (itemIDStr.isEmpty())
+        {
             System.err.println("To create a new Rental you need to enter in an item ID. Item ID: " + itemIDStr);
             resetFields();
             return;
@@ -90,17 +94,23 @@ public class RentalCreateGUI extends GUI {
         int itemID = 0;
 
         //Attempt to parse the user ID and item ID as integers
-        try {
+        try
+        {
             userID = Integer.parseInt(userIDStr);
-        } catch (NumberFormatException nfe) {
+        }
+        catch (NumberFormatException nfe)
+        {
             //If the parsing fails, print an error message
             System.err.println("Rental creation failed: user ID not an int. User ID: " + userIDStr);
             resetFields();
             return;
         }
-        try {
+        try
+        {
             itemID = Integer.parseInt(itemIDStr);
-        } catch (NumberFormatException nfe) {
+        }
+        catch (NumberFormatException nfe)
+        {
             //If the parsing fails, print an error message
             System.err.println("Rental creation failed: item ID not an int. Item ID: " + itemIDStr);
             resetFields();
@@ -124,9 +134,10 @@ public class RentalCreateGUI extends GUI {
      * Sets up the panel containing the text fields for user ID and item ID.
      */
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         JPanel textFieldsPanel = new JPanel();
-        textFieldsPanel.setLayout(new GridLayout(2,2));
+        textFieldsPanel.setLayout(new GridLayout(2, 2));
         JLabel userIDLabel = new JLabel("Enter user ID:");
         userIDField = new JTextField(10);
         JLabel itemIDLabel = new JLabel("Enter item ID:");

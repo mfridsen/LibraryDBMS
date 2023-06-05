@@ -1,4 +1,3 @@
-
 package edu.groupeighteen.librarydbms.control.entities.rental;
 
 import org.junit.platform.suite.api.SelectClasses;

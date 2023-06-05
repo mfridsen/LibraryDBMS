@@ -1,10 +1,12 @@
 package edu.groupeighteen.librarydbms.control.entities.rental;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.entities.Rental;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Mattias Fridsén

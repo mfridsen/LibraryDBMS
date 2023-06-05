@@ -139,7 +139,7 @@ public class GetRentalByIDTest extends BaseRentalHandlerTest
                 int allowedRentalDays = Item.getDefaultAllowedRentalDays(type);
 
                 //Create expected dueDate
-                LocalDateTime expectedDueDate =rental.getRentalDate().plusDays(allowedRentalDays).
+                LocalDateTime expectedDueDate = rental.getRentalDate().plusDays(allowedRentalDays).
                         withHour(20).withMinute(0).withSecond(0).
                         truncatedTo(ChronoUnit.SECONDS);
 

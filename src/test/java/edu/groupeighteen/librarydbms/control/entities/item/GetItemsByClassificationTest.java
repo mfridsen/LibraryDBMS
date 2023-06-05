@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
@@ -13,6 +11,8 @@ import org.junit.jupiter.api.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -27,9 +27,9 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GetItemsByClassificationTest
 {
+    protected static final String testDatabaseName = "test_database";
     //We need all this stuff, copied from BaseHandlerTest but adapted to be static
     protected static Connection connection = null;
-    protected static final String testDatabaseName = "test_database";
 
     //BeforeEach
     static void setupConnectionAndTables()
@@ -150,7 +150,8 @@ public class GetItemsByClassificationTest
     @Order(4)
     void testGetItemsByClassification_ClassificationNameDoesNotExist()
     {
-        System.out.println("\n4: Testing getItemsByClassification method with a classificationName that does not exist...");
+        System.out.println(
+                "\n4: Testing getItemsByClassification method with a classificationName that does not exist...");
 
         try
         {
@@ -179,7 +180,8 @@ public class GetItemsByClassificationTest
 
         try
         {
-            DatabaseHandler.executeCommand("INSERT INTO classifications (classificationName, deleted) VALUES ('EmptyClassification', 0)");
+            DatabaseHandler.executeCommand(
+                    "INSERT INTO classifications (classificationName, deleted) VALUES ('EmptyClassification', 0)");
             List<Item> items = ItemHandler.getItemsByClassification("EmptyClassification");
             assertTrue(items.isEmpty());
         }
@@ -200,7 +202,8 @@ public class GetItemsByClassificationTest
     @Order(6)
     void testGetItemsByClassification_SingleItemExists()
     {
-        System.out.println("\n6: Testing getItemsByClassification method with classificationName that has a single item...");
+        System.out.println(
+                "\n6: Testing getItemsByClassification method with classificationName that has a single item...");
 
         try
         {
@@ -224,7 +227,8 @@ public class GetItemsByClassificationTest
     @Order(7)
     void testGetItemsByClassification_MultipleItemsExist()
     {
-        System.out.println("\n7: Testing getItemsByClassification method with classificationName that has multiple items...");
+        System.out.println(
+                "\n7: Testing getItemsByClassification method with classificationName that has multiple items...");
 
         try
         {

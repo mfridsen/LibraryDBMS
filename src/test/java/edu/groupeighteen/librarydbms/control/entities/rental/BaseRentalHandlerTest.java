@@ -34,11 +34,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public abstract class BaseRentalHandlerTest
 {
-    protected static Connection connection;
     protected static final String testDatabaseName = "test_database";
-
     protected static final int[] validUserIDs = new int[]{3, 4, 5, 6, 8, 10};
     protected static final int[] validItemIDs = new int[18];
+    protected static Connection connection;
 
     static
     {
@@ -88,19 +87,6 @@ public abstract class BaseRentalHandlerTest
         System.out.println("\nConnection and tables setup finished.");
     }
 
-    @AfterEach
-    protected void resetItemsTable()
-    {
-        DatabaseHandler.executeCommand("DELETE FROM rentals");
-        DatabaseHandler.executeCommand("ALTER TABLE rentals AUTO_INCREMENT = 1;");
-        DatabaseHandler.executeCommand("DELETE FROM literature");
-        DatabaseHandler.executeCommand("DELETE FROM films");
-        DatabaseHandler.executeCommand("DELETE FROM items");
-        DatabaseHandler.executeCommand("DELETE FROM users");
-        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/item_test_data.sql");
-        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/user_test_data.sql");
-    }
-
     protected static void setupTestData()
     {
         System.out.println("\nFilling tables with test data...");
@@ -134,7 +120,6 @@ public abstract class BaseRentalHandlerTest
             e.printStackTrace();
         }
     }
-
 
     /**
      * Creates a specific number of Rental instances and saves them to the database with different rental dates.
@@ -276,5 +261,18 @@ public abstract class BaseRentalHandlerTest
         {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    protected void resetItemsTable()
+    {
+        DatabaseHandler.executeCommand("DELETE FROM rentals");
+        DatabaseHandler.executeCommand("ALTER TABLE rentals AUTO_INCREMENT = 1;");
+        DatabaseHandler.executeCommand("DELETE FROM literature");
+        DatabaseHandler.executeCommand("DELETE FROM films");
+        DatabaseHandler.executeCommand("DELETE FROM items");
+        DatabaseHandler.executeCommand("DELETE FROM users");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/item_test_data.sql");
+        DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/user_test_data.sql");
     }
 }

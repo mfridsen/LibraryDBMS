@@ -1,13 +1,13 @@
 package edu.groupeighteen.librarydbms.model.entities.classification;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Classification;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -39,7 +39,7 @@ public class ClassificationCreationTest
             assertFalse(classification.isDeleted());
             assertEquals(name, classification.getClassificationName(), "Classification name should match the set name");
             assertEquals(0, classification.getClassificationID(),
-                         "Classification ID should be 0 for newly created Classification");
+                    "Classification ID should be 0 for newly created Classification");
             assertNull(classification.getDescription(), "Description should be null for newly created Classification");
         }
         catch (ConstructionException e)
@@ -63,7 +63,7 @@ public class ClassificationCreationTest
 
         String name = null;
         assertThrows(ConstructionException.class, () -> new Classification(name),
-                     "Expected ConstructionException for null Classification name");
+                "Expected ConstructionException for null Classification name");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -80,7 +80,7 @@ public class ClassificationCreationTest
 
         String name = "a".repeat(Classification.CLASSIFICATION_NAME_LENGTH + 1);
         assertThrows(ConstructionException.class, () -> new Classification(name),
-                     "Expected ConstructionException for long Classification name");
+                "Expected ConstructionException for long Classification name");
 
         System.out.println("\nTEST FINISHED.");
     }

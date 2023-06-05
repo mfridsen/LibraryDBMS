@@ -310,7 +310,8 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
             actualMessage = exception.getMessage();
             assertTrue(actualMessage.contains(expectedMessage));
         }
-        catch (InvalidIDException | NullEntityException | RetrievalException | RentalNotAllowedException | EntityNotFoundException e)
+        catch (InvalidIDException | NullEntityException | RetrievalException | RentalNotAllowedException |
+               EntityNotFoundException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -390,7 +391,8 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
             RentalHandler.setVerbose(false);
 
         }
-        catch (InvalidIDException | NullEntityException | RetrievalException | InvalidUserRentalsException | UpdateException e)
+        catch (InvalidIDException | NullEntityException | RetrievalException | InvalidUserRentalsException |
+               UpdateException e)
         {
             e.printStackTrace();
             fail("Valid tests should not throw exceptions.");

@@ -1,16 +1,11 @@
 package edu.groupeighteen.librarydbms.view.entities.rental;
 
-import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,33 +14,33 @@ import java.util.List;
  * @package edu.groupeighteen.librarydbms.view.GUI.entities.rental
  * @contact matfir-1@student.ltu.se
  * @date 5/15/2023
- *
+ * <p>
  * The 'RentalSearchGUI' class extends from the 'GUI' superclass and provides a graphical interface
  * for users to search for rentals. It allows users to input search parameters, execute the search,
  * and display the results.
- *
+ * <p>
  * It includes fields for a panel 'searchFieldsPanel' and a table 'rentalSearchTable' that are used
  * to gather search parameters and display them in a structured manner.
- *
+ * <p>
  * The class overrides 'setupButtons()' and 'setupPanels()' methods from the superclass 'GUI' to create a
  * specialized interface for rental searches. It also provides additional methods for setting up
  * specific buttons ('setupResetButton()' and 'setupSearchButton()'), resetting the data in the search table
  * ('resetCells()'), performing the search ('performSearch()'), and setting up the scroll pane that
  * contains the search table ('setupScrollPane()').
- *
+ * <p>
  * Usage:
  * new RentalSearchGUI(previousGUI);
- *
+ * <p>
  * Note:
  * The 'performSearch()' method attempts to parse cell data into appropriate types (int, String, LocalDateTime)
  * and performs the corresponding search, adding any results to a list of Rentals. If the cell data cannot be
  * parsed to the correct type, or if a SQLException occurs during a search, error messages will be printed to
  * the system error stream and the program may exit with a status of 1.
- *
  * @see Rental
  * @see GUI
  */
-public class RentalSearchGUI extends GUI {
+public class RentalSearchGUI extends GUI
+{
     //TODO- fält som ska visas i denna ordning:
     //  RentalID, RentalDate
     //  userName, itemTitle, rentalDueDate, rentalReturnDate
@@ -62,7 +57,8 @@ public class RentalSearchGUI extends GUI {
      *
      * @param previousGUI The GUI that was displayed before this one.
      */
-    public RentalSearchGUI(GUI previousGUI) {
+    public RentalSearchGUI(GUI previousGUI)
+    {
         super(previousGUI, "RentalSearchGUI", null);
         setupScrollPane();
         setupPanels();
@@ -75,13 +71,14 @@ public class RentalSearchGUI extends GUI {
      * The 'Reset' button will clear the data in the editable cells.
      * The 'Search' button will perform a search based on the data in the editable cells
      * and open a RentalSearchResultGUI with the results of the search.
-     *
+     * <p>
      * Note: There is a known issue where the selected field is not cleared upon 'Reset' button click.
      *
      * @return An array containing the 'Reset' button and the 'Search' button.
      */
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         //Resets the editable cells //TODO-bug doesn't clear selected field
         JButton resetButton = setupResetButton();
         //Performs the search and opens a searchResultGUI
@@ -92,14 +89,16 @@ public class RentalSearchGUI extends GUI {
     /**
      * Sets up and returns a 'Reset' button. When clicked, this button will clear the data in all cells
      * of the third column in the 'rentalSearchTable'.
-     *
+     * <p>
      * Note: There is a known issue where the selected field is not cleared upon button click.
      *
      * @return JButton The reset button configured with the appropriate action listener.
      */
-    private JButton setupResetButton(){
+    private JButton setupResetButton()
+    {
         JButton resetCellsButton = new JButton("Reset");
-        resetCellsButton.addActionListener(e -> {
+        resetCellsButton.addActionListener(e ->
+        {
             resetCells();
         });
         return resetCellsButton;
@@ -107,13 +106,17 @@ public class RentalSearchGUI extends GUI {
 
     /**
      * Resets all the cells in the second column of the 'rentalSearchTable' to an empty string.
-     *
+     * <p>
      * Note: This method assumes the second column (index 1) of the table is the only column that needs to be reset.
      */
-    private void resetCells() {
-        for (int row = 0; row < rentalSearchTable.getRowCount(); row++) {
-            for (int col = 0; col < rentalSearchTable.getColumnCount(); col++) {
-                if (col == 1) { //Assuming the 2nd column is the editable column
+    private void resetCells()
+    {
+        for (int row = 0; row < rentalSearchTable.getRowCount(); row++)
+        {
+            for (int col = 0; col < rentalSearchTable.getColumnCount(); col++)
+            {
+                if (col == 1)
+                { //Assuming the 2nd column is the editable column
                     rentalSearchTable.setValueAt("", row, col);
                 }
             }
@@ -128,9 +131,11 @@ public class RentalSearchGUI extends GUI {
      *
      * @return JButton The search button configured with the appropriate action listener.
      */
-    private JButton setupSearchButton() {
+    private JButton setupSearchButton()
+    {
         JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> {
+        searchButton.addActionListener(e ->
+        {
             //Perform the search
             List<Rental> searchResultList = performSearch();
             //If the search doesn't generate a result, we stay
@@ -147,6 +152,7 @@ public class RentalSearchGUI extends GUI {
     }
 
     //TODO-test
+
     /**
      * Performs a search based on the data in the editable cells of the rentalSearchTable.
      * Each row in the table corresponds to a different search parameter (rental ID, user ID, username, item ID,
@@ -154,22 +160,25 @@ public class RentalSearchGUI extends GUI {
      * If the cell data for a row is not null or empty, an attempt will be made to parse it into the appropriate type
      * (int or String or LocalDateTime)
      * and perform the corresponding search. The search results are then added to a list of Rentals.
-     *
+     * <p>
      * If a search doesn't generate any results, a message will be printed to the system error stream.
      * If the cell data cannot be parsed to the correct type, a message will be printed to the system error stream and the search will continue with the next row.
      * If a SQLException occurs during a search, the stack trace will be printed and the program will exit with a status of 1.
      *
      * @return List<Rental> The list of Rentals that match the search parameters.
      */
-    private List<Rental> performSearch() {
+    private List<Rental> performSearch()
+    {
         List<Rental> searchResultList = new ArrayList<>();
 
-        for (int row = 0; row < rentalSearchTable.getRowCount(); row++) {
+        for (int row = 0; row < rentalSearchTable.getRowCount(); row++)
+        {
             //Retrieve cell data
             Object cellData = rentalSearchTable.getValueAt(row, 1);
 
             //If data is null or empty, do nothing
-            if (cellData == null || cellData.toString().isEmpty()) {
+            if (cellData == null || cellData.toString().isEmpty())
+            {
                 continue;
             }
 
@@ -243,13 +252,14 @@ public class RentalSearchGUI extends GUI {
      * The table includes columns for "Property" and "Search Value", where each row corresponds to a different rental
      * property. The first column contains the property names and the second column is editable for inputting
      * search values.
-     *
+     * <p>
      * The rental search table is then placed within a scroll pane, which is added to the 'searchFieldsPanel' with a
      * BorderLayout.
-     *
+     * <p>
      * The properties are as follows: "Rental ID", "User ID", "Username", "Item ID", "Item Title", and "Rental Date".
      */
-    protected void setupScrollPane() {
+    protected void setupScrollPane()
+    {
         //Define the names of the columns for the table.
         String[] columnNames = {"Property", "Search Value"};
 
@@ -282,7 +292,8 @@ public class RentalSearchGUI extends GUI {
      * Currently, this includes adding the 'searchFieldsPanel' to 'GUIPanel'.
      */
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         GUIPanel.add(searchFieldsPanel);
     }
 }

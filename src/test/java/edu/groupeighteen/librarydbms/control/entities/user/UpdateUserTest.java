@@ -1,16 +1,14 @@
 package edu.groupeighteen.librarydbms.control.entities.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.entities.User;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidLateFeeException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidPasswordException;
 import edu.groupeighteen.librarydbms.model.exceptions.user.InvalidUserRentalsException;
-import edu.groupeighteen.librarydbms.model.exceptions.user.UserValidationException;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -57,18 +55,6 @@ public class UpdateUserTest extends BaseUserHandlerTest
     }
 
     /**
-     * Resets the UserHandler, the tables, and the users.
-     */
-    @AfterEach
-    @Override
-    protected void reset()
-    {
-        super.reset(); //Resets UserHandler lists
-        resetUsersTable();
-        initializeUsers();
-    }
-
-    /**
      * Sets up the needed users.
      */
     protected static void initializeUsers()
@@ -86,6 +72,18 @@ public class UpdateUserTest extends BaseUserHandlerTest
         {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Resets the UserHandler, the tables, and the users.
+     */
+    @AfterEach
+    @Override
+    protected void reset()
+    {
+        super.reset(); //Resets UserHandler lists
+        resetUsersTable();
+        initializeUsers();
     }
 
     /**
@@ -183,7 +181,8 @@ public class UpdateUserTest extends BaseUserHandlerTest
             assertNotNull(updatedUser);
             assertEquals(changedUserType, updatedUser.getUserType());
         }
-        catch (NullEntityException | UpdateException | InvalidIDException | InvalidTypeException | InvalidUserRentalsException e)
+        catch (NullEntityException | UpdateException | InvalidIDException | InvalidTypeException |
+               InvalidUserRentalsException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -315,8 +314,8 @@ public class UpdateUserTest extends BaseUserHandlerTest
             assertFalse(updatedUser.isAllowedToRent());
         }
         catch (NullEntityException | UpdateException | InvalidIDException | InvalidLateFeeException |
-                InvalidNameException | InvalidPasswordException | InvalidEmailException | InvalidTypeException |
-                InvalidUserRentalsException e)
+               InvalidNameException | InvalidPasswordException | InvalidEmailException | InvalidTypeException |
+               InvalidUserRentalsException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -372,7 +371,8 @@ public class UpdateUserTest extends BaseUserHandlerTest
     @Order(11)
     void testUpdateUser_ValidUserRecovered()
     {
-        System.out.println("\n11: Testing updateUser method with valid user that was soft deleted and then recovered...");
+        System.out.println(
+                "\n11: Testing updateUser method with valid user that was soft deleted and then recovered...");
 
         try
         {

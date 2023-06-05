@@ -1,13 +1,16 @@
 package edu.groupeighteen.librarydbms.model.entities.rental;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -43,10 +46,12 @@ public class RentalCopyTest
      */
     @Test
     @Order(1)
-    void testRentalConstructor_CopyRental() {
+    void testRentalConstructor_CopyRental()
+    {
         System.out.println("\n1: Testing Rental copy constructor...");
 
-        try {
+        try
+        {
             //Create a rental object
             //Construct with valid inputs
             Rental originalRental = new Rental(rentalID, userID, itemID, rentalDate, rentalDueDate, username, itemTitle,
@@ -68,7 +73,9 @@ public class RentalCopyTest
             assertEquals(lateFee, copyRental.getLateFee(), "LateFee not set correctly.");
             assertEquals(receipt, copyRental.getReceipt(), "Receipt not set correctly.");
             assertFalse(copyRental.isDeleted());
-        } catch (ConstructionException e) {
+        }
+        catch (ConstructionException e)
+        {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }

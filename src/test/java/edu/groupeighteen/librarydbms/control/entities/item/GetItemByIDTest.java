@@ -1,18 +1,21 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Literature;
-import edu.groupeighteen.librarydbms.model.exceptions.*;
+import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
+import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -32,16 +35,20 @@ public class GetItemByIDTest extends BaseHandlerTest
      */
     @Test
     @Order(1)
-    void testGetItemByID_ValidID() {
+    void testGetItemByID_ValidID()
+    {
         System.out.println("\n1: Testing getItemByID method with valid itemID...");
 
-        try {
+        try
+        {
             int itemID = 1; // Assuming valid itemID
             Item item = ItemHandler.getItemByID(itemID);
 
             assertNotNull(item);
             assertEquals(itemID, item.getItemID());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -55,13 +62,17 @@ public class GetItemByIDTest extends BaseHandlerTest
      */
     @Test
     @Order(2)
-    void testGetItemByID_InvalidID() {
+    void testGetItemByID_InvalidID()
+    {
         System.out.println("\n2: Testing getItemByID method with invalid itemID...");
 
-        try {
+        try
+        {
             int itemID = 0; // Invalid itemID
             assertThrows(InvalidIDException.class, () -> ItemHandler.getItemByID(itemID));
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -75,10 +86,12 @@ public class GetItemByIDTest extends BaseHandlerTest
      */
     @Test
     @Order(3)
-    void testGetItemByID_NoExistingItem() {
+    void testGetItemByID_NoExistingItem()
+    {
         System.out.println("\n3: Testing getItemByID method with valid itemID but no existing item...");
 
-        try {
+        try
+        {
             int itemID = 100; // Assuming valid itemID, but no existing item
             Item item = ItemHandler.getItemByID(itemID);
 
@@ -95,13 +108,15 @@ public class GetItemByIDTest extends BaseHandlerTest
 
     @Test
     @Order(4)
-    void testGetItemByID_LiteratureItem() {
+    void testGetItemByID_LiteratureItem()
+    {
         System.out.println("\n4: Testing getItemByID method with literature item...");
 
         try
         {
             // Create a new Literature item
-            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode4", "ISBN4");
+            Literature newLit = ItemHandler.createNewLiterature("Title4", Item.ItemType.OTHER_BOOKS, 4, 4, "barcode4",
+                    "ISBN4");
             int itemID = newLit.getItemID();
 
             Literature retrievedLit = (Literature) ItemHandler.getItemByID(itemID);
@@ -109,7 +124,7 @@ public class GetItemByIDTest extends BaseHandlerTest
 
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException
-                | ConstructionException | RetrievalException e)
+               | ConstructionException | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");
@@ -120,7 +135,8 @@ public class GetItemByIDTest extends BaseHandlerTest
 
     @Test
     @Order(5)
-    void testUpdateItem_FilmItem() {
+    void testUpdateItem_FilmItem()
+    {
         System.out.println("\n5: Testing getItemByID method with film item...");
 
         try
@@ -133,7 +149,7 @@ public class GetItemByIDTest extends BaseHandlerTest
             assertNotNull(retrievedFilm);
         }
         catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException
-                | RetrievalException e)
+               | RetrievalException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");

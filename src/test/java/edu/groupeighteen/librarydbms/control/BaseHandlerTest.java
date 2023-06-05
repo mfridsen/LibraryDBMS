@@ -14,31 +14,47 @@ import java.sql.SQLException;
  * @package control
  * @contact matfir-1@student.ltu.se
  * @date 5/5/2023
- *
+ * <p>
  * This class contains the methods and fields that are shared among all HandlerTest classes, in order to better adhere
  * to the DRY principle.
  */
-public abstract class BaseHandlerTest {
+public abstract class BaseHandlerTest
+{
 
-    protected Connection connection = null;
     protected static final String testDatabaseName = "test_database";
+    protected Connection connection = null;
+
+    /**
+     * Always close the connection to the database after use.
+     */
+    @AfterAll
+    static protected void tearDown()
+    {
+        DatabaseHandler.closeDatabaseConnection();
+    }
 
     /**
      * Create the connection to the database, set DatabaseHandlers connection, and reset the database before each test.
      */
     @BeforeEach
-    protected void setupAndReset() {
+    protected void setupAndReset()
+    {
         System.out.println("\nSetting up and resetting database...");
-        try {
+        try
+        {
             setupConnectionAndTables();
             setupTestData();
-        } catch (SQLException | ClassNotFoundException e) {
+        }
+        catch (SQLException | ClassNotFoundException e)
+        {
             e.printStackTrace();
         }
         System.out.println("Setup finished.");
     }
 
-    protected void setupConnectionAndTables() throws SQLException, ClassNotFoundException {
+    protected void setupConnectionAndTables()
+    throws SQLException, ClassNotFoundException
+    {
         connection = DatabaseConnection.setup();
         DatabaseHandler.setConnection(connection);
         DatabaseHandler.setVerbose(true); //For testing we want DBHandler to be Verboten
@@ -49,16 +65,9 @@ public abstract class BaseHandlerTest {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/create_tables.sql");
     }
 
-    protected void setupTestData() {
+    protected void setupTestData()
+    {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/test_data.sql");
         DatabaseHandler.setVerbose(true);
-    }
-
-    /**
-     * Always close the connection to the database after use.
-     */
-    @AfterAll
-    static protected void tearDown() {
-        DatabaseHandler.closeDatabaseConnection();
     }
 }

@@ -1,13 +1,14 @@
 package edu.groupeighteen.librarydbms.model.entities.classification;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Classification;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Mattias Fridsén
@@ -33,17 +34,17 @@ public class ClassificationCopyTest
         try
         {
             Classification original = new Classification(1, "Fiction",
-                                                         "A type of literary genre", false);
+                    "A type of literary genre", false);
             Classification copy = new Classification(original);
 
             assertEquals(original.getClassificationID(), copy.getClassificationID(),
-                         "The Classification ID of the copy should match the original");
+                    "The Classification ID of the copy should match the original");
             assertEquals(original.getClassificationName(), copy.getClassificationName(),
-                         "The Classification name of the copy should match the original");
+                    "The Classification name of the copy should match the original");
             assertEquals(original.getDescription(), copy.getDescription(),
-                         "The Classification description of the copy should match the original");
+                    "The Classification description of the copy should match the original");
             assertEquals(original.isDeleted(), copy.isDeleted(),
-                         "The Classification deleted status of the copy should match the original");
+                    "The Classification deleted status of the copy should match the original");
         }
         catch (ConstructionException e)
         {

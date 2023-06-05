@@ -4,7 +4,6 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
-import edu.groupeighteen.librarydbms.view.entities.item.ItemGUI;
 
 /**
  * @author Jesper Truedsson
@@ -12,12 +11,17 @@ import edu.groupeighteen.librarydbms.view.entities.item.ItemGUI;
  * @date 2023-05-21
  * Unit Test for the ItemCreateGUI class.
  */
-public class ItemCreateGUITest {
-    public static void main(String[] args) {
+public class ItemCreateGUITest
+{
+    public static void main(String[] args)
+    {
         LibraryManager.setup();
-        try {
+        try
+        {
             new ItemGUI(null, ItemHandler.getItemByID(1));
-        } catch (InvalidIDException | RetrievalException e) {
+        }
+        catch (InvalidIDException | RetrievalException e)
+        {
             throw new RuntimeException(e);
         }
     }

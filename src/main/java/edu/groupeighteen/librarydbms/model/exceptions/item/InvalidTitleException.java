@@ -8,8 +8,10 @@ package edu.groupeighteen.librarydbms.model.exceptions.item;
  * @date 5/21/2023
  * Custom InvalidTitleException class. Used to make Exceptions clearer.
  */
-public class InvalidTitleException extends Exception {
-    public InvalidTitleException(String message) {
+public class InvalidTitleException extends Exception
+{
+    public InvalidTitleException(String message)
+    {
         super(message);
     }
 }

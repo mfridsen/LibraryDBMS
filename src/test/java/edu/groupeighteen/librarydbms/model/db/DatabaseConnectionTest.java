@@ -1,12 +1,11 @@
 package edu.groupeighteen.librarydbms.model.db;
 
-import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Mattias Fridsén
@@ -23,18 +22,23 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DatabaseConnectionTest {
+public class DatabaseConnectionTest
+{
     /**
      * Create the connection to the database.
      */
     @BeforeAll
-    static void setup() {
-        try {
+    static void setup()
+    {
+        try
+        {
             System.out.println("BeforeAll:");
             //TODO handle?
             DatabaseConnection.setVerbose(true);
             DatabaseConnection.setup();
-        } catch (SQLException | ClassNotFoundException e) {
+        }
+        catch (SQLException | ClassNotFoundException e)
+        {
             e.printStackTrace();
         }
     }
@@ -43,7 +47,8 @@ public class DatabaseConnectionTest {
      * Always close the connection to the database after use.
      */
     @AfterAll
-    static void tearDown() {
+    static void tearDown()
+    {
         DatabaseConnection.closeConnection();
     }
 
@@ -53,7 +58,8 @@ public class DatabaseConnectionTest {
      */
     @Test
     @Order(1)
-    public void testConnection() {
+    public void testConnection()
+    {
         System.out.println("\n1: Testing connection...");
         System.out.println("Creating connection to database...");
         Connection connection = DatabaseConnection.getConnection();
@@ -69,13 +75,15 @@ public class DatabaseConnectionTest {
      */
     @Test
     @Order(2)
-    public void testConnectionWithIncorrectURL() {
+    public void testConnectionWithIncorrectURL()
+    {
         System.out.println("\n2: Attempting to connect to an invalid URL...");
         String url = "jdbc:mysql://localhost:3307"; // incorrect port number
         String user = "root";
         String password = "password";
 
-        SQLException exception = assertThrows(SQLException.class, () -> {
+        SQLException exception = assertThrows(SQLException.class, () ->
+        {
             DatabaseConnection.connectToDatabaseServer(url, user, password);
         });
 
@@ -94,13 +102,15 @@ public class DatabaseConnectionTest {
      */
     @Test
     @Order(3)
-    public void testConnectionWithIncorrectUsername() {
+    public void testConnectionWithIncorrectUsername()
+    {
         System.out.println("\n3: Attempting to connect with an invalid username...");
         String url = "jdbc:mysql://localhost:3306";
         String user = "badusername";
         String password = "password";
 
-        SQLException exception = assertThrows(SQLException.class, () -> {
+        SQLException exception = assertThrows(SQLException.class, () ->
+        {
             DatabaseConnection.connectToDatabaseServer(url, user, password);
         });
 
@@ -119,13 +129,15 @@ public class DatabaseConnectionTest {
      */
     @Test
     @Order(4)
-    public void testConnectionWithIncorrectPassword() {
+    public void testConnectionWithIncorrectPassword()
+    {
         System.out.println("\n4: Attempting to connect with an invalid password...");
         String url = "jdbc:mysql://localhost:3306";
         String user = "root";
         String password = "badpassword";
 
-        SQLException exception = assertThrows(SQLException.class, () -> {
+        SQLException exception = assertThrows(SQLException.class, () ->
+        {
             DatabaseConnection.connectToDatabaseServer(url, user, password);
         });
 

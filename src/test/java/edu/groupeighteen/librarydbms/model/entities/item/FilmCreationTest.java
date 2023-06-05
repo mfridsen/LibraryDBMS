@@ -1,9 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import edu.groupeighteen.librarydbms.model.entities.*;
 import edu.groupeighteen.librarydbms.model.entities.Film;
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidAgeRatingException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
@@ -13,6 +11,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén

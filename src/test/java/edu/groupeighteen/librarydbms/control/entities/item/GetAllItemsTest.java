@@ -1,9 +1,8 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
-
-import edu.groupeighteen.librarydbms.control.entities.ItemHandlerUtils;
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+import edu.groupeighteen.librarydbms.control.entities.ItemHandlerUtils;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

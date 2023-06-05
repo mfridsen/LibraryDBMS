@@ -2,10 +2,9 @@ package edu.groupeighteen.librarydbms.view.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 
 /**
  * @author Mattias Fridsén
@@ -17,15 +16,20 @@ import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
  * <p>
  * Brought to you by copious amounts of nicotine.
  */
-public class RentalGUITest {
+public class RentalGUITest
+{
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         //Need to setup everything before GUI
         LibraryManager.setup();
 
-        try {
+        try
+        {
             new RentalGUI(null, RentalHandler.createNewRental(1, 1));
-        } catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e) {
+        }
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+        {
             e.printStackTrace();
         }
     }

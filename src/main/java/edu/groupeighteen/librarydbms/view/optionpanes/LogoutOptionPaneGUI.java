@@ -13,9 +13,11 @@ package edu.groupeighteen.librarydbms.view.optionpanes;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public class LogoutOptionPaneGUI extends OptionPaneGUI {
+public class LogoutOptionPaneGUI extends OptionPaneGUI
+{
 
-    public LogoutOptionPaneGUI() {
+    public LogoutOptionPaneGUI()
+    {
 
     }
 

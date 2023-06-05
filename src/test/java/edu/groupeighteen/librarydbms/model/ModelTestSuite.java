@@ -2,10 +2,10 @@ package edu.groupeighteen.librarydbms.model;
 
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnectionTest;
 import edu.groupeighteen.librarydbms.model.entities.author.AuthorTestSuite;
-import edu.groupeighteen.librarydbms.model.entities.rental.RentalTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.classification.ClassificationTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.item.FilmTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.item.LiteratureTestSuite;
+import edu.groupeighteen.librarydbms.model.entities.rental.RentalTestSuite;
 import edu.groupeighteen.librarydbms.model.entities.user.UserTestSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;

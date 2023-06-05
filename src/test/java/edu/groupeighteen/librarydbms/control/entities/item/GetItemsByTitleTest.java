@@ -1,9 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static edu.groupeighteen.librarydbms.control.entities.ItemHandler.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
@@ -14,6 +10,9 @@ import org.junit.jupiter.api.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
+import static edu.groupeighteen.librarydbms.control.entities.ItemHandler.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -28,9 +27,9 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GetItemsByTitleTest
 {
+    protected static final String testDatabaseName = "test_database";
     //We need all this stuff, copied from BaseHandlerTest but adapted to be static
     protected static Connection connection = null;
-    protected static final String testDatabaseName = "test_database";
 
     //BeforeEach
     static void setupConnectionAndTables()

@@ -154,7 +154,8 @@ public class ItemUpdateGUI extends GUI
             }
 
             // Now call the update method
-            if (newItem != null) {
+            if (newItem != null)
+            {
                 try
                 {
                     ItemHandler.updateItem(newItem);
@@ -171,7 +172,8 @@ public class ItemUpdateGUI extends GUI
                     System.err.println(ile.getMessage()); //TODO-test //TODO-exception handle better
                     resetCells();
                 }
-            } else resetCells();
+            }
+            else resetCells();
         });
         return confirmUpdateButton;
     }
@@ -210,7 +212,7 @@ public class ItemUpdateGUI extends GUI
             if (itemType != null && !itemType.isEmpty())
                 newItem.setType(Item.ItemType.valueOf(itemType));
         }
-        catch (InvalidItemTypeException |IllegalArgumentException e)
+        catch (InvalidItemTypeException | IllegalArgumentException e)
         {
             messageBuilder.append("Invalid itemType: ").append(e.getMessage()).append("\n");
         }
@@ -257,7 +259,7 @@ public class ItemUpdateGUI extends GUI
         //Barcode
         try
         {
-            String barcode = (String) itemUpdateTable.getValueAt(7,2);
+            String barcode = (String) itemUpdateTable.getValueAt(7, 2);
             if (barcode != null && !barcode.isEmpty())
                 newItem.setBarcode(barcode);
         }
@@ -279,7 +281,8 @@ public class ItemUpdateGUI extends GUI
         messageLabel.setText(errorMessage);
 
         // If there were validation errors, return null
-        if (!errorMessage.isEmpty()) {
+        if (!errorMessage.isEmpty())
+        {
             return null;
         }
 
@@ -379,7 +382,7 @@ public class ItemUpdateGUI extends GUI
         //Barcode
         try
         {
-            String barcode = (String) itemUpdateTable.getValueAt(9,2);
+            String barcode = (String) itemUpdateTable.getValueAt(9, 2);
             if (barcode != null && !barcode.isEmpty())
                 newItem.setBarcode(barcode);
         }
@@ -396,7 +399,8 @@ public class ItemUpdateGUI extends GUI
         messageLabel.setText(errorMessage);
 
         // If there were validation errors, return null
-        if (!errorMessage.isEmpty()) {
+        if (!errorMessage.isEmpty())
+        {
             return null;
         }
 
@@ -429,7 +433,7 @@ public class ItemUpdateGUI extends GUI
         data.add(new Object[]{"Item Title", olditem.getTitle(), ""});
         data.add(new Object[]{"Item Type", getItemTypeString(olditem.getType()), ""});
         data.add(new Object[]{"Classification", olditem.getClassificationName(), ""});
-        data.add(new Object[]{"Author/Director First Name",olditem.getAuthorFirstname()});
+        data.add(new Object[]{"Author/Director First Name", olditem.getAuthorFirstname()});
         data.add(new Object[]{"Author/Director Last Name", olditem.getAuthorLastname()});
 
         //Check if item is an instance of Literature

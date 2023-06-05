@@ -171,7 +171,7 @@ public class Rental extends Entity
             setReceipt(receipt); //Throws InvalidReceiptException
         }
         catch (InvalidIDException | InvalidDateException | InvalidNameException | InvalidTitleException |
-                InvalidLateFeeException | InvalidTypeException | InvalidReceiptException e)
+               InvalidLateFeeException | InvalidTypeException | InvalidReceiptException e)
         {
             throw new ConstructionException("Failed to construct Rental due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);

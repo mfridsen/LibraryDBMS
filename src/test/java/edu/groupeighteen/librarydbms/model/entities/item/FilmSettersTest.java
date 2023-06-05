@@ -1,9 +1,7 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Film;
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.*;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeException;
 import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidItemTypeException;
@@ -11,6 +9,8 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException
 import org.junit.jupiter.api.*;
 
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -36,8 +36,8 @@ public class FilmSettersTest
         try
         {
             film = new Film(false, 1, "Film", Item.ItemType.FILM,
-                    "1", 1,1, "D", "F",
-                    "G", 1, true,1,
+                    "1", 1, 1, "D", "F",
+                    "G", 1, true, 1,
                     "U", "Actor1");
         }
         catch (ConstructionException e)
@@ -587,9 +587,12 @@ public class FilmSettersTest
     @Order(22)
     void testSetAgeRating_ValidAgeRating()
     {
-        try {
+        try
+        {
             film.setAgeRating(12);
-        } catch (InvalidAgeRatingException e) {
+        }
+        catch (InvalidAgeRatingException e)
+        {
             fail("Unexpected exception: " + e.getMessage());
         }
         assertEquals(12, film.getAgeRating());
@@ -602,7 +605,8 @@ public class FilmSettersTest
     @Order(23)
     void testSetAgeRating_AgeRatingLowerThanZero()
     {
-        InvalidAgeRatingException exception = assertThrows(InvalidAgeRatingException.class, () -> film.setAgeRating(-1));
+        InvalidAgeRatingException exception = assertThrows(InvalidAgeRatingException.class,
+                () -> film.setAgeRating(-1));
         assertEquals("Cannot set an age rating lower than 0.", exception.getMessage());
     }
 
@@ -613,7 +617,8 @@ public class FilmSettersTest
     @Order(24)
     void testSetAgeRating_AgeRatingHigherThanMax()
     {
-        InvalidAgeRatingException exception = assertThrows(InvalidAgeRatingException.class, () -> film.setAgeRating(19));
+        InvalidAgeRatingException exception = assertThrows(InvalidAgeRatingException.class,
+                () -> film.setAgeRating(19));
         assertEquals("Cannot set an age rating higher than " + Film.FILM_MAX_AGE_RATING + ".", exception.getMessage());
     }
 
@@ -624,9 +629,12 @@ public class FilmSettersTest
     @Order(25)
     void testSetPublisherCountry_ValidPublisherCountry()
     {
-        try {
+        try
+        {
             film.setCountryOfProduction("Canada");
-        } catch (InvalidNameException e) {
+        }
+        catch (InvalidNameException e)
+        {
             fail("Unexpected exception: " + e.getMessage());
         }
         assertEquals("Canada", film.getCountryOfProduction());
@@ -640,9 +648,12 @@ public class FilmSettersTest
     void testSetPublisherCountry_PublisherCountryTooLong()
     {
         String tooLongPublisherCountry = String.join("", Collections.nCopies(Film.FILM_COUNTRY_LENGTH + 1, "a"));
-        InvalidNameException exception = assertThrows(InvalidNameException.class, () -> film.setCountryOfProduction(tooLongPublisherCountry));
-        assertEquals("Film country name cannot be greater than " + Film.FILM_COUNTRY_LENGTH + ".", exception.getMessage());
+        InvalidNameException exception = assertThrows(InvalidNameException.class,
+                () -> film.setCountryOfProduction(tooLongPublisherCountry));
+        assertEquals("Film country name cannot be greater than " + Film.FILM_COUNTRY_LENGTH + ".",
+                exception.getMessage());
     }
+
     /**
      * Test case for setting a valid list of actors.
      */

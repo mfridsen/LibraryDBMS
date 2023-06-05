@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.classification;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ClassificationHandler;
 import edu.groupeighteen.librarydbms.model.entities.Classification;
@@ -9,6 +7,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén

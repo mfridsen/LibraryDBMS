@@ -1,13 +1,16 @@
 package edu.groupeighteen.librarydbms.model.entities.rental;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -28,10 +31,12 @@ public class RentalCreationTest
      */
     @Test
     @Order(1)
-    void testRentalConstructor_ForCreation_ValidInput() {
+    void testRentalConstructor_ForCreation_ValidInput()
+    {
         System.out.println("\n1: Testing Rental constructor for creation with valid input...");
 
-        try {
+        try
+        {
             //Inputs for the constructor
             int userID = 1;
             int itemID = 1;
@@ -54,7 +59,9 @@ public class RentalCreationTest
             assertNull(rental.getRentalReturnDate(), "Rental return date should be null for a newly created rental.");
             assertEquals(0.0, rental.getLateFee(), "Late fee should be 0.0 for a newly created rental.");
             assertNull(rental.getReceipt(), "Receipt should be null for a newly crated rental.");
-        } catch (ConstructionException e) {
+        }
+        catch (ConstructionException e)
+        {
             fail("Valid tests should not throw exceptions.");
             e.printStackTrace();
         }
@@ -68,7 +75,8 @@ public class RentalCreationTest
      */
     @Test
     @Order(2)
-    void testRentalConstructor_ForCreation_InvalidInput() {
+    void testRentalConstructor_ForCreation_InvalidInput()
+    {
         System.out.println("\n2: Testing Rental constructor for creation with invalid input...");
 
         //Inputs for the constructor

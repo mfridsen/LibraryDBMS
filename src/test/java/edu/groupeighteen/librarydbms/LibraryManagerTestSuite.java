@@ -2,7 +2,6 @@ package edu.groupeighteen.librarydbms;
 
 import edu.groupeighteen.librarydbms.control.ControlTestSuite;
 import edu.groupeighteen.librarydbms.model.ModelTestSuite;
-
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 

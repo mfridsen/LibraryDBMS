@@ -9,11 +9,12 @@ import javax.swing.table.DefaultTableModel;
  * @package edu.groupeighteen.librarydbms.view.GUI.entities.rental
  * @contact matfir-1@student.ltu.se
  * @date 5/18/2023
- *
+ * <p>
  * This class extends DefaultTableModel and is used to create a table model for displaying rentals.
  * It provides a custom getColumnClass method to allow for a JButton in a table cell.
  */
-public class RentalTableModel extends DefaultTableModel {
+public class RentalTableModel extends DefaultTableModel
+{
 
     /**
      * Constructs a RentalTableModel with the specified data and column names.
@@ -21,7 +22,8 @@ public class RentalTableModel extends DefaultTableModel {
      * @param data        the two-dimensional array of data representing the table content
      * @param columnNames the array of column names for the table
      */
-    public RentalTableModel(Object[][] data, Object[] columnNames) {
+    public RentalTableModel(Object[][] data, Object[] columnNames)
+    {
         super(data, columnNames);
     }
 
@@ -34,7 +36,8 @@ public class RentalTableModel extends DefaultTableModel {
      * @return the class type of the column at the specified index
      */
     @Override
-    public Class<?> getColumnClass(int columnIndex) {
+    public Class<?> getColumnClass(int columnIndex)
+    {
         return columnIndex == 4 ? JButton.class : super.getColumnClass(columnIndex);
     }
 }

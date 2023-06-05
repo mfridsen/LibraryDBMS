@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.entities.Item;
@@ -13,6 +11,8 @@ import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidBarcodeExcepti
 import org.junit.jupiter.api.*;
 
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -54,12 +54,14 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
     }
 
     //TODO-PRIO validate join tables
+
     /**
      * Test case for creating new literature with valid input.
      */
     @Test
     @Order(1)
-    void testCreateNewLiterature_ValidInput() {
+    void testCreateNewLiterature_ValidInput()
+    {
         System.out.println("\n1: Testing createNewLiterature method with valid input...");
 
         try
@@ -96,10 +98,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(2)
-    void testCreateNewLiterature_ValidInputDifferentTypes() {
+    void testCreateNewLiterature_ValidInputDifferentTypes()
+    {
         System.out.println("\n2: Testing createNewLiterature method with different valid types...");
 
-        for (Item.ItemType type : Item.ItemType.values()) {
+        for (Item.ItemType type : Item.ItemType.values())
+        {
             try
             {
                 String title = "Valid Title " + type.name();
@@ -108,7 +112,8 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
                 String barcode = "validBarcode" + type.name();
                 String isbn = "9783161484100"; // valid ISBN-13
 
-                Literature newLiterature = ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
+                Literature newLiterature = ItemHandler.createNewLiterature(title, type, authorId, classificationId,
+                        barcode, isbn);
 
                 assertNotNull(newLiterature);
                 assertEquals(title, newLiterature.getTitle());
@@ -133,7 +138,8 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(3)
-    void testCreateNewLiterature_NullTitle() {
+    void testCreateNewLiterature_NullTitle()
+    {
         System.out.println("\n3: Testing createNewLiterature method with null title...");
 
         String title = null;
@@ -143,7 +149,8 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
         String barcode = "validBarcode";
         String isbn = "9783161484100"; // valid ISBN-13
 
-        assertThrows(ConstructionException.class, () -> {
+        assertThrows(ConstructionException.class, () ->
+        {
             ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
         });
 
@@ -155,7 +162,8 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(4)
-    void testCreateNewLiterature_EmptyTitle() {
+    void testCreateNewLiterature_EmptyTitle()
+    {
         System.out.println("\n4: Testing createNewLiterature method with empty title...");
 
         String title = "";
@@ -165,7 +173,8 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
         String barcode = "validBarcode";
         String isbn = "9783161484100"; // valid ISBN-13
 
-        assertThrows(ConstructionException.class, () -> {
+        assertThrows(ConstructionException.class, () ->
+        {
             ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
         });
 
@@ -177,7 +186,8 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(5)
-    void testCreateNewLiterature_TooLongTitle() {
+    void testCreateNewLiterature_TooLongTitle()
+    {
         System.out.println("\n5: Testing createNewLiterature method with too long title...");
 
         String title = String.join("", Collections.nCopies(256, "a")); // 256 characters long title
@@ -187,7 +197,8 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
         String barcode = "validBarcode";
         String isbn = "9783161484100"; // valid ISBN-13
 
-        assertThrows(ConstructionException.class, () -> {
+        assertThrows(ConstructionException.class, () ->
+        {
             ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
         });
 
@@ -199,10 +210,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(6)
-    void testCreateNewLiterature_NullType() {
+    void testCreateNewLiterature_NullType()
+    {
         System.out.println("\n6: Testing createNewLiterature method with null type...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = null;
             int authorId = 1; // assuming this is a valid author ID
@@ -210,10 +223,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(ConstructionException.class, () -> {
+            assertThrows(ConstructionException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -226,10 +242,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(7)
-    void testCreateNewLiterature_InvalidAuthorID() {
+    void testCreateNewLiterature_InvalidAuthorID()
+    {
         System.out.println("\n7: Testing createNewLiterature method with invalid authorID...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = -1; // invalid author ID
@@ -237,10 +255,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(InvalidIDException.class, () -> {
+            assertThrows(InvalidIDException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -253,10 +274,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(8)
-    void testCreateNewLiterature_InvalidClassificationID() {
+    void testCreateNewLiterature_InvalidClassificationID()
+    {
         System.out.println("\n8: Testing createNewLiterature method with invalid classificationID...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -264,10 +287,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(InvalidIDException.class, () -> {
+            assertThrows(InvalidIDException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -280,10 +306,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(9)
-    void testCreateNewLiterature_NonExistentAuthor() {
+    void testCreateNewLiterature_NonExistentAuthor()
+    {
         System.out.println("\n9: Testing createNewLiterature method with non-existent author...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 9999; // non-existent author ID
@@ -291,10 +319,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(EntityNotFoundException.class, () -> {
+            assertThrows(EntityNotFoundException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -307,10 +338,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(10)
-    void testCreateNewLiterature_NonExistentClassification() {
+    void testCreateNewLiterature_NonExistentClassification()
+    {
         System.out.println("\n10: Testing createNewLiterature method with non-existent classification...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -318,10 +351,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(EntityNotFoundException.class, () -> {
+            assertThrows(EntityNotFoundException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -334,10 +370,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(11)
-    void testCreateNewLiterature_NullBarcode() {
+    void testCreateNewLiterature_NullBarcode()
+    {
         System.out.println("\n11: Testing createNewLiterature method with null barcode...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -345,10 +383,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = null;
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(ConstructionException.class, () -> {
+            assertThrows(ConstructionException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -361,10 +402,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(12)
-    void testCreateNewLiterature_EmptyBarcode() {
+    void testCreateNewLiterature_EmptyBarcode()
+    {
         System.out.println("\n12: Testing createNewLiterature method with empty barcode...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -372,10 +415,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "";
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(ConstructionException.class, () -> {
+            assertThrows(ConstructionException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -388,10 +434,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(13)
-    void testCreateNewLiterature_TooLongBarcode() {
+    void testCreateNewLiterature_TooLongBarcode()
+    {
         System.out.println("\n13: Testing createNewLiterature method with too long barcode...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -399,10 +447,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "a".repeat(Item.ITEM_BARCODE_LENGTH + 1);
             String isbn = "9783161484100"; // valid ISBN-13
 
-            assertThrows(ConstructionException.class, () -> {
+            assertThrows(ConstructionException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -415,10 +466,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(14)
-    void testCreateNewLiterature_TakenBarcode() {
+    void testCreateNewLiterature_TakenBarcode()
+    {
         System.out.println("\n14: Testing createNewLiterature method with taken barcode...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -428,10 +481,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
 
             ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
 
-            assertThrows(InvalidBarcodeException.class, () -> {
+            assertThrows(InvalidBarcodeException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -444,10 +500,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(15)
-    void testCreateNewLiterature_NullISBN() {
+    void testCreateNewLiterature_NullISBN()
+    {
         System.out.println("\n15: Testing createNewLiterature method with null ISBN...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -455,10 +513,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = null;
 
-            assertThrows(ConstructionException.class, () -> {
+            assertThrows(ConstructionException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -471,10 +532,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(16)
-    void testCreateNewLiterature_EmptyISBN() {
+    void testCreateNewLiterature_EmptyISBN()
+    {
         System.out.println("\n16: Testing createNewLiterature method with empty ISBN...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -482,10 +545,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = "";
 
-            assertThrows(ConstructionException.class, () -> {
+            assertThrows(ConstructionException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }
@@ -498,10 +564,12 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
      */
     @Test
     @Order(17)
-    void testCreateNewLiterature_TooLongISBN() {
+    void testCreateNewLiterature_TooLongISBN()
+    {
         System.out.println("\n17: Testing createNewLiterature method with too long ISBN...");
 
-        try {
+        try
+        {
             String title = "Valid Title";
             Item.ItemType type = Item.ItemType.REFERENCE_LITERATURE;
             int authorId = 1; // assuming this is a valid author ID
@@ -509,10 +577,13 @@ public class CreateNewLiteratureTest extends BaseHandlerTest
             String barcode = "validBarcode";
             String isbn = "9783161484100ExtraDigits"; // too long ISBN
 
-            assertThrows(ConstructionException.class, () -> {
+            assertThrows(ConstructionException.class, () ->
+            {
                 ItemHandler.createNewLiterature(title, type, authorId, classificationId, barcode, isbn);
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             fail("Valid operations should not throw exceptions.");
             e.printStackTrace();
         }

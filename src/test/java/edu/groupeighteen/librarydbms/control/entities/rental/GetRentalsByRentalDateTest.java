@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.rental;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
@@ -16,6 +14,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -105,7 +105,7 @@ public class GetRentalsByRentalDateTest extends BaseRentalHandlerTest
             assertEquals(1, rentals.size(), "The list should contain one rental.");
         }
         catch (InvalidIDException | EntityNotFoundException
-                | RentalNotAllowedException | InvalidDateException e)
+               | RentalNotAllowedException | InvalidDateException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
         }

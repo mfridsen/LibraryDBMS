@@ -1,18 +1,17 @@
 package edu.groupeighteen.librarydbms.control.db;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
  * @date 5/29/2023
  * @contact matfir-1@student.ltu.se
- *
+ * <p>
  * Tests the Meta Data retrieval methods in DatabaseHandler.
- *
+ * <p>
  * NOTE: These tests will fail if rules of any related tables are changed.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

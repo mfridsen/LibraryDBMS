@@ -19,7 +19,8 @@ import org.junit.platform.suite.api.Suite;
         DeleteAndUndoDeleteAuthorTest.class,
         HardDeleteAuthorTest.class
 })
-public class AuthorHandlerTestSuite extends BaseHandlerTest {
+public class AuthorHandlerTestSuite extends BaseHandlerTest
+{
 
 
 }

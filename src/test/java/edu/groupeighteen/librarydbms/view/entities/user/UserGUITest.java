@@ -3,9 +3,6 @@ package edu.groupeighteen.librarydbms.view.entities.user;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.UserHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.view.entities.user.UserGUI;
-
-import java.sql.SQLException;
 
 /**
  * @author Jesper Truedsson
@@ -13,12 +10,17 @@ import java.sql.SQLException;
  * @date 2023-05-18
  * Unit Test for the UserGUI class.
  */
-public class UserGUITest {
-    public static void main(String[] args) {
+public class UserGUITest
+{
+    public static void main(String[] args)
+    {
         LibraryManager.setup();
-        try {
+        try
+        {
             new UserGUI(null, UserHandler.getUserByID(1));
-        } catch (InvalidIDException e) {
+        }
+        catch (InvalidIDException e)
+        {
             e.printStackTrace();
         }
     }

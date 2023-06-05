@@ -1,13 +1,13 @@
 package edu.groupeighteen.librarydbms.model.entities.author;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Author;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -74,7 +74,7 @@ public class AuthorRetrievalTest
         boolean deleted = false;
 
         assertThrows(ConstructionException.class, () -> new Author(id, firstName, lastName, biography, deleted),
-                     "Expected ConstructionException for invalid ID");
+                "Expected ConstructionException for invalid ID");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -97,7 +97,7 @@ public class AuthorRetrievalTest
         boolean deleted = false;
 
         assertThrows(ConstructionException.class, () -> new Author(id, firstName, lastName, biography, deleted),
-                     "Expected ConstructionException for empty first name");
+                "Expected ConstructionException for empty first name");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -120,7 +120,7 @@ public class AuthorRetrievalTest
         boolean deleted = false;
 
         assertThrows(ConstructionException.class, () -> new Author(id, firstName, lastName, biography, deleted),
-                     "Expected ConstructionException for null first name");
+                "Expected ConstructionException for null first name");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -143,7 +143,7 @@ public class AuthorRetrievalTest
         boolean deleted = false;
 
         assertThrows(ConstructionException.class, () -> new Author(id, firstName, lastName, biography, deleted),
-                     "Expected ConstructionException for long first name");
+                "Expected ConstructionException for long first name");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -166,7 +166,7 @@ public class AuthorRetrievalTest
         boolean deleted = false;
 
         assertThrows(ConstructionException.class, () -> new Author(id, firstName, lastName, biography, deleted),
-                     "Expected ConstructionException for long last name");
+                "Expected ConstructionException for long last name");
 
         System.out.println("\nTEST FINISHED.");
     }

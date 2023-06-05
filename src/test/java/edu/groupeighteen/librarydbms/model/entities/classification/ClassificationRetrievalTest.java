@@ -1,13 +1,13 @@
 package edu.groupeighteen.librarydbms.model.entities.classification;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Classification;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -41,7 +41,7 @@ public class ClassificationRetrievalTest
             assertEquals(id, classification.getClassificationID(), "Classification ID should match the set ID");
             assertEquals(name, classification.getClassificationName(), "Classification name should match the set name");
             assertEquals(description, classification.getDescription(),
-                         "Classification description should match the set description");
+                    "Classification description should match the set description");
             assertFalse(classification.isDeleted(), "isDeleted should be false for this retrieved Classification");
         }
         catch (ConstructionException e)
@@ -59,7 +59,8 @@ public class ClassificationRetrievalTest
      */
     @Test
     @Order(2)
-    void testRetrievalConstructor_InvalidID() {
+    void testRetrievalConstructor_InvalidID()
+    {
         System.out.println("\n2: Testing Classification retrieval constructor with an invalid ID...");
 
         int id = -1;
@@ -67,8 +68,8 @@ public class ClassificationRetrievalTest
         String description = "A type of literary genre";
 
         assertThrows(ConstructionException.class,
-                     () -> new Classification(id, name, description, false),
-                     "Expected ConstructionException for invalid ID");
+                () -> new Classification(id, name, description, false),
+                "Expected ConstructionException for invalid ID");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -79,7 +80,8 @@ public class ClassificationRetrievalTest
      */
     @Test
     @Order(3)
-    void testRetrievalConstructor_NullName() {
+    void testRetrievalConstructor_NullName()
+    {
         System.out.println("\n3: Testing Classification retrieval constructor with a null name...");
 
         int id = 1;
@@ -87,8 +89,8 @@ public class ClassificationRetrievalTest
         String description = "A type of literary genre";
 
         assertThrows(ConstructionException.class,
-                     () -> new Classification(id, name, description, false),
-                     "Expected ConstructionException for null name");
+                () -> new Classification(id, name, description, false),
+                "Expected ConstructionException for null name");
 
         System.out.println("\nTEST FINISHED.");
     }
@@ -99,16 +101,18 @@ public class ClassificationRetrievalTest
      */
     @Test
     @Order(4)
-    void testRetrievalConstructor_ExceedingNameLength() {
-        System.out.println("\n4: Testing Classification retrieval constructor with a name that exceeds the maximum length...");
+    void testRetrievalConstructor_ExceedingNameLength()
+    {
+        System.out.println(
+                "\n4: Testing Classification retrieval constructor with a name that exceeds the maximum length...");
 
         int id = 1;
         String name = "a".repeat(Classification.CLASSIFICATION_NAME_LENGTH + 1);
         String description = "A type of literary genre";
 
         assertThrows(ConstructionException.class,
-                     () -> new Classification(id, name, description, false),
-                     "Expected ConstructionException for name that exceeds the maximum length");
+                () -> new Classification(id, name, description, false),
+                "Expected ConstructionException for name that exceeds the maximum length");
 
         System.out.println("\nTEST FINISHED.");
     }

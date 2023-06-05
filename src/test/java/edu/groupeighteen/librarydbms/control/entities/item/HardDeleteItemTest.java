@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.model.db.DatabaseConnection;
@@ -17,6 +15,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -28,13 +28,12 @@ import java.sql.SQLException;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HardDeleteItemTest
 {
+    protected static final String testDatabaseName = "test_database";
+    //We need all this stuff, copied from BaseHandlerTest but adapted to be static
+    protected static Connection connection = null;
     // Declare these at the class level so all tests can access them
     static Film film;
     static Literature literature;
-
-    //We need all this stuff, copied from BaseHandlerTest but adapted to be static
-    protected static Connection connection = null;
-    protected static final String testDatabaseName = "test_database";
 
     //BeforeEach
     static void setupConnectionAndTables()
@@ -73,7 +72,8 @@ public class HardDeleteItemTest
                     1, 2, "5678", "978-3-16-1484");
             assertNotNull(literature);
         }
-        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException | SQLException | ClassNotFoundException e)
+        catch (InvalidBarcodeException | InvalidIDException | EntityNotFoundException | ConstructionException |
+               SQLException | ClassNotFoundException e)
         {
             e.printStackTrace();
         }

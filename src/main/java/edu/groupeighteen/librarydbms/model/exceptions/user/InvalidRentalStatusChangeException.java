@@ -9,12 +9,15 @@ package edu.groupeighteen.librarydbms.model.exceptions.user;
  * <p>
  * Custom InvalidRentalStatusChangeException class. Used to make Exceptions clearer.
  */
-public class InvalidRentalStatusChangeException extends Exception {
-    public InvalidRentalStatusChangeException(String message, Throwable cause) {
+public class InvalidRentalStatusChangeException extends Exception
+{
+    public InvalidRentalStatusChangeException(String message, Throwable cause)
+    {
         super(message, cause);
     }
 
-    public InvalidRentalStatusChangeException(String message) {
+    public InvalidRentalStatusChangeException(String message)
+    {
         super(message);
     }
 }

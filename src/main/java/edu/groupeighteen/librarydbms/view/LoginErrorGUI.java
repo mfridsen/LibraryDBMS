@@ -1,4 +1,5 @@
 package edu.groupeighteen.librarydbms.view;
+
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -9,7 +10,8 @@ import java.awt.*;
  * @project LibraryDBMS
  * @date 2023-05-05
  */
-public class LoginErrorGUI extends GUI {
+public class LoginErrorGUI extends GUI
+{
     private JLabel errorMessageLabel;
     private JButton okButton;
 
@@ -18,16 +20,20 @@ public class LoginErrorGUI extends GUI {
      *
      * @param previousGUI the previous GUI object.
      */
-    public LoginErrorGUI(GUI previousGUI) {
+    public LoginErrorGUI(GUI previousGUI)
+    {
         super(previousGUI, "LoginErrorGUI", null);
         setupPanels();
         displayGUI();
     }
+
     @Override
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         okButton = new JButton("OK");
 
-        okButton.addActionListener(e -> {
+        okButton.addActionListener(e ->
+        {
             dispose();
             new LoginScreenGUI(this);
         });
@@ -36,7 +42,8 @@ public class LoginErrorGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         JPanel panel = new JPanel();
         errorMessageLabel = new JLabel("Error! Enter the correct username and password");
 

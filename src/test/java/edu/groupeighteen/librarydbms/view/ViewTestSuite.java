@@ -4,8 +4,8 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
- * @project LibraryDBMS
  * @author Mattias Fridsén
+ * @project LibraryDBMS
  * @date 4/18/2023
  * @contact matfir-1@student.ltu.se
  * <p>
@@ -23,6 +23,7 @@ import org.junit.platform.suite.api.Suite;
 
 })
 
-public class ViewTestSuite {
+public class ViewTestSuite
+{
 
 }

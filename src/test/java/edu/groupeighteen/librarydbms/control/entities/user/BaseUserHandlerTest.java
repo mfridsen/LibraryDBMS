@@ -28,8 +28,8 @@ import java.sql.SQLException;
  */
 public abstract class BaseUserHandlerTest
 {
-    protected static Connection connection;
     protected static final String testDatabaseName = "test_database";
+    protected static Connection connection;
 
     /**
      * This method sets up the test environment before all test cases are executed.
@@ -55,7 +55,8 @@ public abstract class BaseUserHandlerTest
     /**
      * This method sets up a connection to the database and creates necessary tables for testing.
      */
-    protected static void setupConnectionAndTables() {
+    protected static void setupConnectionAndTables()
+    {
         try
         {
             connection = DatabaseConnection.setup();
@@ -77,7 +78,8 @@ public abstract class BaseUserHandlerTest
     /**
      * This method sets up test data for use in the test cases.
      */
-    protected static void setupTestData() {
+    protected static void setupTestData()
+    {
         DatabaseHandler.executeSQLCommandsFromFile("src/main/resources/sql/data/user_test_data.sql");
         DatabaseHandler.setVerbose(true);
     }
@@ -121,15 +123,6 @@ public abstract class BaseUserHandlerTest
         System.out.println("\nCLEANUP FINISHED.");
     }
 
-    /**
-     * This method is called after each test case. It resets the UserHandler to its default state.
-     */
-    @AfterEach
-    protected void reset()
-    {
-        resetUserHandler();
-    }
-
     protected static void resetUserHandler()
     {
         UserHandler.reset();
@@ -137,26 +130,40 @@ public abstract class BaseUserHandlerTest
 
     protected static void resetUsersTable()
     {
-        //When a new record is inserted into the table, MySQL automatically increments the userID value, 
-        //regardless of whether old records are deleted. So, if the first user is deleted, the next user that is 
+        //When a new record is inserted into the table, MySQL automatically increments the userID value,
+        //regardless of whether old records are deleted. So, if the first user is deleted, the next user that is
         //created will have userID equal to 2, not 1.
         DatabaseHandler.executeCommand("DELETE FROM users;");
         DatabaseHandler.executeCommand("ALTER TABLE users AUTO_INCREMENT = 1;");
     }
 
-    protected static int getNumberOfUsers() {
+    protected static int getNumberOfUsers()
+    {
         int numberOfUsers = 0;
 
-        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery("SELECT COUNT(*) FROM users;", null)) {
+        try (QueryResult queryResult = DatabaseHandler.executePreparedQuery("SELECT COUNT(*) FROM users;", null))
+        {
             ResultSet resultSet = queryResult.getResultSet();
-            if (resultSet.next()) {
+            if (resultSet.next())
+            {
                 numberOfUsers = resultSet.getInt(1);
                 System.out.println("Number of rows in users: " + numberOfUsers);
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
 
         return numberOfUsers;
+    }
+
+    /**
+     * This method is called after each test case. It resets the UserHandler to its default state.
+     */
+    @AfterEach
+    protected void reset()
+    {
+        resetUserHandler();
     }
 }

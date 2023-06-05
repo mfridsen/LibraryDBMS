@@ -15,9 +15,11 @@ import javax.swing.*;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  */
-public abstract class OptionPaneGUI extends JOptionPane {
+public abstract class OptionPaneGUI extends JOptionPane
+{
 
-    public OptionPaneGUI() {
+    public OptionPaneGUI()
+    {
 
     }
 }

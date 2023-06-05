@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.classification;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Classification;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
@@ -10,6 +8,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -64,7 +64,7 @@ public class ClassificationSetterTest
             Classification classification = new Classification("Fiction");
 
             assertThrows(InvalidIDException.class, () -> classification.setClassificationID(id),
-                         "Expected InvalidIDException for invalid ID");
+                    "Expected InvalidIDException for invalid ID");
         }
         catch (ConstructionException e)
         {
@@ -90,7 +90,8 @@ public class ClassificationSetterTest
             String name = "Fiction";
             Classification classification = new Classification(name);
             classification.setClassificationName(name);
-            assertEquals(name, classification.getClassificationName(), "Classification's name should match the set name");
+            assertEquals(name, classification.getClassificationName(),
+                    "Classification's name should match the set name");
         }
         catch (InvalidNameException | ConstructionException e)
         {
@@ -117,7 +118,7 @@ public class ClassificationSetterTest
             Classification classification = new Classification("Fiction");
 
             assertThrows(InvalidNameException.class, () -> classification.setClassificationName(name),
-                         "Expected InvalidNameException for invalid name");
+                    "Expected InvalidNameException for invalid name");
         }
         catch (ConstructionException e)
         {
@@ -143,7 +144,8 @@ public class ClassificationSetterTest
             String description = "A category for Fiction books.";
             Classification classification = new Classification("Fiction");
             classification.setDescription(description);
-            assertEquals(description, classification.getDescription(), "Classification's description should match the set description");
+            assertEquals(description, classification.getDescription(),
+                    "Classification's description should match the set description");
         }
         catch (ConstructionException e)
         {

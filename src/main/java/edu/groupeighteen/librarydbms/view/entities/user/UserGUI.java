@@ -11,7 +11,8 @@ import java.awt.*;
  * @project LibraryDBMS
  * @date 2023-05-12
  */
-public class UserGUI extends GUI {
+public class UserGUI extends GUI
+{
     //TODO- fält som ska visas i denna ordning:
     //  userID, userName, type,
     //  firstName, lastName, Email
@@ -20,12 +21,12 @@ public class UserGUI extends GUI {
     private JPanel scrollPanePanel;
 
     /**
-     *
      * @param
      * @param user
      */
 
-    public UserGUI(GUI previousGUI, User user) {
+    public UserGUI(GUI previousGUI, User user)
+    {
         super(previousGUI, "UserGUI", user);
         this.user = user;
         setupScrollPane();
@@ -36,21 +37,25 @@ public class UserGUI extends GUI {
     /**
      * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
      */
-    protected JButton[] setupButtons() {
+    protected JButton[] setupButtons()
+    {
         JButton updateButton = new JButton("Update User");
-        updateButton.addActionListener(e -> {
+        updateButton.addActionListener(e ->
+        {
             dispose();
             new UserUpdateGUI(this, user);
         });
         JButton deleteButton = new JButton("Delete User");
-        deleteButton.addActionListener(e -> {
+        deleteButton.addActionListener(e ->
+        {
             dispose();
             new UserDeleteGUI(this, user);
         });
         return new JButton[]{deleteButton, updateButton};
     }
 
-    private void setupScrollPane() {
+    private void setupScrollPane()
+    {
         String[] columnNames = {"Property", "Value"};
 
         Object[][] data = {
@@ -66,10 +71,13 @@ public class UserGUI extends GUI {
     }
 
     @Override
-    protected void setupPanels() {
+    protected void setupPanels()
+    {
         GUIPanel.add(scrollPanePanel, BorderLayout.NORTH);
     }
-    public User getUser(){
+
+    public User getUser()
+    {
         return user;
     }
 }

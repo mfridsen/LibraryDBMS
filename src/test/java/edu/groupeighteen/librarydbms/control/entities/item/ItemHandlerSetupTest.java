@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.control.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
@@ -10,6 +8,8 @@ import org.junit.jupiter.api.*;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Mattias Fridsén
@@ -69,14 +69,15 @@ public class ItemHandlerSetupTest extends BaseHandlerTest
      */
     @Test
     @Order(2)
-    void  testSetup_SomeItemsInDatabase()
+    void testSetup_SomeItemsInDatabase()
     {
         System.out.println("\n2: Testing setup method with some items in the database...");
 
         //Setup the test data and clear the items, film and literature tables
         setupTestData();
         String[] tablesToDelete = {"films", "literature", "items"};
-        for (String table : tablesToDelete) {
+        for (String table : tablesToDelete)
+        {
             String deleteCommand = "DELETE FROM " + table;
             DatabaseHandler.executeCommand(deleteCommand);
         }

@@ -1,7 +1,5 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.groupeighteen.librarydbms.model.entities.Film;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
@@ -11,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -36,8 +36,8 @@ public class FilmRetrievalTest
         try
         {
             Film film = new Film(false, 1, "Film Title", Item.ItemType.FILM,
-                    "1234567890123", 1,1, "Director FName",
-                    "Director LName","Genre Name", 7, true,15,
+                    "1234567890123", 1, 1, "Director FName",
+                    "Director LName", "Genre Name", 7, true, 15,
                     "USA", "Actor1, Actor2, Actor3");
             assertFalse(film.isDeleted());
             assertEquals(1, film.getItemID());

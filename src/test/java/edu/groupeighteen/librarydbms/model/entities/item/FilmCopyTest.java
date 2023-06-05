@@ -1,14 +1,14 @@
 package edu.groupeighteen.librarydbms.model.entities.item;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Film;
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mattias Fridsén
@@ -35,7 +35,7 @@ public class FilmCopyTest
         try
         {
             Film film = new Film(new Film(false, 1, "Title",
-                    Item.ItemType.FILM,"Barcode", 1, 1, "AuthorFName",
+                    Item.ItemType.FILM, "Barcode", 1, 1, "AuthorFName",
                     "AuthorLName",
                     "ClassificationName", 10, true, 18,
                     "USA", "Actor1, Actor2, Actor3"));
@@ -77,7 +77,7 @@ public class FilmCopyTest
             fail("Valid parameters should not result in an exception.");
             e.printStackTrace();
         }
-        
+
         System.out.println("\nTEST FINISHED.");
     }
 }

@@ -442,7 +442,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             userToDelete.setAllowedToRent(false);
         }
         catch (NullEntityException | EntityNotFoundException | InvalidIDException | InvalidRentalStatusChangeException
-                | InvalidUserRentalsException | InvalidLateFeeException e)
+               | InvalidUserRentalsException | InvalidLateFeeException e)
         {
             throw new DeletionException("Failed to delete User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -481,7 +481,8 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             //Execute the update.
             DatabaseHandler.executePreparedUpdate(sql, params);
         }
-        catch (NullEntityException | EntityNotFoundException | InvalidIDException | InvalidRentalStatusChangeException e)
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException |
+               InvalidRentalStatusChangeException e)
         {
             throw new RecoveryException("Failed to recover User due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -530,7 +531,7 @@ public class UserHandler //TODO-future rewrite Get-methods according to ItemHand
             registeredEmails.remove(email);
         }
         catch (EntityNotFoundException | NullEntityException | InvalidIDException |
-                InvalidRentalStatusChangeException | InvalidUserRentalsException | InvalidLateFeeException e)
+               InvalidRentalStatusChangeException | InvalidUserRentalsException | InvalidLateFeeException e)
         {
             throw new DeletionException("Failed to delete userToDelete from database due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);

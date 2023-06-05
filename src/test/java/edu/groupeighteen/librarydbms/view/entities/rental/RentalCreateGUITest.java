@@ -1,7 +1,6 @@
 package edu.groupeighteen.librarydbms.view.entities.rental;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.view.entities.rental.RentalCreateGUI;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -17,8 +16,10 @@ import org.junit.jupiter.api.TestMethodOrder;
  */
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RentalCreateGUITest {
-    public static void main(String[] args) {
+public class RentalCreateGUITest
+{
+    public static void main(String[] args)
+    {
         LibraryManager.setup();
         new RentalCreateGUI(null);
     }

@@ -8,8 +8,10 @@ package edu.groupeighteen.librarydbms.model.exceptions.user;
  * @date 5/21/2023
  * Custom InvalidLateFeeException class. Used to make Exceptions clearer.
  */
-public class InvalidLateFeeException extends Exception {
-    public InvalidLateFeeException(String message) {
+public class InvalidLateFeeException extends Exception
+{
+    public InvalidLateFeeException(String message)
+    {
         super(message);
     }
 }
