@@ -1,9 +1,8 @@
-package control.entities.classification;
+package edu.groupeighteen.librarydbms.control.entities.classification;
 
-import control.BaseHandlerTest;
+import edu.groupeighteen.librarydbms.control.BaseHandlerTest;
 import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.entities.ClassificationHandler;
-import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -11,39 +10,44 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Johan Lund
  * @project LibraryDBMS
  * @date 2023-05-31
  */
-public class ClassificationNamesTest extends BaseHandlerTest {
+public class ClassificationNamesTest extends BaseHandlerTest
+{
 
     @BeforeEach
     @Override
-    protected void setupAndReset() {
-        try {
+    protected void setupAndReset()
+    {
+        try
+        {
             setupConnectionAndTables();
             ClassificationHandler.reset();
-        } catch (SQLException | ClassNotFoundException e) {
+        }
+        catch (SQLException | ClassNotFoundException e)
+        {
             e.printStackTrace();
         }
     }
 
     @Test
     @Order(1)
-    public void testSyncClassificationNames() {
+    public void testSyncClassificationNames()
+    {
         ClassificationHandler.setup();
         Assertions.assertEquals(0, ClassificationHandler.getStoredClassificationNames().size());
-            }
+    }
 
     @Test
     @Order(2)
-    public void testPrintClassificationNames() {
+    public void testPrintClassificationNames()
+    {
         // Redirect System.out to a mock PrintStream
         var mockPrintStream = mock(java.io.PrintStream.class);
         var originalOut = System.out;
@@ -58,9 +62,10 @@ public class ClassificationNamesTest extends BaseHandlerTest {
         System.setOut(originalOut);
     }
 
-        @Test
-        @Order(3)
-        void testSetup_WithSomeClassificationsInDatabase() {
+    @Test
+    @Order(3)
+    void testSetup_WithSomeClassificationsInDatabase()
+    {
         System.out.println("\n8: Testing setup method with some classifications in the database...");
 
         // Check that storedClassificationNames is empty

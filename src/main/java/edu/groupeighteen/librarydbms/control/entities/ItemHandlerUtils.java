@@ -157,7 +157,7 @@ public class ItemHandlerUtils
      * @throws EntityNotFoundException If no classification with the given ID is found.
      */
     static Classification getExistingClassification(int classificationID)
-    throws EntityNotFoundException
+    throws EntityNotFoundException, InvalidIDException
     {
         Classification classification = ClassificationHandler.getClassificationByID(classificationID);
         if (classification == null)
@@ -234,7 +234,7 @@ public class ItemHandlerUtils
                     resultSet.getString("ISBN")
             );
         }
-        catch (ConstructionException | SQLException e)
+        catch (ConstructionException | SQLException | InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve Literature by ID due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
@@ -274,7 +274,7 @@ public class ItemHandlerUtils
                     resultSet.getString("actors")
             );
         }
-        catch (ConstructionException | SQLException e)
+        catch (ConstructionException | SQLException | InvalidIDException e)
         {
             ExceptionHandler.HandleFatalException("Failed to retrieve Film by ID due to " +
                     e.getClass().getName() + ": " + e.getMessage(), e);
