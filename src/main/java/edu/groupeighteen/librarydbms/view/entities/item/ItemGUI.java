@@ -96,7 +96,23 @@ public class ItemGUI extends GUI
             }
         });
 
-        return new JButton[]{rentButton};
+        JButton updateButton = new JButton("Update");
+        updateButton.addActionListener(e ->
+        {
+            dispose();
+            new ItemUpdateGUI(this, item);
+        });
+
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(e ->
+        {
+            dispose();
+            if (LibraryManager.getCurrentUser() == null)
+                new LoginOptionPane(this);
+            new ItemDeleteGUI(this, item);
+        });
+
+        return new JButton[]{rentButton, updateButton, deleteButton};
     }
 
     /**

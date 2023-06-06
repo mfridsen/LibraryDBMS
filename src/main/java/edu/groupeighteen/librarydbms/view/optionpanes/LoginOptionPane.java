@@ -107,12 +107,12 @@ public class LoginOptionPane extends OptionPane
                 }
 
                 LibraryManager.setCurrentUser(user);
-                System.out.println("Login successful, you can now attempt to rent again.");
+                System.out.println("Login successful.");
                 JOptionPane.getRootFrame().dispose();
             }
             else
             {
-                messageLabel.setText("Login failed");
+                System.err.println("Login failed");
             }
         });
 

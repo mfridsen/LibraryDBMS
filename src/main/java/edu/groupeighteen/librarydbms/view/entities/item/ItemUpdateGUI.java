@@ -351,16 +351,19 @@ public class ItemUpdateGUI extends GUI
             newItem.setAuthorLastname(authorLastName);
 
         //Age rating
-        try
-        {
-            Object ageRatingValue = itemUpdateTable.getValueAt(6, 2);
-            if (ageRatingValue != null)
-                newItem.setAgeRating((Integer) ageRatingValue);
+        Object ageRatingValue = itemUpdateTable.getValueAt(6, 2);
+        //System.out.println("Age rating value: " + ageRatingValue); //TODO-debug
+        if (ageRatingValue != null && ageRatingValue.toString().matches("\\d+")) {
+            try {
+                int ageRating = Integer.parseInt(ageRatingValue.toString());
+                newItem.setAgeRating(ageRating);
+            } catch (InvalidAgeRatingException e) {
+                messageBuilder.append("Invalid age rating: ").append(e.getMessage()).append("\n");
+            }
+        } else if (ageRatingValue != null && !ageRatingValue.toString().isEmpty()) {
+            messageBuilder.append("Invalid age rating: Not a number.\n");
         }
-        catch (InvalidAgeRatingException e)
-        {
-            messageBuilder.append("Invalid age rating: ").append(e.getMessage()).append("\n");
-        }
+
 
         //Country of production
         try
@@ -392,7 +395,10 @@ public class ItemUpdateGUI extends GUI
         }
 
         //Available
-        newItem.setAvailable((Boolean) itemUpdateTable.getValueAt(10, 2));
+        Object availableValue = itemUpdateTable.getValueAt(10, 2);
+        if (availableValue instanceof Boolean) {
+            newItem.setAvailable((Boolean) availableValue);
+        }
 
         // Build error message
         String errorMessage = messageBuilder.toString();
