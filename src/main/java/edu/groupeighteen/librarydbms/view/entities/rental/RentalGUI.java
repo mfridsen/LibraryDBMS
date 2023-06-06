@@ -1,6 +1,8 @@
 package edu.groupeighteen.librarydbms.view.entities.rental;
 
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalReturnException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -13,29 +15,23 @@ import java.awt.*;
  * @contact matfir-1@student.ltu.se
  * @date 5/14/2023
  * <p>
- * This class displays all data for a given Rental Object. It also contains buttons to perform relevant CRUD
- * operations on the object.
- * <p>
- * Brought to you by enough nicotine to kill a large horse.
+ * This class represents the Rental GUI in the application's Graphical User Interface (GUI).
+ * It displays details about a specific rental and provides options to return, update, or delete the rental.
  * @see GUI
  * @see Rental
  */
 public class RentalGUI extends GUI
 {
-    //TODO- fält som ska visas i denna ordning:
-    //  RentalID, UserID, ItemID, RentalDate
-    //  userName, itemTitle, rentalDueDate, rentalReturnDate
-    //  active, overdue, lateFee
-    //TODO-comment
-    //TODO-test
     //The rental object to display
     private final Rental rental;
     //The panel containing the scroll pane which displays the Rental data
     private JPanel scrollPanePanel;
 
     /**
-     * @param previousGUI
-     * @param rental
+     * Constructor for the RentalGUI. Sets up panels and buttons, and displays the GUI.
+     *
+     * @param previousGUI The GUI that was displayed before this one.
+     * @param rental The Rental object to display.
      */
     public RentalGUI(GUI previousGUI, Rental rental)
     {
@@ -47,13 +43,34 @@ public class RentalGUI extends GUI
     }
 
     /**
-     * Sets up the buttons in this class and adds ActionListeners to them, implementing their actionPerformed methods.
+     * Sets up the buttons to be displayed on the RentalGUI. These include:
+     * - Return Rental: Allows the user to return the rental.
+     * - Update Rental: Leads to the RentalUpdateGUI where the user can update the rental details.
+     * - Delete Rental: Leads to the RentalDeleteGUI where the user can delete the rental.
+     *
+     * @return An array of JButtons to be added to the GUI.
      */
     @Override
     protected JButton[] setupButtons()
     {
+        JButton rentalReturnButton = new JButton("Return Rental");
+        rentalReturnButton.addActionListener(e ->
+        {
+            try
+            {
+                RentalHandler.returnRental(rental);
+                dispose();
+                RentalHandler.printRentalList(RentalHandler.getAllRentals()); //TODO-prio debug print
+                new RentalGUI(null, rental);
+            }
+            catch (RentalReturnException ex)
+            {
+                System.err.println(ex.getMessage()); //TODO-prio look over handling
+            }
+        });
+
         //Leads to RentalUpdateGUI
-        JButton rentalUpdateButton = new JButton("RentalUpdateGUI");
+        JButton rentalUpdateButton = new JButton("Update Rental");
         //Add actionListener
         rentalUpdateButton.addActionListener(e ->
         {
@@ -62,7 +79,7 @@ public class RentalGUI extends GUI
         });
 
         //Leads to RentalDeleteGUI
-        JButton rentalDeleteButton = new JButton("RentalDeleteGUI");
+        JButton rentalDeleteButton = new JButton("Delete Rental");
         //Add actionListener
         rentalDeleteButton.addActionListener(e ->
         {
@@ -70,11 +87,12 @@ public class RentalGUI extends GUI
             new RentalDeleteGUI(this, rental);
         });
 
-        return new JButton[]{rentalUpdateButton, rentalDeleteButton};
+        return new JButton[]{rentalReturnButton, rentalUpdateButton, rentalDeleteButton};
     }
 
     /**
-     * Sets up the scroll pane.
+     * Sets up the scroll pane that displays the rental details in a table format.
+     * The scroll pane is added to a panel, which is later added to the GUI.
      */
     protected void setupScrollPane()
     {
@@ -88,7 +106,9 @@ public class RentalGUI extends GUI
                 {"Username", rental.getUsername()},
                 {"Item ID", rental.getItemID()},
                 {"Item Title", rental.getItemTitle()},
-                {"Rental Date", rental.getRentalDate()}
+                {"Rental Date", rental.getRentalDate()},
+                {"Rental Due Date", rental.getRentalDueDate()},
+                {"Rental Return Date", rental.getRentalReturnDate()}
         };
 
         JTable rentalUpdateTable = setupTable(columnNames, data);
@@ -101,7 +121,7 @@ public class RentalGUI extends GUI
     }
 
     /**
-     * Sets up the main panel.
+     * Adds the scrollPanePanel, which contains the scroll pane with the rental details, to the GUIPanel.
      */
     @Override
     protected void setupPanels()
@@ -110,9 +130,9 @@ public class RentalGUI extends GUI
     }
 
     /**
-     * Returns the Rental object this class is displaying.
+     * Returns the Rental object being displayed.
      *
-     * @return the Rental object.
+     * @return The Rental object.
      */
     public Rental getRental()
     {

@@ -18,7 +18,6 @@ import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedExc
  */
 public class RentalGUITest
 {
-
     public static void main(String[] args)
     {
         //Need to setup everything before GUI
@@ -26,7 +25,8 @@ public class RentalGUITest
 
         try
         {
-            new RentalGUI(null, RentalHandler.createNewRental(1, 1));
+            new RentalGUI(null, RentalHandler.createNewRental(3, 4));
+            RentalHandler.printRentalList(RentalHandler.getAllRentals());
         }
         catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
         {
