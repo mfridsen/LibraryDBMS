@@ -170,7 +170,7 @@ public abstract class BaseRentalHandlerTest
      *
      * @param offsetRentals The number of Rental instances whose rental dates should be offset.
      */
-    protected static void createAndSaveRentalsWithDifferentDateAndDueDates(int offsetRentals)
+    public static void createAndSaveRentalsWithDifferentDateAndDueDates(int offsetRentals)
     {
         LocalDateTime now = LocalDateTime.now();
         int numOfRentals = validItemIDs.length;

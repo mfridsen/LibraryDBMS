@@ -1,9 +1,12 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Entity;
+import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
+import java.util.List;
 
 /**
  * @author Mattias Fridsén
@@ -38,7 +41,6 @@ public class ItemHandlerGUI extends GUI
             new ItemCreateGUI(this);
         });
 
-
         JButton updateItemButton = new JButton("Update Item");
         updateItemButton.addActionListener(e ->
         {
@@ -60,7 +62,20 @@ public class ItemHandlerGUI extends GUI
             new ItemSearchGUI(this); //Open an ItemSearchGUI
         });
 
-        return new JButton[]{createItemButton, updateItemButton, deleteItemButton, searchButton};
+        JButton overdueButton = new JButton("Overdue Items");
+        overdueButton.addActionListener(e ->
+        {
+            List<Rental> overdueList = RentalHandler.getOverdueRentals();
+            if (!overdueList.isEmpty())
+            {
+                dispose();
+                new ItemOverdueGUI(this, overdueList);
+            }
+            else
+                System.out.println("No overdue items.");
+        });
+
+        return new JButton[]{createItemButton, updateItemButton, deleteItemButton, searchButton, overdueButton};
     }
 
     @Override

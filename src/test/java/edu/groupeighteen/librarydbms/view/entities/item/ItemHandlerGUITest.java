@@ -2,6 +2,9 @@ package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
 
+import static edu.groupeighteen.librarydbms.control.entities.rental.BaseRentalHandlerTest.createAndSaveRentalsWithDifferentDateAndDueDates;
+
+
 /**
  * @author Mattias Fridsén
  * @project LibraryDBMS
@@ -19,7 +22,17 @@ public class ItemHandlerGUITest
 {
     public static void main(String[] args)
     {
-        LibraryManager.setup();
-        new ItemHandlerGUI(null);
+        try
+        {
+            LibraryManager.setup();
+            //Setup rentals, some overdue
+            int numOfOverdueRentals = 8;
+            createAndSaveRentalsWithDifferentDateAndDueDates(numOfOverdueRentals);
+            new ItemHandlerGUI(null);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

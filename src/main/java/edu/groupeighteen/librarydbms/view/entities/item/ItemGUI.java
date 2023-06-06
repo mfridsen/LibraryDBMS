@@ -10,6 +10,7 @@ import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
+import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalReturnException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 import edu.groupeighteen.librarydbms.view.optionpanes.LoginOptionPane;
@@ -93,6 +94,42 @@ public class ItemGUI extends GUI
             else //.. item can't be rented
             {
                 System.err.println("Item can't be rented.");
+            }
+        });
+
+        JButton returnButton = new JButton("Return Item");
+        returnButton.addActionListener(e ->
+        {
+            if (!item.isAvailable())
+            {
+                List<Rental> rentals = RentalHandler.getRentalsByItemID(item.getItemID());
+                if (rentals.isEmpty())
+                {
+                    System.err.println("Couldn't find rental for item which is rented out.");
+                    LibraryManager.exit(1);
+                }
+                else if (rentals.size() > 1)
+                {
+                    System.err.println("There should only be one rental for this item");
+                    LibraryManager.exit(1);
+                }
+                else
+                {
+                    try
+                    {
+                        RentalHandler.returnRental(rentals.get(0));
+                        dispose();
+                        new ItemGUI(null, item);
+                    }
+                    catch (RentalReturnException ex)
+                    {
+                        throw new RuntimeException(ex); //TODO-exception
+                    }
+                }
+            }
+            else
+            {
+                System.err.println("Item is not rented out.");
             }
         });
 
