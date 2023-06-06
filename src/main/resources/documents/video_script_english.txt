@@ -4,6 +4,8 @@ Hello and welcome to the video demonstration of our library system. Today, I wil
 
 [Explain list of requirements]
 
+ADD BULLET POINTS
+
 [Functional Requirement 2: Search function for objects]
 To facilitate our users, we have implemented a search function. Users can search for items based on title, author/director, ISBN, or subject/genre.
 

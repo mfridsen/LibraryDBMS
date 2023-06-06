@@ -1,5 +1,6 @@
 Funktionalitetskrav:
 
+Tillhandahållande av grafiska användargränssnitt för att interagera med systemet.
 Möjlighet att lägga till, ändra och ta bort objekt i systemet.
 Sökfunktion för att söka efter objekt baserat på titel, författare/regissör, ISBN eller ämnesord/filmgenre.
 Hantering av utlåning och återlämning av objekt, inklusive inloggning och utskrift av kvitto.
@@ -11,7 +12,6 @@ Generella krav:
 Användning av en relationsdatabas för att lagra data.
 Användning av arv och polymorfism i lämpliga delar av systemet.
 Hantering av undantag (exceptions) på ett sätt som ger meningsfull återkoppling till användaren.
-Tillhandahållande av grafiska användargränssnitt för att interagera med systemet.
 
 
 Inlämningskrav:
