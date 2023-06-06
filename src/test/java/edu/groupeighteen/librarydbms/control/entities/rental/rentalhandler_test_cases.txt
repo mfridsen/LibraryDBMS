@@ -1,5 +1,18 @@
 
 
+
+//ReturnRental:
+
+    //Valid Rental
+    //Null Rental
+    //Non-Existent Rental
+    //Already Returned Rental
+
+    //Invalid Return Date (Modify rentalDate and rentalDueDate into the future)
+
+    //Invalid User ID
+    //Invalid Item ID
+
 //UpdateRental:
 
     ------------Valid--------------
@@ -18,4 +31,4 @@
     //Valid Rental Soft Deleted
     //Valid Rental Recovered
     //Valid Rental Hard Deleted
-    //Valid Non Existing Rental
+    //Valid Non-Existent Rental
