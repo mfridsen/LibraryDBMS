@@ -97,11 +97,11 @@ public class RentalHandler
      * @return the newly created Rental
      * @throws EntityNotFoundException   if the user or item cannot be found
      * @throws RentalNotAllowedException if the user is not allowed to rent the item
-     * @throws InvalidIDException        if the user ID or item ID is not valid
+     * @throws InvalidIDException        if the user ID or item ID is not valid§
      *                                   <p>
-     *                                                                     TODO: Improve exception handling. Current handling is not consistent with other classes and needs refinement.
-     *                                                                     TODO: Make this method shorter. It currently performs multiple tasks which might be better broken down into
-     *                                                                     smaller methods.
+     * TODO: Improve exception handling. Current handling is not consistent with other classes and needs refinement.
+     * TODO: Make this method shorter. It currently performs multiple tasks which might be better broken down into
+     *  smaller methods.
      * @see User
      * @see Item
      * @see Rental
@@ -307,8 +307,9 @@ public class RentalHandler
 
             //I need to look over UserHandler since user should technically be able to be null just like item here
             if (item == null)
-                throw new EntityNotFoundException("Item related to rental with rentalID " + rentalToReturn.getRentalID() +
-                        " not found.");
+                throw new EntityNotFoundException(
+                        "Item related to rental with rentalID " + rentalToReturn.getRentalID() +
+                                " not found.");
 
             //Set rentalReturnDate, throws InvalidDateException which is considered fatal in this context
             rentalToReturn.setRentalReturnDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
@@ -346,10 +347,10 @@ public class RentalHandler
      * If any of these conditions is not met, the method throws the appropriate exception.
      *
      * @param rentalToReturn The rental to be validated.
-     * @throws NullEntityException If the rental is null.
-     * @throws InvalidIDException If the rental's ID is invalid.
+     * @throws NullEntityException     If the rental is null.
+     * @throws InvalidIDException      If the rental's ID is invalid.
      * @throws EntityNotFoundException If the rental is not found in the database.
-     * @throws RentalReturnException If the rental has already been returned.
+     * @throws RentalReturnException   If the rental has already been returned.
      */
     private static void validateReturnableRental(Rental rentalToReturn)
     throws NullEntityException, InvalidIDException, EntityNotFoundException, RentalReturnException
@@ -366,6 +367,7 @@ public class RentalHandler
     }
 
     //TODO-prio update according to getUsers, getItems, to take a wider variety of suffixes
+
     /**
      * Fetches all rentals from the database matching the provided SQL suffix and parameters. This allows for the execution
      * of complex and dynamic SQL queries, depending on the provided suffix and parameters. The ResultSet from the query
@@ -1058,7 +1060,7 @@ public class RentalHandler
      * @throws EntityNotFoundException if a rental with the provided rentalID doesn't exist in the database.
      * @throws InvalidIDException      if the provided rentalID is invalid (less than or equal to 0).
      *                                 <p>
-     *                                                                 TODO add deletion checks
+     *                                                                                                 TODO add deletion checks
      */
     private static void validateRental(Rental rentalToValidate)
     throws
