@@ -1,12 +1,7 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
-import edu.groupeighteen.librarydbms.LibraryManager;
-import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
-import edu.groupeighteen.librarydbms.model.entities.Rental;
-import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
-import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
@@ -19,27 +14,94 @@ import java.awt.*;
  * @contact matfir-1@student.ltu.se
  * @date 5/15/2023
  * <p>
- * We plan as much as we can (based on the knowledge available),
- * When we can (based on the time and resources available),
- * But not before.
- * <p>
- * Brought to you by enough nicotine to kill a large horse.
+ * This class extends GUI and is responsible for handling the graphical user interface
+ * for creating a new item in the LibraryDBMS system.
+ * The class allows a user to input necessary data to create a new item.
  */
 public class ItemCreateGUI extends GUI
 {
-    private JTextField userIDField;
-    private JTextField itemIDField;
+    //TODO-prio look over exception handling
+    //TODO-prio RENAME TO FilmCreateGUI AND MAKE A LiteratureCreateGUI
+    /**
+     * Text field for the title of the item.
+     */
+    private JTextField titleField;
 
     /**
-     * Constructs a new RentalCreateGUI.
+     * Text field for the author's ID.
+     */
+    private JTextField authorIDField;
+
+    /**
+     * Text field for the classification ID.
+     */
+    private JTextField classificationIDField;
+
+    /**
+     * Text field for the barcode of the item.
+     */
+    private JTextField barcodeField;
+
+    /**
+     * Text field for the age rating of the item.
+     */
+    private JTextField ageRatingField;
+
+    /**
+     * An array of text fields for easy access and manipulation.
+     */
+    private JTextField[] fields;
+
+    /**
+     * Constructor for ItemCreateGUI. Calls the parent constructor,
+     * initializes text fields, sets up panels, and displays the GUI.
      *
-     * @param previousGUI The GUI that was displayed before this one.
+     * @param previousGUI the GUI instance that preceded this one.
      */
     public ItemCreateGUI(GUI previousGUI)
     {
         super(previousGUI, "ItemCreateGUI", null);
+        setupFields();
         setupPanels();
         displayGUI();
+    }
+
+    /**
+     * Sets up the text fields for this GUI screen.
+     * The text fields are "Title", "Author ID", "Classification ID", "Barcode", and "Age Rating".
+     * Each of these fields is placed in a 5x2 GridLayout panel, with the label on the left and the text field on
+     * the right. The panel is then added to the north region of the GUIPanel.
+     */
+    private void setupFields()
+    {
+        JPanel panel = new JPanel(new GridLayout(5, 2));
+        JLabel titleLabel = new JLabel("Title:");
+        titleField = new JTextField(10);
+        panel.add(titleLabel);
+        panel.add(titleField);
+
+        JLabel authorIDLabel = new JLabel("Author ID:");
+        authorIDField = new JTextField(10);
+        panel.add(authorIDLabel);
+        panel.add(authorIDField);
+
+        JLabel classificationIDLabel = new JLabel("Classification ID:");
+        classificationIDField = new JTextField(10);
+        panel.add(classificationIDLabel);
+        panel.add(classificationIDField);
+
+        JLabel barcodeLabel = new JLabel("Barcode:");
+        barcodeField = new JTextField(10);
+        panel.add(barcodeLabel);
+        panel.add(barcodeField);
+
+        JLabel ageRatingLabel = new JLabel("Age Rating:");
+        ageRatingField = new JTextField(10);
+        panel.add(ageRatingLabel);
+        panel.add(ageRatingField);
+
+        fields = new JTextField[]{titleField, authorIDField, classificationIDField, barcodeField, ageRatingField};
+        GUIPanel.add(panel, BorderLayout.NORTH);
     }
 
     /**
@@ -57,109 +119,98 @@ public class ItemCreateGUI extends GUI
             resetFields();
         });
 
-        JButton createButton = new JButton("Create Rental");
+        JButton createButton = new JButton("Create Item");
         createButton.addActionListener(e ->
         {
-            createItem();
+            try
+            {
+                Item item = createNewItem();
+                dispose();
+                new ItemGUI(this, item);
+            }
+            catch (Exception ex)
+            {
+                //DON'T reset fields, that's annoying
+                JOptionPane.showMessageDialog(null, ex.getCause().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         return new JButton[]{resetButton, createButton};
     }
 
     /**
-     * Resets the text fields for user ID and item ID to be empty.
+     * Resets all fields to an empty state.
      */
     private void resetFields()
     {
-        userIDField.setText("");
-        itemIDField.setText("");
+        authorIDField.setText("");
     }
 
     /**
-     * Attempts to create a new Rental.
-     * If the user ID or item ID fields are empty, or if they cannot be parsed as integers,
-     * an error message is printed and the method returns early. If the fields are valid,
-     * a new Rental is created and a new RentalGUI is opened for that rental.
+     * This method retrieves and validates the data from the text fields.
+     * If the data is valid, it creates a new Item.
+     *
+     * @return Item the newly created item.
+     * @throws Exception if the input data is invalid.
      */
-    private void createItem()
+    private Item createNewItem()
+    throws Exception
     {
-        String userIDStr = userIDField.getText();
-        String itemIDStr = itemIDField.getText();
+        String title = titleField.getText();
+        String authorIDStr = authorIDField.getText();
+        String classificationIDStr = classificationIDField.getText();
+        String barcode = barcodeField.getText();
+        String ageRatingStr = ageRatingField.getText();
 
-        //Check if one or both fields are empty
-        if (userIDStr.isEmpty())
+        // Perform validation
+        if (title.isEmpty() || title.length() > 255)
         {
-            System.err.println("To create a new item you need to enter in a user ID. User ID: " + userIDStr);
-            resetFields();
-            return;
+            throw new Exception("Invalid title. Title cannot be empty and must be under 255 characters.");
         }
-        if (itemIDStr.isEmpty())
+        if (barcode.isEmpty() || barcode.length() > 13)
         {
-            System.err.println("To create a new item you need to enter in an item ID. Item ID: " + itemIDStr);
-            resetFields();
-            return;
+            throw new Exception("Invalid barcode. Barcode cannot be empty and must be under 13 characters.");
         }
 
-        int userID = 0;
-        int itemID = 0;
-
-        //Attempt to parse the user ID and item ID as integers
+        int authorID;
         try
         {
-            userID = Integer.parseInt(userIDStr);
+            authorID = Integer.parseInt(authorIDStr);
         }
-        catch (NumberFormatException nfe)
+        catch (NumberFormatException e)
         {
-            //If the parsing fails, print an error message
-            System.err.println("Item creation failed: user ID not an int. User ID: " + userIDStr);
-            resetFields();
-            return;
-        }
-        try
-        {
-            itemID = Integer.parseInt(itemIDStr);
-        }
-        catch (NumberFormatException nfe)
-        {
-            //If the parsing fails, print an error message
-            System.err.println("Item creation failed: item ID not an int. Item ID: " + itemIDStr);
-            resetFields();
-            return;
+            throw new Exception("Invalid author ID. Author ID must be a number.");
         }
 
-        //If successful, dispose, create a new item and open a new ItemGUI for that item
+        int classificationID;
         try
         {
-            dispose();
-            Rental newRental = RentalHandler.createNewRental(userID, itemID);
-            new RentalGUI(this, newRental);
+            classificationID = Integer.parseInt(classificationIDStr);
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException sqle)
+        catch (NumberFormatException e)
         {
-            System.err.println("Error connecting to database: " + sqle.getMessage()); //TODO-exception
-            sqle.printStackTrace();
-            LibraryManager.exit(1);
+            throw new Exception("Invalid classification ID. Classification ID must be a number.");
         }
+
+        int ageRating;
+        try
+        {
+            ageRating = Integer.parseInt(ageRatingStr);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new Exception("Invalid age rating. Age rating must be a number.");
+        }
+
+        // If all validation checks pass, create the new item
+        return ItemHandler.createNewFilm(title, authorID, classificationID, barcode, ageRating);
     }
 
     /**
      * Overrides the setupPanels method from the GUI class.
-     * Sets up the panel containing the text fields for user ID and item ID.
      */
     @Override
     protected void setupPanels()
     {
-        JPanel textFieldsPanel = new JPanel();
-        textFieldsPanel.setLayout(new GridLayout(2, 2));
-        JLabel userIDLabel = new JLabel("Enter Item ID:");
-        userIDField = new JTextField(10);
-        JLabel itemIDLabel = new JLabel("Enter item ID:");
-        itemIDField = new JTextField(10);
-        textFieldsPanel.add(userIDLabel);
-        textFieldsPanel.add(userIDField);
-        textFieldsPanel.add(itemIDLabel);
-        textFieldsPanel.add(itemIDField);
-
-        GUIPanel.add(textFieldsPanel, BorderLayout.NORTH);
     }
 }

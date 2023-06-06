@@ -313,7 +313,8 @@ public class ItemHandler
         saveLiterature(newLiterature);
 
         //Set author and classification names
-        newLiterature.setAuthorFirstname(author.getAuthorFirstname() + " " + author.getAuthorLastName());
+        newLiterature.setAuthorFirstname(author.getAuthorFirstname());
+        newLiterature.setAuthorLastname(author.getAuthorLastName());
         newLiterature.setClassificationName(classification.getClassificationName());
 
         //Increment the count of the new title. Add a new entry if the title does not exist yet.
@@ -370,7 +371,8 @@ public class ItemHandler
         saveFilm(newFilm);
 
         //Set author and classification names
-        newFilm.setAuthorFirstname(author.getAuthorFirstname() + " " + author.getAuthorLastName());
+        newFilm.setAuthorFirstname(author.getAuthorFirstname());
+        newFilm.setAuthorLastname(author.getAuthorLastName());
         newFilm.setClassificationName(classification.getClassificationName());
 
         //Increment the count of the new title. Add a new entry if the title does not exist yet.
