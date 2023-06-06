@@ -14,6 +14,5 @@ public class HomeScreenGUITest
     {
         LibraryManager.setup();
         new HomeScreenGUI(null);
-
     }
 }

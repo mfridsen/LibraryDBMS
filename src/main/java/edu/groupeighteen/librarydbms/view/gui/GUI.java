@@ -3,6 +3,7 @@ package edu.groupeighteen.librarydbms.view.gui;
 import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.model.entities.Entity;
 import edu.groupeighteen.librarydbms.view.HomeScreenGUI;
+import edu.groupeighteen.librarydbms.view.optionpanes.LogoutOptionPane;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -73,12 +74,7 @@ public abstract class GUI extends JFrame
             logoutButton = new JButton("Log Out");
             logoutButton.addActionListener(e ->
             {
-                //TODO-prio should have an OptionPane pop up to confirm logout
-                dispose();
-                //Log out user
-                LibraryManager.setCurrentUser(null);
-                //Go to Home Screen, null previousGUI because otherwise things will get messy
-                new HomeScreenGUI(null);
+                new LogoutOptionPane(this);
             });
         }
     }
@@ -124,7 +120,7 @@ public abstract class GUI extends JFrame
      */
     private void setupPreviousGUIButton()
     {
-        previousGUIButton = new JButton("Previous GUI");
+        previousGUIButton = new JButton("Back");
         previousGUIButton.addActionListener(e ->
         {
             if (previousGUI == null)

@@ -12,7 +12,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
-import edu.groupeighteen.librarydbms.view.optionpanes.LoginOptionPaneGUI;
+import edu.groupeighteen.librarydbms.view.optionpanes.LoginOptionPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,7 +87,7 @@ public class ItemGUI extends GUI
                 }
                 else //... and we are not logged in
                 {
-                    new LoginOptionPaneGUI();
+                    new LoginOptionPane(this);
                 }
             }
             else //.. item can't be rented

@@ -22,7 +22,7 @@ import java.util.Arrays;
  * <p>
  * Brought to you by enough nicotine to kill a large horse.
  * <p>
- * TODO completely overhaul this class to be a OptionPaneGUI or whatever they're called instead
+ * TODO completely overhaul this class to be a OptionPane or whatever they're called instead
  */
 public class RentalDeleteGUI extends GUI
 {

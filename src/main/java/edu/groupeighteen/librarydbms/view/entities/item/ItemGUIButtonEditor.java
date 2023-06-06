@@ -12,7 +12,7 @@ import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedExc
 import edu.groupeighteen.librarydbms.view.buttons.EntityButtonEditor;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
-import edu.groupeighteen.librarydbms.view.optionpanes.LoginOptionPaneGUI;
+import edu.groupeighteen.librarydbms.view.optionpanes.LoginOptionPane;
 
 import javax.swing.*;
 
@@ -84,12 +84,12 @@ public class ItemGUIButtonEditor extends EntityButtonEditor
                         }
                         catch (RentalNotAllowedException rentalNotAllowedException) //This is perfectly fine
                         {
-                            rentalNotAllowedException.printStackTrace(); //TODO-prio handle non-fatal
+                            System.err.println(rentalNotAllowedException.getMessage());
                         }
                     }
                     else //... and we are not logged in
                     {
-                        new LoginOptionPaneGUI();
+                        new LoginOptionPane(previousGUI);
                     }
                 }
                 else //.. item can't be rented
