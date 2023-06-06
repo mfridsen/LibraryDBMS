@@ -4,13 +4,12 @@ import edu.groupeighteen.librarydbms.control.db.DatabaseHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.db.QueryResult;
 import edu.groupeighteen.librarydbms.model.entities.Classification;
-import edu.groupeighteen.librarydbms.model.exceptions.ConstructionException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
-import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
-import edu.groupeighteen.librarydbms.model.exceptions.NullEntityException;
+import edu.groupeighteen.librarydbms.model.exceptions.*;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 
 import javax.persistence.OrderBy;
+import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -244,9 +243,118 @@ public class ClassificationHandler {
         if (storedClassificationNames.contains(classificationName))
             throw new InvalidNameException("Classification " + classificationName + " already taken.");
     }
-    public static void updateClassification(Classification updatedClassification)
-            throws NullEntityException, InvalidNameException
+
+    // DELETE AND RECOVER ----------------------------------------------------------------------------------------------
+    /**
+     * Deletes a classification by marking them as deleted in the database.
+     * Sets the 'deleted' field to true /and 'allowedToRent' field to false for the specified user./
+     *
+     * @param classificationToDelete the classification to be deleted
+     * @throws DeletionException if an error occurs during the deletion process
+     */
+
+        public static void deleteClassification (Classification classificationToDelete)
+        throws DeletionException
+        {
+            try {
+                //Validate classification, throws NullEntityException/EntityNotFoundException
+                validateClassificationObject(classificationToDelete);
+
+                // Prepare a SQL command to set deleted to true for the specified classification.
+                String sql = "UPDATE classifications SET deleted = 1 WHERE classificationID = ?";
+                String[] params = {String.valueOf(classificationToDelete.getClassificationID())};
+
+                // Execute the update.
+                DatabaseHandler.executePreparedUpdate(sql, params);
+
+                //Update the deleted field of the classification object
+                classificationToDelete.setDeleted(true);
+
+            } catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+            {
+                throw new DeletionException("Failed to delete Classification due to " +
+                        e.getClass().getName() + ": " + e.getMessage(), e);
+
+            }
+        }
+
+    /**
+     * Recovers a deleted Classification by setting their 'deleted' field to false in the database.
+     * Updates the 'deleted' fields of the specified classification based on their recovery eligibility.
+     *
+     * @param classificationToRecover the classification to be recovered
+     * @throws RecoveryException if an error occurs during the recovery process
+     */
+
+    public static void recoverClassification(Classification classificationToRecover)
+        throws RecoveryException
     {
+        try
+        {
+            // Validate classification
+            validateRecoverableClassificationObject(classificationToRecover);
+
+            // Update the deleted field of the classification object
+            classificationToRecover.setDeleted(false);
+
+            //Prepare a SQL command to set deleted to false for the specified classification.
+            String sql = "UPDATE classifications SET deleted = 0 WHERE classificationID = ?";
+            String[] params = {String.valueOf(classificationToRecover.getClassificationID())};
+
+            // Execute the update
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+        }
+        catch (NullEntityException | EntityNotFoundException | InvalidIDException e)
+        {
+            throw new RecoveryException("Failed to recover Classification due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Performs a hard delete of a classification by removing it's data from the database.
+     * This operation is irreversible and removes the classifications's data completely.
+     * Performs necessary validations to ensure the classifications can be hard deleted.
+     *
+     * @param classificationToDelete the classification to be hard deleted
+     * @throws DeletionException if an error occurs during the hard deletion process
+     */
+
+    public static void hardDeleteClassification(Classification classificationToDelete)
+        throws DeletionException
+    {
+        try
+        {
+            //Validate the input. Throws NullEntityException and EntityNotFoundException
+            validateDeleteableClassificationObject(classificationToDelete);
+
+            // Retrieve the unique classificationName
+            String classificationName = classificationToDelete.getClassificationName();
+
+            // Prepare a SQL command to delete a classificationToDelete by classificationID.
+            String sql = "DELETE FROM classifications WHERE classificationID = ?";
+            String[] params = {String.valueOf(classificationToDelete.getClassificationID())};
+
+            // Execute the update
+            DatabaseHandler.executePreparedUpdate(sql, params);
+
+            // Set booleans
+            classificationToDelete.setDeleted(true);
+
+            // Remove the deleted classificationToDelete name from the list.
+            storedClassificationNames.remove(classificationName);
+        } catch (EntityNotFoundException | NullEntityException | InvalidIDException e) {
+            throw new DeletionException("Failed to delete classificationToDelete from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+        }
+    }
+
+    //UPDATE -----------------------------------------------------------------------------------------------------------
+
+    //Comments
+    public static void updateClassification(Classification updatedClassification)
+            throws NullEntityException, InvalidNameException, UpdateException {
         try
         {
             // Let's check if the classification exists in the database before we go on.
@@ -263,11 +371,89 @@ public class ClassificationHandler {
                 //... and is not taken: remove old classificationName from and add new classificationName
                 // to storedClassificationName
                 storedClassificationNames.remove(oldClassificationName);
-                storedClassificationNames.add(updatedClassification)
+                storedClassificationNames.add(updatedClassification.getClassificationName());
             }
+
+            String sql = "UPDATE classifications SET classificationsName = ?, classificationID = ?, description = ?, WHERE classificationID  = ?";
+            String [] params = {
+                    updatedClassification.getClassificationName(),
+                    updatedClassification.getDescription(),
+                    String.valueOf(updatedClassification.getClassificationID())
+
+            };
+
+            //Execute the update
+            DatabaseHandler.executePreparedUpdate(sql, params);
+        } catch (InvalidIDException | InvalidNameException | EntityNotFoundException e) {
+            throw new UpdateException("Failed to update classification in database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
         }
 
     }
+
+    private static void validateUpdateableClassification(Classification updatedClassification)
+        throws InvalidIDException, InvalidNameException
+    {
+        Classification oldClassification = getClassificationByID(updatedClassification.getClassificationID());
+
+        // If classification is different
+        if (!updatedClassification.getClassificationName().equals(oldClassification.getClassificationName()))
+            if (storedClassificationNames.contains(updatedClassification.getClassificationName()))
+                throw new InvalidIDException("Cannot update classifications; classification " +
+                        updatedClassification.getClassificationName() + "already taken.");
+    }
+
+    //RETRIEVING -------------------------------------------------------------------------------------------------------
+
+    public static Classification getClassificationByClassificationName(String classificationName)
+        throws InvalidNameException
+    {
+        return getClassificationByClassificationName(classificationName, false);
+    }
+
+    public static Classification getClassificationByClassificationName(String classificationName, boolean getDeleted)
+        throws InvalidNameException
+    {
+        try {
+            //No point in getting invalid Classifications, throws InvalidNameException
+            checkEmptyClassificationName(classificationName);
+
+            // Prepare a SQL query to select a classification by classificationName.
+            // Include deleted condition based on getDeleted.
+            String query = getDeleted ?
+                    "SELECT * FROM classifications WHERE classificationName = ?" :
+                    "SELECT * FROM classifications WHERE classificationName = ? AND deleted = false";
+            String params = {classificationName};
+
+            // Execute the query and store the result in a ResultSet
+            try (QueryResult queryResult = DatabaseHandler.executePreparedQuery(query, params))
+            {
+
+                ResultSet resultSet = queryResult.getResultSet();
+                // If the ResultSet contains data,
+                // create a new Classification object using the retrieved classificationName
+                // and set the classifications classificationsID.
+                if (resultSet.next())
+                {
+                    return new Classification(
+                            resultSet.getInt("classificationID"),
+                            classificationName,
+                            resultSet.getString("description"),
+                            resultSet.getBoolean("deleted"));
+
+                }
+            }
+
+
+        } catch (SQLException | ConstructionException e)
+        {
+            ExceptionHandler.HandleFatalException("Failed to retrieve user by username from database due to " +
+                    e.getClass().getName() + ": " + e.getMessage(), e);
+
+        }
+        return null;
+    }
+
 }
 
 
