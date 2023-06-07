@@ -73,12 +73,30 @@ When a loan is made, a receipt will be printed with all the relevant information
 
 VIDEO 2 JOHAN:
 
+INTRODUCERA DIG SJÄLV OCH VAD DU SKA GÖRA (VISA ITEM HANDLING)
 
 [Functional Requirement 3: Adding, modifying, and deleting items]
 First and foremost, we have the capability to add, modify, and delete items in the system.
 By logging in as a user, we can easily manage the objects in the library.
 
-SHOW CREATION
+STARTA ITEMHANDLERGUITEST
+
+VISA LISTAN MED ITEMS
+
+SHOW CREATION "now I'm going to demonstrate how we can create new items that are added to the library"
+    "Note that this technically only works for Film creation, as we haven't had the time to split the
+    ItemCreateGUI into the two necessary classes."
+
+    FILL IN FIELDS
+    SHOW RESET FIELDS FUNCTION
+    FILL IN FIELDS AGAIN
+    CREATE
+
+        title: whatever
+        authorID: 1
+        classID: 1
+        Barcode: 1337
+        Age Rating 13
 
 SHOW UPDATE
 
