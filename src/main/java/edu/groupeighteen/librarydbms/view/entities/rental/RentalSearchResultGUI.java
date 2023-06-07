@@ -94,6 +94,7 @@ public class RentalSearchResultGUI extends GUI
         if (searchResultList != null && !searchResultList.isEmpty())
         {
             Object[][] data = new Object[searchResultList.size()][columnNames.length];
+
             for (int i = 0; i < searchResultList.size(); i++)
             {
                 Rental rental = searchResultList.get(i);
@@ -105,12 +106,13 @@ public class RentalSearchResultGUI extends GUI
             }
 
             // Use the custom table model when creating the table
-            RentalTable searchResultTable = new RentalTable(new RentalTableModel(data, columnNames), searchResultList,
-                    this);
+            RentalTable searchResultTable = new RentalTable(new RentalTableModel(data, columnNames),
+                    searchResultList, this);
 
             // Set the custom cell renderer and editor for the last column
             ButtonRenderer buttonRenderer = new ButtonRenderer();
             searchResultTable.getColumn("View Rental").setCellRenderer(buttonRenderer);
+
             for (Rental rental : searchResultList)
             {
                 RentalGUIButtonEditor rentalGUIButtonEditor = new RentalGUIButtonEditor(new JCheckBox(), rental,

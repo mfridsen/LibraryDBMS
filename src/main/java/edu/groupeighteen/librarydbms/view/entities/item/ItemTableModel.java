@@ -10,7 +10,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ItemTableModel extends DefaultTableModel
 {
-
     public ItemTableModel(Object[][] data, Object[] columnNames)
     {
         super(data, columnNames);
@@ -22,4 +21,3 @@ public class ItemTableModel extends DefaultTableModel
         return columnIndex == 4 ? JButton.class : super.getColumnClass(columnIndex);
     }
 }
-

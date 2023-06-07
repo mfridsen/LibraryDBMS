@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.control.exceptions.ExceptionHandler;
 import edu.groupeighteen.librarydbms.model.entities.Film;
@@ -9,6 +10,7 @@ import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalReturnException;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
@@ -115,16 +117,9 @@ public class ItemGUI extends GUI
                 }
                 else
                 {
-                    try
-                    {
-                        RentalHandler.returnRental(rentals.get(0));
-                        dispose();
-                        new ItemGUI(null, item);
-                    }
-                    catch (RentalReturnException ex)
-                    {
-                        throw new RuntimeException(ex); //TODO-exception
-                    }
+                    dispose();
+                    //Lets just send the user back to the ItemHandlerGUI
+                    new ItemHandlerGUI(null);
                 }
             }
             else
@@ -149,7 +144,7 @@ public class ItemGUI extends GUI
             new ItemDeleteGUI(this, item);
         });
 
-        return new JButton[]{rentButton, updateButton, deleteButton};
+        return new JButton[]{rentButton, returnButton, updateButton, deleteButton};
     }
 
     /**

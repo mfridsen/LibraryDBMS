@@ -1,10 +1,19 @@
 package edu.groupeighteen.librarydbms.view.entities.rental;
 
+import edu.groupeighteen.librarydbms.LibraryManager;
+import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidNameException;
+import edu.groupeighteen.librarydbms.model.exceptions.item.InvalidTitleException;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,14 +148,14 @@ public class RentalSearchGUI extends GUI
             //Perform the search
             List<Rental> searchResultList = performSearch();
             //If the search doesn't generate a result, we stay
-            /*if (!searchResultList.isEmpty()) {
+            if (!searchResultList.isEmpty()) {
                 dispose();
                 new RentalSearchResultGUI(this, searchResultList);
                 RentalHandler.printRentalList(searchResultList);
             } else {
                 System.err.println("No results found for search.");
                 resetCells();
-            }*/
+            }
         });
         return searchButton;
     }
@@ -183,7 +192,7 @@ public class RentalSearchGUI extends GUI
             }
 
             //Attempt to parse the cell data and perform the search
-            /*try {
+            try {
                 switch (row) {
                     //Rental ID
                     case 0 -> {
@@ -238,10 +247,11 @@ public class RentalSearchGUI extends GUI
                 //The cell data could not be parsed to an int or a date, do nothing
                 System.err.println("Wrong data type for field: " + rentalSearchTable.getValueAt(row, 0));
             }
-            catch (SQLException sqle) {
-                sqle.printStackTrace();
+            catch (InvalidNameException | InvalidDateException | InvalidIDException | InvalidTitleException e)
+            {
+                e.printStackTrace();
                 LibraryManager.exit(1);
-            }*/
+            }
         }
 
         return searchResultList;

@@ -38,13 +38,13 @@ public class ItemGUIButtonEditor extends EntityButtonEditor
      * Constructs a new ItemGUIButtonEditor with the given parameters.
      *
      * @param checkBox    a JCheckBox that the superclass's constructor requires.
-     * @param entity      the Entity object that the button will open a EntityGUI for when clicked.
+     * @param item      the Entity object that the button will open a EntityGUI for when clicked.
      * @param label       the label of the button.
      * @param previousGUI the GUI from which the EntityGUI will be opened.
      */
-    public ItemGUIButtonEditor(JCheckBox checkBox, Entity entity, String label, GUI previousGUI)
+    public ItemGUIButtonEditor(JCheckBox checkBox, Item item, String label, GUI previousGUI)
     {
-        super(checkBox, entity, label, previousGUI);
+        super(checkBox, item, label, previousGUI);
     }
 
     /**

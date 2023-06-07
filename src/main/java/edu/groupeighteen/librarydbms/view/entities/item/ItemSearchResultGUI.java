@@ -1,14 +1,5 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
-/**
- * @author Jesper Truedsson
- * @project LibraryDBMS
- * @date 2023-04-27
- * <p>
- * this class displays results for a search performed in the ItemSearchGUI
- * leads to ItemGUI
- */
-
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.view.LoginScreenGUI;
 import edu.groupeighteen.librarydbms.view.buttons.ButtonRenderer;
@@ -20,6 +11,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Jesper Truedsson
+ * @project LibraryDBMS
+ * @date 2023-04-27
+ * <p>
+ * this class displays results for a search performed in the ItemSearchGUI
+ * leads to ItemGUI
+ */
 public class ItemSearchResultGUI extends GUI
 {
     private final List<Item> searchResultList;

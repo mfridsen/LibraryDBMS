@@ -848,8 +848,8 @@ public class RentalHandler
             throw new InvalidNameException("Invalid username: username can't be null or empty.");
 
         //Prepare a SQL query to select rentals by username
-        String suffix = "SELECT rentals.* FROM rentals INNER JOIN users ON rentals.userID = users.userID WHERE users" +
-                ".username = ?";
+        String suffix = "INNER JOIN users ON rentals.userID = users.userID " +
+                "WHERE users.username = ?";
         String[] params = {username};
 
         //Return the list of rentals
@@ -866,7 +866,7 @@ public class RentalHandler
             throw new InvalidTitleException("Invalid title: title can't be null or empty.");
 
         //Prepare a SQL query to select rentals by item title
-        String suffix = "SELECT rentals.* FROM rentals INNER JOIN items ON rentals.itemID = items.itemID WHERE items" +
+        String suffix = "INNER JOIN items ON rentals.itemID = items.itemID WHERE items" +
                 ".title = ?";
         String[] params = {title};
 

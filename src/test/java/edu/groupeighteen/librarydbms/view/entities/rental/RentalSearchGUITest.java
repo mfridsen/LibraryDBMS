@@ -28,8 +28,8 @@ public class RentalSearchGUITest
         LibraryManager.setup();
         try
         {
-            RentalHandler.createNewRental(1, 1);
-            RentalHandler.createNewRental(2, 2);
+            //RentalHandler.createNewRental(1, 1);
+            //RentalHandler.createNewRental(2, 2);
             RentalHandler.createNewRental(3, 3);
             RentalHandler.createNewRental(4, 4);
             RentalHandler.createNewRental(5, 5);
