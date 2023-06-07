@@ -57,6 +57,9 @@ When a loan is made, a receipt will be printed with all the relevant information
 
     [Show the login process, borrowing and returning items, and printing the receipt]
 
+    user3
+    password3
+
     CLICK RENT
     LOGIN
     EXPLAIN THAT WE CAN NOW RENT AGAIN
@@ -99,9 +102,16 @@ SHOW CREATION "now I'm going to demonstrate how we can create new items that are
         Age Rating 13
 
 SHOW UPDATE
-    update
+    update fields
+    Country: USA
+    Actors: Tom Cruise
 
 SHOW DELETE
+
+
+
+    user1
+    password1
 
 [Show the user interface and demonstrate adding, modifying, and deleting items]
 
