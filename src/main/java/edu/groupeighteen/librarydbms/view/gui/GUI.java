@@ -125,7 +125,9 @@ public abstract class GUI extends JFrame
         {
             if (previousGUI == null)
             {
-                System.err.println("No previous GUI to return to!");
+                System.err.println("DEBUG: No previous GUI to return to!");
+                dispose();
+                new HomeScreenGUI(null);
             }
             else
             {
