@@ -99,6 +99,7 @@ SHOW CREATION "now I'm going to demonstrate how we can create new items that are
         Age Rating 13
 
 SHOW UPDATE
+    update
 
 SHOW DELETE
 

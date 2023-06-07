@@ -145,7 +145,8 @@ public class ItemCreateGUI extends GUI
      */
     private void resetFields()
     {
-        authorIDField.setText("");
+        for (JTextField field : fields)
+            field.setText("");
     }
 
     /**
