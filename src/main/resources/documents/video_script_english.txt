@@ -19,17 +19,47 @@ REQUIREMENTS:
     * Deleting items: Being able to delete existing items from the library (3)
     * Overdue items: Being able to display a list of all overdue items in the library (4)
 
+    (MATTIAS)
+    * Use of relational database: the system needs to use a relational database to store and manage information
+
+    * Use of inheritance and polymorphism: To make the system more flexible and extensible,
+        appropriate parts of the system need to utilize inheritance and polymorphism.
+
+    * Exception handling: Exceptions should be handled consistently and logically, not just crash the system
+
+    * GUI: The system should have a basic, user-friendly GUI to interact with the system
+
+
 [Functional Requirement 1: Search function for objects]
 To facilitate our users, we have implemented a search function. Users can search for items based on title,
-author/director, ISBN, or subject/genre.
+author/director, ISBN, or subject/genre. When "search" is clicked, the system will perform separate searches
+for each field that has data entered into it, and then remove duplicate results before presentation.
 
 [Show the search function and demonstrate how users can search for items using different criteria]
+
+    SEARCH:
+        ID (1),
+        title (item2),
+        author (Joe, Abercrombie, Joe Abercrombie),
+        classification (Horror, Fantasy)
+    DONT: ISBN, it's a pain in the ass, we have tested it, but it's 13 numbers long
+
+    REMEMBER TO PRESS SOME OTHER FIELD BEFORE SEARCH
 
 [Functional Requirement 2: Handling borrowing and returning]
 Now, let's move on to the handling of borrowing and returning items. Users need to log in to borrow or reserve items.
 When a loan is made, a receipt will be printed with all the relevant information.
 
-[Show the login process, borrowing and returning items, and printing the receipt]
+    [Show the login process, borrowing and returning items, and printing the receipt]
+
+    CLICK RENT
+    LOGIN
+    EXPLAIN THAT WE CAN NOW RENT AGAIN
+    CLICK RENT
+    SHOW RECEIPT
+        AND TABLE PRINT
+    CLICK RETURN
+    SHOW TABLE PRINT
 
 VIDEO 2:
 [Functional Requirement 3: Adding, modifying, and deleting items]
@@ -45,6 +75,9 @@ To keep track of items that have not been returned on time, we have a list that 
 VIDEO 3:
 [General Requirement 1: Use of a relational database]
 All data in the system is stored in a relational database for efficient management and storage of information.
+
+display the diagram, the create_tables file and the test_data file
+        Explain relation with classes
 
 [Show the database and how data is stored and retrieved]
 
