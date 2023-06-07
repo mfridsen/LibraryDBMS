@@ -193,12 +193,12 @@ public class RentalHandler
      */
     private static String createReceipt(Rental newRental)
     {
-        return "RECEIPT" +
+        return "\nRECEIPT" +
                 "\nRental Date: " + newRental.getRentalDate() +
                 "\nRental Due Date: " + newRental.getRentalDueDate() +
                 "\nUser ID: " + newRental.getUserID() + ", User: " + newRental.getUsername() +
                 "\nItem Title: " + newRental.getItemTitle() +
-                "\nItem Type: " + newRental.getItemType();
+                "\nItem Type: " + newRental.getItemType() + "\n";
     }
 
     /**

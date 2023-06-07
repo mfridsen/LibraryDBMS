@@ -116,6 +116,7 @@ public class ItemGUIButtonEditor extends EntityButtonEditor
         Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser().getUserID(),
                 item.getItemID());
         RentalHandler.printRentalList(RentalHandler.getAllRentals()); //TODO-prio debug print
+        newRental.printReceipt();
         previousGUI.dispose();
         new RentalGUI(previousGUI, newRental);
     }

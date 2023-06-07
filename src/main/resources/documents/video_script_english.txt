@@ -6,20 +6,33 @@ Hello and welcome to the video demonstration of our library system. Today, I wil
 
 REQUIREMENTS:
 
-    * User account handling: Being able to login,
+    (JESPER)
+    * Searching: Being able to search for library items without being logged in (1)
+    * User account handling: Being able to log in to rent an item (2)
+    * Renting: Being able to rent an item when logged in (2)
+    * Receipt: Being able to print a receipt when an item is rented (2)
+    * Returning: Being able to return a rented item (2)
 
-[Functional Requirement 2: Search function for objects]
-To facilitate our users, we have implemented a search function. Users can search for items based on title, author/director, ISBN, or subject/genre.
+    (JOHAN)
+    * Adding items: Being able to add items to the library (3)
+    * Updating items: Being able to change properties of existing items in the library (3)
+    * Deleting items: Being able to delete existing items from the library (3)
+    * Overdue items: Being able to display a list of all overdue items in the library (4)
+
+[Functional Requirement 1: Search function for objects]
+To facilitate our users, we have implemented a search function. Users can search for items based on title,
+author/director, ISBN, or subject/genre.
 
 [Show the search function and demonstrate how users can search for items using different criteria]
 
-[Functional Requirement 3: Handling borrowing and returning]
-Now, let's move on to the handling of borrowing and returning items. Users need to log in to borrow or reserve items. When a loan is made, a receipt will be printed with all the relevant information.
+[Functional Requirement 2: Handling borrowing and returning]
+Now, let's move on to the handling of borrowing and returning items. Users need to log in to borrow or reserve items.
+When a loan is made, a receipt will be printed with all the relevant information.
 
 [Show the login process, borrowing and returning items, and printing the receipt]
 
 VIDEO 2:
-[Functional Requirement 1: Adding, modifying, and deleting items]
+[Functional Requirement 3: Adding, modifying, and deleting items]
 First and foremost, we have the capability to add, modify, and delete items in the system. By logging in as a librarian, we can easily manage the objects in the library.
 
 [Show the user interface and demonstrate adding, modifying, and deleting items]

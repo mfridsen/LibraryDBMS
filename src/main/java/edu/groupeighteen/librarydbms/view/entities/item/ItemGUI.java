@@ -161,6 +161,7 @@ public class ItemGUI extends GUI
         Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser().getUserID(),
                 item.getItemID());
         RentalHandler.printRentalList(RentalHandler.getAllRentals()); //TODO-prio debug print
+        newRental.printReceipt();
         dispose();
         new RentalGUI(this, newRental);
     }
