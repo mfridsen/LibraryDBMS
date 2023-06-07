@@ -1,6 +1,11 @@
 VIDEO 1:
 [Introduction]
-Hello and welcome to the video demonstration of our library system. Today, I will show you how we fulfill the different requirements of the system.
+Hello and welcome to the video demonstration of our library system.
+Today, we will show you how we fulfill the different requirements of the system.
+
+We are group 18, consisting of members me, Jesper Truedsson,
+Johan Lund who is going to do the second part of this demonstration,
+and Mattias Fridsén who will manage the final part of the demonstration.
 
 [Explain list of requirements]
 
@@ -61,18 +66,36 @@ When a loan is made, a receipt will be printed with all the relevant information
     CLICK RETURN
     SHOW TABLE PRINT
 
-VIDEO 2:
+
+
+
+
+
+VIDEO 2 JOHAN:
+
+
 [Functional Requirement 3: Adding, modifying, and deleting items]
-First and foremost, we have the capability to add, modify, and delete items in the system. By logging in as a librarian, we can easily manage the objects in the library.
+First and foremost, we have the capability to add, modify, and delete items in the system.
+By logging in as a user, we can easily manage the objects in the library.
+
+SHOW CREATION
+
+SHOW UPDATE
+
+SHOW DELETE
 
 [Show the user interface and demonstrate adding, modifying, and deleting items]
 
 [Functional Requirement 4: List of overdue items]
-To keep track of items that have not been returned on time, we have a list that displays these items. It helps us remind borrowers to return the items promptly.
+To keep track of items that have not been returned on time, we have a list that displays these items.
+It helps us remind borrowers to return the items promptly.
 
 [Show the list of overdue items]
 
-VIDEO 3:
+SHOW OVERDUE FUNCTION
+
+
+VIDEO 3 MATTIAS:
 [General Requirement 1: Use of a relational database]
 All data in the system is stored in a relational database for efficient management and storage of information.
 
