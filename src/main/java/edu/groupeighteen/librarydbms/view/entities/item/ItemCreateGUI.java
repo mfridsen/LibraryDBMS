@@ -1,6 +1,7 @@
 package edu.groupeighteen.librarydbms.view.entities.item;
 
 import edu.groupeighteen.librarydbms.control.entities.ItemHandler;
+import edu.groupeighteen.librarydbms.control.entities.ItemHandlerUtils;
 import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.view.gui.GUI;
 
@@ -125,6 +126,7 @@ public class ItemCreateGUI extends GUI
             try
             {
                 Item item = createNewItem();
+                ItemHandlerUtils.printItemList(ItemHandler.getAllItems());
                 dispose();
                 new ItemGUI(this, item);
             }
