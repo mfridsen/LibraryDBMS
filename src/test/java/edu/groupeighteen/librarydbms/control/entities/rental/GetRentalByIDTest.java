@@ -6,6 +6,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import org.junit.jupiter.api.*;
@@ -44,7 +45,7 @@ public class GetRentalByIDTest extends BaseRentalHandlerTest
                         ", Item ID: " + rental.getItemID());
             }
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidTypeException e)
         {
             e.printStackTrace();
             fail("Exception occurred during setupRentals: " + e.getMessage());

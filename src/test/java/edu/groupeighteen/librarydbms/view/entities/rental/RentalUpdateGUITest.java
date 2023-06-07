@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 
 import java.sql.SQLException;
@@ -22,7 +23,8 @@ public class RentalUpdateGUITest
 {
 
     public static void main(String[] args)
-    throws SQLException, EntityNotFoundException, EntityNotFoundException, RentalNotAllowedException, InvalidIDException
+    throws SQLException, EntityNotFoundException, EntityNotFoundException, RentalNotAllowedException,
+           InvalidIDException, InvalidTypeException
     {
         LibraryManager.setup();
 

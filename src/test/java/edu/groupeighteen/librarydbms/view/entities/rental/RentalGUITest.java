@@ -4,6 +4,7 @@ import edu.groupeighteen.librarydbms.LibraryManager;
 import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 
 /**
@@ -28,7 +29,7 @@ public class RentalGUITest
             new RentalGUI(null, RentalHandler.createNewRental(3, 4));
             RentalHandler.printRentalList(RentalHandler.getAllRentals());
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidTypeException e)
         {
             e.printStackTrace();
         }

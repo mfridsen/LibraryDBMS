@@ -59,7 +59,8 @@ public class ReturnRentalTest extends  BaseRentalHandlerTest
                     itemType, rentalReturnDate, lateFee, receipt, false);
             alreadyReturnedRental = RentalHandler.createNewRental(4, 4);
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | ConstructionException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | ConstructionException |
+               InvalidTypeException e)
         {
             e.printStackTrace();
             fail("Exception thrown during setup.");

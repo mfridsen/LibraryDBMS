@@ -60,7 +60,7 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             // Verify the rental is softly deleted
             assertTrue(retrievedRental.isDeleted(), "The rental should be softly deleted.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -147,8 +147,8 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             assertTrue(deletedRental.isDeleted(), "The rental should still be marked as deleted after a s" +
                     "econd soft delete.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException
-               | InvalidIDException | DeletionException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException |
+               InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -184,8 +184,8 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             assertFalse(recoveredRental.isDeleted(),
                     "The rental should not be marked as deleted after undoing the soft delete.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-               | DeletionException | RecoveryException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException |
+               RecoveryException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -240,8 +240,8 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             assertFalse(rentalInDB.isDeleted(),
                     "The rental should not be marked as deleted if it was never softly deleted.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException
-               | InvalidIDException | RecoveryException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | RecoveryException |
+               InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -275,8 +275,8 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             Rental deletedRental = RentalHandler.getRentalByID(rentalToDelete.getRentalID());
             assertNull(deletedRental, "The rental should be null after being deleted.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException
-               | InvalidIDException | DeletionException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException |
+               InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -362,8 +362,8 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             assertNull(deletedRental, "The rental should be null after being deleted, " +
                     "even if it was softly deleted before.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException
-               | InvalidIDException | DeletionException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException |
+               InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -398,8 +398,8 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             assertTrue(e.getCause() instanceof EntityNotFoundException,
                     "The cause of the DeletionException should be a EntityNotFoundException.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-               | DeletionException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException |
+               InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -434,7 +434,8 @@ public class DeleteAndRecoverRentalTest extends BaseRentalHandlerTest
             assertTrue(e.getCause() instanceof EntityNotFoundException,
                     "The cause of the RecoveryException should be a EntityNotFoundException.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | DeletionException |
+               InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();

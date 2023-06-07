@@ -8,6 +8,7 @@ import edu.groupeighteen.librarydbms.model.entities.Item;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.view.buttons.EntityButtonEditor;
 import edu.groupeighteen.librarydbms.view.entities.rental.RentalGUI;
@@ -76,7 +77,7 @@ public class ItemGUIButtonEditor extends EntityButtonEditor
                         {
                             createAndOpenNewRental((Item) entity);
                         }
-                        catch (EntityNotFoundException | InvalidIDException fatalException) //This SHOULD NOT happen
+                        catch (EntityNotFoundException | InvalidIDException | InvalidTypeException fatalException) //This SHOULD NOT happen
                         {
                             ExceptionHandler.HandleFatalException("Rental creation failed fatally due to: " +
                                     fatalException.getCause().getClass().getName() + ", Message: " +
@@ -111,7 +112,7 @@ public class ItemGUIButtonEditor extends EntityButtonEditor
      * @throws InvalidIDException        if the ID of the User or Item is invalid.
      */
     private void createAndOpenNewRental(Item item)
-    throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException
+    throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException, InvalidTypeException
     {
         Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser().getUserID(),
                 item.getItemID());

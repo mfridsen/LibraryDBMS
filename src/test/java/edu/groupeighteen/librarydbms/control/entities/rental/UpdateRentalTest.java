@@ -328,8 +328,8 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(originalReturnDate, updatedRental.getRentalReturnDate());
             assertEquals(originalLateFee, updatedRental.getLateFee());
         }
-        catch (InvalidDateException | UpdateException | InvalidIDException
-               | EntityNotFoundException | RentalNotAllowedException e)
+        catch (InvalidDateException | UpdateException | InvalidIDException | EntityNotFoundException |
+               RentalNotAllowedException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -380,8 +380,8 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(newReturnDate, updatedRental.getRentalReturnDate());
             assertEquals(originalLateFee, updatedRental.getLateFee());
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-               | InvalidDateException | UpdateException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidDateException |
+               UpdateException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -431,8 +431,8 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(originalReturnDate, updatedRental.getRentalReturnDate());
             assertEquals(newLateFee, updatedRental.getLateFee());
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-               | InvalidLateFeeException | UpdateException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidLateFeeException |
+               UpdateException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -486,8 +486,8 @@ public class UpdateRentalTest extends BaseRentalHandlerTest
             assertEquals(newReturnDate, updatedRental.getRentalReturnDate());
             assertEquals(newLateFee, updatedRental.getLateFee());
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException
-               | InvalidDateException | InvalidLateFeeException | UpdateException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidDateException |
+               InvalidLateFeeException | UpdateException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();

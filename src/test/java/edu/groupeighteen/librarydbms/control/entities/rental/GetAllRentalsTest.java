@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.control.entities.RentalHandler;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -91,7 +92,7 @@ public class GetAllRentalsTest extends BaseRentalHandlerTest
             assertEquals(1, rentals.size(), "The number of retrieved rentals does not match the " +
                     "number of created rentals.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();
@@ -135,7 +136,7 @@ public class GetAllRentalsTest extends BaseRentalHandlerTest
             assertEquals(5, rentals.size(), "The number of retrieved rentals does not match the " +
                     "number of created rentals.");
         }
-        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException e)
+        catch (EntityNotFoundException | RentalNotAllowedException | InvalidIDException | InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
             e.printStackTrace();

@@ -311,7 +311,7 @@ public class CreateNewRentalTest extends BaseRentalHandlerTest
             assertTrue(actualMessage.contains(expectedMessage));
         }
         catch (InvalidIDException | NullEntityException | RetrievalException | RentalNotAllowedException |
-               EntityNotFoundException e)
+               EntityNotFoundException | InvalidTypeException e)
         {
             e.printStackTrace();
             fail("Valid operations should not throw exceptions.");

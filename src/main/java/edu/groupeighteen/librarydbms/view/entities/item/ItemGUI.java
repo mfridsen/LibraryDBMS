@@ -10,6 +10,7 @@ import edu.groupeighteen.librarydbms.model.entities.Literature;
 import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.RetrievalException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalReturnException;
@@ -77,7 +78,7 @@ public class ItemGUI extends GUI
                     {
                         createAndOpenNewRental(item);
                     }
-                    catch (EntityNotFoundException | InvalidIDException fatalException) //This SHOULD NOT happen
+                    catch (EntityNotFoundException | InvalidIDException | InvalidTypeException fatalException) //This SHOULD NOT happen
                     {
                         ExceptionHandler.HandleFatalException("Rental creation failed fatally due to: " +
                                 fatalException.getCause().getClass().getName() + ", Message: " +
@@ -156,7 +157,7 @@ public class ItemGUI extends GUI
      * @throws InvalidIDException        if the ID of the User or Item is invalid.
      */
     private void createAndOpenNewRental(Item item)
-    throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException
+    throws EntityNotFoundException, RentalNotAllowedException, InvalidIDException, InvalidTypeException
     {
         Rental newRental = RentalHandler.createNewRental(LibraryManager.getCurrentUser().getUserID(),
                 item.getItemID());

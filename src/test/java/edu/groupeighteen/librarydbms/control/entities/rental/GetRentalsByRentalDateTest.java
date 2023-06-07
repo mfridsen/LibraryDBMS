@@ -5,6 +5,7 @@ import edu.groupeighteen.librarydbms.model.entities.Rental;
 import edu.groupeighteen.librarydbms.model.exceptions.EntityNotFoundException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidDateException;
 import edu.groupeighteen.librarydbms.model.exceptions.InvalidIDException;
+import edu.groupeighteen.librarydbms.model.exceptions.InvalidTypeException;
 import edu.groupeighteen.librarydbms.model.exceptions.rental.RentalNotAllowedException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -104,8 +105,8 @@ public class GetRentalsByRentalDateTest extends BaseRentalHandlerTest
             assertNotNull(rentals, "The returned list should not be null");
             assertEquals(1, rentals.size(), "The list should contain one rental.");
         }
-        catch (InvalidIDException | EntityNotFoundException
-               | RentalNotAllowedException | InvalidDateException e)
+        catch (InvalidIDException | EntityNotFoundException | RentalNotAllowedException | InvalidDateException |
+               InvalidTypeException e)
         {
             fail("Exception occurred during test: " + e.getMessage());
         }
