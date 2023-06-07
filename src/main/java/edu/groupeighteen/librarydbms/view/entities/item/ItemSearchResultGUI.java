@@ -16,14 +16,26 @@ import java.util.Set;
  * @project LibraryDBMS
  * @date 2023-04-27
  * <p>
- * this class displays results for a search performed in the ItemSearchGUI
- * leads to ItemGUI
+ * This class extends the GUI class and represents the GUI for displaying a list of items.
  */
 public class ItemSearchResultGUI extends GUI
 {
+    /**
+     * The list of Item objects to be displayed.
+     */
     private final List<Item> searchResultList;
+
+    /**
+     * The panel in which the search results are displayed.
+     */
     private JPanel searchResultPanel;
 
+    /**
+     * Constructs a new ItemSearchResultGUI.
+     *
+     * @param previousGUI      the GUI instance from which this GUI was opened.
+     * @param searchResultList the list of Item objects to be displayed.
+     */
     public ItemSearchResultGUI(GUI previousGUI, List<Item> searchResultList)
     {
         super(previousGUI, "ItemSearchResultGUI", null);
@@ -34,12 +46,25 @@ public class ItemSearchResultGUI extends GUI
         displayGUI();
     }
 
+    /**
+     * Removes any duplicate items from the search result list.
+     * An item is considered duplicate if it shares the same item ID
+     * with another item in the list. In case of duplicates, all but one
+     * instance will be removed.
+     */
     private void clearDuplicates()
     {
         Set<Integer> seenItemIDs = new HashSet<>();
         searchResultList.removeIf(item -> !seenItemIDs.add(item.getItemID()));
     }
 
+    /**
+     * Sets up the buttons and their corresponding action listeners.
+     * This method creates a "Home" button with an action listener that disposes the current GUI
+     * and creates a new LoginScreenGUI instance.
+     *
+     * @return an array of JButton objects containing the "Home" button
+     */
     @Override
     protected JButton[] setupButtons()
     {
@@ -52,6 +77,12 @@ public class ItemSearchResultGUI extends GUI
         return new JButton[]{homeButton};
     }
 
+    /**
+     * Sets up the scroll pane and populates it with data from the search result list.
+     * If the search result list is not null and not empty, it creates a custom table model,
+     * sets a custom cell renderer and editor for the last two columns, and adds the table to the scroll pane.
+     * The scroll pane is then added to the search result panel.
+     */
     private void setupScrollPane()
     {
         String[] columnNames = {"ID", "Title", "Classification", "View Item", "Rent Item"};
@@ -96,6 +127,10 @@ public class ItemSearchResultGUI extends GUI
         }
     }
 
+    /**
+     * Sets up the panels for this GUI.
+     * Adds the searchResultPanel to the GUIPanel.
+     */
     @Override
     protected void setupPanels()
     {
