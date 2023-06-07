@@ -108,7 +108,7 @@ public class RentalHandler
      */
     public static Rental createNewRental(int userID, int itemID)
     throws
-    EntityNotFoundException, RentalNotAllowedException, InvalidIDException
+    EntityNotFoundException, RentalNotAllowedException, InvalidIDException, InvalidTypeException
     {
         if (verbose)
             System.out.println("\nCreating new rental...");
@@ -121,6 +121,7 @@ public class RentalHandler
 
         String username = ""; //Create username here so catch block is happy
         String title = ""; //Create title here so catch block is happy
+        String itemType = ""; //Create the itemType string here so catch block is happy
 
         try
         {
@@ -132,6 +133,7 @@ public class RentalHandler
             Item item = getExistingItem(itemID);
             title = item.getTitle();
             itemID = item.getItemID(); //Might be changed if item wasn't available
+            itemType = item.getType().toString();
 
             //Create rental
             Rental newRental = new Rental(userID, itemID);
@@ -139,6 +141,7 @@ public class RentalHandler
             //Set rental fields except rentalID
             newRental.setUsername(username);
             newRental.setItemTitle(title);
+            newRental.setItemType(itemType);
 
             //Due date
             int allowedRentalDays = ItemHandler.getAllowedRentalDaysByID(itemID);
