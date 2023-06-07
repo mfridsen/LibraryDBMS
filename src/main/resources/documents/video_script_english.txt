@@ -76,15 +76,18 @@ When a loan is made, a receipt will be printed with all the relevant information
 
 VIDEO 2 JOHAN:
 
-INTRODUCERA DIG SJÄLV OCH VAD DU SKA GÖRA (VISA ITEM HANDLING)
+"Hello everyone, my name is Johan Lund, and I am going to demonstrate to you how our system is capable of performing
+the necessary basic CRUD operations for items in the Library, as a staff member of the library.
 
-[Functional Requirement 3: Adding, modifying, and deleting items]
-First and foremost, we have the capability to add, modify, and delete items in the system.
-By logging in as a user, we can easily manage the objects in the library.
+First and foremost, we have the capability to add, modify, and delete items in the system. We also have the capability
+to show a list of all overdue items in the system.
+
+For demonstration purposes, this test class that we are using will already be logged on as user1, who is an ADMIN."
 
 STARTA ITEMHANDLERGUITEST
 
-VISA LISTAN MED ITEMS
+VISA LISTAN MED ITEMS: "As you can see in the Run window,
+the test class prints a list of all the items added from test_data.sql."
 
 SHOW CREATION "now I'm going to demonstrate how we can create new items that are added to the library"
     "Note that this technically only works for Film creation, as we haven't had the time to split the
