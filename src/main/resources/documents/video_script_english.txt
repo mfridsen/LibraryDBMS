@@ -108,16 +108,24 @@ SHOW UPDATE
 
 SHOW DELETE
 
+"as you can see, deletion requires validation. We are logged in as user1, so we fill in password1"
 
-
-    user1
     password1
+
+"As you can now see from the printed list, the item is removed"
+
+SHOW SEARCH FOR ITEM RETURNS NOTHING
+
+"As you can see, no such item was found"
+
+PRESS BACK
 
 [Show the user interface and demonstrate adding, modifying, and deleting items]
 
 [Functional Requirement 4: List of overdue items]
 To keep track of items that have not been returned on time, we have a list that displays these items.
-It helps us remind borrowers to return the items promptly.
+It helps us remind borrowers to return the items promptly. For this demonstration we have populated the rentals
+table with some overdue rentals.
 
 [Show the list of overdue items]
 
